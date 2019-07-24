@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Automatic-Module-Name: net.ssehub.lea.ide
+Bundle-ManifestVersion: 2
+Bundle-Name: net.ssehub.lea.ide
+Bundle-Vendor: My Company
+Bundle-Version: 1.0.0.qualifier
+Bundle-SymbolicName: net.ssehub.lea.ide; singleton:=true
+Bundle-ActivationPolicy: lazy
+Require-Bundle: net.ssehub.lea,
+ org.eclipse.xtext.ide,
+ org.eclipse.xtext.xbase.ide
+Bundle-RequiredExecutionEnvironment: JavaSE-11

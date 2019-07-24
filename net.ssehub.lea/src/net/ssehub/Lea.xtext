@@ -1,0 +1,9 @@
+grammar net.ssehub.Lea with org.eclipse.xtext.common.Terminals
+
+generate lea "http://www.ssehub.net/Lea"
+
+Model:
+	greetings+=Greeting*;
+	
+Greeting:
+	'Hello' name=ID '!';
