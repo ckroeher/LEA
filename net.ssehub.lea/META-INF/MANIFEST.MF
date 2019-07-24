@@ -8,5 +8,22 @@ Bundle-SymbolicName: net.ssehub.lea; singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.xtext,
  org.eclipse.xtext.xbase,
- org.eclipse.equinox.common;bundle-version="3.5.0"
+ org.eclipse.equinox.common;bundle-version="3.5.0",
+ org.eclipse.emf.ecore,
+ org.eclipse.xtext.xbase.lib;bundle-version="2.14.0",
+ org.eclipse.xtext.util,
+ org.eclipse.emf.common,
+ org.antlr.runtime;bundle-version="[3.2.0,3.2.1)"
 Bundle-RequiredExecutionEnvironment: JavaSE-11
+Export-Package: net.ssehub.parser.antlr.internal,
+ net.ssehub.validation,
+ net.ssehub,
+ net.ssehub.lea.impl,
+ net.ssehub.scoping,
+ net.ssehub.lea,
+ net.ssehub.parser.antlr,
+ net.ssehub.generator,
+ net.ssehub.serializer,
+ net.ssehub.services,
+ net.ssehub.lea.util
+Import-Package: org.apache.log4j

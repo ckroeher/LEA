@@ -2,8 +2,58 @@ grammar net.ssehub.Lea with org.eclipse.xtext.common.Terminals
 
 generate lea "http://www.ssehub.net/Lea"
 
-Model:
-	greetings+=Greeting*;
-	
-Greeting:
-	'Hello' name=ID '!';
+AnalysisDefinition:
+	{AnalysisDefinition}
+	(
+		elements+=ArtifactDeclaration
+		| elements+=FragmentDeclaration
+		| elements+=ResultDeclaration
+		| elements+=ChangeIdentifierAssignment
+	)*
+;
+
+ChangeIdentifierAssignment:
+    'assign' identifier=ID 'to' elements+=ID (',' elements+=ID)* ';'?
+;
+
+ArtifactDeclaration:
+	'Artifact' '<' type=ID '>' (set=SetDefinition)? name=ID (initialization=Assignment)? ';'?
+;
+
+FragmentDeclaration:
+    'Fragment' '<' type=ID '>' (set=SetDefinition)? name=ID (initialization=Assignment)? ';'?
+;
+
+ResultDeclaration:
+    'Result' '<' type=ID '>' (set=SetDefinition)? name=ID (initialization=Assignment)? ';'?
+;
+
+SetDefinition:
+	{SetDefinition}
+	'[' (iteration=Iteration)? ']'
+;
+
+Iteration:
+	iterator=ID ':' iterable=ID
+;
+
+Assignment:
+	'=' (element=ID | operation=Operation)
+;
+
+Operation:
+	// This results in a list of calls; maybe this requires an adaptation in future
+	(element=ID '.')? call+=Call ('.' call+=Call)?
+;
+
+Call:
+	name=ID '(' (parameters=ParameterList)? ')'
+;
+
+ParameterList:
+	parameterList+=Parameter (',' parameterList+=Parameter)*
+;
+
+Parameter:
+	text=STRING | element=ID | operation=Operation
+;
