@@ -30,15 +30,14 @@ import net.ssehub.lea.AnalysisDefinition;
 import net.ssehub.lea.ElementDeclaration;
 
 /**
- * This abstract class contains basic tests for parsing {@link ElementDeclaration}s of the parameter type
- * <i>Artifact</i>.
+ * This abstract class contains basic tests for parsing {@link ElementDeclaration}s of the parameter type <i>Result</i>.
  * 
  * @author Christian Kroeher
  *
  */
 @RunWith(XtextRunner.class)
 @InjectWith(LeaInjectorProvider.class)
-public class BasicArtifactParsingTests extends AbstractTest {
+public class BasicResultParsingTests extends AbstractTest {
     
     /**
      * This {@link ParseHelper} enables parsing of {@link AnalysisDefinition}s passed as a single string.
@@ -47,134 +46,134 @@ public class BasicArtifactParsingTests extends AbstractTest {
     private ParseHelper<AnalysisDefinition> parseHelper;
 //CHECKSTYLE:OFF
     /**
-     * Tests the correct parsing of a single artifact declaration without any initialization.
+     * Tests the correct parsing of a single result declaration without any initialization.
      * 
      * @throws Exception if the test data file could not be retrieved or the parser failed
      */
     @Test
-    public void testArtifactDeclaration() throws Exception {
-        String model = getModelString(TestType.BASIC, "ArtifactDeclaration");
+    public void testResultDeclaration() throws Exception {
+        String model = getModelString(TestType.BASIC, "ResultDeclaration");
         AnalysisDefinition analysis = parseHelper.parse(model);
         
         assertSyntacticalCorrectness(analysis);
         
         EList<ElementDeclaration> elementDeclarations = analysis.getElementDeclarations();
         assertEquals(1, elementDeclarations.size(), "There should only be one element declaration in the test file");
-        String problemDescription = testCorrectElementDeclaration(elementDeclarations.get(0), "Artifact", false, false,
+        String problemDescription = testCorrectElementDeclaration(elementDeclarations.get(0), "Result", false, false,
                 false, false);
         assertNull(problemDescription, problemDescription);
     }
     
     /**
-     * Tests the correct parsing of a single artifact declaration with an initialization using another element.
+     * Tests the correct parsing of a single result declaration with an initialization using another element.
      * 
      * @throws Exception if the test data file could not be retrieved or the parser failed
      */
     @Test
-    public void testArtifactDeclarationWithElement() throws Exception {
-        String model = getModelString(TestType.BASIC, "ArtifactDeclarationWithElement");
+    public void testResultDeclarationWithElement() throws Exception {
+        String model = getModelString(TestType.BASIC, "ResultDeclarationWithElement");
         AnalysisDefinition analysis = parseHelper.parse(model);
         
         assertSyntacticalCorrectness(analysis);
         
         EList<ElementDeclaration> elementDeclarations = analysis.getElementDeclarations();
         assertEquals(1, elementDeclarations.size(), "There should only be one element declaration in the test file");
-        String problemDescription = testCorrectElementDeclaration(elementDeclarations.get(0), "Artifact", false, false,
+        String problemDescription = testCorrectElementDeclaration(elementDeclarations.get(0), "Result", false, false,
                 false, true);
         assertNull(problemDescription, problemDescription);
     }
     
     /**
-     * Tests the correct parsing of a single artifact declaration with an initialization using an operation.
+     * Tests the correct parsing of a single result declaration with an initialization using an operation.
      * 
      * @throws Exception if the test data file could not be retrieved or the parser failed
      */
     @Test
-    public void testArtifactDeclarationWithOperation() throws Exception {
-        String model = getModelString(TestType.BASIC, "ArtifactDeclarationWithOperation");
+    public void testResultDeclarationWithOperation() throws Exception {
+        String model = getModelString(TestType.BASIC, "ResultDeclarationWithOperation");
         AnalysisDefinition analysis = parseHelper.parse(model);
         
         assertSyntacticalCorrectness(analysis);
         
         EList<ElementDeclaration> elementDeclarations = analysis.getElementDeclarations();
         assertEquals(1, elementDeclarations.size(), "There should only be one element declaration in the test file");
-        String problemDescription = testCorrectElementDeclaration(elementDeclarations.get(0), "Artifact", false, false,
+        String problemDescription = testCorrectElementDeclaration(elementDeclarations.get(0), "Result", false, false,
                 true, false);
         assertNull(problemDescription, problemDescription);
     }
     
     /**
-     * Tests the correct parsing of a single artifact set declaration without any initialization.
+     * Tests the correct parsing of a single result set declaration without any initialization.
      * 
      * @throws Exception if the test data file could not be retrieved or the parser failed
      */
     @Test
-    public void testArtifactSetDeclaration() throws Exception {
-        String model = getModelString(TestType.BASIC, "ArtifactSetDeclaration");
+    public void testResultSetDeclaration() throws Exception {
+        String model = getModelString(TestType.BASIC, "ResultSetDeclaration");
         AnalysisDefinition analysis = parseHelper.parse(model);
         
         assertSyntacticalCorrectness(analysis);
         
         EList<ElementDeclaration> elementDeclarations = analysis.getElementDeclarations();
         assertEquals(1, elementDeclarations.size(), "There should only be one element declaration in the test file");
-        String problemDescription = testCorrectElementDeclaration(elementDeclarations.get(0), "Artifact", true, false,
+        String problemDescription = testCorrectElementDeclaration(elementDeclarations.get(0), "Result", true, false,
                 false, false);
         assertNull(problemDescription, problemDescription);
     }
     
     /**
-     * Tests the correct parsing of a single artifact set declaration with an initialization using another element.
+     * Tests the correct parsing of a single result set declaration with an initialization using another element.
      * 
      * @throws Exception if the test data file could not be retrieved or the parser failed
      */
     @Test
-    public void testArtifactSetDeclarationWithElement() throws Exception {
-        String model = getModelString(TestType.BASIC, "ArtifactSetDeclarationWithElement");
+    public void testResultSetDeclarationWithElement() throws Exception {
+        String model = getModelString(TestType.BASIC, "ResultSetDeclarationWithElement");
         AnalysisDefinition analysis = parseHelper.parse(model);
         
         assertSyntacticalCorrectness(analysis);
         
         EList<ElementDeclaration> elementDeclarations = analysis.getElementDeclarations();
         assertEquals(1, elementDeclarations.size(), "There should only be one element declaration in the test file");
-        String problemDescription = testCorrectElementDeclaration(elementDeclarations.get(0), "Artifact", true, false,
+        String problemDescription = testCorrectElementDeclaration(elementDeclarations.get(0), "Result", true, false,
                 false, true);
         assertNull(problemDescription, problemDescription);
     }
     
     /**
-     * Tests the correct parsing of a single artifact set declaration with an initialization using an operation.
+     * Tests the correct parsing of a single result set declaration with an initialization using an operation.
      * 
      * @throws Exception if the test data file could not be retrieved or the parser failed
      */
     @Test
-    public void testArtifactSetDeclarationWithOperation() throws Exception {
-        String model = getModelString(TestType.BASIC, "ArtifactSetDeclarationWithOperation");
+    public void testResultSetDeclarationWithOperation() throws Exception {
+        String model = getModelString(TestType.BASIC, "ResultSetDeclarationWithOperation");
         AnalysisDefinition analysis = parseHelper.parse(model);
         
         assertSyntacticalCorrectness(analysis);
         
         EList<ElementDeclaration> elementDeclarations = analysis.getElementDeclarations();
         assertEquals(1, elementDeclarations.size(), "There should only be one element declaration in the test file");
-        String problemDescription = testCorrectElementDeclaration(elementDeclarations.get(0), "Artifact", true, false,
+        String problemDescription = testCorrectElementDeclaration(elementDeclarations.get(0), "Result", true, false,
                 true, false);
         assertNull(problemDescription, problemDescription);
     }
     
     /**
-     * Tests the correct parsing of a single artifact set declaration with a set iteration.
+     * Tests the correct parsing of a single result set declaration with a set iteration.
      * 
      * @throws Exception if the test data file could not be retrieved or the parser failed
      */
     @Test
-    public void testArtifactSetIterationDeclaration() throws Exception {
-        String model = getModelString(TestType.BASIC, "ArtifactSetIterationDeclaration");
+    public void testResultSetIterationDeclaration() throws Exception {
+        String model = getModelString(TestType.BASIC, "ResultSetIterationDeclaration");
         AnalysisDefinition analysis = parseHelper.parse(model);
         
         assertSyntacticalCorrectness(analysis);
         
         EList<ElementDeclaration> elementDeclarations = analysis.getElementDeclarations();
         assertEquals(1, elementDeclarations.size(), "There should only be one element declaration in the test file");
-        String problemDescription = testCorrectElementDeclaration(elementDeclarations.get(0), "Artifact", true, true,
+        String problemDescription = testCorrectElementDeclaration(elementDeclarations.get(0), "Result", true, true,
                 false, false);
         assertNull(problemDescription, problemDescription);
     }

@@ -31,14 +31,14 @@ import net.ssehub.lea.ElementDeclaration;
 
 /**
  * This abstract class contains basic tests for parsing {@link ElementDeclaration}s of the parameter type
- * <i>Artifact</i>.
+ * <i>Fragment</i>.
  * 
  * @author Christian Kroeher
  *
  */
 @RunWith(XtextRunner.class)
 @InjectWith(LeaInjectorProvider.class)
-public class BasicArtifactParsingTests extends AbstractTest {
+public class BasicFragmentParsingTests extends AbstractTest {
     
     /**
      * This {@link ParseHelper} enables parsing of {@link AnalysisDefinition}s passed as a single string.
@@ -47,134 +47,134 @@ public class BasicArtifactParsingTests extends AbstractTest {
     private ParseHelper<AnalysisDefinition> parseHelper;
 //CHECKSTYLE:OFF
     /**
-     * Tests the correct parsing of a single artifact declaration without any initialization.
+     * Tests the correct parsing of a single fragment declaration without any initialization.
      * 
      * @throws Exception if the test data file could not be retrieved or the parser failed
      */
     @Test
-    public void testArtifactDeclaration() throws Exception {
-        String model = getModelString(TestType.BASIC, "ArtifactDeclaration");
+    public void testFragmentDeclaration() throws Exception {
+        String model = getModelString(TestType.BASIC, "FragmentDeclaration");
         AnalysisDefinition analysis = parseHelper.parse(model);
         
         assertSyntacticalCorrectness(analysis);
         
         EList<ElementDeclaration> elementDeclarations = analysis.getElementDeclarations();
         assertEquals(1, elementDeclarations.size(), "There should only be one element declaration in the test file");
-        String problemDescription = testCorrectElementDeclaration(elementDeclarations.get(0), "Artifact", false, false,
+        String problemDescription = testCorrectElementDeclaration(elementDeclarations.get(0), "Fragment", false, false,
                 false, false);
         assertNull(problemDescription, problemDescription);
     }
     
     /**
-     * Tests the correct parsing of a single artifact declaration with an initialization using another element.
+     * Tests the correct parsing of a single fragment declaration with an initialization using another element.
      * 
      * @throws Exception if the test data file could not be retrieved or the parser failed
      */
     @Test
-    public void testArtifactDeclarationWithElement() throws Exception {
-        String model = getModelString(TestType.BASIC, "ArtifactDeclarationWithElement");
+    public void testFragmentDeclarationWithElement() throws Exception {
+        String model = getModelString(TestType.BASIC, "FragmentDeclarationWithElement");
         AnalysisDefinition analysis = parseHelper.parse(model);
         
         assertSyntacticalCorrectness(analysis);
         
         EList<ElementDeclaration> elementDeclarations = analysis.getElementDeclarations();
         assertEquals(1, elementDeclarations.size(), "There should only be one element declaration in the test file");
-        String problemDescription = testCorrectElementDeclaration(elementDeclarations.get(0), "Artifact", false, false,
+        String problemDescription = testCorrectElementDeclaration(elementDeclarations.get(0), "Fragment", false, false,
                 false, true);
         assertNull(problemDescription, problemDescription);
     }
     
     /**
-     * Tests the correct parsing of a single artifact declaration with an initialization using an operation.
+     * Tests the correct parsing of a single fragment declaration with an initialization using an operation.
      * 
      * @throws Exception if the test data file could not be retrieved or the parser failed
      */
     @Test
-    public void testArtifactDeclarationWithOperation() throws Exception {
-        String model = getModelString(TestType.BASIC, "ArtifactDeclarationWithOperation");
+    public void testFragmentDeclarationWithOperation() throws Exception {
+        String model = getModelString(TestType.BASIC, "FragmentDeclarationWithOperation");
         AnalysisDefinition analysis = parseHelper.parse(model);
         
         assertSyntacticalCorrectness(analysis);
         
         EList<ElementDeclaration> elementDeclarations = analysis.getElementDeclarations();
         assertEquals(1, elementDeclarations.size(), "There should only be one element declaration in the test file");
-        String problemDescription = testCorrectElementDeclaration(elementDeclarations.get(0), "Artifact", false, false,
+        String problemDescription = testCorrectElementDeclaration(elementDeclarations.get(0), "Fragment", false, false,
                 true, false);
         assertNull(problemDescription, problemDescription);
     }
     
     /**
-     * Tests the correct parsing of a single artifact set declaration without any initialization.
+     * Tests the correct parsing of a single fragment set declaration without any initialization.
      * 
      * @throws Exception if the test data file could not be retrieved or the parser failed
      */
     @Test
-    public void testArtifactSetDeclaration() throws Exception {
-        String model = getModelString(TestType.BASIC, "ArtifactSetDeclaration");
+    public void testFragmentSetDeclaration() throws Exception {
+        String model = getModelString(TestType.BASIC, "FragmentSetDeclaration");
         AnalysisDefinition analysis = parseHelper.parse(model);
         
         assertSyntacticalCorrectness(analysis);
         
         EList<ElementDeclaration> elementDeclarations = analysis.getElementDeclarations();
         assertEquals(1, elementDeclarations.size(), "There should only be one element declaration in the test file");
-        String problemDescription = testCorrectElementDeclaration(elementDeclarations.get(0), "Artifact", true, false,
+        String problemDescription = testCorrectElementDeclaration(elementDeclarations.get(0), "Fragment", true, false,
                 false, false);
         assertNull(problemDescription, problemDescription);
     }
     
     /**
-     * Tests the correct parsing of a single artifact set declaration with an initialization using another element.
+     * Tests the correct parsing of a single fragment set declaration with an initialization using another element.
      * 
      * @throws Exception if the test data file could not be retrieved or the parser failed
      */
     @Test
-    public void testArtifactSetDeclarationWithElement() throws Exception {
-        String model = getModelString(TestType.BASIC, "ArtifactSetDeclarationWithElement");
+    public void testFragmentSetDeclarationWithElement() throws Exception {
+        String model = getModelString(TestType.BASIC, "FragmentSetDeclarationWithElement");
         AnalysisDefinition analysis = parseHelper.parse(model);
         
         assertSyntacticalCorrectness(analysis);
         
         EList<ElementDeclaration> elementDeclarations = analysis.getElementDeclarations();
         assertEquals(1, elementDeclarations.size(), "There should only be one element declaration in the test file");
-        String problemDescription = testCorrectElementDeclaration(elementDeclarations.get(0), "Artifact", true, false,
+        String problemDescription = testCorrectElementDeclaration(elementDeclarations.get(0), "Fragment", true, false,
                 false, true);
         assertNull(problemDescription, problemDescription);
     }
     
     /**
-     * Tests the correct parsing of a single artifact set declaration with an initialization using an operation.
+     * Tests the correct parsing of a single fragment set declaration with an initialization using an operation.
      * 
      * @throws Exception if the test data file could not be retrieved or the parser failed
      */
     @Test
-    public void testArtifactSetDeclarationWithOperation() throws Exception {
-        String model = getModelString(TestType.BASIC, "ArtifactSetDeclarationWithOperation");
+    public void testFragmentSetDeclarationWithOperation() throws Exception {
+        String model = getModelString(TestType.BASIC, "FragmentSetDeclarationWithOperation");
         AnalysisDefinition analysis = parseHelper.parse(model);
         
         assertSyntacticalCorrectness(analysis);
         
         EList<ElementDeclaration> elementDeclarations = analysis.getElementDeclarations();
         assertEquals(1, elementDeclarations.size(), "There should only be one element declaration in the test file");
-        String problemDescription = testCorrectElementDeclaration(elementDeclarations.get(0), "Artifact", true, false,
+        String problemDescription = testCorrectElementDeclaration(elementDeclarations.get(0), "Fragment", true, false,
                 true, false);
         assertNull(problemDescription, problemDescription);
     }
     
     /**
-     * Tests the correct parsing of a single artifact set declaration with a set iteration.
+     * Tests the correct parsing of a single fragment set declaration with a set iteration.
      * 
      * @throws Exception if the test data file could not be retrieved or the parser failed
      */
     @Test
-    public void testArtifactSetIterationDeclaration() throws Exception {
-        String model = getModelString(TestType.BASIC, "ArtifactSetIterationDeclaration");
+    public void testFragmentSetIterationDeclaration() throws Exception {
+        String model = getModelString(TestType.BASIC, "FragmentSetIterationDeclaration");
         AnalysisDefinition analysis = parseHelper.parse(model);
         
         assertSyntacticalCorrectness(analysis);
         
         EList<ElementDeclaration> elementDeclarations = analysis.getElementDeclarations();
         assertEquals(1, elementDeclarations.size(), "There should only be one element declaration in the test file");
-        String problemDescription = testCorrectElementDeclaration(elementDeclarations.get(0), "Artifact", true, true,
+        String problemDescription = testCorrectElementDeclaration(elementDeclarations.get(0), "Fragment", true, true,
                 false, false);
         assertNull(problemDescription, problemDescription);
     }
