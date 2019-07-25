@@ -1,3 +1,17 @@
+/*
+ * Copyright 2019 University of Hildesheim, Software Systems Engineering
+ * 
+ * Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements. See the NOTICE
+ * file distributed with this work for additional information regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
+ */
 package net.ssehub.tests;
 
 import java.io.BufferedReader;
@@ -11,29 +25,83 @@ import com.google.inject.Inject;
 
 import net.ssehub.lea.AnalysisDefinition;
 import net.ssehub.lea.ElementDeclaration;
+import net.ssehub.lea.SetDefinition;
 
+/**
+ * This abstract class provides common attributes and methods for testing LEA.
+ * 
+ * @author Christian Kroeher
+ *
+ */
 public abstract class AbstractTest {
     
+    /**
+     * This inner class defines a custom exception that is thrown, if a method provided by the {@link AbstractTest}
+     * class fails. This enables populating a common error to the respective unit test where it is actually caused.
+     * 
+     * @author Christian Kroeher
+     *
+     */
     protected class AbstractTestException extends Exception {
         
+        /**
+         * The id of this serializable class.
+         */
         private static final long serialVersionUID = -7588648465766953583L;
 
+        /**
+         * Constructs a new {@link AbstractTestException} with the given message.
+         * 
+         * @param message the description of the error causing this exception
+         */
         private AbstractTestException(String message) {
             super(message);
         }
         
+        /**
+         * Constructs a new {@link AbstractTestException} with the given message and cause.
+         * 
+         * @param message the specific description of the error causing this exception
+         * @param cause the {@link Throwable} representing the actual cause of this exception
+         */
         private AbstractTestException(String message, Throwable cause) {
             super(message, cause);
         }
     }
     
-    public enum TestType {BASIC}    
+    /**
+     * This enumeration defines the supported test types, which indicate where to find the desired test data file in the
+     * {@link AbstractTest#TESTDATA_DIRECTORY}.
+     * 
+     * @see AbstractTest#getModelString(TestType, String)
+     * 
+     * @author Christian Kroeher
+     *
+     */
+    public enum TestType { BASIC }
 
+    /**
+     * This {@link File} denotes the root directory in which the test data files are located.
+     */
     private static final File TESTDATA_DIRECTORY = new File("./testdata");
     
+    /**
+     * This {@link ValidationTestHelper} enables checks of parser results to detect syntactical errors.
+     * 
+     * @see AbstractTest#assertSyntacticalCorrectness(AnalysisDefinition)
+     */
     @Inject
-    ValidationTestHelper validationTestHelper;
+    private ValidationTestHelper validationTestHelper;
     
+    /**
+     * Retrieves the content of a test data file. The file is determined by concatenating the root test data directory
+     * {@link AbstractTest#TESTDATA_DIRECTORY}, the given test type as a string, and the given file name.
+     * 
+     * @param testType the {@link TestType} denoting the sub-directory of the root test data directory  
+     * @param fileName the name of the desired test data file located in the directory denoted by the test type
+     * @return the content of the test data file as a single string
+     * @throws AbstractTestException if the file could not be found or reading the content failed
+     */
     protected String getModelString(TestType testType, String fileName) throws AbstractTestException {
         File testFile = getTestFile(testType, fileName);
         StringBuilder modelStringBuilder = new StringBuilder();
@@ -49,20 +117,23 @@ public abstract class AbstractTest {
                 modelStringBuilder.append("\n");
             }
         } catch (IOException | OutOfMemoryError e) {
-            throw new AbstractTestException("Reading content from file \"" + testFile.getAbsolutePath() + "\" failed", e);
+            throw new AbstractTestException("Reading content from file \"" + testFile.getAbsolutePath() + "\" failed",
+                    e);
         } finally {
             if (fileReader != null) {
                 try {
                     fileReader.close();
                 } catch (IOException e) {
-                    throw new AbstractTestException("Closing file reader for \"" + testFile.getAbsolutePath() + "\" failed", e);
+                    throw new AbstractTestException("Closing file reader for \"" + testFile.getAbsolutePath() 
+                            + "\" failed", e);
                 }
             }
             if (bufferedReader != null) {
                 try {
                     bufferedReader.close();
                 } catch (IOException e) {
-                    throw new AbstractTestException("Closing buffered reader for \"" + testFile.getAbsolutePath() + "\" failed", e);
+                    throw new AbstractTestException("Closing buffered reader for \"" + testFile.getAbsolutePath() 
+                            + "\" failed", e);
                 }
             }
         }
@@ -70,6 +141,15 @@ public abstract class AbstractTest {
         return modelStringBuilder.toString();
     }
     
+    /**
+     * Retrieves the desired test data file. The file is determined by concatenating the root test data directory
+     * {@link AbstractTest#TESTDATA_DIRECTORY}, the given test type as a string, and the given file name.
+     * 
+     * @param testType the {@link TestType} denoting the sub-directory of the root test data directory  
+     * @param fileName the name of the desired test data file located in the directory denoted by the test type
+     * @return the {@link File} containing the test data
+     * @throws AbstractTestException if the file does not exist or denotes a directory
+     */
     private File getTestFile(TestType testType, String fileName) throws AbstractTestException {
         String relativeFilePath = testType + "/" + fileName + ".lea";
         File testFile = new File(TESTDATA_DIRECTORY, relativeFilePath);
@@ -82,6 +162,13 @@ public abstract class AbstractTest {
         return testFile;
     }
     
+    /**
+     * Calls the {@link #validationTestHelper} to check the given {@link AnalysisDefinition} for syntactical
+     * correctness. This check is an assertion, which causes the test runner to stop, if errors are detected. Hence,
+     * this method behaves like a typical JUnit assertion call.
+     *  
+     * @param analysis the {@link AnalysisDefinition} to check for syntactical errors
+     */
     protected void assertSyntacticalCorrectness(AnalysisDefinition analysis) {
         /* 
          * The parse result always returns without any errors, although syntactical errors may exist. It simply parses
@@ -91,8 +178,23 @@ public abstract class AbstractTest {
         validationTestHelper.assertNoErrors(analysis);
     }
     
-//  Artifact<T> name = call();
-    protected String testCorrectElementDeclaration(ElementDeclaration element, String expectedGenericType, boolean expectedSet, boolean expectedOperation, boolean expectedElement) {
+    /**
+     * Tests the given {@link ElementDeclaration} based on the other given parameters for correctness.
+     * 
+     * @param element the {@link ElementDeclaration} to check for correctness
+     * @param expectedGenericType the string representation of the generic type; typically one of "Artifact",
+     *        "Fragment", or "Result"
+     * @param expectedSet the definition of whether the given declaration should contain a {@link SetDefinition}
+     *        (<code>true</code>), or not (<code>false</code>)
+     * @param expectedOperation the definition of whether the given declaration should contain an 
+     *        {@link net.ssehub.lea.Operation} as {@link net.ssehub.lea.Assignment} (<code>true</code>), or not
+     *        (<code>false</code>)
+     * @param expectedElement the definition of whether the given declaration should contain another name (ID) as
+     *        {@link net.ssehub.lea.Assignment} (<code>true</code>), or not (<code>false</code>)
+     * @return <code>null</code>, if the declaration is correct, or a textual description of the detected problems
+     */
+    protected String testCorrectElementDeclaration(ElementDeclaration element, String expectedGenericType,
+            boolean expectedSet, boolean expectedOperation, boolean expectedElement) {
         String problemDescription = null;
         StringBuilder problemDescriptionBuilder = new StringBuilder();
         if (!element.getGenericTyp().equals(expectedGenericType)) {
@@ -120,20 +222,21 @@ public abstract class AbstractTest {
         if (expectedOperation && element.getInitialization() == null) {
             problemDescriptionBuilder.append("Missing initialization via operation\n");
         }
-        if (expectedOperation && element.getInitialization() != null && element.getInitialization().getOperation() == null) {
+        if (expectedOperation && element.getInitialization() != null 
+                && element.getInitialization().getOperation() == null) {
             problemDescriptionBuilder.append("Initialization is not an operation\n");
         }
         if (expectedElement && element.getInitialization() == null) {
             problemDescriptionBuilder.append("Missing initialization via element\n");
         }
-        if (expectedElement && element.getInitialization() != null && element.getInitialization().getElement() == null) {
+        if (expectedElement && element.getInitialization() != null 
+                && element.getInitialization().getElement() == null) {
             problemDescriptionBuilder.append("Initialization is not an element\n");
         }
-        
+        // Build the description string, if problems were found and described
         if (problemDescriptionBuilder.length() > 0) {
             problemDescription = problemDescriptionBuilder.toString();
         }
-        
         return problemDescription;
     }
 }
