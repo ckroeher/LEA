@@ -3,13 +3,15 @@
  */
 package net.ssehub;
 
-
 /**
  * Initialization support for running Xtext languages without Equinox extension registry.
  */
 public class LeaStandaloneSetup extends LeaStandaloneSetupGenerated {
 
-	public static void doSetup() {
-		new LeaStandaloneSetup().createInjectorAndDoEMFRegistration();
-	}
+    /**
+     * Creates the new setup.
+     */
+    public static void doSetup() {
+        new LeaStandaloneSetup().createInjectorAndDoEMFRegistration();
+    }
 }
