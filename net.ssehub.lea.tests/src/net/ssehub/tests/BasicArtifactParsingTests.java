@@ -46,7 +46,6 @@ public class BasicArtifactParsingTests extends AbstractTest {
     private ParseHelper<AnalysisDefinition> parseHelper;
 
 //CHECKSTYLE:OFF
-
     /**
      * Tests the correct parsing of an empty file (model).
      * 
@@ -80,7 +79,7 @@ public class BasicArtifactParsingTests extends AbstractTest {
         EList<ElementDeclaration> elementDeclarations = analysis.getElementDeclarations();
         assertEquals(1, elementDeclarations.size(), "There should only be one element declaration in the test file");
         String problemDescription = testCorrectElementDeclaration(elementDeclarations.get(0), "Artifact", false, false,
-                false);
+                false, false);
         assertNull(problemDescription, problemDescription);
     }
     
@@ -99,7 +98,7 @@ public class BasicArtifactParsingTests extends AbstractTest {
         EList<ElementDeclaration> elementDeclarations = analysis.getElementDeclarations();
         assertEquals(1, elementDeclarations.size(), "There should only be one element declaration in the test file");
         String problemDescription = testCorrectElementDeclaration(elementDeclarations.get(0), "Artifact", false, false,
-                true);
+                false, true);
         assertNull(problemDescription, problemDescription);
     }
     
@@ -117,8 +116,8 @@ public class BasicArtifactParsingTests extends AbstractTest {
         
         EList<ElementDeclaration> elementDeclarations = analysis.getElementDeclarations();
         assertEquals(1, elementDeclarations.size(), "There should only be one element declaration in the test file");
-        String problemDescription = testCorrectElementDeclaration(elementDeclarations.get(0), "Artifact", false, true,
-                false);
+        String problemDescription = testCorrectElementDeclaration(elementDeclarations.get(0), "Artifact", false, false,
+                true, false);
         assertNull(problemDescription, problemDescription);
     }
     
@@ -137,7 +136,7 @@ public class BasicArtifactParsingTests extends AbstractTest {
         EList<ElementDeclaration> elementDeclarations = analysis.getElementDeclarations();
         assertEquals(1, elementDeclarations.size(), "There should only be one element declaration in the test file");
         String problemDescription = testCorrectElementDeclaration(elementDeclarations.get(0), "Artifact", true, false,
-                false);
+                false, false);
         assertNull(problemDescription, problemDescription);
     }
     
@@ -156,7 +155,7 @@ public class BasicArtifactParsingTests extends AbstractTest {
         EList<ElementDeclaration> elementDeclarations = analysis.getElementDeclarations();
         assertEquals(1, elementDeclarations.size(), "There should only be one element declaration in the test file");
         String problemDescription = testCorrectElementDeclaration(elementDeclarations.get(0), "Artifact", true, false,
-                true);
+                false, true);
         assertNull(problemDescription, problemDescription);
     }
     
@@ -174,11 +173,28 @@ public class BasicArtifactParsingTests extends AbstractTest {
         
         EList<ElementDeclaration> elementDeclarations = analysis.getElementDeclarations();
         assertEquals(1, elementDeclarations.size(), "There should only be one element declaration in the test file");
-        String problemDescription = testCorrectElementDeclaration(elementDeclarations.get(0), "Artifact", true, true,
-                false);
+        String problemDescription = testCorrectElementDeclaration(elementDeclarations.get(0), "Artifact", true, false,
+                true, false);
         assertNull(problemDescription, problemDescription);
     }
     
+    /**
+     * Tests the correct parsing of a single artifact set declaration with a set iteration.
+     * 
+     * @throws Exception if the test data file could not be retrieved or the parser failed
+     */
+    @Test
+    public void testArtifactSetIterationDeclaration() throws Exception {
+        String model = getModelString(TestType.BASIC, "ArtifactSetIterationDeclaration");
+        AnalysisDefinition analysis = parseHelper.parse(model);
+        
+        assertSyntacticalCorrectness(analysis);
+        
+        EList<ElementDeclaration> elementDeclarations = analysis.getElementDeclarations();
+        assertEquals(1, elementDeclarations.size(), "There should only be one element declaration in the test file");
+        String problemDescription = testCorrectElementDeclaration(elementDeclarations.get(0), "Artifact", true, true,
+                false, false);
+        assertNull(problemDescription, problemDescription);
+    }
 //CHECKSTYLE:ON
-    
 }

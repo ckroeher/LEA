@@ -25,6 +25,7 @@ import com.google.inject.Inject;
 
 import net.ssehub.lea.AnalysisDefinition;
 import net.ssehub.lea.ElementDeclaration;
+import net.ssehub.lea.Iteration;
 import net.ssehub.lea.SetDefinition;
 
 /**
@@ -186,6 +187,8 @@ public abstract class AbstractTest {
      *        "Fragment", or "Result"
      * @param expectedSet the definition of whether the given declaration should contain a {@link SetDefinition}
      *        (<code>true</code>), or not (<code>false</code>)
+     * @param expectedIteration the definition of whether the given declaration should contain a {@link SetDefinition}
+     *        with an {@link Iteration} (<code>true</code>), or not (<code>false</code>)
      * @param expectedOperation the definition of whether the given declaration should contain an 
      *        {@link net.ssehub.lea.Operation} as {@link net.ssehub.lea.Assignment} (<code>true</code>), or not
      *        (<code>false</code>)
@@ -193,8 +196,9 @@ public abstract class AbstractTest {
      *        {@link net.ssehub.lea.Assignment} (<code>true</code>), or not (<code>false</code>)
      * @return <code>null</code>, if the declaration is correct, or a textual description of the detected problems
      */
+//CHECKSTYLE:OFF
     protected String testCorrectElementDeclaration(ElementDeclaration element, String expectedGenericType,
-            boolean expectedSet, boolean expectedOperation, boolean expectedElement) {
+            boolean expectedSet, boolean expectedIteration, boolean expectedOperation, boolean expectedElement) {
         String problemDescription = null;
         StringBuilder problemDescriptionBuilder = new StringBuilder();
         if (!element.getGenericTyp().equals(expectedGenericType)) {
@@ -212,6 +216,12 @@ public abstract class AbstractTest {
         }
         if (!expectedSet && element.getSet() != null) {
             problemDescriptionBuilder.append("Unexpected set definition\n");
+        }
+        if (expectedIteration && (element.getSet() == null || element.getSet().getIteration() == null)) {
+            problemDescriptionBuilder.append("Missing iteration in set definition\n");
+        }
+        if (!expectedIteration && element.getSet() != null && element.getSet().getIteration() != null) {
+            problemDescriptionBuilder.append("Unexpected iteration in set definition\n");
         }
         if (element.getName().isBlank()) {
             problemDescriptionBuilder.append("Missing element name\n");
@@ -239,4 +249,5 @@ public abstract class AbstractTest {
         }
         return problemDescription;
     }
+//CHECKSTYLE:ON
 }
