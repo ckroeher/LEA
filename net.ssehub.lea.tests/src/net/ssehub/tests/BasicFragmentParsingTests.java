@@ -30,8 +30,7 @@ import net.ssehub.lea.AnalysisDefinition;
 import net.ssehub.lea.ElementDeclaration;
 
 /**
- * This abstract class contains basic tests for parsing {@link ElementDeclaration}s of the parameter type
- * <i>Fragment</i>.
+ * This class contains basic tests for parsing {@link ElementDeclaration}s of the parameter type <i>Fragment</i>.
  * 
  * @author Christian Kroeher
  *

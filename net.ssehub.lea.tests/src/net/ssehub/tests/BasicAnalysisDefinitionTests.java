@@ -27,7 +27,7 @@ import com.google.inject.Inject;
 import net.ssehub.lea.AnalysisDefinition;
 
 /**
- * This abstract class contains basic tests for parsing {@link AnalysisDefinition}s.
+ * This class contains basic tests for parsing {@link AnalysisDefinition}s.
  * 
  * @author Christian Kroeher
  *
