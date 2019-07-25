@@ -5,9 +5,6 @@ generate lea "http://www.ssehub.net/Lea"
 AnalysisDefinition:
 	{AnalysisDefinition}
 	(
-//		elements+=ArtifactDeclaration
-//		| elements+=FragmentDeclaration
-//		| elements+=ResultDeclaration
 		elementDeclarations+=ElementDeclaration
 		| changeIdentifierAssignments+=ChangeIdentifierAssignment
 	)*
@@ -24,18 +21,6 @@ ElementDeclaration:
 GenericType:
 	'Artifact' | 'Fragment' | 'Result'
 ;
-
-//ArtifactDeclaration:
-//	'Artifact' '<' type=ID '>' (set=SetDefinition)? name=ID (initialization=Assignment)? ';'?
-//;
-//
-//FragmentDeclaration:
-//    'Fragment' '<' type=ID '>' (set=SetDefinition)? name=ID (initialization=Assignment)? ';'?
-//;
-//
-//ResultDeclaration:
-//    'Result' '<' type=ID '>' (set=SetDefinition)? name=ID (initialization=Assignment)? ';'?
-//;
 
 SetDefinition:
 	{SetDefinition}
