@@ -3,23 +3,45 @@
  */
 package net.ssehub.validation;
 
+import java.util.HashSet;
+
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.xtext.validation.Check;
+
+import net.ssehub.lea.AnalysisDefinition;
+import net.ssehub.lea.ElementDeclaration;
+import net.ssehub.lea.LeaPackage;
 
 /**
- * This class contains custom validation rules. 
- *
+ * This class contains custom validation rules.
+ * 
  * See https://www.eclipse.org/Xtext/documentation/303_runtime_concepts.html#validation
+ * 
+ * @author Christian Kroeher
+ *
  */
 public class LeaValidator extends AbstractLeaValidator {
-	
-//	public static final INVALID_NAME = 'invalidName'
-//
-//	@Check
-//	public void checkGreetingStartsWithCapital(Greeting greeting) {
-//		if (!Character.isUpperCase(greeting.getName().charAt(0))) {
-//			warning("Name should start with a capital",
-//					LeaPackage.Literals.GREETING__NAME,
-//					INVALID_NAME);
-//		}
-//	}
-	
+    
+    /**
+     * Checks the entire {@link AnalysisDefinition} for {@link ElementDeclaration}s, which have equal names. In such a
+     * case, the duplicated names are marked with an error.
+     * 
+     * @param analysis the {@link AnalysisDefinition} in which the elements will be checked for duplicated names
+     */
+    @Check
+    public void checkNoDuplicatedElementNames(AnalysisDefinition analysis) {
+        EList<ElementDeclaration> elementDeclarations = analysis.getElementDeclarations();
+        HashSet<String> visitedElementNames = new HashSet<String>();
+        String currentElementName;
+        for (ElementDeclaration element : elementDeclarations) {
+            currentElementName = element.getName();
+            if (visitedElementNames.contains(currentElementName)) {
+                error("Duplicated element \"" + currentElementName + "\"", element,
+                        LeaPackage.Literals.ELEMENT_DECLARATION__NAME);
+            } else {
+                visitedElementNames.add(currentElementName);
+            }
+        }
+    }
+
 }
