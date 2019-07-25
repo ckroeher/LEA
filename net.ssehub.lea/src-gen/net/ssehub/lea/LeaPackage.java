@@ -68,13 +68,22 @@ public interface LeaPackage extends EPackage
   int ANALYSIS_DEFINITION = 0;
 
   /**
-   * The feature id for the '<em><b>Elements</b></em>' containment reference list.
+   * The feature id for the '<em><b>Element Declarations</b></em>' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int ANALYSIS_DEFINITION__ELEMENTS = 0;
+  int ANALYSIS_DEFINITION__ELEMENT_DECLARATIONS = 0;
+
+  /**
+   * The feature id for the '<em><b>Change Identifier Assignments</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ANALYSIS_DEFINITION__CHANGE_IDENTIFIER_ASSIGNMENTS = 1;
 
   /**
    * The number of structural features of the '<em>Analysis Definition</em>' class.
@@ -83,7 +92,7 @@ public interface LeaPackage extends EPackage
    * @generated
    * @ordered
    */
-  int ANALYSIS_DEFINITION_FEATURE_COUNT = 1;
+  int ANALYSIS_DEFINITION_FEATURE_COUNT = 2;
 
   /**
    * The meta object id for the '{@link net.ssehub.lea.impl.ChangeIdentifierAssignmentImpl <em>Change Identifier Assignment</em>}' class.
@@ -123,23 +132,32 @@ public interface LeaPackage extends EPackage
   int CHANGE_IDENTIFIER_ASSIGNMENT_FEATURE_COUNT = 2;
 
   /**
-   * The meta object id for the '{@link net.ssehub.lea.impl.ArtifactDeclarationImpl <em>Artifact Declaration</em>}' class.
+   * The meta object id for the '{@link net.ssehub.lea.impl.ElementDeclarationImpl <em>Element Declaration</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see net.ssehub.lea.impl.ArtifactDeclarationImpl
-   * @see net.ssehub.lea.impl.LeaPackageImpl#getArtifactDeclaration()
+   * @see net.ssehub.lea.impl.ElementDeclarationImpl
+   * @see net.ssehub.lea.impl.LeaPackageImpl#getElementDeclaration()
    * @generated
    */
-  int ARTIFACT_DECLARATION = 2;
+  int ELEMENT_DECLARATION = 2;
 
   /**
-   * The feature id for the '<em><b>Type</b></em>' attribute.
+   * The feature id for the '<em><b>Generic Typ</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int ARTIFACT_DECLARATION__TYPE = 0;
+  int ELEMENT_DECLARATION__GENERIC_TYP = 0;
+
+  /**
+   * The feature id for the '<em><b>Parameter Type</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ELEMENT_DECLARATION__PARAMETER_TYPE = 1;
 
   /**
    * The feature id for the '<em><b>Set</b></em>' containment reference.
@@ -148,7 +166,7 @@ public interface LeaPackage extends EPackage
    * @generated
    * @ordered
    */
-  int ARTIFACT_DECLARATION__SET = 1;
+  int ELEMENT_DECLARATION__SET = 2;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -157,7 +175,7 @@ public interface LeaPackage extends EPackage
    * @generated
    * @ordered
    */
-  int ARTIFACT_DECLARATION__NAME = 2;
+  int ELEMENT_DECLARATION__NAME = 3;
 
   /**
    * The feature id for the '<em><b>Initialization</b></em>' containment reference.
@@ -166,126 +184,16 @@ public interface LeaPackage extends EPackage
    * @generated
    * @ordered
    */
-  int ARTIFACT_DECLARATION__INITIALIZATION = 3;
+  int ELEMENT_DECLARATION__INITIALIZATION = 4;
 
   /**
-   * The number of structural features of the '<em>Artifact Declaration</em>' class.
+   * The number of structural features of the '<em>Element Declaration</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int ARTIFACT_DECLARATION_FEATURE_COUNT = 4;
-
-  /**
-   * The meta object id for the '{@link net.ssehub.lea.impl.FragmentDeclarationImpl <em>Fragment Declaration</em>}' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see net.ssehub.lea.impl.FragmentDeclarationImpl
-   * @see net.ssehub.lea.impl.LeaPackageImpl#getFragmentDeclaration()
-   * @generated
-   */
-  int FRAGMENT_DECLARATION = 3;
-
-  /**
-   * The feature id for the '<em><b>Type</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int FRAGMENT_DECLARATION__TYPE = 0;
-
-  /**
-   * The feature id for the '<em><b>Set</b></em>' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int FRAGMENT_DECLARATION__SET = 1;
-
-  /**
-   * The feature id for the '<em><b>Name</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int FRAGMENT_DECLARATION__NAME = 2;
-
-  /**
-   * The feature id for the '<em><b>Initialization</b></em>' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int FRAGMENT_DECLARATION__INITIALIZATION = 3;
-
-  /**
-   * The number of structural features of the '<em>Fragment Declaration</em>' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int FRAGMENT_DECLARATION_FEATURE_COUNT = 4;
-
-  /**
-   * The meta object id for the '{@link net.ssehub.lea.impl.ResultDeclarationImpl <em>Result Declaration</em>}' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see net.ssehub.lea.impl.ResultDeclarationImpl
-   * @see net.ssehub.lea.impl.LeaPackageImpl#getResultDeclaration()
-   * @generated
-   */
-  int RESULT_DECLARATION = 4;
-
-  /**
-   * The feature id for the '<em><b>Type</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int RESULT_DECLARATION__TYPE = 0;
-
-  /**
-   * The feature id for the '<em><b>Set</b></em>' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int RESULT_DECLARATION__SET = 1;
-
-  /**
-   * The feature id for the '<em><b>Name</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int RESULT_DECLARATION__NAME = 2;
-
-  /**
-   * The feature id for the '<em><b>Initialization</b></em>' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int RESULT_DECLARATION__INITIALIZATION = 3;
-
-  /**
-   * The number of structural features of the '<em>Result Declaration</em>' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int RESULT_DECLARATION_FEATURE_COUNT = 4;
+  int ELEMENT_DECLARATION_FEATURE_COUNT = 5;
 
   /**
    * The meta object id for the '{@link net.ssehub.lea.impl.SetDefinitionImpl <em>Set Definition</em>}' class.
@@ -295,7 +203,7 @@ public interface LeaPackage extends EPackage
    * @see net.ssehub.lea.impl.LeaPackageImpl#getSetDefinition()
    * @generated
    */
-  int SET_DEFINITION = 5;
+  int SET_DEFINITION = 3;
 
   /**
    * The feature id for the '<em><b>Iteration</b></em>' containment reference.
@@ -323,7 +231,7 @@ public interface LeaPackage extends EPackage
    * @see net.ssehub.lea.impl.LeaPackageImpl#getIteration()
    * @generated
    */
-  int ITERATION = 6;
+  int ITERATION = 4;
 
   /**
    * The feature id for the '<em><b>Iterator</b></em>' attribute.
@@ -360,7 +268,7 @@ public interface LeaPackage extends EPackage
    * @see net.ssehub.lea.impl.LeaPackageImpl#getAssignment()
    * @generated
    */
-  int ASSIGNMENT = 7;
+  int ASSIGNMENT = 5;
 
   /**
    * The feature id for the '<em><b>Element</b></em>' attribute.
@@ -397,7 +305,7 @@ public interface LeaPackage extends EPackage
    * @see net.ssehub.lea.impl.LeaPackageImpl#getOperation()
    * @generated
    */
-  int OPERATION = 8;
+  int OPERATION = 6;
 
   /**
    * The feature id for the '<em><b>Element</b></em>' attribute.
@@ -434,7 +342,7 @@ public interface LeaPackage extends EPackage
    * @see net.ssehub.lea.impl.LeaPackageImpl#getCall()
    * @generated
    */
-  int CALL = 9;
+  int CALL = 7;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -471,7 +379,7 @@ public interface LeaPackage extends EPackage
    * @see net.ssehub.lea.impl.LeaPackageImpl#getParameterList()
    * @generated
    */
-  int PARAMETER_LIST = 10;
+  int PARAMETER_LIST = 8;
 
   /**
    * The feature id for the '<em><b>Parameter List</b></em>' containment reference list.
@@ -499,7 +407,7 @@ public interface LeaPackage extends EPackage
    * @see net.ssehub.lea.impl.LeaPackageImpl#getParameter()
    * @generated
    */
-  int PARAMETER = 11;
+  int PARAMETER = 9;
 
   /**
    * The feature id for the '<em><b>Text</b></em>' attribute.
@@ -549,15 +457,26 @@ public interface LeaPackage extends EPackage
   EClass getAnalysisDefinition();
 
   /**
-   * Returns the meta object for the containment reference list '{@link net.ssehub.lea.AnalysisDefinition#getElements <em>Elements</em>}'.
+   * Returns the meta object for the containment reference list '{@link net.ssehub.lea.AnalysisDefinition#getElementDeclarations <em>Element Declarations</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the containment reference list '<em>Elements</em>'.
-   * @see net.ssehub.lea.AnalysisDefinition#getElements()
+   * @return the meta object for the containment reference list '<em>Element Declarations</em>'.
+   * @see net.ssehub.lea.AnalysisDefinition#getElementDeclarations()
    * @see #getAnalysisDefinition()
    * @generated
    */
-  EReference getAnalysisDefinition_Elements();
+  EReference getAnalysisDefinition_ElementDeclarations();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link net.ssehub.lea.AnalysisDefinition#getChangeIdentifierAssignments <em>Change Identifier Assignments</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Change Identifier Assignments</em>'.
+   * @see net.ssehub.lea.AnalysisDefinition#getChangeIdentifierAssignments()
+   * @see #getAnalysisDefinition()
+   * @generated
+   */
+  EReference getAnalysisDefinition_ChangeIdentifierAssignments();
 
   /**
    * Returns the meta object for class '{@link net.ssehub.lea.ChangeIdentifierAssignment <em>Change Identifier Assignment</em>}'.
@@ -592,166 +511,69 @@ public interface LeaPackage extends EPackage
   EAttribute getChangeIdentifierAssignment_Elements();
 
   /**
-   * Returns the meta object for class '{@link net.ssehub.lea.ArtifactDeclaration <em>Artifact Declaration</em>}'.
+   * Returns the meta object for class '{@link net.ssehub.lea.ElementDeclaration <em>Element Declaration</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for class '<em>Artifact Declaration</em>'.
-   * @see net.ssehub.lea.ArtifactDeclaration
+   * @return the meta object for class '<em>Element Declaration</em>'.
+   * @see net.ssehub.lea.ElementDeclaration
    * @generated
    */
-  EClass getArtifactDeclaration();
+  EClass getElementDeclaration();
 
   /**
-   * Returns the meta object for the attribute '{@link net.ssehub.lea.ArtifactDeclaration#getType <em>Type</em>}'.
+   * Returns the meta object for the attribute '{@link net.ssehub.lea.ElementDeclaration#getGenericTyp <em>Generic Typ</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Type</em>'.
-   * @see net.ssehub.lea.ArtifactDeclaration#getType()
-   * @see #getArtifactDeclaration()
+   * @return the meta object for the attribute '<em>Generic Typ</em>'.
+   * @see net.ssehub.lea.ElementDeclaration#getGenericTyp()
+   * @see #getElementDeclaration()
    * @generated
    */
-  EAttribute getArtifactDeclaration_Type();
+  EAttribute getElementDeclaration_GenericTyp();
 
   /**
-   * Returns the meta object for the containment reference '{@link net.ssehub.lea.ArtifactDeclaration#getSet <em>Set</em>}'.
+   * Returns the meta object for the attribute '{@link net.ssehub.lea.ElementDeclaration#getParameterType <em>Parameter Type</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Parameter Type</em>'.
+   * @see net.ssehub.lea.ElementDeclaration#getParameterType()
+   * @see #getElementDeclaration()
+   * @generated
+   */
+  EAttribute getElementDeclaration_ParameterType();
+
+  /**
+   * Returns the meta object for the containment reference '{@link net.ssehub.lea.ElementDeclaration#getSet <em>Set</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the containment reference '<em>Set</em>'.
-   * @see net.ssehub.lea.ArtifactDeclaration#getSet()
-   * @see #getArtifactDeclaration()
+   * @see net.ssehub.lea.ElementDeclaration#getSet()
+   * @see #getElementDeclaration()
    * @generated
    */
-  EReference getArtifactDeclaration_Set();
+  EReference getElementDeclaration_Set();
 
   /**
-   * Returns the meta object for the attribute '{@link net.ssehub.lea.ArtifactDeclaration#getName <em>Name</em>}'.
+   * Returns the meta object for the attribute '{@link net.ssehub.lea.ElementDeclaration#getName <em>Name</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the attribute '<em>Name</em>'.
-   * @see net.ssehub.lea.ArtifactDeclaration#getName()
-   * @see #getArtifactDeclaration()
+   * @see net.ssehub.lea.ElementDeclaration#getName()
+   * @see #getElementDeclaration()
    * @generated
    */
-  EAttribute getArtifactDeclaration_Name();
+  EAttribute getElementDeclaration_Name();
 
   /**
-   * Returns the meta object for the containment reference '{@link net.ssehub.lea.ArtifactDeclaration#getInitialization <em>Initialization</em>}'.
+   * Returns the meta object for the containment reference '{@link net.ssehub.lea.ElementDeclaration#getInitialization <em>Initialization</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the containment reference '<em>Initialization</em>'.
-   * @see net.ssehub.lea.ArtifactDeclaration#getInitialization()
-   * @see #getArtifactDeclaration()
+   * @see net.ssehub.lea.ElementDeclaration#getInitialization()
+   * @see #getElementDeclaration()
    * @generated
    */
-  EReference getArtifactDeclaration_Initialization();
-
-  /**
-   * Returns the meta object for class '{@link net.ssehub.lea.FragmentDeclaration <em>Fragment Declaration</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for class '<em>Fragment Declaration</em>'.
-   * @see net.ssehub.lea.FragmentDeclaration
-   * @generated
-   */
-  EClass getFragmentDeclaration();
-
-  /**
-   * Returns the meta object for the attribute '{@link net.ssehub.lea.FragmentDeclaration#getType <em>Type</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Type</em>'.
-   * @see net.ssehub.lea.FragmentDeclaration#getType()
-   * @see #getFragmentDeclaration()
-   * @generated
-   */
-  EAttribute getFragmentDeclaration_Type();
-
-  /**
-   * Returns the meta object for the containment reference '{@link net.ssehub.lea.FragmentDeclaration#getSet <em>Set</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the containment reference '<em>Set</em>'.
-   * @see net.ssehub.lea.FragmentDeclaration#getSet()
-   * @see #getFragmentDeclaration()
-   * @generated
-   */
-  EReference getFragmentDeclaration_Set();
-
-  /**
-   * Returns the meta object for the attribute '{@link net.ssehub.lea.FragmentDeclaration#getName <em>Name</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Name</em>'.
-   * @see net.ssehub.lea.FragmentDeclaration#getName()
-   * @see #getFragmentDeclaration()
-   * @generated
-   */
-  EAttribute getFragmentDeclaration_Name();
-
-  /**
-   * Returns the meta object for the containment reference '{@link net.ssehub.lea.FragmentDeclaration#getInitialization <em>Initialization</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the containment reference '<em>Initialization</em>'.
-   * @see net.ssehub.lea.FragmentDeclaration#getInitialization()
-   * @see #getFragmentDeclaration()
-   * @generated
-   */
-  EReference getFragmentDeclaration_Initialization();
-
-  /**
-   * Returns the meta object for class '{@link net.ssehub.lea.ResultDeclaration <em>Result Declaration</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for class '<em>Result Declaration</em>'.
-   * @see net.ssehub.lea.ResultDeclaration
-   * @generated
-   */
-  EClass getResultDeclaration();
-
-  /**
-   * Returns the meta object for the attribute '{@link net.ssehub.lea.ResultDeclaration#getType <em>Type</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Type</em>'.
-   * @see net.ssehub.lea.ResultDeclaration#getType()
-   * @see #getResultDeclaration()
-   * @generated
-   */
-  EAttribute getResultDeclaration_Type();
-
-  /**
-   * Returns the meta object for the containment reference '{@link net.ssehub.lea.ResultDeclaration#getSet <em>Set</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the containment reference '<em>Set</em>'.
-   * @see net.ssehub.lea.ResultDeclaration#getSet()
-   * @see #getResultDeclaration()
-   * @generated
-   */
-  EReference getResultDeclaration_Set();
-
-  /**
-   * Returns the meta object for the attribute '{@link net.ssehub.lea.ResultDeclaration#getName <em>Name</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Name</em>'.
-   * @see net.ssehub.lea.ResultDeclaration#getName()
-   * @see #getResultDeclaration()
-   * @generated
-   */
-  EAttribute getResultDeclaration_Name();
-
-  /**
-   * Returns the meta object for the containment reference '{@link net.ssehub.lea.ResultDeclaration#getInitialization <em>Initialization</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the containment reference '<em>Initialization</em>'.
-   * @see net.ssehub.lea.ResultDeclaration#getInitialization()
-   * @see #getResultDeclaration()
-   * @generated
-   */
-  EReference getResultDeclaration_Initialization();
+  EReference getElementDeclaration_Initialization();
 
   /**
    * Returns the meta object for class '{@link net.ssehub.lea.SetDefinition <em>Set Definition</em>}'.
@@ -1000,12 +822,20 @@ public interface LeaPackage extends EPackage
     EClass ANALYSIS_DEFINITION = eINSTANCE.getAnalysisDefinition();
 
     /**
-     * The meta object literal for the '<em><b>Elements</b></em>' containment reference list feature.
+     * The meta object literal for the '<em><b>Element Declarations</b></em>' containment reference list feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference ANALYSIS_DEFINITION__ELEMENTS = eINSTANCE.getAnalysisDefinition_Elements();
+    EReference ANALYSIS_DEFINITION__ELEMENT_DECLARATIONS = eINSTANCE.getAnalysisDefinition_ElementDeclarations();
+
+    /**
+     * The meta object literal for the '<em><b>Change Identifier Assignments</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference ANALYSIS_DEFINITION__CHANGE_IDENTIFIER_ASSIGNMENTS = eINSTANCE.getAnalysisDefinition_ChangeIdentifierAssignments();
 
     /**
      * The meta object literal for the '{@link net.ssehub.lea.impl.ChangeIdentifierAssignmentImpl <em>Change Identifier Assignment</em>}' class.
@@ -1034,64 +864,30 @@ public interface LeaPackage extends EPackage
     EAttribute CHANGE_IDENTIFIER_ASSIGNMENT__ELEMENTS = eINSTANCE.getChangeIdentifierAssignment_Elements();
 
     /**
-     * The meta object literal for the '{@link net.ssehub.lea.impl.ArtifactDeclarationImpl <em>Artifact Declaration</em>}' class.
+     * The meta object literal for the '{@link net.ssehub.lea.impl.ElementDeclarationImpl <em>Element Declaration</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see net.ssehub.lea.impl.ArtifactDeclarationImpl
-     * @see net.ssehub.lea.impl.LeaPackageImpl#getArtifactDeclaration()
+     * @see net.ssehub.lea.impl.ElementDeclarationImpl
+     * @see net.ssehub.lea.impl.LeaPackageImpl#getElementDeclaration()
      * @generated
      */
-    EClass ARTIFACT_DECLARATION = eINSTANCE.getArtifactDeclaration();
+    EClass ELEMENT_DECLARATION = eINSTANCE.getElementDeclaration();
 
     /**
-     * The meta object literal for the '<em><b>Type</b></em>' attribute feature.
+     * The meta object literal for the '<em><b>Generic Typ</b></em>' attribute feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EAttribute ARTIFACT_DECLARATION__TYPE = eINSTANCE.getArtifactDeclaration_Type();
+    EAttribute ELEMENT_DECLARATION__GENERIC_TYP = eINSTANCE.getElementDeclaration_GenericTyp();
 
     /**
-     * The meta object literal for the '<em><b>Set</b></em>' containment reference feature.
+     * The meta object literal for the '<em><b>Parameter Type</b></em>' attribute feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference ARTIFACT_DECLARATION__SET = eINSTANCE.getArtifactDeclaration_Set();
-
-    /**
-     * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute ARTIFACT_DECLARATION__NAME = eINSTANCE.getArtifactDeclaration_Name();
-
-    /**
-     * The meta object literal for the '<em><b>Initialization</b></em>' containment reference feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EReference ARTIFACT_DECLARATION__INITIALIZATION = eINSTANCE.getArtifactDeclaration_Initialization();
-
-    /**
-     * The meta object literal for the '{@link net.ssehub.lea.impl.FragmentDeclarationImpl <em>Fragment Declaration</em>}' class.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see net.ssehub.lea.impl.FragmentDeclarationImpl
-     * @see net.ssehub.lea.impl.LeaPackageImpl#getFragmentDeclaration()
-     * @generated
-     */
-    EClass FRAGMENT_DECLARATION = eINSTANCE.getFragmentDeclaration();
-
-    /**
-     * The meta object literal for the '<em><b>Type</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute FRAGMENT_DECLARATION__TYPE = eINSTANCE.getFragmentDeclaration_Type();
+    EAttribute ELEMENT_DECLARATION__PARAMETER_TYPE = eINSTANCE.getElementDeclaration_ParameterType();
 
     /**
      * The meta object literal for the '<em><b>Set</b></em>' containment reference feature.
@@ -1099,7 +895,7 @@ public interface LeaPackage extends EPackage
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference FRAGMENT_DECLARATION__SET = eINSTANCE.getFragmentDeclaration_Set();
+    EReference ELEMENT_DECLARATION__SET = eINSTANCE.getElementDeclaration_Set();
 
     /**
      * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
@@ -1107,7 +903,7 @@ public interface LeaPackage extends EPackage
      * <!-- end-user-doc -->
      * @generated
      */
-    EAttribute FRAGMENT_DECLARATION__NAME = eINSTANCE.getFragmentDeclaration_Name();
+    EAttribute ELEMENT_DECLARATION__NAME = eINSTANCE.getElementDeclaration_Name();
 
     /**
      * The meta object literal for the '<em><b>Initialization</b></em>' containment reference feature.
@@ -1115,49 +911,7 @@ public interface LeaPackage extends EPackage
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference FRAGMENT_DECLARATION__INITIALIZATION = eINSTANCE.getFragmentDeclaration_Initialization();
-
-    /**
-     * The meta object literal for the '{@link net.ssehub.lea.impl.ResultDeclarationImpl <em>Result Declaration</em>}' class.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see net.ssehub.lea.impl.ResultDeclarationImpl
-     * @see net.ssehub.lea.impl.LeaPackageImpl#getResultDeclaration()
-     * @generated
-     */
-    EClass RESULT_DECLARATION = eINSTANCE.getResultDeclaration();
-
-    /**
-     * The meta object literal for the '<em><b>Type</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute RESULT_DECLARATION__TYPE = eINSTANCE.getResultDeclaration_Type();
-
-    /**
-     * The meta object literal for the '<em><b>Set</b></em>' containment reference feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EReference RESULT_DECLARATION__SET = eINSTANCE.getResultDeclaration_Set();
-
-    /**
-     * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute RESULT_DECLARATION__NAME = eINSTANCE.getResultDeclaration_Name();
-
-    /**
-     * The meta object literal for the '<em><b>Initialization</b></em>' containment reference feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EReference RESULT_DECLARATION__INITIALIZATION = eINSTANCE.getResultDeclaration_Initialization();
+    EReference ELEMENT_DECLARATION__INITIALIZATION = eINSTANCE.getElementDeclaration_Initialization();
 
     /**
      * The meta object literal for the '{@link net.ssehub.lea.impl.SetDefinitionImpl <em>Set Definition</em>}' class.

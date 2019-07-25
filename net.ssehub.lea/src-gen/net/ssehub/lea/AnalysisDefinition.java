@@ -16,7 +16,8 @@ import org.eclipse.emf.ecore.EObject;
  * The following features are supported:
  * </p>
  * <ul>
- *   <li>{@link net.ssehub.lea.AnalysisDefinition#getElements <em>Elements</em>}</li>
+ *   <li>{@link net.ssehub.lea.AnalysisDefinition#getElementDeclarations <em>Element Declarations</em>}</li>
+ *   <li>{@link net.ssehub.lea.AnalysisDefinition#getChangeIdentifierAssignments <em>Change Identifier Assignments</em>}</li>
  * </ul>
  *
  * @see net.ssehub.lea.LeaPackage#getAnalysisDefinition()
@@ -26,15 +27,27 @@ import org.eclipse.emf.ecore.EObject;
 public interface AnalysisDefinition extends EObject
 {
   /**
-   * Returns the value of the '<em><b>Elements</b></em>' containment reference list.
-   * The list contents are of type {@link org.eclipse.emf.ecore.EObject}.
+   * Returns the value of the '<em><b>Element Declarations</b></em>' containment reference list.
+   * The list contents are of type {@link net.ssehub.lea.ElementDeclaration}.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Elements</em>' containment reference list.
-   * @see net.ssehub.lea.LeaPackage#getAnalysisDefinition_Elements()
+   * @return the value of the '<em>Element Declarations</em>' containment reference list.
+   * @see net.ssehub.lea.LeaPackage#getAnalysisDefinition_ElementDeclarations()
    * @model containment="true"
    * @generated
    */
-  EList<EObject> getElements();
+  EList<ElementDeclaration> getElementDeclarations();
+
+  /**
+   * Returns the value of the '<em><b>Change Identifier Assignments</b></em>' containment reference list.
+   * The list contents are of type {@link net.ssehub.lea.ChangeIdentifierAssignment}.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Change Identifier Assignments</em>' containment reference list.
+   * @see net.ssehub.lea.LeaPackage#getAnalysisDefinition_ChangeIdentifierAssignments()
+   * @model containment="true"
+   * @generated
+   */
+  EList<ChangeIdentifierAssignment> getChangeIdentifierAssignments();
 
 } // AnalysisDefinition

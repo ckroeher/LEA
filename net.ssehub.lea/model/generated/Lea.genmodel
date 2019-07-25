@@ -7,29 +7,19 @@
   <genPackages prefix="Lea" basePackage="net.ssehub" disposableProviderFactory="true"
       fileExtensions="lea" ecorePackage="Lea.ecore#/">
     <genClasses ecoreClass="Lea.ecore#//AnalysisDefinition">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Lea.ecore#//AnalysisDefinition/elements"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Lea.ecore#//AnalysisDefinition/elementDeclarations"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Lea.ecore#//AnalysisDefinition/changeIdentifierAssignments"/>
     </genClasses>
     <genClasses ecoreClass="Lea.ecore#//ChangeIdentifierAssignment">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Lea.ecore#//ChangeIdentifierAssignment/identifier"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Lea.ecore#//ChangeIdentifierAssignment/elements"/>
     </genClasses>
-    <genClasses ecoreClass="Lea.ecore#//ArtifactDeclaration">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Lea.ecore#//ArtifactDeclaration/type"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Lea.ecore#//ArtifactDeclaration/set"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Lea.ecore#//ArtifactDeclaration/name"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Lea.ecore#//ArtifactDeclaration/initialization"/>
-    </genClasses>
-    <genClasses ecoreClass="Lea.ecore#//FragmentDeclaration">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Lea.ecore#//FragmentDeclaration/type"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Lea.ecore#//FragmentDeclaration/set"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Lea.ecore#//FragmentDeclaration/name"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Lea.ecore#//FragmentDeclaration/initialization"/>
-    </genClasses>
-    <genClasses ecoreClass="Lea.ecore#//ResultDeclaration">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Lea.ecore#//ResultDeclaration/type"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Lea.ecore#//ResultDeclaration/set"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Lea.ecore#//ResultDeclaration/name"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Lea.ecore#//ResultDeclaration/initialization"/>
+    <genClasses ecoreClass="Lea.ecore#//ElementDeclaration">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Lea.ecore#//ElementDeclaration/genericTyp"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Lea.ecore#//ElementDeclaration/parameterType"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Lea.ecore#//ElementDeclaration/set"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Lea.ecore#//ElementDeclaration/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Lea.ecore#//ElementDeclaration/initialization"/>
     </genClasses>
     <genClasses ecoreClass="Lea.ecore#//SetDefinition">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Lea.ecore#//SetDefinition/iteration"/>

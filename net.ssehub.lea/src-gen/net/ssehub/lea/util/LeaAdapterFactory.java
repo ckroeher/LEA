@@ -86,19 +86,9 @@ public class LeaAdapterFactory extends AdapterFactoryImpl
         return createChangeIdentifierAssignmentAdapter();
       }
       @Override
-      public Adapter caseArtifactDeclaration(ArtifactDeclaration object)
+      public Adapter caseElementDeclaration(ElementDeclaration object)
       {
-        return createArtifactDeclarationAdapter();
-      }
-      @Override
-      public Adapter caseFragmentDeclaration(FragmentDeclaration object)
-      {
-        return createFragmentDeclarationAdapter();
-      }
-      @Override
-      public Adapter caseResultDeclaration(ResultDeclaration object)
-      {
-        return createResultDeclarationAdapter();
+        return createElementDeclarationAdapter();
       }
       @Override
       public Adapter caseSetDefinition(SetDefinition object)
@@ -188,46 +178,16 @@ public class LeaAdapterFactory extends AdapterFactoryImpl
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link net.ssehub.lea.ArtifactDeclaration <em>Artifact Declaration</em>}'.
+   * Creates a new adapter for an object of class '{@link net.ssehub.lea.ElementDeclaration <em>Element Declaration</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see net.ssehub.lea.ArtifactDeclaration
+   * @see net.ssehub.lea.ElementDeclaration
    * @generated
    */
-  public Adapter createArtifactDeclarationAdapter()
-  {
-    return null;
-  }
-
-  /**
-   * Creates a new adapter for an object of class '{@link net.ssehub.lea.FragmentDeclaration <em>Fragment Declaration</em>}'.
-   * <!-- begin-user-doc -->
-   * This default implementation returns null so that we can easily ignore cases;
-   * it's useful to ignore a case when inheritance will catch all the cases anyway.
-   * <!-- end-user-doc -->
-   * @return the new adapter.
-   * @see net.ssehub.lea.FragmentDeclaration
-   * @generated
-   */
-  public Adapter createFragmentDeclarationAdapter()
-  {
-    return null;
-  }
-
-  /**
-   * Creates a new adapter for an object of class '{@link net.ssehub.lea.ResultDeclaration <em>Result Declaration</em>}'.
-   * <!-- begin-user-doc -->
-   * This default implementation returns null so that we can easily ignore cases;
-   * it's useful to ignore a case when inheritance will catch all the cases anyway.
-   * <!-- end-user-doc -->
-   * @return the new adapter.
-   * @see net.ssehub.lea.ResultDeclaration
-   * @generated
-   */
-  public Adapter createResultDeclarationAdapter()
+  public Adapter createElementDeclarationAdapter()
   {
     return null;
   }

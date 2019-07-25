@@ -42,31 +42,13 @@ public interface LeaFactory extends EFactory
   ChangeIdentifierAssignment createChangeIdentifierAssignment();
 
   /**
-   * Returns a new object of class '<em>Artifact Declaration</em>'.
+   * Returns a new object of class '<em>Element Declaration</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Artifact Declaration</em>'.
+   * @return a new object of class '<em>Element Declaration</em>'.
    * @generated
    */
-  ArtifactDeclaration createArtifactDeclaration();
-
-  /**
-   * Returns a new object of class '<em>Fragment Declaration</em>'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return a new object of class '<em>Fragment Declaration</em>'.
-   * @generated
-   */
-  FragmentDeclaration createFragmentDeclaration();
-
-  /**
-   * Returns a new object of class '<em>Result Declaration</em>'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return a new object of class '<em>Result Declaration</em>'.
-   * @generated
-   */
-  ResultDeclaration createResultDeclaration();
+  ElementDeclaration createElementDeclaration();
 
   /**
    * Returns a new object of class '<em>Set Definition</em>'.

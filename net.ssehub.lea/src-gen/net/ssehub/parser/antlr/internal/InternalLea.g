@@ -87,18 +87,18 @@ ruleAnalysisDefinition returns [EObject current=null]
 			(
 				(
 					{
-						newCompositeNode(grammarAccess.getAnalysisDefinitionAccess().getElementsArtifactDeclarationParserRuleCall_1_0_0());
+						newCompositeNode(grammarAccess.getAnalysisDefinitionAccess().getElementDeclarationsElementDeclarationParserRuleCall_1_0_0());
 					}
-					lv_elements_1_0=ruleArtifactDeclaration
+					lv_elementDeclarations_1_0=ruleElementDeclaration
 					{
 						if ($current==null) {
 							$current = createModelElementForParent(grammarAccess.getAnalysisDefinitionRule());
 						}
 						add(
 							$current,
-							"elements",
-							lv_elements_1_0,
-							"net.ssehub.Lea.ArtifactDeclaration");
+							"elementDeclarations",
+							lv_elementDeclarations_1_0,
+							"net.ssehub.Lea.ElementDeclaration");
 						afterParserOrEnumRuleCall();
 					}
 				)
@@ -107,57 +107,17 @@ ruleAnalysisDefinition returns [EObject current=null]
 			(
 				(
 					{
-						newCompositeNode(grammarAccess.getAnalysisDefinitionAccess().getElementsFragmentDeclarationParserRuleCall_1_1_0());
+						newCompositeNode(grammarAccess.getAnalysisDefinitionAccess().getChangeIdentifierAssignmentsChangeIdentifierAssignmentParserRuleCall_1_1_0());
 					}
-					lv_elements_2_0=ruleFragmentDeclaration
+					lv_changeIdentifierAssignments_2_0=ruleChangeIdentifierAssignment
 					{
 						if ($current==null) {
 							$current = createModelElementForParent(grammarAccess.getAnalysisDefinitionRule());
 						}
 						add(
 							$current,
-							"elements",
-							lv_elements_2_0,
-							"net.ssehub.Lea.FragmentDeclaration");
-						afterParserOrEnumRuleCall();
-					}
-				)
-			)
-			    |
-			(
-				(
-					{
-						newCompositeNode(grammarAccess.getAnalysisDefinitionAccess().getElementsResultDeclarationParserRuleCall_1_2_0());
-					}
-					lv_elements_3_0=ruleResultDeclaration
-					{
-						if ($current==null) {
-							$current = createModelElementForParent(grammarAccess.getAnalysisDefinitionRule());
-						}
-						add(
-							$current,
-							"elements",
-							lv_elements_3_0,
-							"net.ssehub.Lea.ResultDeclaration");
-						afterParserOrEnumRuleCall();
-					}
-				)
-			)
-			    |
-			(
-				(
-					{
-						newCompositeNode(grammarAccess.getAnalysisDefinitionAccess().getElementsChangeIdentifierAssignmentParserRuleCall_1_3_0());
-					}
-					lv_elements_4_0=ruleChangeIdentifierAssignment
-					{
-						if ($current==null) {
-							$current = createModelElementForParent(grammarAccess.getAnalysisDefinitionRule());
-						}
-						add(
-							$current,
-							"elements",
-							lv_elements_4_0,
+							"changeIdentifierAssignments",
+							lv_changeIdentifierAssignments_2_0,
 							"net.ssehub.Lea.ChangeIdentifierAssignment");
 						afterParserOrEnumRuleCall();
 					}
@@ -260,15 +220,15 @@ ruleChangeIdentifierAssignment returns [EObject current=null]
 	)
 ;
 
-// Entry rule entryRuleArtifactDeclaration
-entryRuleArtifactDeclaration returns [EObject current=null]:
-	{ newCompositeNode(grammarAccess.getArtifactDeclarationRule()); }
-	iv_ruleArtifactDeclaration=ruleArtifactDeclaration
-	{ $current=$iv_ruleArtifactDeclaration.current; }
+// Entry rule entryRuleElementDeclaration
+entryRuleElementDeclaration returns [EObject current=null]:
+	{ newCompositeNode(grammarAccess.getElementDeclarationRule()); }
+	iv_ruleElementDeclaration=ruleElementDeclaration
+	{ $current=$iv_ruleElementDeclaration.current; }
 	EOF;
 
-// Rule ArtifactDeclaration
-ruleArtifactDeclaration returns [EObject current=null]
+// Rule ElementDeclaration
+ruleElementDeclaration returns [EObject current=null]
 @init {
 	enterRule();
 }
@@ -276,45 +236,60 @@ ruleArtifactDeclaration returns [EObject current=null]
 	leaveRule();
 }:
 	(
-		otherlv_0='Artifact'
-		{
-			newLeafNode(otherlv_0, grammarAccess.getArtifactDeclarationAccess().getArtifactKeyword_0());
-		}
+		(
+			(
+				{
+					newCompositeNode(grammarAccess.getElementDeclarationAccess().getGenericTypGenericTypeParserRuleCall_0_0());
+				}
+				lv_genericTyp_0_0=ruleGenericType
+				{
+					if ($current==null) {
+						$current = createModelElementForParent(grammarAccess.getElementDeclarationRule());
+					}
+					set(
+						$current,
+						"genericTyp",
+						lv_genericTyp_0_0,
+						"net.ssehub.Lea.GenericType");
+					afterParserOrEnumRuleCall();
+				}
+			)
+		)
 		otherlv_1='<'
 		{
-			newLeafNode(otherlv_1, grammarAccess.getArtifactDeclarationAccess().getLessThanSignKeyword_1());
+			newLeafNode(otherlv_1, grammarAccess.getElementDeclarationAccess().getLessThanSignKeyword_1());
 		}
 		(
 			(
-				lv_type_2_0=RULE_ID
+				lv_parameterType_2_0=RULE_ID
 				{
-					newLeafNode(lv_type_2_0, grammarAccess.getArtifactDeclarationAccess().getTypeIDTerminalRuleCall_2_0());
+					newLeafNode(lv_parameterType_2_0, grammarAccess.getElementDeclarationAccess().getParameterTypeIDTerminalRuleCall_2_0());
 				}
 				{
 					if ($current==null) {
-						$current = createModelElement(grammarAccess.getArtifactDeclarationRule());
+						$current = createModelElement(grammarAccess.getElementDeclarationRule());
 					}
 					setWithLastConsumed(
 						$current,
-						"type",
-						lv_type_2_0,
+						"parameterType",
+						lv_parameterType_2_0,
 						"org.eclipse.xtext.common.Terminals.ID");
 				}
 			)
 		)
 		otherlv_3='>'
 		{
-			newLeafNode(otherlv_3, grammarAccess.getArtifactDeclarationAccess().getGreaterThanSignKeyword_3());
+			newLeafNode(otherlv_3, grammarAccess.getElementDeclarationAccess().getGreaterThanSignKeyword_3());
 		}
 		(
 			(
 				{
-					newCompositeNode(grammarAccess.getArtifactDeclarationAccess().getSetSetDefinitionParserRuleCall_4_0());
+					newCompositeNode(grammarAccess.getElementDeclarationAccess().getSetSetDefinitionParserRuleCall_4_0());
 				}
 				lv_set_4_0=ruleSetDefinition
 				{
 					if ($current==null) {
-						$current = createModelElementForParent(grammarAccess.getArtifactDeclarationRule());
+						$current = createModelElementForParent(grammarAccess.getElementDeclarationRule());
 					}
 					set(
 						$current,
@@ -329,11 +304,11 @@ ruleArtifactDeclaration returns [EObject current=null]
 			(
 				lv_name_5_0=RULE_ID
 				{
-					newLeafNode(lv_name_5_0, grammarAccess.getArtifactDeclarationAccess().getNameIDTerminalRuleCall_5_0());
+					newLeafNode(lv_name_5_0, grammarAccess.getElementDeclarationAccess().getNameIDTerminalRuleCall_5_0());
 				}
 				{
 					if ($current==null) {
-						$current = createModelElement(grammarAccess.getArtifactDeclarationRule());
+						$current = createModelElement(grammarAccess.getElementDeclarationRule());
 					}
 					setWithLastConsumed(
 						$current,
@@ -346,12 +321,12 @@ ruleArtifactDeclaration returns [EObject current=null]
 		(
 			(
 				{
-					newCompositeNode(grammarAccess.getArtifactDeclarationAccess().getInitializationAssignmentParserRuleCall_6_0());
+					newCompositeNode(grammarAccess.getElementDeclarationAccess().getInitializationAssignmentParserRuleCall_6_0());
 				}
 				lv_initialization_6_0=ruleAssignment
 				{
 					if ($current==null) {
-						$current = createModelElementForParent(grammarAccess.getArtifactDeclarationRule());
+						$current = createModelElementForParent(grammarAccess.getElementDeclarationRule());
 					}
 					set(
 						$current,
@@ -365,21 +340,21 @@ ruleArtifactDeclaration returns [EObject current=null]
 		(
 			otherlv_7=';'
 			{
-				newLeafNode(otherlv_7, grammarAccess.getArtifactDeclarationAccess().getSemicolonKeyword_7());
+				newLeafNode(otherlv_7, grammarAccess.getElementDeclarationAccess().getSemicolonKeyword_7());
 			}
 		)?
 	)
 ;
 
-// Entry rule entryRuleFragmentDeclaration
-entryRuleFragmentDeclaration returns [EObject current=null]:
-	{ newCompositeNode(grammarAccess.getFragmentDeclarationRule()); }
-	iv_ruleFragmentDeclaration=ruleFragmentDeclaration
-	{ $current=$iv_ruleFragmentDeclaration.current; }
+// Entry rule entryRuleGenericType
+entryRuleGenericType returns [String current=null]:
+	{ newCompositeNode(grammarAccess.getGenericTypeRule()); }
+	iv_ruleGenericType=ruleGenericType
+	{ $current=$iv_ruleGenericType.current.getText(); }
 	EOF;
 
-// Rule FragmentDeclaration
-ruleFragmentDeclaration returns [EObject current=null]
+// Rule GenericType
+ruleGenericType returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()]
 @init {
 	enterRule();
 }
@@ -387,209 +362,23 @@ ruleFragmentDeclaration returns [EObject current=null]
 	leaveRule();
 }:
 	(
-		otherlv_0='Fragment'
+		kw='Artifact'
 		{
-			newLeafNode(otherlv_0, grammarAccess.getFragmentDeclarationAccess().getFragmentKeyword_0());
+			$current.merge(kw);
+			newLeafNode(kw, grammarAccess.getGenericTypeAccess().getArtifactKeyword_0());
 		}
-		otherlv_1='<'
+		    |
+		kw='Fragment'
 		{
-			newLeafNode(otherlv_1, grammarAccess.getFragmentDeclarationAccess().getLessThanSignKeyword_1());
+			$current.merge(kw);
+			newLeafNode(kw, grammarAccess.getGenericTypeAccess().getFragmentKeyword_1());
 		}
-		(
-			(
-				lv_type_2_0=RULE_ID
-				{
-					newLeafNode(lv_type_2_0, grammarAccess.getFragmentDeclarationAccess().getTypeIDTerminalRuleCall_2_0());
-				}
-				{
-					if ($current==null) {
-						$current = createModelElement(grammarAccess.getFragmentDeclarationRule());
-					}
-					setWithLastConsumed(
-						$current,
-						"type",
-						lv_type_2_0,
-						"org.eclipse.xtext.common.Terminals.ID");
-				}
-			)
-		)
-		otherlv_3='>'
+		    |
+		kw='Result'
 		{
-			newLeafNode(otherlv_3, grammarAccess.getFragmentDeclarationAccess().getGreaterThanSignKeyword_3());
+			$current.merge(kw);
+			newLeafNode(kw, grammarAccess.getGenericTypeAccess().getResultKeyword_2());
 		}
-		(
-			(
-				{
-					newCompositeNode(grammarAccess.getFragmentDeclarationAccess().getSetSetDefinitionParserRuleCall_4_0());
-				}
-				lv_set_4_0=ruleSetDefinition
-				{
-					if ($current==null) {
-						$current = createModelElementForParent(grammarAccess.getFragmentDeclarationRule());
-					}
-					set(
-						$current,
-						"set",
-						lv_set_4_0,
-						"net.ssehub.Lea.SetDefinition");
-					afterParserOrEnumRuleCall();
-				}
-			)
-		)?
-		(
-			(
-				lv_name_5_0=RULE_ID
-				{
-					newLeafNode(lv_name_5_0, grammarAccess.getFragmentDeclarationAccess().getNameIDTerminalRuleCall_5_0());
-				}
-				{
-					if ($current==null) {
-						$current = createModelElement(grammarAccess.getFragmentDeclarationRule());
-					}
-					setWithLastConsumed(
-						$current,
-						"name",
-						lv_name_5_0,
-						"org.eclipse.xtext.common.Terminals.ID");
-				}
-			)
-		)
-		(
-			(
-				{
-					newCompositeNode(grammarAccess.getFragmentDeclarationAccess().getInitializationAssignmentParserRuleCall_6_0());
-				}
-				lv_initialization_6_0=ruleAssignment
-				{
-					if ($current==null) {
-						$current = createModelElementForParent(grammarAccess.getFragmentDeclarationRule());
-					}
-					set(
-						$current,
-						"initialization",
-						lv_initialization_6_0,
-						"net.ssehub.Lea.Assignment");
-					afterParserOrEnumRuleCall();
-				}
-			)
-		)?
-		(
-			otherlv_7=';'
-			{
-				newLeafNode(otherlv_7, grammarAccess.getFragmentDeclarationAccess().getSemicolonKeyword_7());
-			}
-		)?
-	)
-;
-
-// Entry rule entryRuleResultDeclaration
-entryRuleResultDeclaration returns [EObject current=null]:
-	{ newCompositeNode(grammarAccess.getResultDeclarationRule()); }
-	iv_ruleResultDeclaration=ruleResultDeclaration
-	{ $current=$iv_ruleResultDeclaration.current; }
-	EOF;
-
-// Rule ResultDeclaration
-ruleResultDeclaration returns [EObject current=null]
-@init {
-	enterRule();
-}
-@after {
-	leaveRule();
-}:
-	(
-		otherlv_0='Result'
-		{
-			newLeafNode(otherlv_0, grammarAccess.getResultDeclarationAccess().getResultKeyword_0());
-		}
-		otherlv_1='<'
-		{
-			newLeafNode(otherlv_1, grammarAccess.getResultDeclarationAccess().getLessThanSignKeyword_1());
-		}
-		(
-			(
-				lv_type_2_0=RULE_ID
-				{
-					newLeafNode(lv_type_2_0, grammarAccess.getResultDeclarationAccess().getTypeIDTerminalRuleCall_2_0());
-				}
-				{
-					if ($current==null) {
-						$current = createModelElement(grammarAccess.getResultDeclarationRule());
-					}
-					setWithLastConsumed(
-						$current,
-						"type",
-						lv_type_2_0,
-						"org.eclipse.xtext.common.Terminals.ID");
-				}
-			)
-		)
-		otherlv_3='>'
-		{
-			newLeafNode(otherlv_3, grammarAccess.getResultDeclarationAccess().getGreaterThanSignKeyword_3());
-		}
-		(
-			(
-				{
-					newCompositeNode(grammarAccess.getResultDeclarationAccess().getSetSetDefinitionParserRuleCall_4_0());
-				}
-				lv_set_4_0=ruleSetDefinition
-				{
-					if ($current==null) {
-						$current = createModelElementForParent(grammarAccess.getResultDeclarationRule());
-					}
-					set(
-						$current,
-						"set",
-						lv_set_4_0,
-						"net.ssehub.Lea.SetDefinition");
-					afterParserOrEnumRuleCall();
-				}
-			)
-		)?
-		(
-			(
-				lv_name_5_0=RULE_ID
-				{
-					newLeafNode(lv_name_5_0, grammarAccess.getResultDeclarationAccess().getNameIDTerminalRuleCall_5_0());
-				}
-				{
-					if ($current==null) {
-						$current = createModelElement(grammarAccess.getResultDeclarationRule());
-					}
-					setWithLastConsumed(
-						$current,
-						"name",
-						lv_name_5_0,
-						"org.eclipse.xtext.common.Terminals.ID");
-				}
-			)
-		)
-		(
-			(
-				{
-					newCompositeNode(grammarAccess.getResultDeclarationAccess().getInitializationAssignmentParserRuleCall_6_0());
-				}
-				lv_initialization_6_0=ruleAssignment
-				{
-					if ($current==null) {
-						$current = createModelElementForParent(grammarAccess.getResultDeclarationRule());
-					}
-					set(
-						$current,
-						"initialization",
-						lv_initialization_6_0,
-						"net.ssehub.Lea.Assignment");
-					afterParserOrEnumRuleCall();
-				}
-			)
-		)?
-		(
-			otherlv_7=';'
-			{
-				newLeafNode(otherlv_7, grammarAccess.getResultDeclarationAccess().getSemicolonKeyword_7());
-			}
-		)?
 	)
 ;
 

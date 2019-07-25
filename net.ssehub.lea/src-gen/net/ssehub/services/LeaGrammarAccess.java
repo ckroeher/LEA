@@ -28,56 +28,40 @@ public class LeaGrammarAccess extends AbstractGrammarElementFinder {
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Action cAnalysisDefinitionAction_0 = (Action)cGroup.eContents().get(0);
 		private final Alternatives cAlternatives_1 = (Alternatives)cGroup.eContents().get(1);
-		private final Assignment cElementsAssignment_1_0 = (Assignment)cAlternatives_1.eContents().get(0);
-		private final RuleCall cElementsArtifactDeclarationParserRuleCall_1_0_0 = (RuleCall)cElementsAssignment_1_0.eContents().get(0);
-		private final Assignment cElementsAssignment_1_1 = (Assignment)cAlternatives_1.eContents().get(1);
-		private final RuleCall cElementsFragmentDeclarationParserRuleCall_1_1_0 = (RuleCall)cElementsAssignment_1_1.eContents().get(0);
-		private final Assignment cElementsAssignment_1_2 = (Assignment)cAlternatives_1.eContents().get(2);
-		private final RuleCall cElementsResultDeclarationParserRuleCall_1_2_0 = (RuleCall)cElementsAssignment_1_2.eContents().get(0);
-		private final Assignment cElementsAssignment_1_3 = (Assignment)cAlternatives_1.eContents().get(3);
-		private final RuleCall cElementsChangeIdentifierAssignmentParserRuleCall_1_3_0 = (RuleCall)cElementsAssignment_1_3.eContents().get(0);
+		private final Assignment cElementDeclarationsAssignment_1_0 = (Assignment)cAlternatives_1.eContents().get(0);
+		private final RuleCall cElementDeclarationsElementDeclarationParserRuleCall_1_0_0 = (RuleCall)cElementDeclarationsAssignment_1_0.eContents().get(0);
+		private final Assignment cChangeIdentifierAssignmentsAssignment_1_1 = (Assignment)cAlternatives_1.eContents().get(1);
+		private final RuleCall cChangeIdentifierAssignmentsChangeIdentifierAssignmentParserRuleCall_1_1_0 = (RuleCall)cChangeIdentifierAssignmentsAssignment_1_1.eContents().get(0);
 		
 		//AnalysisDefinition:
-		//	{AnalysisDefinition} (elements+=ArtifactDeclaration
-		//	| elements+=FragmentDeclaration
-		//	| elements+=ResultDeclaration
-		//	| elements+=ChangeIdentifierAssignment)*;
+		//	{AnalysisDefinition} (elementDeclarations+=ElementDeclaration
+		//	| changeIdentifierAssignments+=ChangeIdentifierAssignment)*;
 		@Override public ParserRule getRule() { return rule; }
 		
-		//{AnalysisDefinition} (elements+=ArtifactDeclaration | elements+=FragmentDeclaration | elements+=ResultDeclaration |
-		//elements+=ChangeIdentifierAssignment)*
+		//{AnalysisDefinition} (elementDeclarations+=ElementDeclaration |
+		//changeIdentifierAssignments+=ChangeIdentifierAssignment)*
 		public Group getGroup() { return cGroup; }
 		
 		//{AnalysisDefinition}
 		public Action getAnalysisDefinitionAction_0() { return cAnalysisDefinitionAction_0; }
 		
-		//(elements+=ArtifactDeclaration | elements+=FragmentDeclaration | elements+=ResultDeclaration |
-		//elements+=ChangeIdentifierAssignment)*
+		//(elementDeclarations+=ElementDeclaration | changeIdentifierAssignments+=ChangeIdentifierAssignment)*
 		public Alternatives getAlternatives_1() { return cAlternatives_1; }
 		
-		//elements+=ArtifactDeclaration
-		public Assignment getElementsAssignment_1_0() { return cElementsAssignment_1_0; }
+		////		elements+=ArtifactDeclaration
+		////		| elements+=FragmentDeclaration
+		////		| elements+=ResultDeclaration
+		//elementDeclarations+=ElementDeclaration
+		public Assignment getElementDeclarationsAssignment_1_0() { return cElementDeclarationsAssignment_1_0; }
 		
-		//ArtifactDeclaration
-		public RuleCall getElementsArtifactDeclarationParserRuleCall_1_0_0() { return cElementsArtifactDeclarationParserRuleCall_1_0_0; }
+		//ElementDeclaration
+		public RuleCall getElementDeclarationsElementDeclarationParserRuleCall_1_0_0() { return cElementDeclarationsElementDeclarationParserRuleCall_1_0_0; }
 		
-		//elements+=FragmentDeclaration
-		public Assignment getElementsAssignment_1_1() { return cElementsAssignment_1_1; }
-		
-		//FragmentDeclaration
-		public RuleCall getElementsFragmentDeclarationParserRuleCall_1_1_0() { return cElementsFragmentDeclarationParserRuleCall_1_1_0; }
-		
-		//elements+=ResultDeclaration
-		public Assignment getElementsAssignment_1_2() { return cElementsAssignment_1_2; }
-		
-		//ResultDeclaration
-		public RuleCall getElementsResultDeclarationParserRuleCall_1_2_0() { return cElementsResultDeclarationParserRuleCall_1_2_0; }
-		
-		//elements+=ChangeIdentifierAssignment
-		public Assignment getElementsAssignment_1_3() { return cElementsAssignment_1_3; }
+		//changeIdentifierAssignments+=ChangeIdentifierAssignment
+		public Assignment getChangeIdentifierAssignmentsAssignment_1_1() { return cChangeIdentifierAssignmentsAssignment_1_1; }
 		
 		//ChangeIdentifierAssignment
-		public RuleCall getElementsChangeIdentifierAssignmentParserRuleCall_1_3_0() { return cElementsChangeIdentifierAssignmentParserRuleCall_1_3_0; }
+		public RuleCall getChangeIdentifierAssignmentsChangeIdentifierAssignmentParserRuleCall_1_1_0() { return cChangeIdentifierAssignmentsChangeIdentifierAssignmentParserRuleCall_1_1_0; }
 	}
 	public class ChangeIdentifierAssignmentElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "net.ssehub.Lea.ChangeIdentifierAssignment");
@@ -134,13 +118,14 @@ public class LeaGrammarAccess extends AbstractGrammarElementFinder {
 		//';'?
 		public Keyword getSemicolonKeyword_5() { return cSemicolonKeyword_5; }
 	}
-	public class ArtifactDeclarationElements extends AbstractParserRuleElementFinder {
-		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "net.ssehub.Lea.ArtifactDeclaration");
+	public class ElementDeclarationElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "net.ssehub.Lea.ElementDeclaration");
 		private final Group cGroup = (Group)rule.eContents().get(1);
-		private final Keyword cArtifactKeyword_0 = (Keyword)cGroup.eContents().get(0);
+		private final Assignment cGenericTypAssignment_0 = (Assignment)cGroup.eContents().get(0);
+		private final RuleCall cGenericTypGenericTypeParserRuleCall_0_0 = (RuleCall)cGenericTypAssignment_0.eContents().get(0);
 		private final Keyword cLessThanSignKeyword_1 = (Keyword)cGroup.eContents().get(1);
-		private final Assignment cTypeAssignment_2 = (Assignment)cGroup.eContents().get(2);
-		private final RuleCall cTypeIDTerminalRuleCall_2_0 = (RuleCall)cTypeAssignment_2.eContents().get(0);
+		private final Assignment cParameterTypeAssignment_2 = (Assignment)cGroup.eContents().get(2);
+		private final RuleCall cParameterTypeIDTerminalRuleCall_2_0 = (RuleCall)cParameterTypeAssignment_2.eContents().get(0);
 		private final Keyword cGreaterThanSignKeyword_3 = (Keyword)cGroup.eContents().get(3);
 		private final Assignment cSetAssignment_4 = (Assignment)cGroup.eContents().get(4);
 		private final RuleCall cSetSetDefinitionParserRuleCall_4_0 = (RuleCall)cSetAssignment_4.eContents().get(0);
@@ -150,166 +135,74 @@ public class LeaGrammarAccess extends AbstractGrammarElementFinder {
 		private final RuleCall cInitializationAssignmentParserRuleCall_6_0 = (RuleCall)cInitializationAssignment_6.eContents().get(0);
 		private final Keyword cSemicolonKeyword_7 = (Keyword)cGroup.eContents().get(7);
 		
-		//ArtifactDeclaration:
-		//	'Artifact' '<' type=ID '>' set=SetDefinition? name=ID initialization=Assignment? ';'?;
+		//ElementDeclaration:
+		//	genericTyp=GenericType '<' parameterType=ID '>' set=SetDefinition? name=ID initialization=Assignment? ';'?;
 		@Override public ParserRule getRule() { return rule; }
 		
-		//'Artifact' '<' type=ID '>' set=SetDefinition? name=ID initialization=Assignment? ';'?
+		//genericTyp=GenericType '<' parameterType=ID '>' set=SetDefinition? name=ID initialization=Assignment? ';'?
 		public Group getGroup() { return cGroup; }
+		
+		//genericTyp=GenericType
+		public Assignment getGenericTypAssignment_0() { return cGenericTypAssignment_0; }
+		
+		//GenericType
+		public RuleCall getGenericTypGenericTypeParserRuleCall_0_0() { return cGenericTypGenericTypeParserRuleCall_0_0; }
+		
+		//'<'
+		public Keyword getLessThanSignKeyword_1() { return cLessThanSignKeyword_1; }
+		
+		//parameterType=ID
+		public Assignment getParameterTypeAssignment_2() { return cParameterTypeAssignment_2; }
+		
+		//ID
+		public RuleCall getParameterTypeIDTerminalRuleCall_2_0() { return cParameterTypeIDTerminalRuleCall_2_0; }
+		
+		//'>'
+		public Keyword getGreaterThanSignKeyword_3() { return cGreaterThanSignKeyword_3; }
+		
+		//set=SetDefinition?
+		public Assignment getSetAssignment_4() { return cSetAssignment_4; }
+		
+		//SetDefinition
+		public RuleCall getSetSetDefinitionParserRuleCall_4_0() { return cSetSetDefinitionParserRuleCall_4_0; }
+		
+		//name=ID
+		public Assignment getNameAssignment_5() { return cNameAssignment_5; }
+		
+		//ID
+		public RuleCall getNameIDTerminalRuleCall_5_0() { return cNameIDTerminalRuleCall_5_0; }
+		
+		//initialization=Assignment?
+		public Assignment getInitializationAssignment_6() { return cInitializationAssignment_6; }
+		
+		//Assignment
+		public RuleCall getInitializationAssignmentParserRuleCall_6_0() { return cInitializationAssignmentParserRuleCall_6_0; }
+		
+		//';'?
+		public Keyword getSemicolonKeyword_7() { return cSemicolonKeyword_7; }
+	}
+	public class GenericTypeElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "net.ssehub.Lea.GenericType");
+		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
+		private final Keyword cArtifactKeyword_0 = (Keyword)cAlternatives.eContents().get(0);
+		private final Keyword cFragmentKeyword_1 = (Keyword)cAlternatives.eContents().get(1);
+		private final Keyword cResultKeyword_2 = (Keyword)cAlternatives.eContents().get(2);
+		
+		//GenericType:
+		//	'Artifact' | 'Fragment' | 'Result';
+		@Override public ParserRule getRule() { return rule; }
+		
+		//'Artifact' | 'Fragment' | 'Result'
+		public Alternatives getAlternatives() { return cAlternatives; }
 		
 		//'Artifact'
 		public Keyword getArtifactKeyword_0() { return cArtifactKeyword_0; }
 		
-		//'<'
-		public Keyword getLessThanSignKeyword_1() { return cLessThanSignKeyword_1; }
-		
-		//type=ID
-		public Assignment getTypeAssignment_2() { return cTypeAssignment_2; }
-		
-		//ID
-		public RuleCall getTypeIDTerminalRuleCall_2_0() { return cTypeIDTerminalRuleCall_2_0; }
-		
-		//'>'
-		public Keyword getGreaterThanSignKeyword_3() { return cGreaterThanSignKeyword_3; }
-		
-		//set=SetDefinition?
-		public Assignment getSetAssignment_4() { return cSetAssignment_4; }
-		
-		//SetDefinition
-		public RuleCall getSetSetDefinitionParserRuleCall_4_0() { return cSetSetDefinitionParserRuleCall_4_0; }
-		
-		//name=ID
-		public Assignment getNameAssignment_5() { return cNameAssignment_5; }
-		
-		//ID
-		public RuleCall getNameIDTerminalRuleCall_5_0() { return cNameIDTerminalRuleCall_5_0; }
-		
-		//initialization=Assignment?
-		public Assignment getInitializationAssignment_6() { return cInitializationAssignment_6; }
-		
-		//Assignment
-		public RuleCall getInitializationAssignmentParserRuleCall_6_0() { return cInitializationAssignmentParserRuleCall_6_0; }
-		
-		//';'?
-		public Keyword getSemicolonKeyword_7() { return cSemicolonKeyword_7; }
-	}
-	public class FragmentDeclarationElements extends AbstractParserRuleElementFinder {
-		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "net.ssehub.Lea.FragmentDeclaration");
-		private final Group cGroup = (Group)rule.eContents().get(1);
-		private final Keyword cFragmentKeyword_0 = (Keyword)cGroup.eContents().get(0);
-		private final Keyword cLessThanSignKeyword_1 = (Keyword)cGroup.eContents().get(1);
-		private final Assignment cTypeAssignment_2 = (Assignment)cGroup.eContents().get(2);
-		private final RuleCall cTypeIDTerminalRuleCall_2_0 = (RuleCall)cTypeAssignment_2.eContents().get(0);
-		private final Keyword cGreaterThanSignKeyword_3 = (Keyword)cGroup.eContents().get(3);
-		private final Assignment cSetAssignment_4 = (Assignment)cGroup.eContents().get(4);
-		private final RuleCall cSetSetDefinitionParserRuleCall_4_0 = (RuleCall)cSetAssignment_4.eContents().get(0);
-		private final Assignment cNameAssignment_5 = (Assignment)cGroup.eContents().get(5);
-		private final RuleCall cNameIDTerminalRuleCall_5_0 = (RuleCall)cNameAssignment_5.eContents().get(0);
-		private final Assignment cInitializationAssignment_6 = (Assignment)cGroup.eContents().get(6);
-		private final RuleCall cInitializationAssignmentParserRuleCall_6_0 = (RuleCall)cInitializationAssignment_6.eContents().get(0);
-		private final Keyword cSemicolonKeyword_7 = (Keyword)cGroup.eContents().get(7);
-		
-		//FragmentDeclaration:
-		//	'Fragment' '<' type=ID '>' set=SetDefinition? name=ID initialization=Assignment? ';'?;
-		@Override public ParserRule getRule() { return rule; }
-		
-		//'Fragment' '<' type=ID '>' set=SetDefinition? name=ID initialization=Assignment? ';'?
-		public Group getGroup() { return cGroup; }
-		
 		//'Fragment'
-		public Keyword getFragmentKeyword_0() { return cFragmentKeyword_0; }
-		
-		//'<'
-		public Keyword getLessThanSignKeyword_1() { return cLessThanSignKeyword_1; }
-		
-		//type=ID
-		public Assignment getTypeAssignment_2() { return cTypeAssignment_2; }
-		
-		//ID
-		public RuleCall getTypeIDTerminalRuleCall_2_0() { return cTypeIDTerminalRuleCall_2_0; }
-		
-		//'>'
-		public Keyword getGreaterThanSignKeyword_3() { return cGreaterThanSignKeyword_3; }
-		
-		//set=SetDefinition?
-		public Assignment getSetAssignment_4() { return cSetAssignment_4; }
-		
-		//SetDefinition
-		public RuleCall getSetSetDefinitionParserRuleCall_4_0() { return cSetSetDefinitionParserRuleCall_4_0; }
-		
-		//name=ID
-		public Assignment getNameAssignment_5() { return cNameAssignment_5; }
-		
-		//ID
-		public RuleCall getNameIDTerminalRuleCall_5_0() { return cNameIDTerminalRuleCall_5_0; }
-		
-		//initialization=Assignment?
-		public Assignment getInitializationAssignment_6() { return cInitializationAssignment_6; }
-		
-		//Assignment
-		public RuleCall getInitializationAssignmentParserRuleCall_6_0() { return cInitializationAssignmentParserRuleCall_6_0; }
-		
-		//';'?
-		public Keyword getSemicolonKeyword_7() { return cSemicolonKeyword_7; }
-	}
-	public class ResultDeclarationElements extends AbstractParserRuleElementFinder {
-		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "net.ssehub.Lea.ResultDeclaration");
-		private final Group cGroup = (Group)rule.eContents().get(1);
-		private final Keyword cResultKeyword_0 = (Keyword)cGroup.eContents().get(0);
-		private final Keyword cLessThanSignKeyword_1 = (Keyword)cGroup.eContents().get(1);
-		private final Assignment cTypeAssignment_2 = (Assignment)cGroup.eContents().get(2);
-		private final RuleCall cTypeIDTerminalRuleCall_2_0 = (RuleCall)cTypeAssignment_2.eContents().get(0);
-		private final Keyword cGreaterThanSignKeyword_3 = (Keyword)cGroup.eContents().get(3);
-		private final Assignment cSetAssignment_4 = (Assignment)cGroup.eContents().get(4);
-		private final RuleCall cSetSetDefinitionParserRuleCall_4_0 = (RuleCall)cSetAssignment_4.eContents().get(0);
-		private final Assignment cNameAssignment_5 = (Assignment)cGroup.eContents().get(5);
-		private final RuleCall cNameIDTerminalRuleCall_5_0 = (RuleCall)cNameAssignment_5.eContents().get(0);
-		private final Assignment cInitializationAssignment_6 = (Assignment)cGroup.eContents().get(6);
-		private final RuleCall cInitializationAssignmentParserRuleCall_6_0 = (RuleCall)cInitializationAssignment_6.eContents().get(0);
-		private final Keyword cSemicolonKeyword_7 = (Keyword)cGroup.eContents().get(7);
-		
-		//ResultDeclaration:
-		//	'Result' '<' type=ID '>' set=SetDefinition? name=ID initialization=Assignment? ';'?;
-		@Override public ParserRule getRule() { return rule; }
-		
-		//'Result' '<' type=ID '>' set=SetDefinition? name=ID initialization=Assignment? ';'?
-		public Group getGroup() { return cGroup; }
+		public Keyword getFragmentKeyword_1() { return cFragmentKeyword_1; }
 		
 		//'Result'
-		public Keyword getResultKeyword_0() { return cResultKeyword_0; }
-		
-		//'<'
-		public Keyword getLessThanSignKeyword_1() { return cLessThanSignKeyword_1; }
-		
-		//type=ID
-		public Assignment getTypeAssignment_2() { return cTypeAssignment_2; }
-		
-		//ID
-		public RuleCall getTypeIDTerminalRuleCall_2_0() { return cTypeIDTerminalRuleCall_2_0; }
-		
-		//'>'
-		public Keyword getGreaterThanSignKeyword_3() { return cGreaterThanSignKeyword_3; }
-		
-		//set=SetDefinition?
-		public Assignment getSetAssignment_4() { return cSetAssignment_4; }
-		
-		//SetDefinition
-		public RuleCall getSetSetDefinitionParserRuleCall_4_0() { return cSetSetDefinitionParserRuleCall_4_0; }
-		
-		//name=ID
-		public Assignment getNameAssignment_5() { return cNameAssignment_5; }
-		
-		//ID
-		public RuleCall getNameIDTerminalRuleCall_5_0() { return cNameIDTerminalRuleCall_5_0; }
-		
-		//initialization=Assignment?
-		public Assignment getInitializationAssignment_6() { return cInitializationAssignment_6; }
-		
-		//Assignment
-		public RuleCall getInitializationAssignmentParserRuleCall_6_0() { return cInitializationAssignmentParserRuleCall_6_0; }
-		
-		//';'?
-		public Keyword getSemicolonKeyword_7() { return cSemicolonKeyword_7; }
+		public Keyword getResultKeyword_2() { return cResultKeyword_2; }
 	}
 	public class SetDefinitionElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "net.ssehub.Lea.SetDefinition");
@@ -320,6 +213,17 @@ public class LeaGrammarAccess extends AbstractGrammarElementFinder {
 		private final RuleCall cIterationIterationParserRuleCall_2_0 = (RuleCall)cIterationAssignment_2.eContents().get(0);
 		private final Keyword cRightSquareBracketKeyword_3 = (Keyword)cGroup.eContents().get(3);
 		
+		////ArtifactDeclaration:
+		////	'Artifact' '<' type=ID '>' (set=SetDefinition)? name=ID (initialization=Assignment)? ';'?
+		////;
+		////
+		////FragmentDeclaration:
+		////    'Fragment' '<' type=ID '>' (set=SetDefinition)? name=ID (initialization=Assignment)? ';'?
+		////;
+		////
+		////ResultDeclaration:
+		////    'Result' '<' type=ID '>' (set=SetDefinition)? name=ID (initialization=Assignment)? ';'?
+		////;
 		//SetDefinition:
 		//	{SetDefinition}
 		//	'[' iteration=Iteration? ']';
@@ -569,9 +473,8 @@ public class LeaGrammarAccess extends AbstractGrammarElementFinder {
 	
 	private final AnalysisDefinitionElements pAnalysisDefinition;
 	private final ChangeIdentifierAssignmentElements pChangeIdentifierAssignment;
-	private final ArtifactDeclarationElements pArtifactDeclaration;
-	private final FragmentDeclarationElements pFragmentDeclaration;
-	private final ResultDeclarationElements pResultDeclaration;
+	private final ElementDeclarationElements pElementDeclaration;
+	private final GenericTypeElements pGenericType;
 	private final SetDefinitionElements pSetDefinition;
 	private final IterationElements pIteration;
 	private final AssignmentElements pAssignment;
@@ -591,9 +494,8 @@ public class LeaGrammarAccess extends AbstractGrammarElementFinder {
 		this.gaTerminals = gaTerminals;
 		this.pAnalysisDefinition = new AnalysisDefinitionElements();
 		this.pChangeIdentifierAssignment = new ChangeIdentifierAssignmentElements();
-		this.pArtifactDeclaration = new ArtifactDeclarationElements();
-		this.pFragmentDeclaration = new FragmentDeclarationElements();
-		this.pResultDeclaration = new ResultDeclarationElements();
+		this.pElementDeclaration = new ElementDeclarationElements();
+		this.pGenericType = new GenericTypeElements();
 		this.pSetDefinition = new SetDefinitionElements();
 		this.pIteration = new IterationElements();
 		this.pAssignment = new AssignmentElements();
@@ -631,10 +533,8 @@ public class LeaGrammarAccess extends AbstractGrammarElementFinder {
 
 	
 	//AnalysisDefinition:
-	//	{AnalysisDefinition} (elements+=ArtifactDeclaration
-	//	| elements+=FragmentDeclaration
-	//	| elements+=ResultDeclaration
-	//	| elements+=ChangeIdentifierAssignment)*;
+	//	{AnalysisDefinition} (elementDeclarations+=ElementDeclaration
+	//	| changeIdentifierAssignments+=ChangeIdentifierAssignment)*;
 	public AnalysisDefinitionElements getAnalysisDefinitionAccess() {
 		return pAnalysisDefinition;
 	}
@@ -653,36 +553,37 @@ public class LeaGrammarAccess extends AbstractGrammarElementFinder {
 		return getChangeIdentifierAssignmentAccess().getRule();
 	}
 	
-	//ArtifactDeclaration:
-	//	'Artifact' '<' type=ID '>' set=SetDefinition? name=ID initialization=Assignment? ';'?;
-	public ArtifactDeclarationElements getArtifactDeclarationAccess() {
-		return pArtifactDeclaration;
+	//ElementDeclaration:
+	//	genericTyp=GenericType '<' parameterType=ID '>' set=SetDefinition? name=ID initialization=Assignment? ';'?;
+	public ElementDeclarationElements getElementDeclarationAccess() {
+		return pElementDeclaration;
 	}
 	
-	public ParserRule getArtifactDeclarationRule() {
-		return getArtifactDeclarationAccess().getRule();
+	public ParserRule getElementDeclarationRule() {
+		return getElementDeclarationAccess().getRule();
 	}
 	
-	//FragmentDeclaration:
-	//	'Fragment' '<' type=ID '>' set=SetDefinition? name=ID initialization=Assignment? ';'?;
-	public FragmentDeclarationElements getFragmentDeclarationAccess() {
-		return pFragmentDeclaration;
+	//GenericType:
+	//	'Artifact' | 'Fragment' | 'Result';
+	public GenericTypeElements getGenericTypeAccess() {
+		return pGenericType;
 	}
 	
-	public ParserRule getFragmentDeclarationRule() {
-		return getFragmentDeclarationAccess().getRule();
+	public ParserRule getGenericTypeRule() {
+		return getGenericTypeAccess().getRule();
 	}
 	
-	//ResultDeclaration:
-	//	'Result' '<' type=ID '>' set=SetDefinition? name=ID initialization=Assignment? ';'?;
-	public ResultDeclarationElements getResultDeclarationAccess() {
-		return pResultDeclaration;
-	}
-	
-	public ParserRule getResultDeclarationRule() {
-		return getResultDeclarationAccess().getRule();
-	}
-	
+	////ArtifactDeclaration:
+	////	'Artifact' '<' type=ID '>' (set=SetDefinition)? name=ID (initialization=Assignment)? ';'?
+	////;
+	////
+	////FragmentDeclaration:
+	////    'Fragment' '<' type=ID '>' (set=SetDefinition)? name=ID (initialization=Assignment)? ';'?
+	////;
+	////
+	////ResultDeclaration:
+	////    'Result' '<' type=ID '>' (set=SetDefinition)? name=ID (initialization=Assignment)? ';'?
+	////;
 	//SetDefinition:
 	//	{SetDefinition}
 	//	'[' iteration=Iteration? ']';

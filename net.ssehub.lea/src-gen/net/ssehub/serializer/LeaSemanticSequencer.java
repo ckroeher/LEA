@@ -6,16 +6,14 @@ package net.ssehub.serializer;
 import com.google.inject.Inject;
 import java.util.Set;
 import net.ssehub.lea.AnalysisDefinition;
-import net.ssehub.lea.ArtifactDeclaration;
 import net.ssehub.lea.Assignment;
 import net.ssehub.lea.Call;
 import net.ssehub.lea.ChangeIdentifierAssignment;
-import net.ssehub.lea.FragmentDeclaration;
+import net.ssehub.lea.ElementDeclaration;
 import net.ssehub.lea.Iteration;
 import net.ssehub.lea.LeaPackage;
 import net.ssehub.lea.Operation;
 import net.ssehub.lea.ParameterList;
-import net.ssehub.lea.ResultDeclaration;
 import net.ssehub.lea.SetDefinition;
 import net.ssehub.services.LeaGrammarAccess;
 import org.eclipse.emf.ecore.EObject;
@@ -45,9 +43,6 @@ public class LeaSemanticSequencer extends AbstractDelegatingSemanticSequencer {
 			case LeaPackage.ANALYSIS_DEFINITION:
 				sequence_AnalysisDefinition(context, (AnalysisDefinition) semanticObject); 
 				return; 
-			case LeaPackage.ARTIFACT_DECLARATION:
-				sequence_ArtifactDeclaration(context, (ArtifactDeclaration) semanticObject); 
-				return; 
 			case LeaPackage.ASSIGNMENT:
 				sequence_Assignment(context, (Assignment) semanticObject); 
 				return; 
@@ -57,8 +52,8 @@ public class LeaSemanticSequencer extends AbstractDelegatingSemanticSequencer {
 			case LeaPackage.CHANGE_IDENTIFIER_ASSIGNMENT:
 				sequence_ChangeIdentifierAssignment(context, (ChangeIdentifierAssignment) semanticObject); 
 				return; 
-			case LeaPackage.FRAGMENT_DECLARATION:
-				sequence_FragmentDeclaration(context, (FragmentDeclaration) semanticObject); 
+			case LeaPackage.ELEMENT_DECLARATION:
+				sequence_ElementDeclaration(context, (ElementDeclaration) semanticObject); 
 				return; 
 			case LeaPackage.ITERATION:
 				sequence_Iteration(context, (Iteration) semanticObject); 
@@ -71,9 +66,6 @@ public class LeaSemanticSequencer extends AbstractDelegatingSemanticSequencer {
 				return; 
 			case LeaPackage.PARAMETER_LIST:
 				sequence_ParameterList(context, (ParameterList) semanticObject); 
-				return; 
-			case LeaPackage.RESULT_DECLARATION:
-				sequence_ResultDeclaration(context, (ResultDeclaration) semanticObject); 
 				return; 
 			case LeaPackage.SET_DEFINITION:
 				sequence_SetDefinition(context, (SetDefinition) semanticObject); 
@@ -88,21 +80,9 @@ public class LeaSemanticSequencer extends AbstractDelegatingSemanticSequencer {
 	 *     AnalysisDefinition returns AnalysisDefinition
 	 *
 	 * Constraint:
-	 *     (elements+=ArtifactDeclaration | elements+=FragmentDeclaration | elements+=ResultDeclaration | elements+=ChangeIdentifierAssignment)*
+	 *     (elementDeclarations+=ElementDeclaration | changeIdentifierAssignments+=ChangeIdentifierAssignment)*
 	 */
 	protected void sequence_AnalysisDefinition(ISerializationContext context, AnalysisDefinition semanticObject) {
-		genericSequencer.createSequence(context, semanticObject);
-	}
-	
-	
-	/**
-	 * Contexts:
-	 *     ArtifactDeclaration returns ArtifactDeclaration
-	 *
-	 * Constraint:
-	 *     (type=ID set=SetDefinition? name=ID initialization=Assignment?)
-	 */
-	protected void sequence_ArtifactDeclaration(ISerializationContext context, ArtifactDeclaration semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
 	}
 	
@@ -145,12 +125,12 @@ public class LeaSemanticSequencer extends AbstractDelegatingSemanticSequencer {
 	
 	/**
 	 * Contexts:
-	 *     FragmentDeclaration returns FragmentDeclaration
+	 *     ElementDeclaration returns ElementDeclaration
 	 *
 	 * Constraint:
-	 *     (type=ID set=SetDefinition? name=ID initialization=Assignment?)
+	 *     (genericTyp=GenericType parameterType=ID set=SetDefinition? name=ID initialization=Assignment?)
 	 */
-	protected void sequence_FragmentDeclaration(ISerializationContext context, FragmentDeclaration semanticObject) {
+	protected void sequence_ElementDeclaration(ISerializationContext context, ElementDeclaration semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
 	}
 	
@@ -208,18 +188,6 @@ public class LeaSemanticSequencer extends AbstractDelegatingSemanticSequencer {
 	 *     (text=STRING | element=ID | operation=Operation)
 	 */
 	protected void sequence_Parameter(ISerializationContext context, net.ssehub.lea.Parameter semanticObject) {
-		genericSequencer.createSequence(context, semanticObject);
-	}
-	
-	
-	/**
-	 * Contexts:
-	 *     ResultDeclaration returns ResultDeclaration
-	 *
-	 * Constraint:
-	 *     (type=ID set=SetDefinition? name=ID initialization=Assignment?)
-	 */
-	protected void sequence_ResultDeclaration(ISerializationContext context, ResultDeclaration semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
 	}
 	

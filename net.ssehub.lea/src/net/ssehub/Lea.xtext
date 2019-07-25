@@ -5,10 +5,11 @@ generate lea "http://www.ssehub.net/Lea"
 AnalysisDefinition:
 	{AnalysisDefinition}
 	(
-		elements+=ArtifactDeclaration
-		| elements+=FragmentDeclaration
-		| elements+=ResultDeclaration
-		| elements+=ChangeIdentifierAssignment
+//		elements+=ArtifactDeclaration
+//		| elements+=FragmentDeclaration
+//		| elements+=ResultDeclaration
+		elementDeclarations+=ElementDeclaration
+		| changeIdentifierAssignments+=ChangeIdentifierAssignment
 	)*
 ;
 
@@ -16,17 +17,25 @@ ChangeIdentifierAssignment:
     'assign' identifier=ID 'to' elements+=ID (',' elements+=ID)* ';'?
 ;
 
-ArtifactDeclaration:
-	'Artifact' '<' type=ID '>' (set=SetDefinition)? name=ID (initialization=Assignment)? ';'?
+ElementDeclaration:
+	genericTyp=GenericType '<' parameterType=ID '>' (set=SetDefinition)? name=ID (initialization=Assignment)? ';'?
 ;
 
-FragmentDeclaration:
-    'Fragment' '<' type=ID '>' (set=SetDefinition)? name=ID (initialization=Assignment)? ';'?
+GenericType:
+	'Artifact' | 'Fragment' | 'Result'
 ;
 
-ResultDeclaration:
-    'Result' '<' type=ID '>' (set=SetDefinition)? name=ID (initialization=Assignment)? ';'?
-;
+//ArtifactDeclaration:
+//	'Artifact' '<' type=ID '>' (set=SetDefinition)? name=ID (initialization=Assignment)? ';'?
+//;
+//
+//FragmentDeclaration:
+//    'Fragment' '<' type=ID '>' (set=SetDefinition)? name=ID (initialization=Assignment)? ';'?
+//;
+//
+//ResultDeclaration:
+//    'Result' '<' type=ID '>' (set=SetDefinition)? name=ID (initialization=Assignment)? ';'?
+//;
 
 SetDefinition:
 	{SetDefinition}

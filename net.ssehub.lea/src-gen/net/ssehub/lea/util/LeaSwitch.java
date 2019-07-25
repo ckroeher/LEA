@@ -87,24 +87,10 @@ public class LeaSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
-      case LeaPackage.ARTIFACT_DECLARATION:
+      case LeaPackage.ELEMENT_DECLARATION:
       {
-        ArtifactDeclaration artifactDeclaration = (ArtifactDeclaration)theEObject;
-        T result = caseArtifactDeclaration(artifactDeclaration);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
-      case LeaPackage.FRAGMENT_DECLARATION:
-      {
-        FragmentDeclaration fragmentDeclaration = (FragmentDeclaration)theEObject;
-        T result = caseFragmentDeclaration(fragmentDeclaration);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
-      case LeaPackage.RESULT_DECLARATION:
-      {
-        ResultDeclaration resultDeclaration = (ResultDeclaration)theEObject;
-        T result = caseResultDeclaration(resultDeclaration);
+        ElementDeclaration elementDeclaration = (ElementDeclaration)theEObject;
+        T result = caseElementDeclaration(elementDeclaration);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -194,49 +180,17 @@ public class LeaSwitch<T> extends Switch<T>
   }
 
   /**
-   * Returns the result of interpreting the object as an instance of '<em>Artifact Declaration</em>'.
+   * Returns the result of interpreting the object as an instance of '<em>Element Declaration</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
    * returning a non-null result will terminate the switch.
    * <!-- end-user-doc -->
    * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Artifact Declaration</em>'.
+   * @return the result of interpreting the object as an instance of '<em>Element Declaration</em>'.
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T caseArtifactDeclaration(ArtifactDeclaration object)
-  {
-    return null;
-  }
-
-  /**
-   * Returns the result of interpreting the object as an instance of '<em>Fragment Declaration</em>'.
-   * <!-- begin-user-doc -->
-   * This implementation returns null;
-   * returning a non-null result will terminate the switch.
-   * <!-- end-user-doc -->
-   * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Fragment Declaration</em>'.
-   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-   * @generated
-   */
-  public T caseFragmentDeclaration(FragmentDeclaration object)
-  {
-    return null;
-  }
-
-  /**
-   * Returns the result of interpreting the object as an instance of '<em>Result Declaration</em>'.
-   * <!-- begin-user-doc -->
-   * This implementation returns null;
-   * returning a non-null result will terminate the switch.
-   * <!-- end-user-doc -->
-   * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Result Declaration</em>'.
-   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-   * @generated
-   */
-  public T caseResultDeclaration(ResultDeclaration object)
+  public T caseElementDeclaration(ElementDeclaration object)
   {
     return null;
   }

@@ -20,18 +20,14 @@ import org.eclipse.xtext.serializer.sequencer.AbstractSyntacticSequencer;
 public class LeaSyntacticSequencer extends AbstractSyntacticSequencer {
 
 	protected LeaGrammarAccess grammarAccess;
-	protected AbstractElementAlias match_ArtifactDeclaration_SemicolonKeyword_7_q;
 	protected AbstractElementAlias match_ChangeIdentifierAssignment_SemicolonKeyword_5_q;
-	protected AbstractElementAlias match_FragmentDeclaration_SemicolonKeyword_7_q;
-	protected AbstractElementAlias match_ResultDeclaration_SemicolonKeyword_7_q;
+	protected AbstractElementAlias match_ElementDeclaration_SemicolonKeyword_7_q;
 	
 	@Inject
 	protected void init(IGrammarAccess access) {
 		grammarAccess = (LeaGrammarAccess) access;
-		match_ArtifactDeclaration_SemicolonKeyword_7_q = new TokenAlias(false, true, grammarAccess.getArtifactDeclarationAccess().getSemicolonKeyword_7());
 		match_ChangeIdentifierAssignment_SemicolonKeyword_5_q = new TokenAlias(false, true, grammarAccess.getChangeIdentifierAssignmentAccess().getSemicolonKeyword_5());
-		match_FragmentDeclaration_SemicolonKeyword_7_q = new TokenAlias(false, true, grammarAccess.getFragmentDeclarationAccess().getSemicolonKeyword_7());
-		match_ResultDeclaration_SemicolonKeyword_7_q = new TokenAlias(false, true, grammarAccess.getResultDeclarationAccess().getSemicolonKeyword_7());
+		match_ElementDeclaration_SemicolonKeyword_7_q = new TokenAlias(false, true, grammarAccess.getElementDeclarationAccess().getSemicolonKeyword_7());
 	}
 	
 	@Override
@@ -46,30 +42,14 @@ public class LeaSyntacticSequencer extends AbstractSyntacticSequencer {
 		List<INode> transitionNodes = collectNodes(fromNode, toNode);
 		for (AbstractElementAlias syntax : transition.getAmbiguousSyntaxes()) {
 			List<INode> syntaxNodes = getNodesFor(transitionNodes, syntax);
-			if (match_ArtifactDeclaration_SemicolonKeyword_7_q.equals(syntax))
-				emit_ArtifactDeclaration_SemicolonKeyword_7_q(semanticObject, getLastNavigableState(), syntaxNodes);
-			else if (match_ChangeIdentifierAssignment_SemicolonKeyword_5_q.equals(syntax))
+			if (match_ChangeIdentifierAssignment_SemicolonKeyword_5_q.equals(syntax))
 				emit_ChangeIdentifierAssignment_SemicolonKeyword_5_q(semanticObject, getLastNavigableState(), syntaxNodes);
-			else if (match_FragmentDeclaration_SemicolonKeyword_7_q.equals(syntax))
-				emit_FragmentDeclaration_SemicolonKeyword_7_q(semanticObject, getLastNavigableState(), syntaxNodes);
-			else if (match_ResultDeclaration_SemicolonKeyword_7_q.equals(syntax))
-				emit_ResultDeclaration_SemicolonKeyword_7_q(semanticObject, getLastNavigableState(), syntaxNodes);
+			else if (match_ElementDeclaration_SemicolonKeyword_7_q.equals(syntax))
+				emit_ElementDeclaration_SemicolonKeyword_7_q(semanticObject, getLastNavigableState(), syntaxNodes);
 			else acceptNodes(getLastNavigableState(), syntaxNodes);
 		}
 	}
 
-	/**
-	 * Ambiguous syntax:
-	 *     ';'?
-	 *
-	 * This ambiguous syntax occurs at:
-	 *     initialization=Assignment (ambiguity) (rule end)
-	 *     name=ID (ambiguity) (rule end)
-	 */
-	protected void emit_ArtifactDeclaration_SemicolonKeyword_7_q(EObject semanticObject, ISynNavigable transition, List<INode> nodes) {
-		acceptNodes(transition, nodes);
-	}
-	
 	/**
 	 * Ambiguous syntax:
 	 *     ';'?
@@ -89,19 +69,7 @@ public class LeaSyntacticSequencer extends AbstractSyntacticSequencer {
 	 *     initialization=Assignment (ambiguity) (rule end)
 	 *     name=ID (ambiguity) (rule end)
 	 */
-	protected void emit_FragmentDeclaration_SemicolonKeyword_7_q(EObject semanticObject, ISynNavigable transition, List<INode> nodes) {
-		acceptNodes(transition, nodes);
-	}
-	
-	/**
-	 * Ambiguous syntax:
-	 *     ';'?
-	 *
-	 * This ambiguous syntax occurs at:
-	 *     initialization=Assignment (ambiguity) (rule end)
-	 *     name=ID (ambiguity) (rule end)
-	 */
-	protected void emit_ResultDeclaration_SemicolonKeyword_7_q(EObject semanticObject, ISynNavigable transition, List<INode> nodes) {
+	protected void emit_ElementDeclaration_SemicolonKeyword_7_q(EObject semanticObject, ISynNavigable transition, List<INode> nodes) {
 		acceptNodes(transition, nodes);
 	}
 	

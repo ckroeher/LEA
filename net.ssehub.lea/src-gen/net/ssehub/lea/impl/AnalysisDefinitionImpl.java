@@ -6,6 +6,8 @@ package net.ssehub.lea.impl;
 import java.util.Collection;
 
 import net.ssehub.lea.AnalysisDefinition;
+import net.ssehub.lea.ChangeIdentifierAssignment;
+import net.ssehub.lea.ElementDeclaration;
 import net.ssehub.lea.LeaPackage;
 
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -13,7 +15,6 @@ import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
@@ -29,7 +30,8 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link net.ssehub.lea.impl.AnalysisDefinitionImpl#getElements <em>Elements</em>}</li>
+ *   <li>{@link net.ssehub.lea.impl.AnalysisDefinitionImpl#getElementDeclarations <em>Element Declarations</em>}</li>
+ *   <li>{@link net.ssehub.lea.impl.AnalysisDefinitionImpl#getChangeIdentifierAssignments <em>Change Identifier Assignments</em>}</li>
  * </ul>
  *
  * @generated
@@ -37,14 +39,24 @@ import org.eclipse.emf.ecore.util.InternalEList;
 public class AnalysisDefinitionImpl extends MinimalEObjectImpl.Container implements AnalysisDefinition
 {
   /**
-   * The cached value of the '{@link #getElements() <em>Elements</em>}' containment reference list.
+   * The cached value of the '{@link #getElementDeclarations() <em>Element Declarations</em>}' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getElements()
+   * @see #getElementDeclarations()
    * @generated
    * @ordered
    */
-  protected EList<EObject> elements;
+  protected EList<ElementDeclaration> elementDeclarations;
+
+  /**
+   * The cached value of the '{@link #getChangeIdentifierAssignments() <em>Change Identifier Assignments</em>}' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getChangeIdentifierAssignments()
+   * @generated
+   * @ordered
+   */
+  protected EList<ChangeIdentifierAssignment> changeIdentifierAssignments;
 
   /**
    * <!-- begin-user-doc -->
@@ -73,13 +85,28 @@ public class AnalysisDefinitionImpl extends MinimalEObjectImpl.Container impleme
    * @generated
    */
   @Override
-  public EList<EObject> getElements()
+  public EList<ElementDeclaration> getElementDeclarations()
   {
-    if (elements == null)
+    if (elementDeclarations == null)
     {
-      elements = new EObjectContainmentEList<EObject>(EObject.class, this, LeaPackage.ANALYSIS_DEFINITION__ELEMENTS);
+      elementDeclarations = new EObjectContainmentEList<ElementDeclaration>(ElementDeclaration.class, this, LeaPackage.ANALYSIS_DEFINITION__ELEMENT_DECLARATIONS);
     }
-    return elements;
+    return elementDeclarations;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EList<ChangeIdentifierAssignment> getChangeIdentifierAssignments()
+  {
+    if (changeIdentifierAssignments == null)
+    {
+      changeIdentifierAssignments = new EObjectContainmentEList<ChangeIdentifierAssignment>(ChangeIdentifierAssignment.class, this, LeaPackage.ANALYSIS_DEFINITION__CHANGE_IDENTIFIER_ASSIGNMENTS);
+    }
+    return changeIdentifierAssignments;
   }
 
   /**
@@ -92,8 +119,10 @@ public class AnalysisDefinitionImpl extends MinimalEObjectImpl.Container impleme
   {
     switch (featureID)
     {
-      case LeaPackage.ANALYSIS_DEFINITION__ELEMENTS:
-        return ((InternalEList<?>)getElements()).basicRemove(otherEnd, msgs);
+      case LeaPackage.ANALYSIS_DEFINITION__ELEMENT_DECLARATIONS:
+        return ((InternalEList<?>)getElementDeclarations()).basicRemove(otherEnd, msgs);
+      case LeaPackage.ANALYSIS_DEFINITION__CHANGE_IDENTIFIER_ASSIGNMENTS:
+        return ((InternalEList<?>)getChangeIdentifierAssignments()).basicRemove(otherEnd, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -108,8 +137,10 @@ public class AnalysisDefinitionImpl extends MinimalEObjectImpl.Container impleme
   {
     switch (featureID)
     {
-      case LeaPackage.ANALYSIS_DEFINITION__ELEMENTS:
-        return getElements();
+      case LeaPackage.ANALYSIS_DEFINITION__ELEMENT_DECLARATIONS:
+        return getElementDeclarations();
+      case LeaPackage.ANALYSIS_DEFINITION__CHANGE_IDENTIFIER_ASSIGNMENTS:
+        return getChangeIdentifierAssignments();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -125,9 +156,13 @@ public class AnalysisDefinitionImpl extends MinimalEObjectImpl.Container impleme
   {
     switch (featureID)
     {
-      case LeaPackage.ANALYSIS_DEFINITION__ELEMENTS:
-        getElements().clear();
-        getElements().addAll((Collection<? extends EObject>)newValue);
+      case LeaPackage.ANALYSIS_DEFINITION__ELEMENT_DECLARATIONS:
+        getElementDeclarations().clear();
+        getElementDeclarations().addAll((Collection<? extends ElementDeclaration>)newValue);
+        return;
+      case LeaPackage.ANALYSIS_DEFINITION__CHANGE_IDENTIFIER_ASSIGNMENTS:
+        getChangeIdentifierAssignments().clear();
+        getChangeIdentifierAssignments().addAll((Collection<? extends ChangeIdentifierAssignment>)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -143,8 +178,11 @@ public class AnalysisDefinitionImpl extends MinimalEObjectImpl.Container impleme
   {
     switch (featureID)
     {
-      case LeaPackage.ANALYSIS_DEFINITION__ELEMENTS:
-        getElements().clear();
+      case LeaPackage.ANALYSIS_DEFINITION__ELEMENT_DECLARATIONS:
+        getElementDeclarations().clear();
+        return;
+      case LeaPackage.ANALYSIS_DEFINITION__CHANGE_IDENTIFIER_ASSIGNMENTS:
+        getChangeIdentifierAssignments().clear();
         return;
     }
     super.eUnset(featureID);
@@ -160,8 +198,10 @@ public class AnalysisDefinitionImpl extends MinimalEObjectImpl.Container impleme
   {
     switch (featureID)
     {
-      case LeaPackage.ANALYSIS_DEFINITION__ELEMENTS:
-        return elements != null && !elements.isEmpty();
+      case LeaPackage.ANALYSIS_DEFINITION__ELEMENT_DECLARATIONS:
+        return elementDeclarations != null && !elementDeclarations.isEmpty();
+      case LeaPackage.ANALYSIS_DEFINITION__CHANGE_IDENTIFIER_ASSIGNMENTS:
+        return changeIdentifierAssignments != null && !changeIdentifierAssignments.isEmpty();
     }
     return super.eIsSet(featureID);
   }

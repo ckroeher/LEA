@@ -67,9 +67,7 @@ public class LeaFactoryImpl extends EFactoryImpl implements LeaFactory
     {
       case LeaPackage.ANALYSIS_DEFINITION: return createAnalysisDefinition();
       case LeaPackage.CHANGE_IDENTIFIER_ASSIGNMENT: return createChangeIdentifierAssignment();
-      case LeaPackage.ARTIFACT_DECLARATION: return createArtifactDeclaration();
-      case LeaPackage.FRAGMENT_DECLARATION: return createFragmentDeclaration();
-      case LeaPackage.RESULT_DECLARATION: return createResultDeclaration();
+      case LeaPackage.ELEMENT_DECLARATION: return createElementDeclaration();
       case LeaPackage.SET_DEFINITION: return createSetDefinition();
       case LeaPackage.ITERATION: return createIteration();
       case LeaPackage.ASSIGNMENT: return createAssignment();
@@ -112,34 +110,10 @@ public class LeaFactoryImpl extends EFactoryImpl implements LeaFactory
    * @generated
    */
   @Override
-  public ArtifactDeclaration createArtifactDeclaration()
+  public ElementDeclaration createElementDeclaration()
   {
-    ArtifactDeclarationImpl artifactDeclaration = new ArtifactDeclarationImpl();
-    return artifactDeclaration;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public FragmentDeclaration createFragmentDeclaration()
-  {
-    FragmentDeclarationImpl fragmentDeclaration = new FragmentDeclarationImpl();
-    return fragmentDeclaration;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public ResultDeclaration createResultDeclaration()
-  {
-    ResultDeclarationImpl resultDeclaration = new ResultDeclarationImpl();
-    return resultDeclaration;
+    ElementDeclarationImpl elementDeclaration = new ElementDeclarationImpl();
+    return elementDeclaration;
   }
 
   /**

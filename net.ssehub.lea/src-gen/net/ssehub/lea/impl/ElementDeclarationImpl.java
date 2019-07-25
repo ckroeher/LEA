@@ -3,8 +3,8 @@
  */
 package net.ssehub.lea.impl;
 
-import net.ssehub.lea.ArtifactDeclaration;
 import net.ssehub.lea.Assignment;
+import net.ssehub.lea.ElementDeclaration;
 import net.ssehub.lea.LeaPackage;
 import net.ssehub.lea.SetDefinition;
 
@@ -19,41 +19,62 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Artifact Declaration</b></em>'.
+ * An implementation of the model object '<em><b>Element Declaration</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link net.ssehub.lea.impl.ArtifactDeclarationImpl#getType <em>Type</em>}</li>
- *   <li>{@link net.ssehub.lea.impl.ArtifactDeclarationImpl#getSet <em>Set</em>}</li>
- *   <li>{@link net.ssehub.lea.impl.ArtifactDeclarationImpl#getName <em>Name</em>}</li>
- *   <li>{@link net.ssehub.lea.impl.ArtifactDeclarationImpl#getInitialization <em>Initialization</em>}</li>
+ *   <li>{@link net.ssehub.lea.impl.ElementDeclarationImpl#getGenericTyp <em>Generic Typ</em>}</li>
+ *   <li>{@link net.ssehub.lea.impl.ElementDeclarationImpl#getParameterType <em>Parameter Type</em>}</li>
+ *   <li>{@link net.ssehub.lea.impl.ElementDeclarationImpl#getSet <em>Set</em>}</li>
+ *   <li>{@link net.ssehub.lea.impl.ElementDeclarationImpl#getName <em>Name</em>}</li>
+ *   <li>{@link net.ssehub.lea.impl.ElementDeclarationImpl#getInitialization <em>Initialization</em>}</li>
  * </ul>
  *
  * @generated
  */
-public class ArtifactDeclarationImpl extends MinimalEObjectImpl.Container implements ArtifactDeclaration
+public class ElementDeclarationImpl extends MinimalEObjectImpl.Container implements ElementDeclaration
 {
   /**
-   * The default value of the '{@link #getType() <em>Type</em>}' attribute.
+   * The default value of the '{@link #getGenericTyp() <em>Generic Typ</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getType()
+   * @see #getGenericTyp()
    * @generated
    * @ordered
    */
-  protected static final String TYPE_EDEFAULT = null;
+  protected static final String GENERIC_TYP_EDEFAULT = null;
 
   /**
-   * The cached value of the '{@link #getType() <em>Type</em>}' attribute.
+   * The cached value of the '{@link #getGenericTyp() <em>Generic Typ</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getType()
+   * @see #getGenericTyp()
    * @generated
    * @ordered
    */
-  protected String type = TYPE_EDEFAULT;
+  protected String genericTyp = GENERIC_TYP_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getParameterType() <em>Parameter Type</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getParameterType()
+   * @generated
+   * @ordered
+   */
+  protected static final String PARAMETER_TYPE_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getParameterType() <em>Parameter Type</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getParameterType()
+   * @generated
+   * @ordered
+   */
+  protected String parameterType = PARAMETER_TYPE_EDEFAULT;
 
   /**
    * The cached value of the '{@link #getSet() <em>Set</em>}' containment reference.
@@ -100,7 +121,7 @@ public class ArtifactDeclarationImpl extends MinimalEObjectImpl.Container implem
    * <!-- end-user-doc -->
    * @generated
    */
-  protected ArtifactDeclarationImpl()
+  protected ElementDeclarationImpl()
   {
     super();
   }
@@ -113,7 +134,7 @@ public class ArtifactDeclarationImpl extends MinimalEObjectImpl.Container implem
   @Override
   protected EClass eStaticClass()
   {
-    return LeaPackage.Literals.ARTIFACT_DECLARATION;
+    return LeaPackage.Literals.ELEMENT_DECLARATION;
   }
 
   /**
@@ -122,9 +143,9 @@ public class ArtifactDeclarationImpl extends MinimalEObjectImpl.Container implem
    * @generated
    */
   @Override
-  public String getType()
+  public String getGenericTyp()
   {
-    return type;
+    return genericTyp;
   }
 
   /**
@@ -133,12 +154,37 @@ public class ArtifactDeclarationImpl extends MinimalEObjectImpl.Container implem
    * @generated
    */
   @Override
-  public void setType(String newType)
+  public void setGenericTyp(String newGenericTyp)
   {
-    String oldType = type;
-    type = newType;
+    String oldGenericTyp = genericTyp;
+    genericTyp = newGenericTyp;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, LeaPackage.ARTIFACT_DECLARATION__TYPE, oldType, type));
+      eNotify(new ENotificationImpl(this, Notification.SET, LeaPackage.ELEMENT_DECLARATION__GENERIC_TYP, oldGenericTyp, genericTyp));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public String getParameterType()
+  {
+    return parameterType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public void setParameterType(String newParameterType)
+  {
+    String oldParameterType = parameterType;
+    parameterType = newParameterType;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, LeaPackage.ELEMENT_DECLARATION__PARAMETER_TYPE, oldParameterType, parameterType));
   }
 
   /**
@@ -163,7 +209,7 @@ public class ArtifactDeclarationImpl extends MinimalEObjectImpl.Container implem
     set = newSet;
     if (eNotificationRequired())
     {
-      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, LeaPackage.ARTIFACT_DECLARATION__SET, oldSet, newSet);
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, LeaPackage.ELEMENT_DECLARATION__SET, oldSet, newSet);
       if (msgs == null) msgs = notification; else msgs.add(notification);
     }
     return msgs;
@@ -181,14 +227,14 @@ public class ArtifactDeclarationImpl extends MinimalEObjectImpl.Container implem
     {
       NotificationChain msgs = null;
       if (set != null)
-        msgs = ((InternalEObject)set).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - LeaPackage.ARTIFACT_DECLARATION__SET, null, msgs);
+        msgs = ((InternalEObject)set).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - LeaPackage.ELEMENT_DECLARATION__SET, null, msgs);
       if (newSet != null)
-        msgs = ((InternalEObject)newSet).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - LeaPackage.ARTIFACT_DECLARATION__SET, null, msgs);
+        msgs = ((InternalEObject)newSet).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - LeaPackage.ELEMENT_DECLARATION__SET, null, msgs);
       msgs = basicSetSet(newSet, msgs);
       if (msgs != null) msgs.dispatch();
     }
     else if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, LeaPackage.ARTIFACT_DECLARATION__SET, newSet, newSet));
+      eNotify(new ENotificationImpl(this, Notification.SET, LeaPackage.ELEMENT_DECLARATION__SET, newSet, newSet));
   }
 
   /**
@@ -213,7 +259,7 @@ public class ArtifactDeclarationImpl extends MinimalEObjectImpl.Container implem
     String oldName = name;
     name = newName;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, LeaPackage.ARTIFACT_DECLARATION__NAME, oldName, name));
+      eNotify(new ENotificationImpl(this, Notification.SET, LeaPackage.ELEMENT_DECLARATION__NAME, oldName, name));
   }
 
   /**
@@ -238,7 +284,7 @@ public class ArtifactDeclarationImpl extends MinimalEObjectImpl.Container implem
     initialization = newInitialization;
     if (eNotificationRequired())
     {
-      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, LeaPackage.ARTIFACT_DECLARATION__INITIALIZATION, oldInitialization, newInitialization);
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, LeaPackage.ELEMENT_DECLARATION__INITIALIZATION, oldInitialization, newInitialization);
       if (msgs == null) msgs = notification; else msgs.add(notification);
     }
     return msgs;
@@ -256,14 +302,14 @@ public class ArtifactDeclarationImpl extends MinimalEObjectImpl.Container implem
     {
       NotificationChain msgs = null;
       if (initialization != null)
-        msgs = ((InternalEObject)initialization).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - LeaPackage.ARTIFACT_DECLARATION__INITIALIZATION, null, msgs);
+        msgs = ((InternalEObject)initialization).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - LeaPackage.ELEMENT_DECLARATION__INITIALIZATION, null, msgs);
       if (newInitialization != null)
-        msgs = ((InternalEObject)newInitialization).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - LeaPackage.ARTIFACT_DECLARATION__INITIALIZATION, null, msgs);
+        msgs = ((InternalEObject)newInitialization).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - LeaPackage.ELEMENT_DECLARATION__INITIALIZATION, null, msgs);
       msgs = basicSetInitialization(newInitialization, msgs);
       if (msgs != null) msgs.dispatch();
     }
     else if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, LeaPackage.ARTIFACT_DECLARATION__INITIALIZATION, newInitialization, newInitialization));
+      eNotify(new ENotificationImpl(this, Notification.SET, LeaPackage.ELEMENT_DECLARATION__INITIALIZATION, newInitialization, newInitialization));
   }
 
   /**
@@ -276,9 +322,9 @@ public class ArtifactDeclarationImpl extends MinimalEObjectImpl.Container implem
   {
     switch (featureID)
     {
-      case LeaPackage.ARTIFACT_DECLARATION__SET:
+      case LeaPackage.ELEMENT_DECLARATION__SET:
         return basicSetSet(null, msgs);
-      case LeaPackage.ARTIFACT_DECLARATION__INITIALIZATION:
+      case LeaPackage.ELEMENT_DECLARATION__INITIALIZATION:
         return basicSetInitialization(null, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
@@ -294,13 +340,15 @@ public class ArtifactDeclarationImpl extends MinimalEObjectImpl.Container implem
   {
     switch (featureID)
     {
-      case LeaPackage.ARTIFACT_DECLARATION__TYPE:
-        return getType();
-      case LeaPackage.ARTIFACT_DECLARATION__SET:
+      case LeaPackage.ELEMENT_DECLARATION__GENERIC_TYP:
+        return getGenericTyp();
+      case LeaPackage.ELEMENT_DECLARATION__PARAMETER_TYPE:
+        return getParameterType();
+      case LeaPackage.ELEMENT_DECLARATION__SET:
         return getSet();
-      case LeaPackage.ARTIFACT_DECLARATION__NAME:
+      case LeaPackage.ELEMENT_DECLARATION__NAME:
         return getName();
-      case LeaPackage.ARTIFACT_DECLARATION__INITIALIZATION:
+      case LeaPackage.ELEMENT_DECLARATION__INITIALIZATION:
         return getInitialization();
     }
     return super.eGet(featureID, resolve, coreType);
@@ -316,16 +364,19 @@ public class ArtifactDeclarationImpl extends MinimalEObjectImpl.Container implem
   {
     switch (featureID)
     {
-      case LeaPackage.ARTIFACT_DECLARATION__TYPE:
-        setType((String)newValue);
+      case LeaPackage.ELEMENT_DECLARATION__GENERIC_TYP:
+        setGenericTyp((String)newValue);
         return;
-      case LeaPackage.ARTIFACT_DECLARATION__SET:
+      case LeaPackage.ELEMENT_DECLARATION__PARAMETER_TYPE:
+        setParameterType((String)newValue);
+        return;
+      case LeaPackage.ELEMENT_DECLARATION__SET:
         setSet((SetDefinition)newValue);
         return;
-      case LeaPackage.ARTIFACT_DECLARATION__NAME:
+      case LeaPackage.ELEMENT_DECLARATION__NAME:
         setName((String)newValue);
         return;
-      case LeaPackage.ARTIFACT_DECLARATION__INITIALIZATION:
+      case LeaPackage.ELEMENT_DECLARATION__INITIALIZATION:
         setInitialization((Assignment)newValue);
         return;
     }
@@ -342,16 +393,19 @@ public class ArtifactDeclarationImpl extends MinimalEObjectImpl.Container implem
   {
     switch (featureID)
     {
-      case LeaPackage.ARTIFACT_DECLARATION__TYPE:
-        setType(TYPE_EDEFAULT);
+      case LeaPackage.ELEMENT_DECLARATION__GENERIC_TYP:
+        setGenericTyp(GENERIC_TYP_EDEFAULT);
         return;
-      case LeaPackage.ARTIFACT_DECLARATION__SET:
+      case LeaPackage.ELEMENT_DECLARATION__PARAMETER_TYPE:
+        setParameterType(PARAMETER_TYPE_EDEFAULT);
+        return;
+      case LeaPackage.ELEMENT_DECLARATION__SET:
         setSet((SetDefinition)null);
         return;
-      case LeaPackage.ARTIFACT_DECLARATION__NAME:
+      case LeaPackage.ELEMENT_DECLARATION__NAME:
         setName(NAME_EDEFAULT);
         return;
-      case LeaPackage.ARTIFACT_DECLARATION__INITIALIZATION:
+      case LeaPackage.ELEMENT_DECLARATION__INITIALIZATION:
         setInitialization((Assignment)null);
         return;
     }
@@ -368,13 +422,15 @@ public class ArtifactDeclarationImpl extends MinimalEObjectImpl.Container implem
   {
     switch (featureID)
     {
-      case LeaPackage.ARTIFACT_DECLARATION__TYPE:
-        return TYPE_EDEFAULT == null ? type != null : !TYPE_EDEFAULT.equals(type);
-      case LeaPackage.ARTIFACT_DECLARATION__SET:
+      case LeaPackage.ELEMENT_DECLARATION__GENERIC_TYP:
+        return GENERIC_TYP_EDEFAULT == null ? genericTyp != null : !GENERIC_TYP_EDEFAULT.equals(genericTyp);
+      case LeaPackage.ELEMENT_DECLARATION__PARAMETER_TYPE:
+        return PARAMETER_TYPE_EDEFAULT == null ? parameterType != null : !PARAMETER_TYPE_EDEFAULT.equals(parameterType);
+      case LeaPackage.ELEMENT_DECLARATION__SET:
         return set != null;
-      case LeaPackage.ARTIFACT_DECLARATION__NAME:
+      case LeaPackage.ELEMENT_DECLARATION__NAME:
         return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
-      case LeaPackage.ARTIFACT_DECLARATION__INITIALIZATION:
+      case LeaPackage.ELEMENT_DECLARATION__INITIALIZATION:
         return initialization != null;
     }
     return super.eIsSet(featureID);
@@ -391,12 +447,14 @@ public class ArtifactDeclarationImpl extends MinimalEObjectImpl.Container implem
     if (eIsProxy()) return super.toString();
 
     StringBuilder result = new StringBuilder(super.toString());
-    result.append(" (type: ");
-    result.append(type);
+    result.append(" (genericTyp: ");
+    result.append(genericTyp);
+    result.append(", parameterType: ");
+    result.append(parameterType);
     result.append(", name: ");
     result.append(name);
     result.append(')');
     return result.toString();
   }
 
-} //ArtifactDeclarationImpl
+} //ElementDeclarationImpl

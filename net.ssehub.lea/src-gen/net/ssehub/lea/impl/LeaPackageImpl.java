@@ -4,18 +4,16 @@
 package net.ssehub.lea.impl;
 
 import net.ssehub.lea.AnalysisDefinition;
-import net.ssehub.lea.ArtifactDeclaration;
 import net.ssehub.lea.Assignment;
 import net.ssehub.lea.Call;
 import net.ssehub.lea.ChangeIdentifierAssignment;
-import net.ssehub.lea.FragmentDeclaration;
+import net.ssehub.lea.ElementDeclaration;
 import net.ssehub.lea.Iteration;
 import net.ssehub.lea.LeaFactory;
 import net.ssehub.lea.LeaPackage;
 import net.ssehub.lea.Operation;
 import net.ssehub.lea.Parameter;
 import net.ssehub.lea.ParameterList;
-import net.ssehub.lea.ResultDeclaration;
 import net.ssehub.lea.SetDefinition;
 
 import org.eclipse.emf.ecore.EAttribute;
@@ -52,21 +50,7 @@ public class LeaPackageImpl extends EPackageImpl implements LeaPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  private EClass artifactDeclarationEClass = null;
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  private EClass fragmentDeclarationEClass = null;
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  private EClass resultDeclarationEClass = null;
+  private EClass elementDeclarationEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -197,9 +181,20 @@ public class LeaPackageImpl extends EPackageImpl implements LeaPackage
    * @generated
    */
   @Override
-  public EReference getAnalysisDefinition_Elements()
+  public EReference getAnalysisDefinition_ElementDeclarations()
   {
     return (EReference)analysisDefinitionEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EReference getAnalysisDefinition_ChangeIdentifierAssignments()
+  {
+    return (EReference)analysisDefinitionEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -241,9 +236,9 @@ public class LeaPackageImpl extends EPackageImpl implements LeaPackage
    * @generated
    */
   @Override
-  public EClass getArtifactDeclaration()
+  public EClass getElementDeclaration()
   {
-    return artifactDeclarationEClass;
+    return elementDeclarationEClass;
   }
 
   /**
@@ -252,9 +247,9 @@ public class LeaPackageImpl extends EPackageImpl implements LeaPackage
    * @generated
    */
   @Override
-  public EAttribute getArtifactDeclaration_Type()
+  public EAttribute getElementDeclaration_GenericTyp()
   {
-    return (EAttribute)artifactDeclarationEClass.getEStructuralFeatures().get(0);
+    return (EAttribute)elementDeclarationEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -263,9 +258,9 @@ public class LeaPackageImpl extends EPackageImpl implements LeaPackage
    * @generated
    */
   @Override
-  public EReference getArtifactDeclaration_Set()
+  public EAttribute getElementDeclaration_ParameterType()
   {
-    return (EReference)artifactDeclarationEClass.getEStructuralFeatures().get(1);
+    return (EAttribute)elementDeclarationEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -274,9 +269,9 @@ public class LeaPackageImpl extends EPackageImpl implements LeaPackage
    * @generated
    */
   @Override
-  public EAttribute getArtifactDeclaration_Name()
+  public EReference getElementDeclaration_Set()
   {
-    return (EAttribute)artifactDeclarationEClass.getEStructuralFeatures().get(2);
+    return (EReference)elementDeclarationEClass.getEStructuralFeatures().get(2);
   }
 
   /**
@@ -285,9 +280,9 @@ public class LeaPackageImpl extends EPackageImpl implements LeaPackage
    * @generated
    */
   @Override
-  public EReference getArtifactDeclaration_Initialization()
+  public EAttribute getElementDeclaration_Name()
   {
-    return (EReference)artifactDeclarationEClass.getEStructuralFeatures().get(3);
+    return (EAttribute)elementDeclarationEClass.getEStructuralFeatures().get(3);
   }
 
   /**
@@ -296,108 +291,9 @@ public class LeaPackageImpl extends EPackageImpl implements LeaPackage
    * @generated
    */
   @Override
-  public EClass getFragmentDeclaration()
+  public EReference getElementDeclaration_Initialization()
   {
-    return fragmentDeclarationEClass;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EAttribute getFragmentDeclaration_Type()
-  {
-    return (EAttribute)fragmentDeclarationEClass.getEStructuralFeatures().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EReference getFragmentDeclaration_Set()
-  {
-    return (EReference)fragmentDeclarationEClass.getEStructuralFeatures().get(1);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EAttribute getFragmentDeclaration_Name()
-  {
-    return (EAttribute)fragmentDeclarationEClass.getEStructuralFeatures().get(2);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EReference getFragmentDeclaration_Initialization()
-  {
-    return (EReference)fragmentDeclarationEClass.getEStructuralFeatures().get(3);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EClass getResultDeclaration()
-  {
-    return resultDeclarationEClass;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EAttribute getResultDeclaration_Type()
-  {
-    return (EAttribute)resultDeclarationEClass.getEStructuralFeatures().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EReference getResultDeclaration_Set()
-  {
-    return (EReference)resultDeclarationEClass.getEStructuralFeatures().get(1);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EAttribute getResultDeclaration_Name()
-  {
-    return (EAttribute)resultDeclarationEClass.getEStructuralFeatures().get(2);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EReference getResultDeclaration_Initialization()
-  {
-    return (EReference)resultDeclarationEClass.getEStructuralFeatures().get(3);
+    return (EReference)elementDeclarationEClass.getEStructuralFeatures().get(4);
   }
 
   /**
@@ -652,29 +548,19 @@ public class LeaPackageImpl extends EPackageImpl implements LeaPackage
 
     // Create classes and their features
     analysisDefinitionEClass = createEClass(ANALYSIS_DEFINITION);
-    createEReference(analysisDefinitionEClass, ANALYSIS_DEFINITION__ELEMENTS);
+    createEReference(analysisDefinitionEClass, ANALYSIS_DEFINITION__ELEMENT_DECLARATIONS);
+    createEReference(analysisDefinitionEClass, ANALYSIS_DEFINITION__CHANGE_IDENTIFIER_ASSIGNMENTS);
 
     changeIdentifierAssignmentEClass = createEClass(CHANGE_IDENTIFIER_ASSIGNMENT);
     createEAttribute(changeIdentifierAssignmentEClass, CHANGE_IDENTIFIER_ASSIGNMENT__IDENTIFIER);
     createEAttribute(changeIdentifierAssignmentEClass, CHANGE_IDENTIFIER_ASSIGNMENT__ELEMENTS);
 
-    artifactDeclarationEClass = createEClass(ARTIFACT_DECLARATION);
-    createEAttribute(artifactDeclarationEClass, ARTIFACT_DECLARATION__TYPE);
-    createEReference(artifactDeclarationEClass, ARTIFACT_DECLARATION__SET);
-    createEAttribute(artifactDeclarationEClass, ARTIFACT_DECLARATION__NAME);
-    createEReference(artifactDeclarationEClass, ARTIFACT_DECLARATION__INITIALIZATION);
-
-    fragmentDeclarationEClass = createEClass(FRAGMENT_DECLARATION);
-    createEAttribute(fragmentDeclarationEClass, FRAGMENT_DECLARATION__TYPE);
-    createEReference(fragmentDeclarationEClass, FRAGMENT_DECLARATION__SET);
-    createEAttribute(fragmentDeclarationEClass, FRAGMENT_DECLARATION__NAME);
-    createEReference(fragmentDeclarationEClass, FRAGMENT_DECLARATION__INITIALIZATION);
-
-    resultDeclarationEClass = createEClass(RESULT_DECLARATION);
-    createEAttribute(resultDeclarationEClass, RESULT_DECLARATION__TYPE);
-    createEReference(resultDeclarationEClass, RESULT_DECLARATION__SET);
-    createEAttribute(resultDeclarationEClass, RESULT_DECLARATION__NAME);
-    createEReference(resultDeclarationEClass, RESULT_DECLARATION__INITIALIZATION);
+    elementDeclarationEClass = createEClass(ELEMENT_DECLARATION);
+    createEAttribute(elementDeclarationEClass, ELEMENT_DECLARATION__GENERIC_TYP);
+    createEAttribute(elementDeclarationEClass, ELEMENT_DECLARATION__PARAMETER_TYPE);
+    createEReference(elementDeclarationEClass, ELEMENT_DECLARATION__SET);
+    createEAttribute(elementDeclarationEClass, ELEMENT_DECLARATION__NAME);
+    createEReference(elementDeclarationEClass, ELEMENT_DECLARATION__INITIALIZATION);
 
     setDefinitionEClass = createEClass(SET_DEFINITION);
     createEReference(setDefinitionEClass, SET_DEFINITION__ITERATION);
@@ -736,29 +622,19 @@ public class LeaPackageImpl extends EPackageImpl implements LeaPackage
 
     // Initialize classes and features; add operations and parameters
     initEClass(analysisDefinitionEClass, AnalysisDefinition.class, "AnalysisDefinition", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEReference(getAnalysisDefinition_Elements(), ecorePackage.getEObject(), null, "elements", null, 0, -1, AnalysisDefinition.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getAnalysisDefinition_ElementDeclarations(), this.getElementDeclaration(), null, "elementDeclarations", null, 0, -1, AnalysisDefinition.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getAnalysisDefinition_ChangeIdentifierAssignments(), this.getChangeIdentifierAssignment(), null, "changeIdentifierAssignments", null, 0, -1, AnalysisDefinition.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(changeIdentifierAssignmentEClass, ChangeIdentifierAssignment.class, "ChangeIdentifierAssignment", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getChangeIdentifierAssignment_Identifier(), ecorePackage.getEString(), "identifier", null, 0, 1, ChangeIdentifierAssignment.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getChangeIdentifierAssignment_Elements(), ecorePackage.getEString(), "elements", null, 0, -1, ChangeIdentifierAssignment.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-    initEClass(artifactDeclarationEClass, ArtifactDeclaration.class, "ArtifactDeclaration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getArtifactDeclaration_Type(), ecorePackage.getEString(), "type", null, 0, 1, ArtifactDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getArtifactDeclaration_Set(), this.getSetDefinition(), null, "set", null, 0, 1, ArtifactDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getArtifactDeclaration_Name(), ecorePackage.getEString(), "name", null, 0, 1, ArtifactDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getArtifactDeclaration_Initialization(), this.getAssignment(), null, "initialization", null, 0, 1, ArtifactDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-    initEClass(fragmentDeclarationEClass, FragmentDeclaration.class, "FragmentDeclaration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getFragmentDeclaration_Type(), ecorePackage.getEString(), "type", null, 0, 1, FragmentDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getFragmentDeclaration_Set(), this.getSetDefinition(), null, "set", null, 0, 1, FragmentDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getFragmentDeclaration_Name(), ecorePackage.getEString(), "name", null, 0, 1, FragmentDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getFragmentDeclaration_Initialization(), this.getAssignment(), null, "initialization", null, 0, 1, FragmentDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-    initEClass(resultDeclarationEClass, ResultDeclaration.class, "ResultDeclaration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getResultDeclaration_Type(), ecorePackage.getEString(), "type", null, 0, 1, ResultDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getResultDeclaration_Set(), this.getSetDefinition(), null, "set", null, 0, 1, ResultDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getResultDeclaration_Name(), ecorePackage.getEString(), "name", null, 0, 1, ResultDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getResultDeclaration_Initialization(), this.getAssignment(), null, "initialization", null, 0, 1, ResultDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEClass(elementDeclarationEClass, ElementDeclaration.class, "ElementDeclaration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getElementDeclaration_GenericTyp(), ecorePackage.getEString(), "genericTyp", null, 0, 1, ElementDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getElementDeclaration_ParameterType(), ecorePackage.getEString(), "parameterType", null, 0, 1, ElementDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getElementDeclaration_Set(), this.getSetDefinition(), null, "set", null, 0, 1, ElementDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getElementDeclaration_Name(), ecorePackage.getEString(), "name", null, 0, 1, ElementDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getElementDeclaration_Initialization(), this.getAssignment(), null, "initialization", null, 0, 1, ElementDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(setDefinitionEClass, SetDefinition.class, "SetDefinition", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getSetDefinition_Iteration(), this.getIteration(), null, "iteration", null, 0, 1, SetDefinition.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
