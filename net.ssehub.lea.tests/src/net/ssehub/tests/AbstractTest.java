@@ -24,6 +24,7 @@ import org.eclipse.xtext.testing.validation.ValidationTestHelper;
 import com.google.inject.Inject;
 
 import net.ssehub.lea.AnalysisDefinition;
+import net.ssehub.lea.ChangeIdentifierAssignment;
 import net.ssehub.lea.ElementDeclaration;
 import net.ssehub.lea.Iteration;
 import net.ssehub.lea.SetDefinition;
@@ -250,4 +251,30 @@ public abstract class AbstractTest {
         return problemDescription;
     }
 //CHECKSTYLE:ON
+    /**
+     * Tests the given {@link ChangeIdentifierAssignment} based on the other given parameters for correctness.
+     * 
+     * @param assignment the {@link ChangeIdentifierAssignment} to check for correctness
+     * @param expectedElementCount the expected number of elements to which the identifier is assigned
+     * @return <code>null</code>, if the assignment is correct, or a textual description of the detected problems
+     */
+    protected String testCorrectChangeIdenitierAssignment(ChangeIdentifierAssignment assignment,
+            int expectedElementCount) {
+        String problemDescription = null;
+        StringBuilder problemDescriptionBuilder = new StringBuilder();
+        if (assignment.getIdentifier().isBlank()) {
+            problemDescriptionBuilder.append("Missing change identifier name\n");
+        }
+        if (assignment.getElements().size() != expectedElementCount) {
+            problemDescriptionBuilder.append("Expected elements to assign to ");
+            problemDescriptionBuilder.append(expectedElementCount);
+            problemDescriptionBuilder.append(", but was ");
+            problemDescriptionBuilder.append(assignment.getElements().size());
+        }
+        // Build the description string, if problems were found and described
+        if (problemDescriptionBuilder.length() > 0) {
+            problemDescription = problemDescriptionBuilder.toString();
+        }
+        return problemDescription;
+    }
 }

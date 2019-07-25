@@ -29,7 +29,8 @@ import org.junit.runners.Suite.SuiteClasses;
     BasicAnalysisDefinitionTests.class,
     BasicArtifactParsingTests.class,
     BasicFragmentParsingTests.class,
-    BasicResultParsingTests.class
+    BasicResultParsingTests.class,
+    BasicChangeIdentifierAssignmentTests.class
     })
 public class AllTests {
 
