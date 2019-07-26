@@ -1,0 +1,111 @@
+/*
+ * Copyright 2019 University of Hildesheim, Software Systems Engineering
+ * 
+ * Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements. See the NOTICE
+ * file distributed with this work for additional information regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
+ */
+package net.ssehub.integration;
+
+import java.io.File;
+
+/**
+ * This abstract class defines the common attributes and methods for each (external) language element.
+ *  
+ * @author Christian Kroeher
+ *
+ */
+public abstract class LanguageElement {
+
+    /**
+     * The {@link ElementType} of this element.
+     */
+    private ElementType elementType;
+    
+    /**
+     * The name of this element. This is also the user-visible name when using the language.
+     */
+    private String name;
+    
+    /**
+     * The {@link Class} from where this element was created.
+     */
+    private Class<?> sourceClass;
+    
+    /**
+     * The {@link File}, which is a Java archive file, from where this element was created.
+     */
+    private File sourcePlugin;
+    
+    /**
+     * Constructs a new {@link LanguageElement} with the given attributes.
+     * 
+     * @param elementType the {@link ElementType} of this new element
+     * @param name the name of this new element
+     * @param sourceClass the {@link Class} from where this new element is created
+     * @param sourcePlugin the {@link File}, which is a Java archive file, from where this new element is created
+     * @throws LanguageElementException if any of the above parameters is <code>null</code> or the name is <i>blank</i>
+     */
+    protected LanguageElement(ElementType elementType, String name, Class<?> sourceClass, File sourcePlugin) 
+            throws LanguageElementException {
+        if (elementType == null) {
+            throw new LanguageElementException("The element type for the new language element is null");
+        }
+        if (name == null || name.isBlank()) {
+            throw new LanguageElementException("The name for the new language element is null or blank");
+        }
+        if (sourceClass == null) {
+            throw new LanguageElementException("The source class for the new language element is null");
+        }
+        if (sourcePlugin == null) {
+            throw new LanguageElementException("The source plug-in for the new language element is null");
+        }
+        this.elementType = elementType;
+        this.name = name;
+        this.sourceClass = sourceClass;
+        this.sourcePlugin = sourcePlugin;
+    }
+    
+    /**
+     * Returns the {@link ElementType} of this element.
+     * 
+     * @return the {@link ElementType} of this element; never <code>null</code>
+     */
+    public ElementType getElementType() {
+        return elementType;
+    }
+    
+    /**
+     * Returns the name of this element.
+     * 
+     * @return the name of this element; never <code>null</code> nor <i>blank</i>
+     */
+    public String getName() {
+        return name;
+    }
+    
+    /**
+     * Returns the {@link Class} from where this element was created.
+     * 
+     * @return the {@link Class} from where this element was created; never <code>null</code>
+     */
+    public Class<?> getSourceClass() {
+        return sourceClass;
+    }
+    
+    /**
+     * Returns the {@link File}, which is a Java archive file, from where this element was created.
+     * 
+     * @return the {@link File} from where this element was created; never <code>null</code>
+     */
+    public File getSourcePlugin() {
+        return sourcePlugin;
+    }
+}
