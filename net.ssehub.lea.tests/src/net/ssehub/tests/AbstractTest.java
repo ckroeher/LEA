@@ -39,7 +39,7 @@ public abstract class AbstractTest {
     
     /**
      * This inner class defines a custom exception that is thrown, if a method provided by the {@link AbstractTest}
-     * class fails. This enables populating a common error to the respective unit test where it is actually caused.
+     * class fails. This enables propagating a common error to the respective unit test where it is actually caused.
      * 
      * @author Christian Kroeher
      *
