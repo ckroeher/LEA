@@ -125,7 +125,13 @@ public class LanguageElementProvider {
             for (String pluginClassName : pluginClassNames) {
                 try {
                     pluginClass = Class.forName(pluginClassName, false, new URLClassLoader(pluginUrls));
-                    // TODO scanClassForAnnotation(pluginClass, plugin);
+                    /*
+                     * TODO Creating the actual language elements based on the loaded plug-in class should be done in a 
+                     * separate class. First, as this class would become to large and, second, because this "extraction"
+                     * is a different concern than loading the classes here.
+                     * 
+                     * Old call: scanClassForAnnotation(pluginClass, plugin);
+                     */
                 } catch (LinkageError | ClassNotFoundException | SecurityException e) {
                     throw new ExternalElementException("Could not load class \"" + pluginClassName + "\"", e);
                 } catch (NullPointerException e) {
