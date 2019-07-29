@@ -12,7 +12,7 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package net.ssehub.tests;
+package net.ssehub.tests.parsing;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -85,7 +85,7 @@ public abstract class AbstractTest {
     /**
      * This {@link File} denotes the root directory in which the test data files are located.
      */
-    private static final File TESTDATA_DIRECTORY = new File("./testdata");
+    private static final File TESTDATA_DIRECTORY = new File("./testdata/parsing");
     
     /**
      * This {@link ValidationTestHelper} enables checks of parser results to detect syntactical errors.

@@ -12,7 +12,7 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package net.ssehub.tests;
+package net.ssehub.tests.parsing;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -28,6 +28,7 @@ import com.google.inject.Inject;
 
 import net.ssehub.lea.AnalysisDefinition;
 import net.ssehub.lea.ElementDeclaration;
+import net.ssehub.tests.LeaInjectorProvider;
 
 /**
  * This class contains basic tests for parsing {@link ElementDeclaration}s of the parameter type <i>Artifact</i>.

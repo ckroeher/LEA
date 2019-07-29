@@ -12,32 +12,10 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package net.ssehub.tests;
-
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
-
-import net.ssehub.tests.parsing.BasicAnalysisDefinitionTests;
-import net.ssehub.tests.parsing.BasicArtifactParsingTests;
-import net.ssehub.tests.parsing.BasicChangeIdentifierAssignmentTests;
-import net.ssehub.tests.parsing.BasicFragmentParsingTests;
-import net.ssehub.tests.parsing.BasicResultParsingTests;
-
 /**
- * This class summarizes all unit test classes into a single test suite.
+ * This package contains unit tests for the integration of external LEA elements.
  * 
  * @author Christian Kroeher
  *
  */
-@RunWith(Suite.class)
-@SuiteClasses({
-    BasicAnalysisDefinitionTests.class,
-    BasicArtifactParsingTests.class,
-    BasicFragmentParsingTests.class,
-    BasicResultParsingTests.class,
-    BasicChangeIdentifierAssignmentTests.class
-    })
-public class AllTests {
-
-}
+package net.ssehub.tests.integration;
