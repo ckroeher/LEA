@@ -29,47 +29,14 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 /**
- * This class TODO.
+ * This class provides {@link LanguageElement}s from external plug-ins. It therefore loads all plug-ins from a given
+ * directory, loads their classes, and passes them iteratively to the {@link LanguageElementCreator} for creating the
+ * language elements. The created elements are then passed to the {@link LanguageRegistry}.
  * 
  * @author Christian Kroeher
  *
  */
 public class LanguageElementProvider {
-    
-    /**
-     * This inner class defines a custom exception that is thrown, if the {@link LanguageElementProvider} encounters
-     * errors or other problems while trying to detect external language elements. It enables propagating such errors
-     * to other classes that use this provider as well as internal error handling.
-     * 
-     * @author Christian Kroeher
-     *
-     */
-    protected class ExternalElementException extends Exception {
-        
-        /**
-         * The id of this serializable class.
-         */
-        private static final long serialVersionUID = 7628457858659845337L;
-
-        /**
-         * Constructs a new {@link ExternalElementException} with the given message.
-         * 
-         * @param message the description of the error causing this exception
-         */
-        private ExternalElementException(String message) {
-            super(message);
-        }
-        
-        /**
-         * Constructs a new {@link ExternalElementException} with the given message and cause.
-         * 
-         * @param message the specific description of the error causing this exception
-         * @param cause the {@link Throwable} representing the actual cause of this exception
-         */
-        private ExternalElementException(String message, Throwable cause) {
-            super(message, cause);
-        }
-    }
     
     /**
      * The file extension including "." of a Java archive file.
@@ -80,17 +47,29 @@ public class LanguageElementProvider {
      * The file extension including "." of a Java class file.
      */
     private static final String JAVA_CLASS_FILE_EXTENSION = ".class";
+    
+    /**
+     * The {@link LanguageRegistry} to which new {@link LanguageElement}s should be provided.
+     */
+    private LanguageRegistry languageRegistry;
 
     /**
-     * TODO.
+     * Constructs a new {@link LanguageElementProvider}.
+     * 
+     * @param languageRegistry the {@link LanguageRegistry} to which new {@link LanguageElement}s should be provided 
      */
-    protected LanguageElementProvider() {
-        
+    protected LanguageElementProvider(LanguageRegistry languageRegistry) {
+        this.languageRegistry = languageRegistry;
     }
     
     /**
-     * TODO.
-     * @param pluginDirectory TODO
+     * Scans all plug-ins (<code>*.jar</code>-files) in the given plug-in directory for classes that contain the custom
+     * annotations, which classify the class, its attributes, or its methods to represent language elements. Based on 
+     * these annotated elements, the {@link LanguageElementCreator} creates corresponding {@link LanguageElement}s,
+     * which this class passes to the {@link LanguageRegistry}.
+     *  
+     * @param pluginDirectory the {@link File} denoting a directory, in which all plug-ins (<code>*.jar</code>-files)
+     *        should be scanned for classes introducing new language elements
      * @throws ExternalElementException if the given directory is <code>null</code>, does not exist, is not a directory,
      *         or detecting language elements from the plug-ins in that directory causes an internal error; it is 
      *         <b>not</b> thrown, if no plug-ins or elements could be found
@@ -106,10 +85,10 @@ public class LanguageElementProvider {
     
     /**
      * Detects language elements declared in the classes of the given {@link File}, which is assumed to be a Java
-     * archive file, and adds these elements to the TODO. Note that, if the given plug-in could not be read to detect
-     * language elements, the user will be informed by TODO. There is no further error propagation at this point, as
-     * this method is called for each plug-in individually and, hence, an error for one plug-in should not prevent
-     * reading other plug-ins.
+     * archive file, and adds these elements to the {@link LanguageRegistry}. Note that, if the given plug-in could not
+     * be read to detect language elements, the user will be informed by TODO. There is no further error propagation at
+     * this point, as this method is called for each plug-in individually and, hence, an error for one plug-in should
+     * not prevent reading other plug-ins.
      *  
      * @param plugin the {@link File} denoting a Java archive file in which all classes will be scanned for declaring
      *        language elements; should never be <code>null</code> 
@@ -121,17 +100,12 @@ public class LanguageElementProvider {
     private void detectLanguageElements(File plugin, URL[] pluginUrls) {
         try {
             List<String> pluginClassNames = getPluginClassNames(plugin);
+            LanguageElementCreator elementCreator = new LanguageElementCreator();
             Class<?> pluginClass;
             for (String pluginClassName : pluginClassNames) {
                 try {
                     pluginClass = Class.forName(pluginClassName, false, new URLClassLoader(pluginUrls));
-                    /*
-                     * TODO Creating the actual language elements based on the loaded plug-in class should be done in a 
-                     * separate class. First, as this class would become to large and, second, because this "extraction"
-                     * is a different concern than loading the classes here.
-                     * 
-                     * Old call: scanClassForAnnotation(pluginClass, plugin);
-                     */
+                    languageRegistry.addLanguageElements(elementCreator.createLanguageElements(pluginClass, plugin));
                 } catch (LinkageError | ClassNotFoundException | SecurityException e) {
                     throw new ExternalElementException("Could not load class \"" + pluginClassName + "\"", e);
                 } catch (NullPointerException e) {
