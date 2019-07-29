@@ -135,7 +135,8 @@ public class LanguageElementProvider {
                 } catch (LinkageError | ClassNotFoundException | SecurityException e) {
                     throw new ExternalElementException("Could not load class \"" + pluginClassName + "\"", e);
                 } catch (NullPointerException e) {
-                    throw new ExternalElementException("Could not load class due to plug-in URLs being null", e);
+                    throw new ExternalElementException("Could not load class \"" + pluginClassName 
+                            + "\" due to plug-in URLs being null", e);
                 }
             }
         } catch (ExternalElementException e) {
