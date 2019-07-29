@@ -18,6 +18,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import net.ssehub.tests.integration.ArtifactParameterTypeCreationTests;
+import net.ssehub.tests.integration.BasicLanguageElementCreatorTests;
 import net.ssehub.tests.parsing.BasicAnalysisDefinitionTests;
 import net.ssehub.tests.parsing.BasicArtifactParsingTests;
 import net.ssehub.tests.parsing.BasicChangeIdentifierAssignmentTests;
@@ -32,11 +34,15 @@ import net.ssehub.tests.parsing.BasicResultParsingTests;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
+    // Parsing tests
     BasicAnalysisDefinitionTests.class,
     BasicArtifactParsingTests.class,
     BasicFragmentParsingTests.class,
     BasicResultParsingTests.class,
-    BasicChangeIdentifierAssignmentTests.class
+    BasicChangeIdentifierAssignmentTests.class,
+    // Integration tests
+    BasicLanguageElementCreatorTests.class,
+    ArtifactParameterTypeCreationTests.class
     })
 public class AllTests {
 
