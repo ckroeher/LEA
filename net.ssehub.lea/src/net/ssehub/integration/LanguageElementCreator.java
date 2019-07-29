@@ -37,7 +37,7 @@ public class LanguageElementCreator {
      * 
      * @see LanguageElementCreator#createLanguageElements(Class, File)
      */
-    protected LanguageElementCreator() {
+    public LanguageElementCreator() {
         
     }
     
@@ -54,7 +54,7 @@ public class LanguageElementCreator {
      * @throws ExternalElementException if creating a language element failed; it is <b>not</b> thrown, if the given
      *         class does not introduce any language elements
      */
-    protected List<LanguageElement> createLanguageElements(Class<?> pluginClass, File sourcePlugin) 
+    public List<LanguageElement> createLanguageElements(Class<?> pluginClass, File sourcePlugin) 
             throws ExternalElementException {
         List<LanguageElement> createdElementsList = new ArrayList<LanguageElement>();
         LanguageElement createdElement = createLanguageElementFromClass(pluginClass, sourcePlugin);

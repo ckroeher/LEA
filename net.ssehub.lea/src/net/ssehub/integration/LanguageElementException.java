@@ -22,7 +22,7 @@ package net.ssehub.integration;
  * @author Christian Kroeher
  *
  */
-class LanguageElementException extends Exception {
+public class LanguageElementException extends Exception {
     
     /**
      * The id of this serializable class.

@@ -58,7 +58,7 @@ public class LanguageElementProvider {
      * 
      * @param languageRegistry the {@link LanguageRegistry} to which new {@link LanguageElement}s should be provided 
      */
-    protected LanguageElementProvider(LanguageRegistry languageRegistry) {
+    public LanguageElementProvider(LanguageRegistry languageRegistry) {
         this.languageRegistry = languageRegistry;
     }
     
@@ -74,7 +74,7 @@ public class LanguageElementProvider {
      *         or detecting language elements from the plug-ins in that directory causes an internal error; it is 
      *         <b>not</b> thrown, if no plug-ins or elements could be found
      */
-    protected void detectLanguageElements(File pluginDirectory) throws ExternalElementException {
+    public void detectLanguageElements(File pluginDirectory) throws ExternalElementException {
         checkDirectory(pluginDirectory);
         List<File> plugins = getJarFiles(pluginDirectory);
         URL[] pluginUrls = getPluginUrls(plugins);

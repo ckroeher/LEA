@@ -15,15 +15,17 @@ Require-Bundle: org.eclipse.xtext,
  org.eclipse.emf.common,
  org.antlr.runtime;bundle-version="[3.2.0,3.2.1)"
 Bundle-RequiredExecutionEnvironment: JavaSE-11
-Export-Package: net.ssehub.parser.antlr.internal,
- net.ssehub.validation,
- net.ssehub,
- net.ssehub.lea.impl,
- net.ssehub.scoping,
- net.ssehub.lea,
- net.ssehub.parser.antlr,
+Export-Package: net.ssehub,
  net.ssehub.generator,
+ net.ssehub.integration,
+ net.ssehub.integration.annotations,
+ net.ssehub.lea,
+ net.ssehub.lea.impl,
+ net.ssehub.lea.util,
+ net.ssehub.parser.antlr,
+ net.ssehub.parser.antlr.internal,
+ net.ssehub.scoping,
  net.ssehub.serializer,
  net.ssehub.services,
- net.ssehub.lea.util
+ net.ssehub.validation
 Import-Package: org.apache.log4j

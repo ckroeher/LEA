@@ -23,7 +23,7 @@ package net.ssehub.integration;
  * @author Christian Kroeher
  *
  */
-class ExternalElementException extends Exception {
+public class ExternalElementException extends Exception {
     
     /**
      * The id of this serializable class.
