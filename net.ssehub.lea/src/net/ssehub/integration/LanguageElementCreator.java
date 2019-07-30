@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.ssehub.integration.annotations.ArtifactParameterType;
-import net.ssehub.integration.annotations.FragmentParamterType;
+import net.ssehub.integration.annotations.FragmentParameterType;
 import net.ssehub.integration.annotations.ResultParameterType;
 
 /**
@@ -79,7 +79,7 @@ public class LanguageElementCreator {
      * <li>{@link ArtifactParameterType}, which declares a type <code>T</code> for defining artifacts, like
      *     <code><b>Artifact</b>&lt;T&gt; myArtifact;</code>
      * </li>
-     * <li>{@link FragmentParamterType}, which declares a type <code>T</code> for defining fragments, like
+     * <li>{@link FragmentParameterType}, which declares a type <code>T</code> for defining fragments, like
      *     <code><b>Fragment</b>&lt;T&gt; myFragment;</code>
      * </li>
      * <li>{@link ResultParameterType}, which declares a type <code>T</code> for defining results, like
@@ -109,10 +109,10 @@ public class LanguageElementCreator {
             ArtifactParameterType customAnnotation = pluginClass.getAnnotation(ArtifactParameterType.class);
             symbolicName = customAnnotation.name();
             symbolicParameterName = customAnnotation.parameterName();
-        } else if (pluginClass.isAnnotationPresent(FragmentParamterType.class)) {
+        } else if (pluginClass.isAnnotationPresent(FragmentParameterType.class)) {
             // The pluginClass declares a type T for defining fragments, like "Fragment<T> myFragment;"
             elementType = ElementType.FRAGMENT_PARAMETER_TYPE;
-            FragmentParamterType customAnnotation = pluginClass.getAnnotation(FragmentParamterType.class);
+            FragmentParameterType customAnnotation = pluginClass.getAnnotation(FragmentParameterType.class);
             symbolicName = customAnnotation.name();
             symbolicParameterName = customAnnotation.parameterName();
             

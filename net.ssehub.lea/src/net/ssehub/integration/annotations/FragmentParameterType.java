@@ -34,7 +34,7 @@ import net.ssehub.integration.ParameterType;
 @Documented
 @Retention(RUNTIME)
 @Target(TYPE)
-public @interface FragmentParamterType {
+public @interface FragmentParameterType {
 
     /**
      * Returns the (symbolic) name of this {@link ElementType#FRAGMENT_PARAMETER_TYPE}. If this name is defined, it is 
