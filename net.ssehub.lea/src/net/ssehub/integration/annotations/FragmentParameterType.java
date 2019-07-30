@@ -40,7 +40,7 @@ public @interface FragmentParameterType {
      * Returns the (symbolic) name of this {@link ElementType#FRAGMENT_PARAMETER_TYPE}. If this name is defined, it is 
      * proposed as language element instead of using the name of the annotated class.
      * 
-     * @return the (symbolic) name of this {@link ElementType#FRAGMENT_PARAMETER_TYPE}; the default valued is an 
+     * @return the (symbolic) name of this {@link ElementType#FRAGMENT_PARAMETER_TYPE}; the default value is an 
      *         <i>empty</i> string
      */
     public String name() default "";
@@ -52,7 +52,7 @@ public @interface FragmentParameterType {
      * the annotated class is not a generic one, this parameter name is ignored. 
      * 
      * @return the (symbolic) name of the optional parameter type of this {@link ElementType#FRAGMENT_PARAMETER_TYPE},
-     *         if the annotated class is a generic one; the default valued is an <i>empty</i> string
+     *         if the annotated class is a generic one; the default value is an <i>empty</i> string
      */
     public String parameterName() default "";
 }
