@@ -16,6 +16,7 @@ package net.ssehub.integration;
 
 import java.io.File;
 import java.lang.reflect.Method;
+import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -152,12 +153,26 @@ public class LanguageElementCreator {
      *         <code>null</code> nor <i>empty</i>
      */
     private String createLanguageElementName(Class<?> pluginClass, String symbolicName, String symbolicParameterName) {
-        String elementName = pluginClass.getSimpleName();
+        StringBuilder elementNameBuilder = new StringBuilder();
+        elementNameBuilder.append(pluginClass.getSimpleName());
         if (!symbolicName.isBlank()) {
-            elementName = symbolicName;
+            // Use the name as defined in the annotation instead of the actual class name
+            elementNameBuilder.setLength(0);
+            elementNameBuilder.append(symbolicName);
         }
-        // TODO check pluginClass for being generic and, if it is, get the parameter type name
-        return elementName;
+        TypeVariable<?>[] typeParameters = pluginClass.getTypeParameters();
+        if (typeParameters.length > 0) {
+            // The plug-in class is a generic. Hence, add the parameter type to the element name
+            elementNameBuilder.append("<");
+            if (!symbolicParameterName.isBlank()) {
+                // Use the parameter type name as defined in the annotation instead of the actual parameter type name
+                elementNameBuilder.append(symbolicParameterName);
+            } else {
+                elementNameBuilder.append(typeParameters[0].getName());
+            }
+            elementNameBuilder.append(">");
+        }
+        return elementNameBuilder.toString();
     }
     
     /**
