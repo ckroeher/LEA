@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.ssehub.integration.annotations.ArtifactParameterType;
+import net.ssehub.integration.annotations.ChangeIdentifier;
 import net.ssehub.integration.annotations.FragmentParameterType;
 import net.ssehub.integration.annotations.ResultParameterType;
 
@@ -74,19 +75,9 @@ public class LanguageElementCreator {
     
     /**
      * Creates a new {@link LanguageElement} by scanning the given {@link Class} for the custom annotations
-     * classifying external classes to represent a language element. These annotations are:
-     * <ul>
-     * <li>{@link ArtifactParameterType}, which declares a type <code>T</code> for defining artifacts, like
-     *     <code><b>Artifact</b>&lt;T&gt; myArtifact;</code>
-     * </li>
-     * <li>{@link FragmentParameterType}, which declares a type <code>T</code> for defining fragments, like
-     *     <code><b>Fragment</b>&lt;T&gt; myFragment;</code>
-     * </li>
-     * <li>{@link ResultParameterType}, which declares a type <code>T</code> for defining results, like
-     *     <code><b>Result</b>&lt;T&gt; myResult;</code>
-     * </li>
-     * </ul>
-     * All other annotations will be ignored, which leads to a return value of <code>null</code>.
+     * classifying external classes to represent a language element. The specific language element depends on the used
+     * annotations and the corresponding processing of the given class in TODO or 
+     * {@link #createParameterType(Class, File)}.
      * 
      * @param pluginClass the {@link Class}, which may introduce a new language element, if it is annotated as such;
      *        should never be <code>null</code>
@@ -100,34 +91,101 @@ public class LanguageElementCreator {
     private LanguageElement createLanguageElementFromClass(Class<?> pluginClass, File sourcePlugin) 
             throws ExternalElementException {
         LanguageElement createdElement = null;
-        ElementType elementType = null;
+        createdElement = createChangeIdentifier(pluginClass, sourcePlugin);
+        if (createdElement == null) {
+            createdElement = createParameterType(pluginClass, sourcePlugin);
+        }
+        return createdElement;
+    }
+    
+    /**
+     * Creates a new {@link net.ssehub.integration.ChangeIdentifier} by scanning the given {@link Class} for the custom
+     * {@link ChangeIdentifier} annotation classifying external classes to represent this language element. All other
+     * annotations will be ignored, which leads to a return value of <code>null</code>.
+     * 
+     * @param pluginClass the {@link Class}, which may introduce a new {@link net.ssehub.integration.ChangeIdentifier};
+     *        should never be <code>null</code>
+     * @param sourcePlugin the {@link File} denoting a Java archive file in which the given class is located; should
+     *        never be <code>null</code>
+     * @return a {@link net.ssehub.integration.ChangeIdentifier} derived from the given class or <code>null</code>, if
+     *         this class is not annotated as introducing such a type of language element
+     * @throws ExternalElementException if creating the {@link net.ssehub.integration.ChangeIdentifier} failed; it is
+     *         <b>not</b> thrown, if the given class does not introduce any language elements
+     */
+    private net.ssehub.integration.ChangeIdentifier createChangeIdentifier(Class<?> pluginClass, File sourcePlugin) 
+            throws ExternalElementException {
+        net.ssehub.integration.ChangeIdentifier changeIndentifier = null;
+        if (pluginClass.isAnnotationPresent(ChangeIdentifier.class)) {
+            ChangeIdentifier customAnnotation = pluginClass.getAnnotation(ChangeIdentifier.class);
+            try {
+                changeIndentifier = new net.ssehub.integration.ChangeIdentifier(
+                        createLanguageElementName(pluginClass, customAnnotation.name(), ""),
+                        customAnnotation.assignableTo(), pluginClass, sourcePlugin);
+            } catch (LanguageElementException e) {
+                throw new ExternalElementException("Creating change identifier based on class \"" 
+                        + pluginClass.getSimpleName() + "\" in plug-in \"" + sourcePlugin.getAbsolutePath() 
+                        + "\" failed", e);
+            }
+        }
+        return changeIndentifier;
+    }
+    
+    /**
+     * Creates a new {@link ParameterType} by scanning the given {@link Class} for the custom annotations
+     * classifying external classes to represent this language element. These annotations are:
+     * <ul>
+     * <li>{@link ArtifactParameterType}, which declares a type <code>T</code> for defining artifacts, like
+     *     <code><b>Artifact</b>&lt;T&gt; myArtifact;</code>
+     * </li>
+     * <li>{@link FragmentParameterType}, which declares a type <code>T</code> for defining fragments, like
+     *     <code><b>Fragment</b>&lt;T&gt; myFragment;</code>
+     * </li>
+     * <li>{@link ResultParameterType}, which declares a type <code>T</code> for defining results, like
+     *     <code><b>Result</b>&lt;T&gt; myResult;</code>
+     * </li>
+     * </ul>
+     * All other annotations will be ignored, which leads to a return value of <code>null</code>.
+     * 
+     * @param pluginClass the {@link Class}, which may introduce a new {@link ParameterType}; should never be 
+     *        <code>null</code>
+     * @param sourcePlugin the {@link File} denoting a Java archive file in which the given class is located; should
+     *        never be <code>null</code>
+     * @return a {@link ParameterType} derived from the given class or <code>null</code>, if this class is not 
+     *         annotated as introducing such a type of language element
+     * @throws ExternalElementException if creating the {@link ParameterType} failed; it is <b>not</b> thrown, if the
+     *         given class does not introduce any language elements
+     */
+    private ParameterType createParameterType(Class<?> pluginClass, File sourcePlugin) 
+            throws ExternalElementException {
+        ParameterType parameterType = null;
+        ElementType specificElementType = null;
         String symbolicName = null;
-        String symbolicParameterName = null;
+        String symbolicParameterTypeName = null;
         if (pluginClass.isAnnotationPresent(ArtifactParameterType.class)) {
             // The pluginClass declares a type T for defining artifacts, like "Artifact<T> myArtifact;"
-            elementType = ElementType.ARTIFACT_PARAMETER_TYPE;
+            specificElementType = ElementType.ARTIFACT_PARAMETER_TYPE;
             ArtifactParameterType customAnnotation = pluginClass.getAnnotation(ArtifactParameterType.class);
             symbolicName = customAnnotation.name();
-            symbolicParameterName = customAnnotation.parameterName();
+            symbolicParameterTypeName = customAnnotation.parameterName();
         } else if (pluginClass.isAnnotationPresent(FragmentParameterType.class)) {
             // The pluginClass declares a type T for defining fragments, like "Fragment<T> myFragment;"
-            elementType = ElementType.FRAGMENT_PARAMETER_TYPE;
+            specificElementType = ElementType.FRAGMENT_PARAMETER_TYPE;
             FragmentParameterType customAnnotation = pluginClass.getAnnotation(FragmentParameterType.class);
             symbolicName = customAnnotation.name();
-            symbolicParameterName = customAnnotation.parameterName();
+            symbolicParameterTypeName = customAnnotation.parameterName();
             
         } else if (pluginClass.isAnnotationPresent(ResultParameterType.class)) {
             // The pluginClass declares a type T for defining results, like "Result<T> myResult;"
-            elementType = ElementType.RESULT_PARAMETER_TYPE;
+            specificElementType = ElementType.RESULT_PARAMETER_TYPE;
             ResultParameterType customAnnotation = pluginClass.getAnnotation(ResultParameterType.class);
             symbolicName = customAnnotation.name();
-            symbolicParameterName = customAnnotation.parameterName();
+            symbolicParameterTypeName = customAnnotation.parameterName();
         }
         // Create the language element, if the element type is known
-        if (elementType != null) {
+        if (specificElementType != null) {
             try {
-                createdElement = new ParameterType(elementType, 
-                        createLanguageElementName(pluginClass, symbolicName, symbolicParameterName), pluginClass,
+                parameterType = new ParameterType(specificElementType, 
+                        createLanguageElementName(pluginClass, symbolicName, symbolicParameterTypeName), pluginClass,
                         sourcePlugin);
             } catch (LanguageElementException e) {
                 throw new ExternalElementException("Creating parameter type based on class \"" 
@@ -135,7 +193,7 @@ public class LanguageElementCreator {
                         + "\" failed", e);
             }
         }
-        return createdElement;
+        return parameterType;
     }
     
     /**
