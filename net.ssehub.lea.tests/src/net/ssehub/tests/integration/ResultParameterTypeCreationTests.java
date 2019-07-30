@@ -26,80 +26,80 @@ import net.ssehub.integration.ExternalElementException;
 import net.ssehub.integration.LanguageElement;
 import net.ssehub.integration.LanguageElementCreator;
 import net.ssehub.integration.ParameterType;
-import net.ssehub.integration.annotations.ArtifactParameterType;
+import net.ssehub.integration.annotations.ResultParameterType;
 
 /**
  * This class contains unit tests for the correct creation of {@link ParameterType}s of the type 
- * {@link ElementType#ARTIFACT_PARAMETER_TYPE} by the {@link LanguageElementCreator}.
+ * {@link ElementType#RESULT_PARAMETER_TYPE} by the {@link LanguageElementCreator}.
  * 
  * @author Christian Kroeher
  *
  */
-public class ArtifactParameterTypeCreationTests extends AbstractTest {
-
+public class ResultParameterTypeCreationTests extends AbstractTest {
+    
     /**
-     * This class represents a simple (not generic) artifact parameter type. It is annotated with the 
-     * {@link ArtifactParameterType} annotation without any further parameters. Hence, the actual class name should be
+     * This class represents a simple (not generic) result parameter type. It is annotated with the 
+     * {@link ResultParameterType} annotation without any further parameters. Hence, the actual class name should be
      * used for element creation.
      * 
      * @author Christian Kroeher
      *
      */
-    @ArtifactParameterType
-    private class SimpleArtifactParameterType { }
+    @ResultParameterType
+    private class SimpleResultParameterType { }
     
     /**
-     * This class represents a simple (not generic) artifact parameter type. It is annotated with the 
-     * {@link ArtifactParameterType} annotation including the definition of the symbolic name <i>File</i>, which
+     * This class represents a simple (not generic) result parameter type. It is annotated with the 
+     * {@link ResultParameterType} annotation including the definition of the symbolic name <i>DeadBlock</i>, which
      * should be used for element creation instead of the actual class name.
      * 
      * @author Christian Kroeher
      *
      */
-    @ArtifactParameterType(name = "File")
-    private class SimpleArtifactParameterTypeWithSymbolicName { }
+    @ResultParameterType(name = "DeadBlock")
+    private class SimpleResultParameterTypeWithSymbolicName { }
     
     /**
-     * This class represents a simple (not generic) artifact parameter type. It is annotated with the 
-     * {@link ArtifactParameterType} annotation including the definition of the symbolic parameter name <i>None</i>,
+     * This class represents a simple (not generic) result parameter type. It is annotated with the 
+     * {@link ResultParameterType} annotation including the definition of the symbolic parameter name <i>None</i>,
      * which should be ignored as this artifact is not a generic one.
      * 
      * @author Christian Kroeher
      *
      */
-    @ArtifactParameterType(parameterName = "None")
-    private class SimpleArtifactParameterTypeWithSymbolicParameterName { }
+    @ResultParameterType(parameterName = "None")
+    private class SimpleResultParameterTypeWithSymbolicParameterName { }
     
     /**
-     * This class represents a simple (not generic) artifact parameter type. It is annotated with the 
-     * {@link ArtifactParameterType} annotation including the definition of the the symbolic name <i>File</i> and the 
-     * symbolic parameter name <i>None</i>. While the former should be used for element creation instead of the actual
+     * This class represents a simple (not generic) result parameter type. It is annotated with the 
+     * {@link ResultParameterType} annotation including the definition of the the symbolic name <i>DeadBlock</i> and the
+     * symbolic parameter name <i>Code</i>. While the former should be used for element creation instead of the actual
      * class name, the latter should be ignored as this artifact is not a generic one.
      * 
      * @author Christian Kroeher
      *
      */
-    @ArtifactParameterType(name = "File", parameterName = "None")
-    private class SimpleArtifactParameterTypeWithSymbolicNameAndParameterName { }
+    @ResultParameterType(name = "DeadBlock", parameterName = "Code")
+    private class SimpleResultParameterTypeWithSymbolicNameAndParameterName { }
 
     /**
-     * Tests the correct creation of a simple {@link ArtifactParameterType} based on the class 
-     * {@link SimpleArtifactParameterType}.
+     * Tests the correct creation of a simple {@link ResultParameterType} based on the class 
+     * {@link SimpleResultParameterType}.
      */
     @Test
-    public void testSimpleArtifactParameterTypeCreation() {
+    public void testSimpleResultParameterTypeCreation() {
         try {
             List<LanguageElement> createdElements = 
-                    elementCreator.createLanguageElements(SimpleArtifactParameterType.class, sourcePlugin);
+                    elementCreator.createLanguageElements(SimpleResultParameterType.class, sourcePlugin);
             assertEquals(1, createdElements.size(), "Wrong number of created language elements");
             
             LanguageElement createdElement = createdElements.get(0);
             assertEquals(ParameterType.class, createdElement.getClass(), "Wrong language element type");
-            assertEquals(ElementType.ARTIFACT_PARAMETER_TYPE, createdElement.getElementType(),
+            assertEquals(ElementType.RESULT_PARAMETER_TYPE, createdElement.getElementType(),
                     "Wrong language element element type");
-            assertEquals(SimpleArtifactParameterType.class.getSimpleName(), createdElement.getName(),
+            assertEquals(SimpleResultParameterType.class.getSimpleName(), createdElement.getName(),
                     "Wrong language element name");
-            assertEquals(SimpleArtifactParameterType.class, createdElement.getSourceClass(),
+            assertEquals(SimpleResultParameterType.class, createdElement.getSourceClass(),
                     "Wrong language element source class");
             assertEquals(sourcePlugin, createdElement.getSourcePlugin(), "Wrong language element source plug-in");
             
@@ -109,23 +109,23 @@ public class ArtifactParameterTypeCreationTests extends AbstractTest {
     }
     
     /**
-     * Tests the correct creation of a simple {@link ArtifactParameterType} based on the class 
-     * {@link SimpleArtifactParameterTypeWithSymbolicName}.
+     * Tests the correct creation of a simple {@link ResultParameterType} based on the class 
+     * {@link SimpleResultParameterTypeWithSymbolicName}.
      */
     @Test
-    public void testSimpleArtifactParameterTypeWithSymbolicNameCreation() {
+    public void testSimpleResultParameterTypeWithSymbolicNameCreation() {
         try {
             List<LanguageElement> createdElements = 
-                    elementCreator.createLanguageElements(SimpleArtifactParameterTypeWithSymbolicName.class,
+                    elementCreator.createLanguageElements(SimpleResultParameterTypeWithSymbolicName.class,
                             sourcePlugin);
             assertEquals(1, createdElements.size(), "Wrong number of created language elements");
             
             LanguageElement createdElement = createdElements.get(0);
             assertEquals(ParameterType.class, createdElement.getClass(), "Wrong language element type");
-            assertEquals(ElementType.ARTIFACT_PARAMETER_TYPE, createdElement.getElementType(),
+            assertEquals(ElementType.RESULT_PARAMETER_TYPE, createdElement.getElementType(),
                     "Wrong language element element type");
-            assertEquals("File", createdElement.getName(), "Wrong language element name");
-            assertEquals(SimpleArtifactParameterTypeWithSymbolicName.class, createdElement.getSourceClass(),
+            assertEquals("DeadBlock", createdElement.getName(), "Wrong language element name");
+            assertEquals(SimpleResultParameterTypeWithSymbolicName.class, createdElement.getSourceClass(),
                     "Wrong language element source class");
             assertEquals(sourcePlugin, createdElement.getSourcePlugin(), "Wrong language element source plug-in");
             
@@ -135,24 +135,24 @@ public class ArtifactParameterTypeCreationTests extends AbstractTest {
     }
     
     /**
-     * Tests the correct creation of a simple {@link ArtifactParameterType} based on the class 
-     * {@link SimpleArtifactParameterTypeWithSymbolicParameterName}.
+     * Tests the correct creation of a simple {@link ResultParameterType} based on the class 
+     * {@link SimpleResultParameterTypeWithSymbolicParameterName}.
      */
     @Test
-    public void testSimpleArtifactParameterTypeWithSymbolicParameterNameCreation() {
+    public void testSimpleResultParameterTypeWithSymbolicParameterNameCreation() {
         try {
             List<LanguageElement> createdElements = 
-                    elementCreator.createLanguageElements(SimpleArtifactParameterTypeWithSymbolicParameterName.class,
+                    elementCreator.createLanguageElements(SimpleResultParameterTypeWithSymbolicParameterName.class,
                             sourcePlugin);
             assertEquals(1, createdElements.size(), "Wrong number of created language elements");
             
             LanguageElement createdElement = createdElements.get(0);
             assertEquals(ParameterType.class, createdElement.getClass(), "Wrong language element type");
-            assertEquals(ElementType.ARTIFACT_PARAMETER_TYPE, createdElement.getElementType(),
+            assertEquals(ElementType.RESULT_PARAMETER_TYPE, createdElement.getElementType(),
                     "Wrong language element element type");
-            assertEquals(SimpleArtifactParameterTypeWithSymbolicParameterName.class.getSimpleName(),
+            assertEquals(SimpleResultParameterTypeWithSymbolicParameterName.class.getSimpleName(),
                     createdElement.getName(), "Wrong language element name");
-            assertEquals(SimpleArtifactParameterTypeWithSymbolicParameterName.class, createdElement.getSourceClass(),
+            assertEquals(SimpleResultParameterTypeWithSymbolicParameterName.class, createdElement.getSourceClass(),
                     "Wrong language element source class");
             assertEquals(sourcePlugin, createdElement.getSourcePlugin(), "Wrong language element source plug-in");
             
@@ -162,23 +162,23 @@ public class ArtifactParameterTypeCreationTests extends AbstractTest {
     }
     
     /**
-     * Tests the correct creation of a simple {@link ArtifactParameterType} based on the class 
-     * {@link SimpleArtifactParameterTypeWithSymbolicNameAndParameterName}.
+     * Tests the correct creation of a simple {@link ResultParameterType} based on the class 
+     * {@link SimpleResultParameterTypeWithSymbolicNameAndParameterName}.
      */
     @Test
-    public void testSimpleArtifactParameterTypeWithSymbolicNameAndParameterNameCreation() {
+    public void testSimpleFragmentParameterTypeWithSymbolicNameAndParameterNameCreation() {
         try {
             List<LanguageElement> createdElements = elementCreator.
-                    createLanguageElements(SimpleArtifactParameterTypeWithSymbolicNameAndParameterName.class,
+                    createLanguageElements(SimpleResultParameterTypeWithSymbolicNameAndParameterName.class,
                             sourcePlugin);
             assertEquals(1, createdElements.size(), "Wrong number of created language elements");
             
             LanguageElement createdElement = createdElements.get(0);
             assertEquals(ParameterType.class, createdElement.getClass(), "Wrong language element type");
-            assertEquals(ElementType.ARTIFACT_PARAMETER_TYPE, createdElement.getElementType(),
+            assertEquals(ElementType.RESULT_PARAMETER_TYPE, createdElement.getElementType(),
                     "Wrong language element element type");
-            assertEquals("File", createdElement.getName(), "Wrong language element name");
-            assertEquals(SimpleArtifactParameterTypeWithSymbolicNameAndParameterName.class,
+            assertEquals("DeadBlock", createdElement.getName(), "Wrong language element name");
+            assertEquals(SimpleResultParameterTypeWithSymbolicNameAndParameterName.class,
                     createdElement.getSourceClass(), "Wrong language element source class");
             assertEquals(sourcePlugin, createdElement.getSourcePlugin(), "Wrong language element source plug-in");
             
@@ -188,8 +188,8 @@ public class ArtifactParameterTypeCreationTests extends AbstractTest {
     }
     
     /**
-     * This class represents a generic artifact parameter type with {@link File} as parameter type. It is annotated with
-     * the {@link ArtifactParameterType} annotation without any further parameters. Hence, the actual class name and
+     * This class represents a generic result parameter type with {@link File} as parameter type. It is annotated with
+     * the {@link ResultParameterType} annotation without any further parameters. Hence, the actual class name and
      * parameter type should be used for element creation.
      * 
      * @param <File> the parameter type of this generic class for testing
@@ -197,12 +197,12 @@ public class ArtifactParameterTypeCreationTests extends AbstractTest {
      * @author Christian Kroeher
      *
      */
-    @ArtifactParameterType
-    private class GenericArtifactParameterType<File> { }
+    @ResultParameterType
+    private class GenericResultParameterType<File> { }
     
     /**
-     * This class represents a generic artifact parameter type with {@link File} as parameter type. It is annotated with
-     * the {@link ArtifactParameterType} annotation including the definition of the symbolic name <i>File</i>, which
+     * This class represents a generic result parameter type with {@link File} as parameter type. It is annotated with
+     * the {@link ResultParameterType} annotation including the definition of the symbolic name <i>DeadBlock</i>, which
      * should be used for element creation instead of the actual class name.
      * 
      * @param <File> the parameter type of this generic class for testing
@@ -210,26 +210,26 @@ public class ArtifactParameterTypeCreationTests extends AbstractTest {
      * @author Christian Kroeher
      *
      */
-    @ArtifactParameterType(name = "File")
-    private class GenericArtifactParameterTypeWithSymbolicName<File> { }
+    @ResultParameterType(name = "DeadBlock")
+    private class GenericResultParameterTypeWithSymbolicName<File> { }
     
     /**
-     * This class represents a generic artifact parameter type with {@link File} as parameter type. It is annotated with
-     * the {@link ArtifactParameterType} annotation including the definition of the symbolic parameter name
-     * <i>MyFile</i>, which should be used for element creation instead of the actual parameter type.
+     * This class represents a generic result parameter type with {@link File} as parameter type. It is annotated with
+     * the {@link ResultParameterType} annotation including the definition of the symbolic parameter name
+     * <i>Code</i>, which should be used for element creation instead of the actual parameter type.
      * 
      * @param <File> the parameter type of this generic class for testing
      * 
      * @author Christian Kroeher
      *
      */
-    @ArtifactParameterType(parameterName = "MyFile")
-    private class GenericArtifactParameterTypeWithSymbolicParameterName<File> { }
+    @ResultParameterType(parameterName = "Code")
+    private class GenericResultParameterTypeWithSymbolicParameterName<File> { }
     
     /**
-     * This class represents a generic artifact parameter type with {@link File} as parameter type. It is annotated with
-     * the {@link ArtifactParameterType} annotation including the definition of the the symbolic name <i>File</i> and
-     * the symbolic parameter name <i>MyFile</i>. Hence, both symbolic names should be used for element creation instead
+     * This class represents a generic result parameter type with {@link File} as parameter type. It is annotated with
+     * the {@link ResultParameterType} annotation including the definition of the the symbolic name <i>DeadBlock</i> and
+     * the symbolic parameter name <i>Code</i>. Hence, both symbolic names should be used for element creation instead
      * of the actual class and parameter type names.
      * 
      * @param <File> the parameter type of this generic class for testing
@@ -237,27 +237,27 @@ public class ArtifactParameterTypeCreationTests extends AbstractTest {
      * @author Christian Kroeher
      *
      */
-    @ArtifactParameterType(name = "File", parameterName = "MyFile")
-    private class GenericArtifactParameterTypeWithSymbolicNameAndParameterName<File> { }
+    @ResultParameterType(name = "DeadBlock", parameterName = "Code")
+    private class GenericResultParameterTypeWithSymbolicNameAndParameterName<File> { }
     
     /**
-     * Tests the correct creation of a generic {@link ArtifactParameterType} based on the class 
-     * {@link GenericArtifactParameterType}.
+     * Tests the correct creation of a generic {@link ResultParameterType} based on the class 
+     * {@link GenericResultParameterType}.
      */
     @Test
-    public void testGenericArtifactParameterTypeCreation() {
+    public void testGenericResultParameterTypeCreation() {
         try {
             List<LanguageElement> createdElements = 
-                    elementCreator.createLanguageElements(GenericArtifactParameterType.class, sourcePlugin);
+                    elementCreator.createLanguageElements(GenericResultParameterType.class, sourcePlugin);
             assertEquals(1, createdElements.size(), "Wrong number of created language elements");
             
             LanguageElement createdElement = createdElements.get(0);
             assertEquals(ParameterType.class, createdElement.getClass(), "Wrong language element type");
-            assertEquals(ElementType.ARTIFACT_PARAMETER_TYPE, createdElement.getElementType(),
+            assertEquals(ElementType.RESULT_PARAMETER_TYPE, createdElement.getElementType(),
                     "Wrong language element element type");
-            assertEquals("GenericArtifactParameterType<File>", createdElement.getName(),
+            assertEquals("GenericResultParameterType<File>", createdElement.getName(),
                     "Wrong language element name");
-            assertEquals(GenericArtifactParameterType.class, createdElement.getSourceClass(),
+            assertEquals(GenericResultParameterType.class, createdElement.getSourceClass(),
                     "Wrong language element source class");
             assertEquals(sourcePlugin, createdElement.getSourcePlugin(), "Wrong language element source plug-in");
             
@@ -267,23 +267,23 @@ public class ArtifactParameterTypeCreationTests extends AbstractTest {
     }
     
     /**
-     * Tests the correct creation of a generic {@link ArtifactParameterType} based on the class 
-     * {@link GenericArtifactParameterTypeWithSymbolicName}.
+     * Tests the correct creation of a generic {@link ResultParameterType} based on the class 
+     * {@link GenericResultParameterTypeWithSymbolicName}.
      */
     @Test
-    public void testGenericArtifactParameterTypeWithSymbolicNameCreation() {
+    public void testGenericResultParameterTypeWithSymbolicNameCreation() {
         try {
             List<LanguageElement> createdElements = 
-                    elementCreator.createLanguageElements(GenericArtifactParameterTypeWithSymbolicName.class,
+                    elementCreator.createLanguageElements(GenericResultParameterTypeWithSymbolicName.class,
                             sourcePlugin);
             assertEquals(1, createdElements.size(), "Wrong number of created language elements");
             
             LanguageElement createdElement = createdElements.get(0);
             assertEquals(ParameterType.class, createdElement.getClass(), "Wrong language element type");
-            assertEquals(ElementType.ARTIFACT_PARAMETER_TYPE, createdElement.getElementType(),
+            assertEquals(ElementType.RESULT_PARAMETER_TYPE, createdElement.getElementType(),
                     "Wrong language element element type");
-            assertEquals("File<File>", createdElement.getName(), "Wrong language element name");
-            assertEquals(GenericArtifactParameterTypeWithSymbolicName.class, createdElement.getSourceClass(),
+            assertEquals("DeadBlock<File>", createdElement.getName(), "Wrong language element name");
+            assertEquals(GenericResultParameterTypeWithSymbolicName.class, createdElement.getSourceClass(),
                     "Wrong language element source class");
             assertEquals(sourcePlugin, createdElement.getSourcePlugin(), "Wrong language element source plug-in");
             
@@ -293,24 +293,24 @@ public class ArtifactParameterTypeCreationTests extends AbstractTest {
     }
     
     /**
-     * Tests the correct creation of a simple {@link ArtifactParameterType} based on the class 
-     * {@link GenericArtifactParameterTypeWithSymbolicParameterName}.
+     * Tests the correct creation of a simple {@link ResultParameterType} based on the class 
+     * {@link GenericResultParameterTypeWithSymbolicParameterName}.
      */
     @Test
-    public void testGenericArtifactParameterTypeWithSymbolicParameterNameCreation() {
+    public void testGenericResultParameterTypeWithSymbolicParameterNameCreation() {
         try {
             List<LanguageElement> createdElements = 
-                    elementCreator.createLanguageElements(GenericArtifactParameterTypeWithSymbolicParameterName.class,
+                    elementCreator.createLanguageElements(GenericResultParameterTypeWithSymbolicParameterName.class,
                             sourcePlugin);
             assertEquals(1, createdElements.size(), "Wrong number of created language elements");
             
             LanguageElement createdElement = createdElements.get(0);
             assertEquals(ParameterType.class, createdElement.getClass(), "Wrong language element type");
-            assertEquals(ElementType.ARTIFACT_PARAMETER_TYPE, createdElement.getElementType(),
+            assertEquals(ElementType.RESULT_PARAMETER_TYPE, createdElement.getElementType(),
                     "Wrong language element element type");            
-            assertEquals("GenericArtifactParameterTypeWithSymbolicParameterName<MyFile>", createdElement.getName(),
+            assertEquals("GenericResultParameterTypeWithSymbolicParameterName<Code>", createdElement.getName(),
                     "Wrong language element name");
-            assertEquals(GenericArtifactParameterTypeWithSymbolicParameterName.class, createdElement.getSourceClass(),
+            assertEquals(GenericResultParameterTypeWithSymbolicParameterName.class, createdElement.getSourceClass(),
                     "Wrong language element source class");
             assertEquals(sourcePlugin, createdElement.getSourcePlugin(), "Wrong language element source plug-in");
             
@@ -320,23 +320,23 @@ public class ArtifactParameterTypeCreationTests extends AbstractTest {
     }
     
     /**
-     * Tests the correct creation of a simple {@link ArtifactParameterType} based on the class 
-     * {@link GenericArtifactParameterTypeWithSymbolicNameAndParameterName}.
+     * Tests the correct creation of a simple {@link ResultParameterType} based on the class 
+     * {@link GenericResultParameterTypeWithSymbolicNameAndParameterName}.
      */
     @Test
-    public void testGenericArtifactParameterTypeWithSymbolicNameAndParameterNameCreation() {
+    public void testGenericResultParameterTypeWithSymbolicNameAndParameterNameCreation() {
         try {
             List<LanguageElement> createdElements = elementCreator.
-                    createLanguageElements(GenericArtifactParameterTypeWithSymbolicNameAndParameterName.class,
+                    createLanguageElements(GenericResultParameterTypeWithSymbolicNameAndParameterName.class,
                             sourcePlugin);
             assertEquals(1, createdElements.size(), "Wrong number of created language elements");
             
             LanguageElement createdElement = createdElements.get(0);
             assertEquals(ParameterType.class, createdElement.getClass(), "Wrong language element type");
-            assertEquals(ElementType.ARTIFACT_PARAMETER_TYPE, createdElement.getElementType(),
+            assertEquals(ElementType.RESULT_PARAMETER_TYPE, createdElement.getElementType(),
                     "Wrong language element element type");
-            assertEquals("File<MyFile>", createdElement.getName(), "Wrong language element name");
-            assertEquals(GenericArtifactParameterTypeWithSymbolicNameAndParameterName.class,
+            assertEquals("DeadBlock<Code>", createdElement.getName(), "Wrong language element name");
+            assertEquals(GenericResultParameterTypeWithSymbolicNameAndParameterName.class,
                     createdElement.getSourceClass(), "Wrong language element source class");
             assertEquals(sourcePlugin, createdElement.getSourcePlugin(), "Wrong language element source plug-in");
             
@@ -344,5 +344,5 @@ public class ArtifactParameterTypeCreationTests extends AbstractTest {
             assertNull(e, "This test should not throw any exception");
         }
     }
-    
+
 }
