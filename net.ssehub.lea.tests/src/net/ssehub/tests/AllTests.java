@@ -21,6 +21,7 @@ import org.junit.runners.Suite.SuiteClasses;
 import net.ssehub.tests.integration.ArtifactParameterTypeCreationTests;
 import net.ssehub.tests.integration.BasicLanguageElementCreatorTests;
 import net.ssehub.tests.integration.BasicLanguageElementProviderTests;
+import net.ssehub.tests.integration.ChangeIdentifierCreationTests;
 import net.ssehub.tests.integration.FragmentParameterTypeCreationTests;
 import net.ssehub.tests.integration.ResultParameterTypeCreationTests;
 import net.ssehub.tests.parsing.BasicAnalysisDefinitionTests;
@@ -48,6 +49,7 @@ import net.ssehub.tests.parsing.BasicResultParsingTests;
     ArtifactParameterTypeCreationTests.class,
     FragmentParameterTypeCreationTests.class,
     ResultParameterTypeCreationTests.class,
+    ChangeIdentifierCreationTests.class,
     BasicLanguageElementProviderTests.class
     })
 public class AllTests {
