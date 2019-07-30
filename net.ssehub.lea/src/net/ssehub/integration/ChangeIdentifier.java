@@ -51,7 +51,13 @@ public class ChangeIdentifier extends LanguageElement {
             throws LanguageElementException {
         super(ELEMENT_TYPE, name, sourceClass, sourcePlugin);
         if (assignableElements == null || assignableElements.length == 0) {
-            throw new LanguageElementException("Missing elements to which this change identifier is assignable");
+            throw new LanguageElementException("Missing elements to which this change identifier is assignable to");
+        }
+        // Check in addition if the elements to which this change identifier is assignable to are not blank
+        for (int i = 0; i < assignableElements.length; i++) {
+            if (assignableElements[i].isBlank()) {
+                throw new LanguageElementException("Blank element to which this change identifier is assignable to");
+            }
         }
         this.assignableElements = assignableElements;
     }
