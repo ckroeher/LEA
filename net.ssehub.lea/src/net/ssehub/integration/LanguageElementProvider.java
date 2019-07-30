@@ -86,16 +86,20 @@ public class LanguageElementProvider {
     /**
      * Detects language elements declared in the classes of the given {@link File}, which is assumed to be a Java
      * archive file, and adds these elements to the {@link LanguageRegistry}. Note that, if the given plug-in could not
-     * be read to detect language elements, the user will be informed by TODO. There is no further error propagation at
-     * this point, as this method is called for each plug-in individually and, hence, an error for one plug-in should
-     * not prevent reading other plug-ins.
-     *  
+     * be read or classes could not be loaded to detect language elements, the user will be informed by TODO. There is
+     * no further error propagation at this point, as this method is called for each plug-in individually and, hence, 
+     * an error for one plug-in should not prevent reading other plug-ins.
+     * 
      * @param plugin the {@link File} denoting a Java archive file in which all classes will be scanned for declaring
      *        language elements; should never be <code>null</code> 
      * @param pluginUrls the array of {@link URL}s of all available Java archive files for class loading; although
      *        this method only processes a single plug-in (Java archive file), that plug-in may depend on other
      *        plug-ins, which have to be available for this method to detect language elements in the given plug-in;
      *        should never be <code>null</code>
+     * @implNote This method uses {@link Class#forName(String, boolean, ClassLoader)} for loading classes of the
+     *           plug-in. In case that a specific plug-in (Java archive file) was created using, e.g., Java 12, this
+     *           method fails to load the classes due to incompatibility to the JDK used for this project, which is
+     *           Java 11.
      */
     private void detectLanguageElements(File plugin, URL[] pluginUrls) {
         try {

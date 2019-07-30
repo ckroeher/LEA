@@ -85,6 +85,15 @@ public class LanguageRegistry {
     }
     
     /**
+     * Checks whether this registry contains no {@link LanguageElement}s.
+     * 
+     * @return <code>true</code> if this registry contains no {@link LanguageElement}s; <code>false</code> otherwise
+     */
+    public boolean isEmpty() {
+        return artifactParameterTypes.isEmpty() && fragmentParameterTypes.isEmpty() && resultParameterTypes.isEmpty();
+    }
+    
+    /**
      * Checks whether the given search name is an available artifact parameter type (name).
      * 
      * @param searchName the name that should denote an available artifact parameter type
