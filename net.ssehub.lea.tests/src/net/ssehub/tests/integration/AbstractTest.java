@@ -42,7 +42,7 @@ public abstract class AbstractTest {
     protected File sourcePlugin = new File("./");
     
     /**
-     * Prepares the elements commonly used by all unit tests defined in this class.
+     * Prepares the elements commonly used by all unit tests defined in the extending classes.
      */
     @BeforeClass
     public static void prepare() {
