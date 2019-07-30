@@ -14,7 +14,8 @@
  */
 package net.ssehub.tests.integration;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.List;
@@ -52,12 +53,10 @@ public class BasicLanguageElementCreatorTests extends AbstractTest {
     @Test
     public void testNullAsPluginClass() {
         try {
-            List<LanguageElement> createdElements = elementCreator.createLanguageElements(null, sourcePlugin);
-            assertNull(createdElements, "Passing null as plug-in class should throw a null pointer exception");
-        } catch (ExternalElementException e) {
-            assertNull(e, "Passing null as plug-in class should not throw an external element exception");
-        } catch (NullPointerException e) {
-            assertNotNull(e, "Passing null as plug-in class should throw a null pointer exception");
+            elementCreator.createLanguageElements(null, sourcePlugin);
+            fail("Passing null as plug-in class should throw a null pointer exception");
+        } catch (ExternalElementException | NullPointerException e) {
+            assertEquals(e.getClass(), NullPointerException.class, "Wrong exception thrown");
         }
     }
     
@@ -69,13 +68,10 @@ public class BasicLanguageElementCreatorTests extends AbstractTest {
     @Test
     public void testNullAsSourcePluginDuringElementIntroduction() {
         try {
-            List<LanguageElement> createdElements = 
-                    elementCreator.createLanguageElements(SimpleArtifactParameterType.class, null);
-            assertNull(createdElements, "Passing null as source plug-in should throw a null pointer exception");
-        } catch (ExternalElementException e) {
-            assertNull(e, "Passing null as source plug-in should not throw an external element exception");
-        } catch (NullPointerException e) {
-            assertNotNull(e, "Passing null as source plug-in should throw a null pointer exception");
+            elementCreator.createLanguageElements(SimpleArtifactParameterType.class, null);
+            fail("Passing null as source plug-in should throw a null pointer exception");
+        } catch (ExternalElementException | NullPointerException e) {
+            assertEquals(e.getClass(), NullPointerException.class, "Wrong exception thrown");
         }
     }
     
@@ -89,12 +85,9 @@ public class BasicLanguageElementCreatorTests extends AbstractTest {
         try {
             List<LanguageElement> createdElements = 
                     elementCreator.createLanguageElements(BasicLanguageElementCreatorTests.class, null);
-            assertNotNull(createdElements, 
-                    "Passing null as source plug-in is ok, if no language elements are introduced");
-        } catch (ExternalElementException e) {
-            assertNull(e, "Passing null as source plug-in is ok, if no language elements are introduced");
-        } catch (NullPointerException e) {
-            assertNull(e, "Passing null as source plug-in is ok, if no language elements are introduced");
+            assertEquals(0, createdElements.size(), "Language elements created although source plug-in is null");
+        } catch (ExternalElementException | NullPointerException e) {
+            assertNull(e, "Exception thrown");
         }
     }
 }
