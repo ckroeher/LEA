@@ -14,13 +14,15 @@
  */
 package net.ssehub.tests.integration;
 
-import static org.junit.Assert.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
+import org.junit.runners.Parameterized.Parameters;
 
 import net.ssehub.integration.ChangeIdentifier;
 import net.ssehub.integration.ElementType;
@@ -35,7 +37,7 @@ import net.ssehub.integration.LanguageElementCreator;
  * @author Christian Kroeher
  *
  */
-public class ChangeIdentifierCreationTests extends AbstractTest {
+public class ChangeIdentifierCreationTests extends AbstractLanguageElementCreationTest {
 
     /**
      * This class represents a change identifier. It is annotated with the
@@ -68,7 +70,7 @@ public class ChangeIdentifierCreationTests extends AbstractTest {
      *
      */
     @net.ssehub.integration.annotations.ChangeIdentifier(assignableTo = { "File", "Database", "Stream" })
-    private class ChangeIdentifierWithMultipleAssignableElement { }
+    private class ChangeIdentifierWithMultipleAssignableElements { }
     
     /**
      * This class represents a change identifier. It is annotated with the
@@ -84,103 +86,130 @@ public class ChangeIdentifierCreationTests extends AbstractTest {
     private class ChangeIdentifierWithSingleAssignableElementAndSymbolicName { }
     
     /**
-     * Tests the correct throw of an {@link ExternalElementException} due to an empty string in the array of elements to
-     * which the change identifier is assignable to. This test therefore uses the 
-     * {@link ChangeIdentifierWithEmptyAssignableTo} class.
+     * The expected results for each input {@link Class} defined as inner class of this class. Each entry has the
+     * following elements:
+     * <ul>
+     * <li>The {@link Class} used as an input to the {@link LanguageElementCreator} for creating a 
+     * {@link LanguageElement} based on the information of that class
+     * </li>
+     * <li>The {@link ExternalElementException} expected to be thrown during the creation of a {@link LanguageElement};
+     * a value of <code>null</code> indicates that throwing an exception was not expected
+     * </li>
+     * <li>The declaration of whether it is expected that the created {@link LanguageElement} is not <code>null</code>
+     * (<code>true</code>) or should be <code>null</code> (<code>false</code>)
+     * </li>
+     * <li>The expected {@link Class} of the created {@link LanguageElement}</li>
+     * <li>The expected {@link ElementType} of the created {@link LanguageElement}</li>
+     * <li>The expected name of the created {@link LanguageElement}</li>
+     * <li>The expected {@link Class} from which the {@link LanguageElement} was created</li>
+     * <li>The expected {@link File} denoting the source plug-in of the {@link Class} from which a 
+     * {@link LanguageElement} was created
+     * </li>
+     * <li>The array containing the expected names of the elements to which a {@link ChangeIdentifier} is assignable to
+     * </li>
+     * </ul>
+     */
+    private static final Object[][] EXPECTED_RESULTS = new Object[][] {
+        {ChangeIdentifierWithEmptyAssignableTo.class, new ExternalElementException(""), false, null, null, null, null,
+            null, null},
+        
+        {ChangeIdentifierWithSingleAssignableElement.class, null, true, ChangeIdentifier.class,
+            ElementType.CHANGE_IDENTIFIER, ChangeIdentifierWithSingleAssignableElement.class.getSimpleName(),
+            ChangeIdentifierWithSingleAssignableElement.class, sourcePlugin, new String[]{"File"}},
+        
+        {ChangeIdentifierWithMultipleAssignableElements.class, null, true, ChangeIdentifier.class,
+            ElementType.CHANGE_IDENTIFIER, ChangeIdentifierWithMultipleAssignableElements.class.getSimpleName(),
+            ChangeIdentifierWithMultipleAssignableElements.class, sourcePlugin,
+            new String[]{"File", "Database", "Stream"}},
+        
+        {ChangeIdentifierWithSingleAssignableElementAndSymbolicName.class, null, true, ChangeIdentifier.class,
+            ElementType.CHANGE_IDENTIFIER, "ChangeIdentifier",
+            ChangeIdentifierWithSingleAssignableElementAndSymbolicName.class, sourcePlugin, new String[]{"File"}}
+    };
+    
+    /**
+     * The array containing the expected names of the elements to which a {@link ChangeIdentifier} is assignable to.
+     */
+    private String[] expectedAssignableElements;
+    
+    /**
+     * The array containing the actual names of the elements to which a {@link ChangeIdentifier} is assignable to.
+     */
+    private String[] actualAssignableElements;
+    
+    /**
+     * Constructs a new {@link ChangeIdentifierCreationTests} instance.
+     * 
+     * @param testInputClass the {@link Class} used as an input to the {@link LanguageElementCreator} for creating a
+     *        {@link LanguageElement} based on the information of that class
+     * @param expectedException the {@link ExternalElementException} expected to be thrown during the creation of a 
+     *        {@link LanguageElement}; a value of <code>null</code> indicates that throwing an exception was not 
+     *        expected
+     * @param expectedElementsExistence the declaration of whether it is expected that the created
+     *        {@link LanguageElement} is not <code>null</code> (<code>true</code>) or should be <code>null</code>
+     *        (<code>false</code>)
+     * @param expectedElementClass the expected {@link Class} of the created {@link LanguageElement}
+     * @param expectedElementType the expected {@link ElementType} of the created {@link LanguageElement}
+     * @param expectedElementName the expected name of the created {@link LanguageElement}
+     * @param expectedElementSourceClass the expected {@link Class} from which the {@link LanguageElement} was created
+     * @param expectedElementSourcePlugin the expected {@link File} denoting the source plug-in of the {@link Class}
+     *        from which a {@link LanguageElement} was created
+     * @param expectedAssignableElements the array containing the expected names of the elements to which a
+     *        {@link ChangeIdentifier} is assignable to
+     */
+//CHECKSTYLE:OFF
+    public ChangeIdentifierCreationTests(Class<?> testInputClass, ExternalElementException expectedException,
+            boolean expectedElementsExistence, Class<?> expectedElementClass, ElementType expectedElementType,
+            String expectedElementName, Class<?> expectedElementSourceClass, File expectedElementSourcePlugin,
+            String[] expectedAssignableElements) {
+        super(testInputClass, expectedException, expectedElementsExistence, expectedElementClass, expectedElementType,
+                expectedElementName, expectedElementSourceClass, expectedElementSourcePlugin);
+        this.expectedAssignableElements = expectedAssignableElements;
+        if (createdElement != null) {
+            ChangeIdentifier changeIdentifier = (ChangeIdentifier) createdElement;
+            actualAssignableElements = changeIdentifier.getAssignableElements();
+        } else {
+            actualAssignableElements = null;
+        }
+    }
+//CHECKSTYLE:ON
+    
+    /**
+     * Returns the expected results as parameters for the tests defined in this and the super-class.
+     * 
+     * @return the {@link #EXPECTED_RESULTS} as an object-array list
+     */
+    @Parameters
+    public static List<Object[]> getTestData() {
+        return Arrays.asList(EXPECTED_RESULTS);
+    }
+    
+    /**
+     * Tests whether the number of {@link #actualAssignableElements} is equal to {@link #expectedAssignableElements}. 
      */
     @Test
-    public void testChangeIdentifierWithEmptyAssignableToCreation() {
-        try {
-            elementCreator.createLanguageElements(ChangeIdentifierWithEmptyAssignableTo.class, sourcePlugin);
-            fail("No exception thrown");
-        } catch (ExternalElementException e) {
-            assertEquals(e.getClass(), ExternalElementException.class, "Wrong exception thrown");
+    public void testNumberOfCreatedAssignableElements() {
+        if (expectedAssignableElements != null) {            
+            assertEquals(expectedAssignableElements.length, actualAssignableElements.length, 
+                    "Wrong number of assignable elements");
+        } else {
+            assertNull(actualAssignableElements, "Assignable elements should be null");
         }
     }
     
     /**
-     * Tests the correct creation of a {@link ChangeIdentifier} based on the class 
-     * {@link ChangeIdentifierWithSingleAssignableElement}.
+     * Tests whether the elements in {@link #actualAssignableElements} are the same as the elements in 
+     * {@link #expectedAssignableElements} at the same index.
      */
     @Test
-    public void testChangeIdentifierWithSingleAssignableElementCreation() {
-        Class<?> testClass = ChangeIdentifierWithSingleAssignableElement.class;
-        try {
-            List<LanguageElement> createdElements = elementCreator.createLanguageElements(testClass, sourcePlugin);
-            assertEquals(1, createdElements.size(), "Wrong number of created language elements");
-            
-            LanguageElement createdElement = createdElements.get(0);
-            assertEquals(ChangeIdentifier.class, createdElement.getClass(), "Wrong language element type");
-            assertEquals(ElementType.CHANGE_IDENTIFIER, createdElement.getElementType(),
-                    "Wrong language element element type");
-            assertEquals(testClass.getSimpleName(), createdElement.getName(), "Wrong language element name");
-            assertEquals(testClass, createdElement.getSourceClass(), "Wrong language element source class");
-            assertEquals(sourcePlugin, createdElement.getSourcePlugin(), "Wrong language element source plug-in");
-            
-            ChangeIdentifier changeIdentifier = (ChangeIdentifier) createdElement;
-            String[] assignableElements = changeIdentifier.getAssignableElements();
-            assertEquals(1, assignableElements.length, "Wrong number of assignable elements");
-            assertEquals("File", assignableElements[0], "Wrong assignable element");
-        } catch (ExternalElementException e) {
-            assertNull(e, "This test should not throw any exception");
+    public void testCreatedAssignableElements() {
+        if (expectedAssignableElements != null) {            
+            for (int i = 0; i < expectedAssignableElements.length; i++) {
+                assertEquals(expectedAssignableElements[i], actualAssignableElements[i], "Wrong assignable element");
+            }
+        } else {
+            assertNull(actualAssignableElements, "Assignable elements should be null");
         }
     }
-    
-    /**
-     * Tests the correct creation of a {@link ChangeIdentifier} based on the class 
-     * {@link ChangeIdentifierWithMultipleAssignableElement}.
-     */
-    @Test
-    public void testChangeIdentifierWithMultipleAssignableElementCreation() {
-        Class<?> testClass = ChangeIdentifierWithMultipleAssignableElement.class;
-        try {
-            List<LanguageElement> createdElements = elementCreator.createLanguageElements(testClass, sourcePlugin);
-            assertEquals(1, createdElements.size(), "Wrong number of created language elements");
-            
-            LanguageElement createdElement = createdElements.get(0);
-            assertEquals(ChangeIdentifier.class, createdElement.getClass(), "Wrong language element type");
-            assertEquals(ElementType.CHANGE_IDENTIFIER, createdElement.getElementType(),
-                    "Wrong language element element type");
-            assertEquals(testClass.getSimpleName(), createdElement.getName(), "Wrong language element name");
-            assertEquals(testClass, createdElement.getSourceClass(), "Wrong language element source class");
-            assertEquals(sourcePlugin, createdElement.getSourcePlugin(), "Wrong language element source plug-in");
-            
-            ChangeIdentifier changeIdentifier = (ChangeIdentifier) createdElement;
-            String[] assignableElements = changeIdentifier.getAssignableElements();
-            assertEquals(3, assignableElements.length, "Wrong number of assignable elements");
-            assertEquals("File", assignableElements[0], "Wrong assignable element");
-            assertEquals("Database", assignableElements[1], "Wrong assignable element");
-            assertEquals("Stream", assignableElements[2], "Wrong assignable element");
-        } catch (ExternalElementException e) {
-            assertNull(e, "This test should not throw any exception");
-        }
-    }
-    
-    /**
-     * Tests the correct creation of a {@link ChangeIdentifier} based on the class 
-     * {@link ChangeIdentifierWithSingleAssignableElementAndSymbolicName}.
-     */
-    @Test
-    public void testChangeIdentifierWithSingleAssignableElementAndSymbolicNameCreation() {
-        Class<?> testClass = ChangeIdentifierWithSingleAssignableElementAndSymbolicName.class;
-        try {
-            List<LanguageElement> createdElements = elementCreator.createLanguageElements(testClass, sourcePlugin);
-            assertEquals(1, createdElements.size(), "Wrong number of created language elements");
-            
-            LanguageElement createdElement = createdElements.get(0);
-            assertEquals(ChangeIdentifier.class, createdElement.getClass(), "Wrong language element type");
-            assertEquals(ElementType.CHANGE_IDENTIFIER, createdElement.getElementType(),
-                    "Wrong language element element type");
-            assertEquals("ChangeIdentifier", createdElement.getName(), "Wrong language element name");
-            assertEquals(testClass, createdElement.getSourceClass(), "Wrong language element source class");
-            assertEquals(sourcePlugin, createdElement.getSourcePlugin(), "Wrong language element source plug-in");
-            
-            ChangeIdentifier changeIdentifier = (ChangeIdentifier) createdElement;
-            String[] assignableElements = changeIdentifier.getAssignableElements();
-            assertEquals(1, assignableElements.length, "Wrong number of assignable elements");
-            assertEquals("File", assignableElements[0], "Wrong assignable element");
-        } catch (ExternalElementException e) {
-            assertNull(e, "This test should not throw any exception");
-        }
-    }
+
 }

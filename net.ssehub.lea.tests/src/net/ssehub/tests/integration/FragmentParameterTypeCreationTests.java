@@ -14,12 +14,11 @@
  */
 package net.ssehub.tests.integration;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-
+import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.runners.Parameterized.Parameters;
 
 import net.ssehub.integration.ElementType;
 import net.ssehub.integration.ExternalElementException;
@@ -35,7 +34,7 @@ import net.ssehub.integration.annotations.FragmentParameterType;
  * @author Christian Kroeher
  *
  */
-public class FragmentParameterTypeCreationTests extends AbstractTest {
+public class FragmentParameterTypeCreationTests extends AbstractLanguageElementCreationTest {
 
     /**
      * This class represents a simple (not generic) fragment parameter type. It is annotated with the 
@@ -81,111 +80,6 @@ public class FragmentParameterTypeCreationTests extends AbstractTest {
      */
     @FragmentParameterType(name = "Block", parameterName = "Code")
     private class SimpleFragmentParameterTypeWithSymbolicNameAndParameterName { }
-
-    /**
-     * Tests the correct creation of a simple {@link FragmentParameterType} based on the class 
-     * {@link SimpleFragmentParameterType}.
-     */
-    @Test
-    public void testSimpleFragmentParameterTypeCreation() {
-        try {
-            List<LanguageElement> createdElements = 
-                    elementCreator.createLanguageElements(SimpleFragmentParameterType.class, sourcePlugin);
-            assertEquals(1, createdElements.size(), "Wrong number of created language elements");
-            
-            LanguageElement createdElement = createdElements.get(0);
-            assertEquals(ParameterType.class, createdElement.getClass(), "Wrong language element type");
-            assertEquals(ElementType.FRAGMENT_PARAMETER_TYPE, createdElement.getElementType(),
-                    "Wrong language element element type");
-            assertEquals(SimpleFragmentParameterType.class.getSimpleName(), createdElement.getName(),
-                    "Wrong language element name");
-            assertEquals(SimpleFragmentParameterType.class, createdElement.getSourceClass(),
-                    "Wrong language element source class");
-            assertEquals(sourcePlugin, createdElement.getSourcePlugin(), "Wrong language element source plug-in");
-            
-        } catch (ExternalElementException e) {
-            assertNull(e, "This test should not throw any exception");
-        }
-    }
-    
-    /**
-     * Tests the correct creation of a simple {@link FragmentParameterType} based on the class 
-     * {@link SimpleFragmentParameterTypeWithSymbolicName}.
-     */
-    @Test
-    public void testSimpleFragmentParameterTypeWithSymbolicNameCreation() {
-        try {
-            List<LanguageElement> createdElements = 
-                    elementCreator.createLanguageElements(SimpleFragmentParameterTypeWithSymbolicName.class,
-                            sourcePlugin);
-            assertEquals(1, createdElements.size(), "Wrong number of created language elements");
-            
-            LanguageElement createdElement = createdElements.get(0);
-            assertEquals(ParameterType.class, createdElement.getClass(), "Wrong language element type");
-            assertEquals(ElementType.FRAGMENT_PARAMETER_TYPE, createdElement.getElementType(),
-                    "Wrong language element element type");
-            assertEquals("Block", createdElement.getName(), "Wrong language element name");
-            assertEquals(SimpleFragmentParameterTypeWithSymbolicName.class, createdElement.getSourceClass(),
-                    "Wrong language element source class");
-            assertEquals(sourcePlugin, createdElement.getSourcePlugin(), "Wrong language element source plug-in");
-            
-        } catch (ExternalElementException e) {
-            assertNull(e, "This test should not throw any exception");
-        }
-    }
-    
-    /**
-     * Tests the correct creation of a simple {@link FragmentParameterType} based on the class 
-     * {@link SimpleFragmentParameterTypeWithSymbolicParameterName}.
-     */
-    @Test
-    public void testSimpleFragmentParameterTypeWithSymbolicParameterNameCreation() {
-        try {
-            List<LanguageElement> createdElements = 
-                    elementCreator.createLanguageElements(SimpleFragmentParameterTypeWithSymbolicParameterName.class,
-                            sourcePlugin);
-            assertEquals(1, createdElements.size(), "Wrong number of created language elements");
-            
-            LanguageElement createdElement = createdElements.get(0);
-            assertEquals(ParameterType.class, createdElement.getClass(), "Wrong language element type");
-            assertEquals(ElementType.FRAGMENT_PARAMETER_TYPE, createdElement.getElementType(),
-                    "Wrong language element element type");
-            assertEquals(SimpleFragmentParameterTypeWithSymbolicParameterName.class.getSimpleName(),
-                    createdElement.getName(), "Wrong language element name");
-            assertEquals(SimpleFragmentParameterTypeWithSymbolicParameterName.class, createdElement.getSourceClass(),
-                    "Wrong language element source class");
-            assertEquals(sourcePlugin, createdElement.getSourcePlugin(), "Wrong language element source plug-in");
-            
-        } catch (ExternalElementException e) {
-            assertNull(e, "This test should not throw any exception");
-        }
-    }
-    
-    /**
-     * Tests the correct creation of a simple {@link FragmentParameterType} based on the class 
-     * {@link SimpleFragmentParameterTypeWithSymbolicNameAndParameterName}.
-     */
-    @Test
-    public void testSimpleFragmentParameterTypeWithSymbolicNameAndParameterNameCreation() {
-        try {
-            List<LanguageElement> createdElements = elementCreator.
-                    createLanguageElements(SimpleFragmentParameterTypeWithSymbolicNameAndParameterName.class,
-                            sourcePlugin);
-            assertEquals(1, createdElements.size(), "Wrong number of created language elements");
-            
-            LanguageElement createdElement = createdElements.get(0);
-            assertEquals(ParameterType.class, createdElement.getClass(), "Wrong language element type");
-            assertEquals(ElementType.FRAGMENT_PARAMETER_TYPE, createdElement.getElementType(),
-                    "Wrong language element element type");
-            assertEquals("Block", createdElement.getName(), "Wrong language element name");
-            assertEquals(SimpleFragmentParameterTypeWithSymbolicNameAndParameterName.class,
-                    createdElement.getSourceClass(), "Wrong language element source class");
-            assertEquals(sourcePlugin, createdElement.getSourcePlugin(), "Wrong language element source plug-in");
-            
-        } catch (ExternalElementException e) {
-            assertNull(e, "This test should not throw any exception");
-        }
-    }
     
     /**
      * This class represents a generic fragment parameter type with {@link File} as parameter type. It is annotated with
@@ -197,6 +91,7 @@ public class FragmentParameterTypeCreationTests extends AbstractTest {
      * @author Christian Kroeher
      *
      */
+    @SuppressWarnings("hiding")
     @FragmentParameterType
     private class GenericFragmentParameterType<File> { }
     
@@ -210,6 +105,7 @@ public class FragmentParameterTypeCreationTests extends AbstractTest {
      * @author Christian Kroeher
      *
      */
+    @SuppressWarnings("hiding")
     @FragmentParameterType(name = "Block")
     private class GenericFragmentParameterTypeWithSymbolicName<File> { }
     
@@ -223,6 +119,7 @@ public class FragmentParameterTypeCreationTests extends AbstractTest {
      * @author Christian Kroeher
      *
      */
+    @SuppressWarnings("hiding")
     @FragmentParameterType(parameterName = "Code")
     private class GenericFragmentParameterTypeWithSymbolicParameterName<File> { }
     
@@ -237,112 +134,100 @@ public class FragmentParameterTypeCreationTests extends AbstractTest {
      * @author Christian Kroeher
      *
      */
+    @SuppressWarnings("hiding")
     @FragmentParameterType(name = "Block", parameterName = "Code")
     private class GenericFragmentParameterTypeWithSymbolicNameAndParameterName<File> { }
     
     /**
-     * Tests the correct creation of a generic {@link FragmentParameterType} based on the class 
-     * {@link GenericFragmentParameterType}.
+     * The expected results for each input {@link Class} defined as inner class of this class. Each entry has the
+     * following elements:
+     * <ul>
+     * <li>The {@link Class} used as an input to the {@link LanguageElementCreator} for creating a 
+     * {@link LanguageElement} based on the information of that class
+     * </li>
+     * <li>The {@link ExternalElementException} expected to be thrown during the creation of a {@link LanguageElement};
+     * a value of <code>null</code> indicates that throwing an exception was not expected
+     * </li>
+     * <li>The declaration of whether it is expected that the created {@link LanguageElement} is not <code>null</code>
+     * (<code>true</code>) or should be <code>null</code> (<code>false</code>)
+     * </li>
+     * <li>The expected {@link Class} of the created {@link LanguageElement}</li>
+     * <li>The expected {@link ElementType} of the created {@link LanguageElement}</li>
+     * <li>The expected name of the created {@link LanguageElement}</li>
+     * <li>The expected {@link Class} from which the {@link LanguageElement} was created</li>
+     * <li>The expected {@link File} denoting the source plug-in of the {@link Class} from which a 
+     * {@link LanguageElement} was created
+     * </li>
+     * </ul>
      */
-    @Test
-    public void testGenericFragmentParameterTypeCreation() {
-        try {
-            List<LanguageElement> createdElements = 
-                    elementCreator.createLanguageElements(GenericFragmentParameterType.class, sourcePlugin);
-            assertEquals(1, createdElements.size(), "Wrong number of created language elements");
-            
-            LanguageElement createdElement = createdElements.get(0);
-            assertEquals(ParameterType.class, createdElement.getClass(), "Wrong language element type");
-            assertEquals(ElementType.FRAGMENT_PARAMETER_TYPE, createdElement.getElementType(),
-                    "Wrong language element element type");
-            assertEquals("GenericFragmentParameterType<File>", createdElement.getName(),
-                    "Wrong language element name");
-            assertEquals(GenericFragmentParameterType.class, createdElement.getSourceClass(),
-                    "Wrong language element source class");
-            assertEquals(sourcePlugin, createdElement.getSourcePlugin(), "Wrong language element source plug-in");
-            
-        } catch (ExternalElementException e) {
-            assertNull(e, "This test should not throw any exception");
-        }
-    }
+    private static final Object[][] EXPECTED_RESULTS = new Object[][] {
+        {SimpleFragmentParameterType.class, null, true, ParameterType.class, ElementType.FRAGMENT_PARAMETER_TYPE, 
+            SimpleFragmentParameterType.class.getSimpleName(), SimpleFragmentParameterType.class, sourcePlugin},
+        
+        {SimpleFragmentParameterTypeWithSymbolicName.class, null, true, ParameterType.class,
+            ElementType.FRAGMENT_PARAMETER_TYPE, "Block", SimpleFragmentParameterTypeWithSymbolicName.class,
+            sourcePlugin},
+        
+        {SimpleFragmentParameterTypeWithSymbolicParameterName.class, null, true, ParameterType.class, 
+            ElementType.FRAGMENT_PARAMETER_TYPE,
+            SimpleFragmentParameterTypeWithSymbolicParameterName.class.getSimpleName(),
+            SimpleFragmentParameterTypeWithSymbolicParameterName.class, sourcePlugin},
+        
+        {SimpleFragmentParameterTypeWithSymbolicNameAndParameterName.class, null, true, ParameterType.class,
+            ElementType.FRAGMENT_PARAMETER_TYPE, "Block",
+            SimpleFragmentParameterTypeWithSymbolicNameAndParameterName.class, sourcePlugin},
+
+        {GenericFragmentParameterType.class, null, true, ParameterType.class, ElementType.FRAGMENT_PARAMETER_TYPE, 
+            "GenericFragmentParameterType<File>", GenericFragmentParameterType.class, sourcePlugin},
+        
+        {GenericFragmentParameterTypeWithSymbolicName.class, null, true, ParameterType.class,
+            ElementType.FRAGMENT_PARAMETER_TYPE, "Block<File>", GenericFragmentParameterTypeWithSymbolicName.class,
+            sourcePlugin},
+        
+        {GenericFragmentParameterTypeWithSymbolicParameterName.class, null, true, ParameterType.class,
+            ElementType.FRAGMENT_PARAMETER_TYPE, "GenericFragmentParameterTypeWithSymbolicParameterName<Code>",
+            GenericFragmentParameterTypeWithSymbolicParameterName.class, sourcePlugin},
+        
+        {GenericFragmentParameterTypeWithSymbolicNameAndParameterName.class, null, true, ParameterType.class,
+            ElementType.FRAGMENT_PARAMETER_TYPE, "Block<Code>",
+            GenericFragmentParameterTypeWithSymbolicNameAndParameterName.class, sourcePlugin}
+    };
     
     /**
-     * Tests the correct creation of a generic {@link FragmentParameterType} based on the class 
-     * {@link GenericFragmentParameterTypeWithSymbolicName}.
+     * Constructs a new {@link FragmentParameterTypeCreationTests} instance.
+     * 
+     * @param testInputClass the {@link Class} used as an input to the {@link LanguageElementCreator} for creating a
+     *        {@link LanguageElement} based on the information of that class
+     * @param expectedException the {@link ExternalElementException} expected to be thrown during the creation of a 
+     *        {@link LanguageElement}; a value of <code>null</code> indicates that throwing an exception was not 
+     *        expected
+     * @param expectedElementsExistence the declaration of whether it is expected that the created
+     *        {@link LanguageElement} is not <code>null</code> (<code>true</code>) or should be <code>null</code>
+     *        (<code>false</code>)
+     * @param expectedElementClass the expected {@link Class} of the created {@link LanguageElement}
+     * @param expectedElementType the expected {@link ElementType} of the created {@link LanguageElement}
+     * @param expectedElementName the expected name of the created {@link LanguageElement}
+     * @param expectedElementSourceClass the expected {@link Class} from which the {@link LanguageElement} was created
+     * @param expectedElementSourcePlugin the expected {@link File} denoting the source plug-in of the {@link Class}
+     *        from which a {@link LanguageElement} was created
      */
-    @Test
-    public void testGenericFragmentParameterTypeWithSymbolicNameCreation() {
-        try {
-            List<LanguageElement> createdElements = 
-                    elementCreator.createLanguageElements(GenericFragmentParameterTypeWithSymbolicName.class,
-                            sourcePlugin);
-            assertEquals(1, createdElements.size(), "Wrong number of created language elements");
-            
-            LanguageElement createdElement = createdElements.get(0);
-            assertEquals(ParameterType.class, createdElement.getClass(), "Wrong language element type");
-            assertEquals(ElementType.FRAGMENT_PARAMETER_TYPE, createdElement.getElementType(),
-                    "Wrong language element element type");
-            assertEquals("Block<File>", createdElement.getName(), "Wrong language element name");
-            assertEquals(GenericFragmentParameterTypeWithSymbolicName.class, createdElement.getSourceClass(),
-                    "Wrong language element source class");
-            assertEquals(sourcePlugin, createdElement.getSourcePlugin(), "Wrong language element source plug-in");
-            
-        } catch (ExternalElementException e) {
-            assertNull(e, "This test should not throw any exception");
-        }
+//CHECKSTYLE:OFF
+    public FragmentParameterTypeCreationTests(Class<?> testInputClass, ExternalElementException expectedException,
+            boolean expectedElementsExistence, Class<?> expectedElementClass, ElementType expectedElementType,
+            String expectedElementName, Class<?> expectedElementSourceClass, java.io.File expectedElementSourcePlugin) {
+        super(testInputClass, expectedException, expectedElementsExistence, expectedElementClass, expectedElementType,
+                expectedElementName, expectedElementSourceClass, expectedElementSourcePlugin);
     }
-    
+//CHECKSTYLE:ON
+
     /**
-     * Tests the correct creation of a simple {@link FragmentParameterType} based on the class 
-     * {@link GenericFragmentParameterTypeWithSymbolicParameterName}.
+     * Returns the expected results as parameters for the tests defined in this and the super-class.
+     * 
+     * @return the {@link #EXPECTED_RESULTS} as an object-array list
      */
-    @Test
-    public void testGenericFragmentParameterTypeWithSymbolicParameterNameCreation() {
-        try {
-            List<LanguageElement> createdElements = 
-                    elementCreator.createLanguageElements(GenericFragmentParameterTypeWithSymbolicParameterName.class,
-                            sourcePlugin);
-            assertEquals(1, createdElements.size(), "Wrong number of created language elements");
-            
-            LanguageElement createdElement = createdElements.get(0);
-            assertEquals(ParameterType.class, createdElement.getClass(), "Wrong language element type");
-            assertEquals(ElementType.FRAGMENT_PARAMETER_TYPE, createdElement.getElementType(),
-                    "Wrong language element element type");            
-            assertEquals("GenericFragmentParameterTypeWithSymbolicParameterName<Code>", createdElement.getName(),
-                    "Wrong language element name");
-            assertEquals(GenericFragmentParameterTypeWithSymbolicParameterName.class, createdElement.getSourceClass(),
-                    "Wrong language element source class");
-            assertEquals(sourcePlugin, createdElement.getSourcePlugin(), "Wrong language element source plug-in");
-            
-        } catch (ExternalElementException e) {
-            assertNull(e, "This test should not throw any exception");
-        }
-    }
-    
-    /**
-     * Tests the correct creation of a simple {@link FragmentParameterType} based on the class 
-     * {@link GenericFragmentParameterTypeWithSymbolicNameAndParameterName}.
-     */
-    @Test
-    public void testGenericFragmentParameterTypeWithSymbolicNameAndParameterNameCreation() {
-        try {
-            List<LanguageElement> createdElements = elementCreator.
-                    createLanguageElements(GenericFragmentParameterTypeWithSymbolicNameAndParameterName.class,
-                            sourcePlugin);
-            assertEquals(1, createdElements.size(), "Wrong number of created language elements");
-            
-            LanguageElement createdElement = createdElements.get(0);
-            assertEquals(ParameterType.class, createdElement.getClass(), "Wrong language element type");
-            assertEquals(ElementType.FRAGMENT_PARAMETER_TYPE, createdElement.getElementType(),
-                    "Wrong language element element type");
-            assertEquals("Block<Code>", createdElement.getName(), "Wrong language element name");
-            assertEquals(GenericFragmentParameterTypeWithSymbolicNameAndParameterName.class,
-                    createdElement.getSourceClass(), "Wrong language element source class");
-            assertEquals(sourcePlugin, createdElement.getSourcePlugin(), "Wrong language element source plug-in");
-            
-        } catch (ExternalElementException e) {
-            assertNull(e, "This test should not throw any exception");
-        }
+    @Parameters
+    public static List<Object[]> getTestData() {
+        return Arrays.asList(EXPECTED_RESULTS);
     }
     
 }

@@ -14,12 +14,11 @@
  */
 package net.ssehub.tests.integration;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-
+import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.runners.Parameterized.Parameters;
 
 import net.ssehub.integration.ElementType;
 import net.ssehub.integration.ExternalElementException;
@@ -35,8 +34,8 @@ import net.ssehub.integration.annotations.ResultParameterType;
  * @author Christian Kroeher
  *
  */
-public class ResultParameterTypeCreationTests extends AbstractTest {
-    
+public class ResultParameterTypeCreationTests extends AbstractLanguageElementCreationTest {
+
     /**
      * This class represents a simple (not generic) result parameter type. It is annotated with the 
      * {@link ResultParameterType} annotation without any further parameters. Hence, the actual class name should be
@@ -81,111 +80,6 @@ public class ResultParameterTypeCreationTests extends AbstractTest {
      */
     @ResultParameterType(name = "DeadBlock", parameterName = "Code")
     private class SimpleResultParameterTypeWithSymbolicNameAndParameterName { }
-
-    /**
-     * Tests the correct creation of a simple {@link ResultParameterType} based on the class 
-     * {@link SimpleResultParameterType}.
-     */
-    @Test
-    public void testSimpleResultParameterTypeCreation() {
-        try {
-            List<LanguageElement> createdElements = 
-                    elementCreator.createLanguageElements(SimpleResultParameterType.class, sourcePlugin);
-            assertEquals(1, createdElements.size(), "Wrong number of created language elements");
-            
-            LanguageElement createdElement = createdElements.get(0);
-            assertEquals(ParameterType.class, createdElement.getClass(), "Wrong language element type");
-            assertEquals(ElementType.RESULT_PARAMETER_TYPE, createdElement.getElementType(),
-                    "Wrong language element element type");
-            assertEquals(SimpleResultParameterType.class.getSimpleName(), createdElement.getName(),
-                    "Wrong language element name");
-            assertEquals(SimpleResultParameterType.class, createdElement.getSourceClass(),
-                    "Wrong language element source class");
-            assertEquals(sourcePlugin, createdElement.getSourcePlugin(), "Wrong language element source plug-in");
-            
-        } catch (ExternalElementException e) {
-            assertNull(e, "This test should not throw any exception");
-        }
-    }
-    
-    /**
-     * Tests the correct creation of a simple {@link ResultParameterType} based on the class 
-     * {@link SimpleResultParameterTypeWithSymbolicName}.
-     */
-    @Test
-    public void testSimpleResultParameterTypeWithSymbolicNameCreation() {
-        try {
-            List<LanguageElement> createdElements = 
-                    elementCreator.createLanguageElements(SimpleResultParameterTypeWithSymbolicName.class,
-                            sourcePlugin);
-            assertEquals(1, createdElements.size(), "Wrong number of created language elements");
-            
-            LanguageElement createdElement = createdElements.get(0);
-            assertEquals(ParameterType.class, createdElement.getClass(), "Wrong language element type");
-            assertEquals(ElementType.RESULT_PARAMETER_TYPE, createdElement.getElementType(),
-                    "Wrong language element element type");
-            assertEquals("DeadBlock", createdElement.getName(), "Wrong language element name");
-            assertEquals(SimpleResultParameterTypeWithSymbolicName.class, createdElement.getSourceClass(),
-                    "Wrong language element source class");
-            assertEquals(sourcePlugin, createdElement.getSourcePlugin(), "Wrong language element source plug-in");
-            
-        } catch (ExternalElementException e) {
-            assertNull(e, "This test should not throw any exception");
-        }
-    }
-    
-    /**
-     * Tests the correct creation of a simple {@link ResultParameterType} based on the class 
-     * {@link SimpleResultParameterTypeWithSymbolicParameterName}.
-     */
-    @Test
-    public void testSimpleResultParameterTypeWithSymbolicParameterNameCreation() {
-        try {
-            List<LanguageElement> createdElements = 
-                    elementCreator.createLanguageElements(SimpleResultParameterTypeWithSymbolicParameterName.class,
-                            sourcePlugin);
-            assertEquals(1, createdElements.size(), "Wrong number of created language elements");
-            
-            LanguageElement createdElement = createdElements.get(0);
-            assertEquals(ParameterType.class, createdElement.getClass(), "Wrong language element type");
-            assertEquals(ElementType.RESULT_PARAMETER_TYPE, createdElement.getElementType(),
-                    "Wrong language element element type");
-            assertEquals(SimpleResultParameterTypeWithSymbolicParameterName.class.getSimpleName(),
-                    createdElement.getName(), "Wrong language element name");
-            assertEquals(SimpleResultParameterTypeWithSymbolicParameterName.class, createdElement.getSourceClass(),
-                    "Wrong language element source class");
-            assertEquals(sourcePlugin, createdElement.getSourcePlugin(), "Wrong language element source plug-in");
-            
-        } catch (ExternalElementException e) {
-            assertNull(e, "This test should not throw any exception");
-        }
-    }
-    
-    /**
-     * Tests the correct creation of a simple {@link ResultParameterType} based on the class 
-     * {@link SimpleResultParameterTypeWithSymbolicNameAndParameterName}.
-     */
-    @Test
-    public void testSimpleFragmentParameterTypeWithSymbolicNameAndParameterNameCreation() {
-        try {
-            List<LanguageElement> createdElements = elementCreator.
-                    createLanguageElements(SimpleResultParameterTypeWithSymbolicNameAndParameterName.class,
-                            sourcePlugin);
-            assertEquals(1, createdElements.size(), "Wrong number of created language elements");
-            
-            LanguageElement createdElement = createdElements.get(0);
-            assertEquals(ParameterType.class, createdElement.getClass(), "Wrong language element type");
-            assertEquals(ElementType.RESULT_PARAMETER_TYPE, createdElement.getElementType(),
-                    "Wrong language element element type");
-            assertEquals("DeadBlock", createdElement.getName(), "Wrong language element name");
-            assertEquals(SimpleResultParameterTypeWithSymbolicNameAndParameterName.class,
-                    createdElement.getSourceClass(), "Wrong language element source class");
-            assertEquals(sourcePlugin, createdElement.getSourcePlugin(), "Wrong language element source plug-in");
-            
-        } catch (ExternalElementException e) {
-            assertNull(e, "This test should not throw any exception");
-        }
-    }
     
     /**
      * This class represents a generic result parameter type with {@link File} as parameter type. It is annotated with
@@ -197,6 +91,7 @@ public class ResultParameterTypeCreationTests extends AbstractTest {
      * @author Christian Kroeher
      *
      */
+    @SuppressWarnings("hiding")
     @ResultParameterType
     private class GenericResultParameterType<File> { }
     
@@ -210,6 +105,7 @@ public class ResultParameterTypeCreationTests extends AbstractTest {
      * @author Christian Kroeher
      *
      */
+    @SuppressWarnings("hiding")
     @ResultParameterType(name = "DeadBlock")
     private class GenericResultParameterTypeWithSymbolicName<File> { }
     
@@ -223,6 +119,7 @@ public class ResultParameterTypeCreationTests extends AbstractTest {
      * @author Christian Kroeher
      *
      */
+    @SuppressWarnings("hiding")
     @ResultParameterType(parameterName = "Code")
     private class GenericResultParameterTypeWithSymbolicParameterName<File> { }
     
@@ -237,112 +134,100 @@ public class ResultParameterTypeCreationTests extends AbstractTest {
      * @author Christian Kroeher
      *
      */
+    @SuppressWarnings("hiding")
     @ResultParameterType(name = "DeadBlock", parameterName = "Code")
     private class GenericResultParameterTypeWithSymbolicNameAndParameterName<File> { }
     
     /**
-     * Tests the correct creation of a generic {@link ResultParameterType} based on the class 
-     * {@link GenericResultParameterType}.
+     * The expected results for each input {@link Class} defined as inner class of this class. Each entry has the
+     * following elements:
+     * <ul>
+     * <li>The {@link Class} used as an input to the {@link LanguageElementCreator} for creating a 
+     * {@link LanguageElement} based on the information of that class
+     * </li>
+     * <li>The {@link ExternalElementException} expected to be thrown during the creation of a {@link LanguageElement};
+     * a value of <code>null</code> indicates that throwing an exception was not expected
+     * </li>
+     * <li>The declaration of whether it is expected that the created {@link LanguageElement} is not <code>null</code>
+     * (<code>true</code>) or should be <code>null</code> (<code>false</code>)
+     * </li>
+     * <li>The expected {@link Class} of the created {@link LanguageElement}</li>
+     * <li>The expected {@link ElementType} of the created {@link LanguageElement}</li>
+     * <li>The expected name of the created {@link LanguageElement}</li>
+     * <li>The expected {@link Class} from which the {@link LanguageElement} was created</li>
+     * <li>The expected {@link File} denoting the source plug-in of the {@link Class} from which a 
+     * {@link LanguageElement} was created
+     * </li>
+     * </ul>
      */
-    @Test
-    public void testGenericResultParameterTypeCreation() {
-        try {
-            List<LanguageElement> createdElements = 
-                    elementCreator.createLanguageElements(GenericResultParameterType.class, sourcePlugin);
-            assertEquals(1, createdElements.size(), "Wrong number of created language elements");
-            
-            LanguageElement createdElement = createdElements.get(0);
-            assertEquals(ParameterType.class, createdElement.getClass(), "Wrong language element type");
-            assertEquals(ElementType.RESULT_PARAMETER_TYPE, createdElement.getElementType(),
-                    "Wrong language element element type");
-            assertEquals("GenericResultParameterType<File>", createdElement.getName(),
-                    "Wrong language element name");
-            assertEquals(GenericResultParameterType.class, createdElement.getSourceClass(),
-                    "Wrong language element source class");
-            assertEquals(sourcePlugin, createdElement.getSourcePlugin(), "Wrong language element source plug-in");
-            
-        } catch (ExternalElementException e) {
-            assertNull(e, "This test should not throw any exception");
-        }
-    }
+    private static final Object[][] EXPECTED_RESULTS = new Object[][] {
+        {SimpleResultParameterType.class, null, true, ParameterType.class, ElementType.RESULT_PARAMETER_TYPE, 
+            SimpleResultParameterType.class.getSimpleName(), SimpleResultParameterType.class, sourcePlugin},
+        
+        {SimpleResultParameterTypeWithSymbolicName.class, null, true, ParameterType.class,
+            ElementType.RESULT_PARAMETER_TYPE, "DeadBlock", SimpleResultParameterTypeWithSymbolicName.class,
+            sourcePlugin},
+        
+        {SimpleResultParameterTypeWithSymbolicParameterName.class, null, true, ParameterType.class,
+            ElementType.RESULT_PARAMETER_TYPE, 
+            SimpleResultParameterTypeWithSymbolicParameterName.class.getSimpleName(), 
+            SimpleResultParameterTypeWithSymbolicParameterName.class, sourcePlugin},
+        
+        {SimpleResultParameterTypeWithSymbolicNameAndParameterName.class, null, true, ParameterType.class,
+            ElementType.RESULT_PARAMETER_TYPE, "DeadBlock", 
+            SimpleResultParameterTypeWithSymbolicNameAndParameterName.class, sourcePlugin},
+        
+        {GenericResultParameterType.class, null, true, ParameterType.class, ElementType.RESULT_PARAMETER_TYPE, 
+            "GenericResultParameterType<File>", GenericResultParameterType.class, sourcePlugin},
+        
+        {GenericResultParameterTypeWithSymbolicName.class, null, true, ParameterType.class,
+            ElementType.RESULT_PARAMETER_TYPE, "DeadBlock<File>", GenericResultParameterTypeWithSymbolicName.class,
+            sourcePlugin},
+        
+        {GenericResultParameterTypeWithSymbolicParameterName.class, null, true, ParameterType.class,
+            ElementType.RESULT_PARAMETER_TYPE, "GenericResultParameterTypeWithSymbolicParameterName<Code>",
+            GenericResultParameterTypeWithSymbolicParameterName.class, sourcePlugin},
+        
+        {GenericResultParameterTypeWithSymbolicNameAndParameterName.class, null, true, ParameterType.class,
+            ElementType.RESULT_PARAMETER_TYPE, "DeadBlock<Code>",
+            GenericResultParameterTypeWithSymbolicNameAndParameterName.class, sourcePlugin}
+    };
     
     /**
-     * Tests the correct creation of a generic {@link ResultParameterType} based on the class 
-     * {@link GenericResultParameterTypeWithSymbolicName}.
+     * Constructs a new {@link ResultParameterTypeCreationTests} instance.
+     * 
+     * @param testInputClass the {@link Class} used as an input to the {@link LanguageElementCreator} for creating a
+     *        {@link LanguageElement} based on the information of that class
+     * @param expectedException the {@link ExternalElementException} expected to be thrown during the creation of a 
+     *        {@link LanguageElement}; a value of <code>null</code> indicates that throwing an exception was not 
+     *        expected
+     * @param expectedElementsExistence the declaration of whether it is expected that the created
+     *        {@link LanguageElement} is not <code>null</code> (<code>true</code>) or should be <code>null</code>
+     *        (<code>false</code>)
+     * @param expectedElementClass the expected {@link Class} of the created {@link LanguageElement}
+     * @param expectedElementType the expected {@link ElementType} of the created {@link LanguageElement}
+     * @param expectedElementName the expected name of the created {@link LanguageElement}
+     * @param expectedElementSourceClass the expected {@link Class} from which the {@link LanguageElement} was created
+     * @param expectedElementSourcePlugin the expected {@link File} denoting the source plug-in of the {@link Class}
+     *        from which a {@link LanguageElement} was created
      */
-    @Test
-    public void testGenericResultParameterTypeWithSymbolicNameCreation() {
-        try {
-            List<LanguageElement> createdElements = 
-                    elementCreator.createLanguageElements(GenericResultParameterTypeWithSymbolicName.class,
-                            sourcePlugin);
-            assertEquals(1, createdElements.size(), "Wrong number of created language elements");
-            
-            LanguageElement createdElement = createdElements.get(0);
-            assertEquals(ParameterType.class, createdElement.getClass(), "Wrong language element type");
-            assertEquals(ElementType.RESULT_PARAMETER_TYPE, createdElement.getElementType(),
-                    "Wrong language element element type");
-            assertEquals("DeadBlock<File>", createdElement.getName(), "Wrong language element name");
-            assertEquals(GenericResultParameterTypeWithSymbolicName.class, createdElement.getSourceClass(),
-                    "Wrong language element source class");
-            assertEquals(sourcePlugin, createdElement.getSourcePlugin(), "Wrong language element source plug-in");
-            
-        } catch (ExternalElementException e) {
-            assertNull(e, "This test should not throw any exception");
-        }
+//CHECKSTYLE:OFF
+    public ResultParameterTypeCreationTests(Class<?> testInputClass, ExternalElementException expectedException,
+            boolean expectedElementsExistence, Class<?> expectedElementClass, ElementType expectedElementType,
+            String expectedElementName, Class<?> expectedElementSourceClass, java.io.File expectedElementSourcePlugin) {
+        super(testInputClass, expectedException, expectedElementsExistence, expectedElementClass, expectedElementType,
+                expectedElementName, expectedElementSourceClass, expectedElementSourcePlugin);
     }
-    
+//CHECKSTYLE:ON
+
     /**
-     * Tests the correct creation of a simple {@link ResultParameterType} based on the class 
-     * {@link GenericResultParameterTypeWithSymbolicParameterName}.
+     * Returns the expected results as parameters for the tests defined in this and the super-class.
+     * 
+     * @return the {@link #EXPECTED_RESULTS} as an object-array list
      */
-    @Test
-    public void testGenericResultParameterTypeWithSymbolicParameterNameCreation() {
-        try {
-            List<LanguageElement> createdElements = 
-                    elementCreator.createLanguageElements(GenericResultParameterTypeWithSymbolicParameterName.class,
-                            sourcePlugin);
-            assertEquals(1, createdElements.size(), "Wrong number of created language elements");
-            
-            LanguageElement createdElement = createdElements.get(0);
-            assertEquals(ParameterType.class, createdElement.getClass(), "Wrong language element type");
-            assertEquals(ElementType.RESULT_PARAMETER_TYPE, createdElement.getElementType(),
-                    "Wrong language element element type");            
-            assertEquals("GenericResultParameterTypeWithSymbolicParameterName<Code>", createdElement.getName(),
-                    "Wrong language element name");
-            assertEquals(GenericResultParameterTypeWithSymbolicParameterName.class, createdElement.getSourceClass(),
-                    "Wrong language element source class");
-            assertEquals(sourcePlugin, createdElement.getSourcePlugin(), "Wrong language element source plug-in");
-            
-        } catch (ExternalElementException e) {
-            assertNull(e, "This test should not throw any exception");
-        }
-    }
-    
-    /**
-     * Tests the correct creation of a simple {@link ResultParameterType} based on the class 
-     * {@link GenericResultParameterTypeWithSymbolicNameAndParameterName}.
-     */
-    @Test
-    public void testGenericResultParameterTypeWithSymbolicNameAndParameterNameCreation() {
-        try {
-            List<LanguageElement> createdElements = elementCreator.
-                    createLanguageElements(GenericResultParameterTypeWithSymbolicNameAndParameterName.class,
-                            sourcePlugin);
-            assertEquals(1, createdElements.size(), "Wrong number of created language elements");
-            
-            LanguageElement createdElement = createdElements.get(0);
-            assertEquals(ParameterType.class, createdElement.getClass(), "Wrong language element type");
-            assertEquals(ElementType.RESULT_PARAMETER_TYPE, createdElement.getElementType(),
-                    "Wrong language element element type");
-            assertEquals("DeadBlock<Code>", createdElement.getName(), "Wrong language element name");
-            assertEquals(GenericResultParameterTypeWithSymbolicNameAndParameterName.class,
-                    createdElement.getSourceClass(), "Wrong language element source class");
-            assertEquals(sourcePlugin, createdElement.getSourcePlugin(), "Wrong language element source plug-in");
-            
-        } catch (ExternalElementException e) {
-            assertNull(e, "This test should not throw any exception");
-        }
+    @Parameters
+    public static List<Object[]> getTestData() {
+        return Arrays.asList(EXPECTED_RESULTS);
     }
 
 }

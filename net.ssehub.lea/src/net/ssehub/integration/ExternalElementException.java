@@ -35,7 +35,7 @@ public class ExternalElementException extends Exception {
      * 
      * @param message the description of the error causing this exception
      */
-    protected ExternalElementException(String message) {
+    public ExternalElementException(String message) {
         super(message);
     }
     
@@ -45,7 +45,7 @@ public class ExternalElementException extends Exception {
      * @param message the specific description of the error causing this exception
      * @param cause the {@link Throwable} representing the actual cause of this exception
      */
-    protected ExternalElementException(String message, Throwable cause) {
+    public ExternalElementException(String message, Throwable cause) {
         super(message, cause);
     }
     

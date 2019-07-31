@@ -22,12 +22,13 @@ import net.ssehub.integration.LanguageElement;
 import net.ssehub.integration.LanguageElementCreator;
 
 /**
- * This abstract class provides common attributes and methods for testing the integration of external LEA elements.
+ * This abstract class provides common attributes and methods for testing the creation of {@link LanguageElement}s by
+ * the {@link LanguageElementCreator}.
  * 
  * @author Christian Kroeher
  *
  */
-public abstract class AbstractTest {
+public abstract class AbstractCreationTest {
     
     /**
      * The {@link LanguageElementCreator} for testing the correct creation of {@link LanguageElement}s.
@@ -39,7 +40,7 @@ public abstract class AbstractTest {
      * created. This is just a dummy file as it has no impact on the actual creation, but is only used as a constructor
      * parameter.
      */
-    protected File sourcePlugin = new File("./");
+    protected static File sourcePlugin = new File("./");
     
     /**
      * Prepares the elements commonly used by all unit tests defined in the extending classes.

@@ -29,12 +29,12 @@ import net.ssehub.integration.annotations.ArtifactParameterType;
 
 /**
  * This class contains some basic unit tests for the {@link LanguageElementCreator}. In particular, the tests aim at the
- * correct throw of exceptions, is some of the parameters are <code>null</code>.
+ * correct throw of exceptions, if some of the parameters are <code>null</code>.
  * 
  * @author Christian Kroeher
  *
  */
-public class BasicLanguageElementCreatorTests extends AbstractTest {
+public class BasicLanguageElementCreatorTests extends AbstractCreationTest {
     
     /**
      * This class represents a simple (not generic) artifact parameter type. It is annotated with the 
