@@ -16,6 +16,7 @@ package net.ssehub.integration;
 
 import java.io.File;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +24,7 @@ import java.util.List;
 import net.ssehub.integration.annotations.ArtifactParameterType;
 import net.ssehub.integration.annotations.ChangeIdentifier;
 import net.ssehub.integration.annotations.FragmentParameterType;
+import net.ssehub.integration.annotations.Operation;
 import net.ssehub.integration.annotations.ResultParameterType;
 
 /**
@@ -234,23 +236,84 @@ public class LanguageElementCreator {
     }
     
     /**
-     * Creates a new {@link LanguageElement} by scanning the given {@link Method} for the custom annotations
-     * classifying external methods to represent a language element.
+     * Creates a new {@link Call} by scanning the given {@link Method} for the custom annotations classifying external
+     * methods to represent a language element. These annotations are:
+     * <ul>
+     * <li>{@link Operation}, which declares the method to be a general operation. </li>
+     * <li>TODO extractor call</li>
+     * <li>TODO analysis call</li>
+     * </ul>
+     * All other annotations will be ignored, which leads to a return value of <code>null</code>.
      * 
      * @param pluginClassMethod the {@link Method}, which may introduce a new language element, if it is annotated as
      *        such; should never be <code>null</code>
      * @param sourceClass the {@link Class} in which the given method is declared; should never be <code>null</code>
      * @param sourcePlugin the {@link File} denoting a Java archive file in which the above class is located; should
      *        never be <code>null</code>
-     * @return a {@link LanguageElement} derived from the given method or <code>null</code>, if this method is not 
-     *         annotated as introducing a new language element
+     * @return a {@link Call} derived from the given method or <code>null</code>, if this method is not annotated as
+     *         introducing a new language element
+     * @throws ExternalElementException if creating the {@link Call} failed; it is <b>not</b> thrown, if the given 
+     *         method does not introduce any language element
      */
-    private LanguageElement createLanguageElementFromMethod(Method pluginClassMethod, Class<?> sourceClass,
-            File sourcePlugin) {
-        LanguageElement createdElement = null;
+    private Call createLanguageElementFromMethod(Method pluginClassMethod, Class<?> sourceClass,
+            File sourcePlugin) throws ExternalElementException {
+        Call call = null;
+        ElementType specificElementType = null;
+        String callName = null;
+        String returnType = null;
+        String[] parameters = null;
+        if (pluginClassMethod.isAnnotationPresent(Operation.class)) {
+            // The pluginClassMethod declares a general operation, like "op()" or "var.op()"
+            specificElementType = ElementType.OPERATION;
+            callName = pluginClassMethod.getName();
+            
+            Operation customAnnotation = pluginClassMethod.getAnnotation(Operation.class);
+            if (!customAnnotation.name().isBlank()) {
+                callName = customAnnotation.name();
+            }
+            returnType = createLanguageElementName(pluginClassMethod.getReturnType(), customAnnotation.returnType(),
+                    "");
+            parameters = createCallParameters(pluginClassMethod, customAnnotation.parameters());
+        }
         
-        // TODO implement this method
+        // Create the language element, if the element type is known
+        if (specificElementType != null) {
+            try {
+                call = new Call(specificElementType, callName, returnType, parameters, sourceClass, sourcePlugin);
+            } catch (LanguageElementException e) {
+                throw new ExternalElementException("Creating call based on method \"" 
+                        + pluginClassMethod.getName() + "\" in class \"" + sourceClass.getSimpleName() 
+                        + "\" of plug-in \"" + sourcePlugin.getAbsolutePath() + "\" failed", e);
+            }
+        }
         
-        return createdElement;
+        return call;
+    }
+    
+    /**
+     * TODO.
+     * @param pluginClassMethod TODO
+     * @param symbolicParameters TODO
+     * @return TODO
+     * @throws ExternalElementException TODO
+     */
+    private String[] createCallParameters(Method pluginClassMethod, String[] symbolicParameters) 
+            throws ExternalElementException {
+        String[] callParameters = null;
+        Parameter[] methodParameters = pluginClassMethod.getParameters();
+        if (symbolicParameters.length != 0) {
+            if (symbolicParameters.length != methodParameters.length) {                
+                throw new ExternalElementException("Mismatch of actual (" + methodParameters.length + ") and symbolic ("
+                        + symbolicParameters.length + ") parameters while creating call based on method \"" 
+                        + pluginClassMethod.toGenericString() + "\"");
+            }
+            callParameters = symbolicParameters;
+        } else {
+            callParameters = new String[methodParameters.length];
+            for (int i = 0; i < methodParameters.length; i++) {
+                callParameters[i] = createLanguageElementName(methodParameters[i].getType(), "", "");
+            }
+        }
+        return callParameters;
     }
 }

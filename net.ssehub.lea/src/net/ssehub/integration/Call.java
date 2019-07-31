@@ -15,7 +15,6 @@
 package net.ssehub.integration;
 
 import java.io.File;
-import java.util.List;
 
 /**
  * This class represents a call <code>c()</code> for operations, extractors, or analyzers, e.g.,
@@ -33,9 +32,9 @@ public class Call extends LanguageElement {
     private String returnType;
     
     /**
-     * The list of names, which denote the elements this call accepts as parameters.
+     * The array of names, which denote the elements this call accepts as parameters.
      */
-    private List<String> parameters;
+    private String[] parameters;
 
     /**
      * Constructs a new {@link Call} with the given attributes.
@@ -45,7 +44,7 @@ public class Call extends LanguageElement {
      *        {@link LanguageElementException}
      * @param name the name of this new element
      * @param returnType the name of the type of element(s) this call will return
-     * @param parameters the list of names, which denote the elements this call accepts as parameters 
+     * @param parameters the array of names, which denote the elements this call accepts as parameters 
      * @param sourceClass the {@link Class} from where this new element is created
      * @param sourcePlugin the {@link File}, which is a Java archive file, from where this new element is created
      * @throws LanguageElementException if any of the above parameters is <code>null</code>, the element type does not
@@ -53,7 +52,7 @@ public class Call extends LanguageElement {
      *         or the name is <i>blank</i>
      */
 //CHECKSTYLE:OFF
-    protected Call(ElementType elementType, String name, String returnType, List<String> parameters,
+    protected Call(ElementType elementType, String name, String returnType, String[] parameters,
             Class<?> sourceClass, File sourcePlugin) throws LanguageElementException {
         super(elementType, name, sourceClass, sourcePlugin);
         if (elementType != ElementType.OPERATION 
@@ -64,8 +63,8 @@ public class Call extends LanguageElement {
         if (returnType == null || returnType.isBlank()) {
             throw new LanguageElementException("The return type for the new language element is null or blank");
         }
-        if (parameters == null || parameters.isEmpty()) {
-            throw new LanguageElementException("The parameter list for the new language element is null or empty");
+        if (parameters == null) {
+            throw new LanguageElementException("The parameter list for the new language element is null");
         }
         this.returnType = returnType;
         this.parameters = parameters;
@@ -90,11 +89,11 @@ public class Call extends LanguageElement {
     }
     
     /**
-     * Returns the list of names, which denote the elements this call accepts as parameters.
+     * Returns the array of names, which denote the elements this call accepts as parameters.
      * 
-     * @return the list of names, which denote the elements this call accepts as parameters
+     * @return the array of names, which denote the elements this call accepts as parameters
      */
-    public List<String> getParameters() {
+    public String[] getParameters() {
         return parameters;
     }
 }
