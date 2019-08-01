@@ -15,6 +15,7 @@
 package net.ssehub.tests.integration;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.io.File;
 
@@ -88,9 +89,14 @@ public abstract class AbstractCallCreationTest extends AbstractLanguageElementCr
         this.expectedReturnType = expectedReturnType;
         this.expectedParameters = expectedParameters;
         
-        Call createdCall = (Call) createdElement;
-        actualReturnType = createdCall.getReturnType();
-        actualParameters = createdCall.getParameters();
+        if (createdElement != null) {            
+            Call createdCall = (Call) createdElement;
+            actualReturnType = createdCall.getReturnType();
+            actualParameters = createdCall.getParameters();
+        } else {
+            actualReturnType = null;
+            actualParameters = null;
+        }
     }
 //CHECKSTYLE:ON
     
@@ -108,7 +114,11 @@ public abstract class AbstractCallCreationTest extends AbstractLanguageElementCr
      */
     @Test
     public void testCreatedCallNumberOfParameters() {
-        assertEquals(expectedParameters.length, actualParameters.length, "Wrong number of parameters");
+        if (expectedParameters != null) {            
+            assertEquals(expectedParameters.length, actualParameters.length, "Wrong number of parameters");
+        } else {
+            assertNull(actualParameters, "Parameters should be null");
+        }
     }
     
     /**
@@ -117,8 +127,12 @@ public abstract class AbstractCallCreationTest extends AbstractLanguageElementCr
      */
     @Test
     public void testCreatedCallParameters() {
-        for (int i = 0; i < expectedParameters.length; i++) {
-            assertEquals(expectedParameters[i], actualParameters[i], "Wrong parameter");
+        if (expectedParameters != null) {            
+            for (int i = 0; i < expectedParameters.length; i++) {
+                assertEquals(expectedParameters[i], actualParameters[i], "Wrong parameter");
+            }
+        } else {
+            assertNull(actualParameters, "Parameters should be null");
         }
     }
 }
