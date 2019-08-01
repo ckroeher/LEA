@@ -23,6 +23,7 @@ import java.util.List;
 
 import net.ssehub.integration.annotations.ArtifactParameterType;
 import net.ssehub.integration.annotations.ChangeIdentifier;
+import net.ssehub.integration.annotations.ExtractorCall;
 import net.ssehub.integration.annotations.FragmentParameterType;
 import net.ssehub.integration.annotations.Operation;
 import net.ssehub.integration.annotations.ResultParameterType;
@@ -202,8 +203,13 @@ public class LanguageElementCreator {
      * Creates a new {@link Call} by scanning the given {@link Method} for the custom annotations classifying external
      * methods to represent a language element. These annotations are:
      * <ul>
-     * <li>{@link Operation}, which declares the method to be a general operation. </li>
-     * <li>TODO extractor call</li>
+     * <li>
+     * {@link Operation}, which declares the method to be a {@link Call} of the type {@link ElementType#OPERATION}.
+     * </li>
+     * <li>
+     * {@link ExtractorCall}, which declares a method to be a {@link Call} of the type 
+     * {@link ElementType#EXTRACTOR_CALL}
+     * </li>
      * <li>TODO analysis call</li>
      * </ul>
      * All other annotations will be ignored, which leads to a return value of <code>null</code>.
@@ -231,6 +237,18 @@ public class LanguageElementCreator {
             callName = pluginClassMethod.getName();
             
             Operation customAnnotation = pluginClassMethod.getAnnotation(Operation.class);
+            if (!customAnnotation.name().isBlank()) {
+                callName = customAnnotation.name();
+            }
+            returnType = createLanguageElementName(pluginClassMethod.getGenericReturnType().getTypeName(),
+                    customAnnotation.returnType());
+            parameters = createCallParameters(pluginClassMethod, customAnnotation.parameters());
+        } else if (pluginClassMethod.isAnnotationPresent(ExtractorCall.class)) {
+            // The pluginClassMethod declares an extractor call for extracting fragments, like "Fragment<T> f = call()"
+            specificElementType = ElementType.EXTRACTOR_CALL;
+            callName = pluginClassMethod.getName();
+            
+            ExtractorCall customAnnotation = pluginClassMethod.getAnnotation(ExtractorCall.class);
             if (!customAnnotation.name().isBlank()) {
                 callName = customAnnotation.name();
             }
