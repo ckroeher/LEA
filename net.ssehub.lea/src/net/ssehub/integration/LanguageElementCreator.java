@@ -21,6 +21,7 @@ import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.ssehub.integration.annotations.AnalysisCall;
 import net.ssehub.integration.annotations.ArtifactParameterType;
 import net.ssehub.integration.annotations.ChangeIdentifier;
 import net.ssehub.integration.annotations.ExtractorCall;
@@ -210,7 +211,10 @@ public class LanguageElementCreator {
      * {@link ExtractorCall}, which declares a method to be a {@link Call} of the type 
      * {@link ElementType#EXTRACTOR_CALL}
      * </li>
-     * <li>TODO analysis call</li>
+     * <li>
+     * {@link AnalysisCall}, which declares a method to be a {@link Call} of the type 
+     * {@link ElementType#ANALYSIS_CALL}
+     * </li>
      * </ul>
      * All other annotations will be ignored, which leads to a return value of <code>null</code>.
      * 
@@ -235,7 +239,6 @@ public class LanguageElementCreator {
             // The pluginClassMethod declares a general operation, like "op()" or "var.op()"
             specificElementType = ElementType.OPERATION;
             callName = pluginClassMethod.getName();
-            
             Operation customAnnotation = pluginClassMethod.getAnnotation(Operation.class);
             if (!customAnnotation.name().isBlank()) {
                 callName = customAnnotation.name();
@@ -247,7 +250,6 @@ public class LanguageElementCreator {
             // The pluginClassMethod declares an extractor call for extracting fragments, like "Fragment<T> f = call()"
             specificElementType = ElementType.EXTRACTOR_CALL;
             callName = pluginClassMethod.getName();
-            
             ExtractorCall customAnnotation = pluginClassMethod.getAnnotation(ExtractorCall.class);
             if (!customAnnotation.name().isBlank()) {
                 callName = customAnnotation.name();
@@ -255,8 +257,18 @@ public class LanguageElementCreator {
             returnType = createLanguageElementName(pluginClassMethod.getGenericReturnType().getTypeName(),
                     customAnnotation.returnType());
             parameters = createCallParameters(pluginClassMethod, customAnnotation.parameters());
+        } else if (pluginClassMethod.isAnnotationPresent(AnalysisCall.class)) {
+            // The pluginClassMethod declares an analysis call for providing results, like "Result<T> f = call()"
+            specificElementType = ElementType.ANALYSIS_CALL;
+            callName = pluginClassMethod.getName();
+            AnalysisCall customAnnotation = pluginClassMethod.getAnnotation(AnalysisCall.class);
+            if (!customAnnotation.name().isBlank()) {
+                callName = customAnnotation.name();
+            }
+            returnType = createLanguageElementName(pluginClassMethod.getGenericReturnType().getTypeName(),
+                    customAnnotation.returnType());
+            parameters = createCallParameters(pluginClassMethod, customAnnotation.parameters());
         }
-        
         // Create the language element, if the element type is known
         if (specificElementType != null) {
             try {
@@ -267,7 +279,6 @@ public class LanguageElementCreator {
                         + "\" of plug-in \"" + sourcePlugin.getAbsolutePath() + "\" failed", e);
             }
         }
-        
         return call;
     }
     
