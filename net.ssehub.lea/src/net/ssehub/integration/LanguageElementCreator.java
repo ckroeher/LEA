@@ -78,8 +78,8 @@ public class LanguageElementCreator {
     /**
      * Creates a new {@link LanguageElement} by scanning the given {@link Class} for the custom annotations
      * classifying external classes to represent a language element. The specific language element depends on the used
-     * annotations and the corresponding processing of the given class in TODO or 
-     * {@link #createParameterType(Class, File)}.
+     * annotations and the corresponding processing of the given class in {@link #createChangeIdentifier(Class, File)}
+     * or {@link #createParameterType(Class, File)}.
      * 
      * @param pluginClass the {@link Class}, which may introduce a new language element, if it is annotated as such;
      *        should never be <code>null</code>
@@ -199,43 +199,6 @@ public class LanguageElementCreator {
     }
     
     /**
-     * Creates the (symbolic) name for the language element represented by the given {@link Class}. This name is either
-     * constructed by the given symbolic names (typically defined by the annotation values) or by the elements of the
-     * class declaration.
-     * 
-     * @param pluginClass the {@link Class} for which the (symbolic) language element name shall be created; should
-     *        never be <code>null</code>
-     * @param symbolicName the symbolic name for the language element represented by the given {@link Class} as defined
-     *        by its annotation; should never be <code>null</code>, but may be <i>empty</i>
-     * @param symbolicParameterName the symbolic name of the parameter type as defined by the class annotation, if the
-     *        given {@link Class} is a generic one; should never be <code>null</code>, but may be <i>empty</i>
-     * @return the (symbolic) name for the language element represented by the given {@link Class}; never 
-     *         <code>null</code> nor <i>empty</i>
-     */
-    private String createLanguageElementName(Class<?> pluginClass, String symbolicName, String symbolicParameterName) {
-        StringBuilder elementNameBuilder = new StringBuilder();
-        elementNameBuilder.append(pluginClass.getSimpleName());
-        if (!symbolicName.isBlank()) {
-            // Use the name as defined in the annotation instead of the actual class name
-            elementNameBuilder.setLength(0);
-            elementNameBuilder.append(symbolicName);
-        }
-        TypeVariable<?>[] typeParameters = pluginClass.getTypeParameters();
-        if (typeParameters.length > 0) {
-            // The plug-in class is a generic. Hence, add the parameter type to the element name
-            elementNameBuilder.append("<");
-            if (!symbolicParameterName.isBlank()) {
-                // Use the parameter type name as defined in the annotation instead of the actual parameter type name
-                elementNameBuilder.append(symbolicParameterName);
-            } else {
-                elementNameBuilder.append(typeParameters[0].getName());
-            }
-            elementNameBuilder.append(">");
-        }
-        return elementNameBuilder.toString();
-    }
-    
-    /**
      * Creates a new {@link Call} by scanning the given {@link Method} for the custom annotations classifying external
      * methods to represent a language element. These annotations are:
      * <ul>
@@ -271,8 +234,8 @@ public class LanguageElementCreator {
             if (!customAnnotation.name().isBlank()) {
                 callName = customAnnotation.name();
             }
-            returnType = createLanguageElementName(pluginClassMethod.getReturnType(), customAnnotation.returnType(),
-                    "");
+            returnType = createLanguageElementName(pluginClassMethod.getGenericReturnType().getTypeName(),
+                    customAnnotation.returnType());
             parameters = createCallParameters(pluginClassMethod, customAnnotation.parameters());
         }
         
@@ -291,11 +254,18 @@ public class LanguageElementCreator {
     }
     
     /**
-     * TODO.
-     * @param pluginClassMethod TODO
-     * @param symbolicParameters TODO
-     * @return TODO
-     * @throws ExternalElementException TODO
+     * Creates the (symbolic) parameters for a {@link Call} as a {@link String} array based on the {@link Parameter}s of
+     * the given {@link Method} or based on the given symbolic parameter names (typically defined by the annotation
+     * values).
+     * 
+     * @param pluginClassMethod the {@link Method}, which provides the {@link Parameter}s to create the {@link Call}
+     *        parameters; should never be <code>null</code>
+     * @param symbolicParameters the symbolic name(s) of the {@link Call} parameters as defined by the method's
+     *        annotation; the name(s) that will be returned, if the array is not empty; should never be
+     *        <code>null</code> 
+     * @return the (symbolic) parameters for a {@link Call} as a {@link String}
+     * @throws ExternalElementException if the number of given symbolic parameters does not match the number of declared
+     *         parameters of the given method 
      */
     private String[] createCallParameters(Method pluginClassMethod, String[] symbolicParameters) 
             throws ExternalElementException {
@@ -311,9 +281,88 @@ public class LanguageElementCreator {
         } else {
             callParameters = new String[methodParameters.length];
             for (int i = 0; i < methodParameters.length; i++) {
-                callParameters[i] = createLanguageElementName(methodParameters[i].getType(), "", "");
+                callParameters[i] = createLanguageElementName(methodParameters[i].getParameterizedType().getTypeName(),
+                        "");
             }
         }
         return callParameters;
     }
+    
+    /**
+     * Creates the (symbolic) name for the language element represented by the given {@link Class}. This name is either
+     * constructed by the given symbolic names (typically defined by the annotation values) or by the elements of the
+     * class declaration.
+     * 
+     * @param pluginClass the {@link Class} for which the (symbolic) language element name shall be created; should
+     *        never be <code>null</code>
+     * @param symbolicName the symbolic name for the language element represented by the given {@link Class} as defined
+     *        by its annotation; the name that will be returned, if it is not blank; should never be <code>null</code>
+     * @param symbolicParameterName the symbolic name of the parameter type as defined by the class annotation, if the
+     *        given {@link Class} is a generic one; the name that will be returned, if it is not blank; should never be
+     *        <code>null</code>
+     * @return the (symbolic) name for the language element represented by the given {@link Class}; never 
+     *         <code>null</code> nor <i>empty</i>
+     */
+    private String createLanguageElementName(Class<?> pluginClass, String symbolicName, String symbolicParameterName) {
+        StringBuilder elementNameBuilder = new StringBuilder();
+        elementNameBuilder.append(pluginClass.getSimpleName());
+        if (!symbolicName.isBlank()) {
+            // Use the name as defined in the annotation instead of the actual class name
+            elementNameBuilder.setLength(0);
+            elementNameBuilder.append(symbolicName);
+        }
+        TypeVariable<?>[] typeParameters = pluginClass.getTypeParameters();
+        if (typeParameters.length > 0) {
+            // The plug-in class is a generic. Hence, add the parameter type to the element name
+            elementNameBuilder.append("<");
+            if (!symbolicParameterName.isBlank()) {
+                // Use the parameter type name as defined in the annotation instead of the actual parameter type name
+                elementNameBuilder.append(symbolicParameterName);
+            } else {
+                elementNameBuilder.append(typeParameters[0].getName());
+                int typeParameterCounter = 1;
+                while (typeParameterCounter < typeParameters.length) {
+                    elementNameBuilder.append(", ");
+                    elementNameBuilder.append(typeParameters[typeParameterCounter]);
+                    typeParameterCounter++;
+                }
+                 
+            }
+            elementNameBuilder.append(">");
+        }
+        return elementNameBuilder.toString();
+    }
+    
+    /**
+     * Creates the (symbolic) name for a language element with the given declared type name. The name is either
+     * constructed by the given declared type name, which is the fully-qualified type name includes the possible generic
+     * declaration and the generic parameter types, or the given symbolic type name (typically defined by the annotation
+     * values).
+     * 
+     * @param declaredTypeName the fully-qualified, declared type name from which a name should be created
+     * @param symbolicTypeName the name that will be returned, if it is not blank
+     * @return name for a language element
+     */
+    private String createLanguageElementName(String declaredTypeName, String symbolicTypeName) {
+        String elementName = symbolicTypeName;
+        if (elementName.isBlank()) {            
+            StringBuilder elementNameBuilder = new StringBuilder();
+            int typeNameIndex = declaredTypeName.length() - 1;
+            boolean ignore = false;
+            do {
+                if (!ignore && declaredTypeName.charAt(typeNameIndex) == '.') {
+                    ignore = true;
+                } else if (ignore && declaredTypeName.charAt(typeNameIndex) == '<') {
+                    ignore = false;
+                }
+                if (!ignore) {
+                    elementNameBuilder.append(declaredTypeName.charAt(typeNameIndex));
+                }
+                typeNameIndex--;
+            } while (typeNameIndex > -1);
+            elementName = elementNameBuilder.reverse().toString();
+        }
+        return elementName;
+    }
+
 }
