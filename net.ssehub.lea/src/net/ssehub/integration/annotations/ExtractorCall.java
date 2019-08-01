@@ -59,8 +59,8 @@ public @interface ExtractorCall {
      * {@link Call} constructor will throw an {@link ExternalElementException} and the extractor call will not be
      * available as part of the language. 
      * 
-     * @return the (symbolic) name of the return type of this {@link ElementType#OPERATION}; the default value is an
-     *         <i>empty</i> string
+     * @return the (symbolic) name of the return type of this {@link ElementType#EXTRACTOR_CALL}; the default value is
+     *         an <i>empty</i> string
      */
     public String returnType() default "";
     
