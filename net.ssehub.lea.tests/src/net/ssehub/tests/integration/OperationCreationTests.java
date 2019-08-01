@@ -506,7 +506,7 @@ public class OperationCreationTests extends AbstractCallCreationTest {
             sourcePlugin, "File", new String[] {"FileObject", "Prefix"}},
         
         {ClassIntroducingFileReturnWithTooFewCustomParametersOperation.class, new ExternalElementException(""),
-            false, null, null, null, null, null, null, null},
+            false, null, null, null, null, null, null, null}
     };
 
     /**
