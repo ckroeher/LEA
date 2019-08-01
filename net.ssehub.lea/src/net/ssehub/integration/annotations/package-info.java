@@ -13,10 +13,10 @@
  * specific language governing permissions and limitations under the License.
  */
 /**
- * This package contains the custom annotations for marking external class, attributes, or methods as representing a
+ * This package contains the custom annotations for marking external classes, attributes, or methods as representing a
  * language element. The @{@link net.ssehub.integration.LanguageElementCreator} scans external classes loaded by the 
  * {@link net.ssehub.integration.LanguageElementProvider} for these annotations and creates the respective
- * {@link net.ssehub.integration.LanguageElement}s for the TODO ElementRegistry.
+ * {@link net.ssehub.integration.LanguageElement}s for the {@link net.ssehub.integration.LanguageRegistry}.
  * 
  * @author Christian Kroeher
  *

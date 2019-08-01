@@ -70,14 +70,6 @@ public class Call extends LanguageElement {
         this.parameters = parameters;
     }
 //CHECKSTYLE:ON
-    /*
-     * TODO We need some kind of validation after all external elements are loaded. This validation should check for
-     * each element, or at least for the change identifier and the operations (those elements, that somehow work on/with
-     * other elements), if the elements are available. If not, we do not know what to do with the change identifier or
-     * the operations later.
-     * Suggestion: After the LanguageElementRegistry (or whatever the element database will be), that components has to
-     * perform the validation before it is used. Problematic elements should then be removed.
-     */
     
     /**
      * Returns the name of the type of element(s) this call will return.
