@@ -18,6 +18,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import net.ssehub.tests.integration.AnalysisCallCreationTests;
 import net.ssehub.tests.integration.ArtifactParameterTypeCreationTests;
 import net.ssehub.tests.integration.BasicLanguageElementCreatorTests;
 import net.ssehub.tests.integration.BasicLanguageElementProviderTests;
@@ -54,6 +55,7 @@ import net.ssehub.tests.parsing.BasicResultParsingTests;
     ChangeIdentifierCreationTests.class,
     OperationCreationTests.class,
     ExtractorCallCreationTests.class,
+    AnalysisCallCreationTests.class,
     BasicLanguageElementProviderTests.class
     })
 public class AllTests {
