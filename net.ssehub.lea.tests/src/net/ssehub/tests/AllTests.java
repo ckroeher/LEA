@@ -23,6 +23,7 @@ import net.ssehub.tests.integration.BasicLanguageElementCreatorTests;
 import net.ssehub.tests.integration.BasicLanguageElementProviderTests;
 import net.ssehub.tests.integration.ChangeIdentifierCreationTests;
 import net.ssehub.tests.integration.FragmentParameterTypeCreationTests;
+import net.ssehub.tests.integration.OperationCreationTests;
 import net.ssehub.tests.integration.ResultParameterTypeCreationTests;
 import net.ssehub.tests.parsing.BasicAnalysisDefinitionTests;
 import net.ssehub.tests.parsing.BasicArtifactParsingTests;
@@ -50,6 +51,7 @@ import net.ssehub.tests.parsing.BasicResultParsingTests;
     FragmentParameterTypeCreationTests.class,
     ResultParameterTypeCreationTests.class,
     ChangeIdentifierCreationTests.class,
+    OperationCreationTests.class,
     BasicLanguageElementProviderTests.class
     })
 public class AllTests {
