@@ -48,8 +48,9 @@ public class Call extends LanguageElement {
      * @param sourceClass the {@link Class} from where this new element is created
      * @param sourcePlugin the {@link File}, which is a Java archive file, from where this new element is created
      * @throws LanguageElementException if any of the above parameters is <code>null</code>, the element type does not
-     *         match one of those defined above, the return type is <i>blank</i>, the parameter list is <i>empty</i>,
-     *         or the name is <i>blank</i>
+     *         match one of those defined above, the return type is <i>blank</i> or, the return type is 
+     *         <code>void</code> and the element type is either {@link ElementType#EXTRACTOR_CALL} or 
+     *         {@link ElementType#ANALYSIS_CALL}, the parameter list is <i>empty</i>, or the name is <i>blank</i>
      */
 //CHECKSTYLE:OFF
     protected Call(ElementType elementType, String name, String returnType, String[] parameters,
@@ -62,6 +63,10 @@ public class Call extends LanguageElement {
         }
         if (returnType == null || returnType.isBlank()) {
             throw new LanguageElementException("The return type for the new language element is null or blank");
+        }
+        if (returnType.equals("void") && 
+                (elementType == ElementType.EXTRACTOR_CALL || elementType == ElementType.ANALYSIS_CALL)) {
+            throw new LanguageElementException("Extractor and analysis calls must have a non-void return type");
         }
         if (parameters == null) {
             throw new LanguageElementException("The parameter list for the new language element is null");
