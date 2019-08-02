@@ -104,10 +104,11 @@ public class BasicLanguageElementProviderTests {
      */
     @Test
     public void testEmptyDirectory() {
+        int expectedLanguageElementSize = LanguageRegistry.INSTANCE.size();
         try {
             elementProvider.detectLanguageElements(new File(TESTDATA_DIRECTORY, "emptyDirectory"));
-            assertEquals(0, LanguageRegistry.INSTANCE.size(), 
-                    "An empty plug-in directory should lead to an empty language registry");
+            assertEquals(expectedLanguageElementSize, LanguageRegistry.INSTANCE.size(), 
+                    "An empty plug-in directory should not change the number of elements in the language directory");
         } catch (ExternalElementException e) {
             assertNull(e, "Exception thrown");
         }
@@ -119,10 +120,11 @@ public class BasicLanguageElementProviderTests {
      */
     @Test
     public void testEmptyPlugin() {
+        int expectedLanguageElementSize = LanguageRegistry.INSTANCE.size();
         try {
             elementProvider.detectLanguageElements(new File(TESTDATA_DIRECTORY, "emptyPlugin"));
-            assertEquals(0, LanguageRegistry.INSTANCE.size(), 
-                    "An empty plug-in should lead to an empty language registry");
+            assertEquals(expectedLanguageElementSize, LanguageRegistry.INSTANCE.size(), 
+                    "An empty plug-in should not change the number of elements in the language directory");
         } catch (ExternalElementException e) {
             assertNull(e, "Exception thrown");
         }
@@ -134,10 +136,12 @@ public class BasicLanguageElementProviderTests {
      */
     @Test
     public void testPluginWithoutJavaClasses() {
+        int expectedLanguageElementSize = LanguageRegistry.INSTANCE.size();
         try {
             elementProvider.detectLanguageElements(new File(TESTDATA_DIRECTORY, "pluginWithoutJavaClasses"));
-            assertEquals(0, LanguageRegistry.INSTANCE.size(), 
-                    "A plug-in without Java classes should lead to an empty language registry");
+            assertEquals(expectedLanguageElementSize, LanguageRegistry.INSTANCE.size(), 
+                    "A plug-in without Java classes should not change the number of elements in the language "
+                    + "directory");
         } catch (ExternalElementException e) {
             assertNull(e, "Exception thrown");
         }
@@ -149,10 +153,12 @@ public class BasicLanguageElementProviderTests {
      */
     @Test
     public void testPluginWithoutNewElements() {
+        int expectedLanguageElementSize = LanguageRegistry.INSTANCE.size();
         try {
             elementProvider.detectLanguageElements(new File(TESTDATA_DIRECTORY, "pluginWithoutNewElements"));
-            assertEquals(0, LanguageRegistry.INSTANCE.size(), 
-                    "A plug-in with classes not introducing new elements should lead to an empty language registry");
+            assertEquals(expectedLanguageElementSize, LanguageRegistry.INSTANCE.size(), 
+                    "A plug-in with classes not introducing new elements should not change the number of elements in "
+                    + "the language directory");
         } catch (ExternalElementException e) {
             assertNull(e, "Exception thrown");
         }
@@ -164,11 +170,13 @@ public class BasicLanguageElementProviderTests {
      */
     @Test
     public void testPluginWithNewElements() {
+        int expectedLanguageElementSize = LanguageRegistry.INSTANCE.size() + 1;
         String expectedRegisteredElementName = "NewElement";
         try {
             elementProvider.detectLanguageElements(new File(TESTDATA_DIRECTORY, "pluginWithNewElements"));
-            assertEquals(1, LanguageRegistry.INSTANCE.size(), 
-                    "A plug-in with classes introducing a new element should lead to an language registry size of 1");
+            assertEquals(expectedLanguageElementSize, LanguageRegistry.INSTANCE.size(), 
+                    "A plug-in with classes introducing a new element should increase the number of elements in the "
+                    + "language directory by 1");
             // Check if it is the expected element
             LanguageElement registeredElement = 
                     LanguageRegistry.INSTANCE.getLanguageElement(expectedRegisteredElementName);

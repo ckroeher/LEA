@@ -42,9 +42,6 @@ import net.ssehub.tests.parsing.BasicResultParsingTests;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-    
-    // Do not re-order the test classes as it may lead to incorrect counting of registered language registry elements!
-    
     // Parsing tests
     BasicAnalysisDefinitionTests.class,
     BasicArtifactParsingTests.class,
