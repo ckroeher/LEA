@@ -55,7 +55,7 @@ public class BasicLanguageRegistryTests {
     private static final File SOURCE_PLUGIN = new File("./");
     
     /**
-     * The expected results. TODO
+     * The expected results. Each element is again an array of exactly one specific {@link LanguageElement}.
      * 
      * @see {@link BasicLanguageRegistryTests#initializeExpectedResults()}
      */
