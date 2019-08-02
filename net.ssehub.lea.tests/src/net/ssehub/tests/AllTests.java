@@ -22,6 +22,7 @@ import net.ssehub.tests.integration.AnalysisCallCreationTests;
 import net.ssehub.tests.integration.ArtifactParameterTypeCreationTests;
 import net.ssehub.tests.integration.BasicLanguageElementCreatorTests;
 import net.ssehub.tests.integration.BasicLanguageElementProviderTests;
+import net.ssehub.tests.integration.BasicLanguageRegistryTests;
 import net.ssehub.tests.integration.ChangeIdentifierCreationTests;
 import net.ssehub.tests.integration.ExtractorCallCreationTests;
 import net.ssehub.tests.integration.FragmentParameterTypeCreationTests;
@@ -41,6 +42,9 @@ import net.ssehub.tests.parsing.BasicResultParsingTests;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
+    
+    // Do not re-order the test classes as it may lead to incorrect counting of registered language registry elements!
+    
     // Parsing tests
     BasicAnalysisDefinitionTests.class,
     BasicArtifactParsingTests.class,
@@ -56,7 +60,8 @@ import net.ssehub.tests.parsing.BasicResultParsingTests;
     OperationCreationTests.class,
     ExtractorCallCreationTests.class,
     AnalysisCallCreationTests.class,
-    BasicLanguageElementProviderTests.class
+    BasicLanguageElementProviderTests.class,
+    BasicLanguageRegistryTests.class
     })
 public class AllTests {
 
