@@ -16,15 +16,14 @@ package net.ssehub.tests.integration;
 
 import static org.junit.Assert.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import net.ssehub.integration.ElementType;
 import net.ssehub.integration.ExternalElementException;
 import net.ssehub.integration.LanguageElement;
 import net.ssehub.integration.LanguageElementProvider;
@@ -107,7 +106,7 @@ public class BasicLanguageElementProviderTests {
     public void testEmptyDirectory() {
         try {
             elementProvider.detectLanguageElements(new File(TESTDATA_DIRECTORY, "emptyDirectory"));
-            assertTrue(LanguageRegistry.INSTANCE.isEmpty(), 
+            assertEquals(0, LanguageRegistry.INSTANCE.size(), 
                     "An empty plug-in directory should lead to an empty language registry");
         } catch (ExternalElementException e) {
             assertNull(e, "Exception thrown");
@@ -122,7 +121,7 @@ public class BasicLanguageElementProviderTests {
     public void testEmptyPlugin() {
         try {
             elementProvider.detectLanguageElements(new File(TESTDATA_DIRECTORY, "emptyPlugin"));
-            assertTrue(LanguageRegistry.INSTANCE.isEmpty(), 
+            assertEquals(0, LanguageRegistry.INSTANCE.size(), 
                     "An empty plug-in should lead to an empty language registry");
         } catch (ExternalElementException e) {
             assertNull(e, "Exception thrown");
@@ -137,7 +136,7 @@ public class BasicLanguageElementProviderTests {
     public void testPluginWithoutJavaClasses() {
         try {
             elementProvider.detectLanguageElements(new File(TESTDATA_DIRECTORY, "pluginWithoutJavaClasses"));
-            assertTrue(LanguageRegistry.INSTANCE.isEmpty(), 
+            assertEquals(0, LanguageRegistry.INSTANCE.size(), 
                     "A plug-in without Java classes should lead to an empty language registry");
         } catch (ExternalElementException e) {
             assertNull(e, "Exception thrown");
@@ -152,7 +151,7 @@ public class BasicLanguageElementProviderTests {
     public void testPluginWithoutNewElements() {
         try {
             elementProvider.detectLanguageElements(new File(TESTDATA_DIRECTORY, "pluginWithoutNewElements"));
-            assertTrue(LanguageRegistry.INSTANCE.isEmpty(), 
+            assertEquals(0, LanguageRegistry.INSTANCE.size(), 
                     "A plug-in with classes not introducing new elements should lead to an empty language registry");
         } catch (ExternalElementException e) {
             assertNull(e, "Exception thrown");
@@ -165,13 +164,21 @@ public class BasicLanguageElementProviderTests {
      */
     @Test
     public void testPluginWithNewElements() {
+        String expectedRegisteredElementName = "NewElement";
         try {
             elementProvider.detectLanguageElements(new File(TESTDATA_DIRECTORY, "pluginWithNewElements"));
-            assertFalse(LanguageRegistry.INSTANCE.isEmpty(), 
-                    "A plug-in with classes introducing new elements should lead to a non-empty language registry");
+            assertEquals(1, LanguageRegistry.INSTANCE.size(), 
+                    "A plug-in with classes introducing a new element should lead to an language registry size of 1");
             // Check if it is the expected element
-            assertTrue(LanguageRegistry.INSTANCE.hasArtifactParameterType("NewElement"),
-                    "Language registry does not contain expected artifact parameter type \"NewElement\"");
+            LanguageElement registeredElement = 
+                    LanguageRegistry.INSTANCE.getLanguageElement(expectedRegisteredElementName);
+            try {
+                assertEquals(ElementType.ARTIFACT_PARAMETER_TYPE, registeredElement.getElementType(), 
+                        "Wrong language element element type");
+            } catch (NullPointerException e) {
+                assertNull(e, "Language registry does not contain element with name \"" + expectedRegisteredElementName 
+                        + "\"");
+            }
         } catch (ExternalElementException e) {
             assertNull(e, "Exception thrown");
         }
