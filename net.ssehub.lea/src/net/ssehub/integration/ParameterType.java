@@ -38,7 +38,7 @@ public class ParameterType extends LanguageElement {
      * @throws LanguageElementException if any of the above parameters is <code>null</code>, the element type does not
      *         match one of those defined above, or the name is <i>blank</i>
      */
-    protected ParameterType(ElementType elementType, String name, Class<?> sourceClass, File sourcePlugin)
+    public ParameterType(ElementType elementType, String name, Class<?> sourceClass, File sourcePlugin)
             throws LanguageElementException {
         super(elementType, name, sourceClass, sourcePlugin);
         if (elementType != ElementType.ARTIFACT_PARAMETER_TYPE 

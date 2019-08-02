@@ -53,7 +53,7 @@ public class Call extends LanguageElement {
      *         {@link ElementType#ANALYSIS_CALL}, the parameter list is <i>empty</i>, or the name is <i>blank</i>
      */
 //CHECKSTYLE:OFF
-    protected Call(ElementType elementType, String name, String returnType, String[] parameters,
+    public Call(ElementType elementType, String name, String returnType, String[] parameters,
             Class<?> sourceClass, File sourcePlugin) throws LanguageElementException {
         super(elementType, name, sourceClass, sourcePlugin);
         if (elementType != ElementType.OPERATION 

@@ -47,7 +47,7 @@ public class ChangeIdentifier extends LanguageElement {
      * @throws LanguageElementException if any of the above parameters is <code>null</code>, the array of assignable
      *         elements is <i>empty</i>, or the name is <i>blank</i>
      */
-    protected ChangeIdentifier(String name, String[] assignableElements, Class<?> sourceClass, File sourcePlugin)
+    public ChangeIdentifier(String name, String[] assignableElements, Class<?> sourceClass, File sourcePlugin)
             throws LanguageElementException {
         super(ELEMENT_TYPE, name, sourceClass, sourcePlugin);
         if (assignableElements == null || assignableElements.length == 0) {
