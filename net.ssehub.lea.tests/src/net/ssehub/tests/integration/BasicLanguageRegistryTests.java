@@ -97,14 +97,17 @@ public class BasicLanguageRegistryTests {
                         BasicLanguageRegistryTests.class, SOURCE_PLUGIN)},
                 {new ChangeIdentifier("ChangeIdentifier", new String[] {"FileArtifact"},
                         BasicLanguageRegistryTests.class, SOURCE_PLUGIN)},
-                {new Call(ElementType.OPERATION, "file", "File", new String[] {},
+                {new Call(ElementType.OPERATION, "file", "File", new String[] {}, 
+                        BasicLanguageRegistryTests.class.getDeclaredMethod("initializeExpectedResults"),
                         BasicLanguageRegistryTests.class, SOURCE_PLUGIN)},
                 {new Call(ElementType.EXTRACTOR_CALL, "extract", "Block", new String[] {"File"},
+                        BasicLanguageRegistryTests.class.getDeclaredMethod("initializeExpectedResults"),
                         BasicLanguageRegistryTests.class, SOURCE_PLUGIN)},
                 {new Call(ElementType.ANALYSIS_CALL, "analyze", "DeadBlock", new String[] {"Block"},
+                        BasicLanguageRegistryTests.class.getDeclaredMethod("initializeExpectedResults"),
                         BasicLanguageRegistryTests.class, SOURCE_PLUGIN)}
             };            
-        } catch (LanguageElementException e) {
+        } catch (LanguageElementException | NoSuchMethodException e) {
             System.err.println("Error while initializing expected results");
             e.printStackTrace();
         }
