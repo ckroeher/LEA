@@ -62,13 +62,6 @@ public class BasicLanguageRegistryTests {
     private static final Object[][] EXPECTED_RESULTS = initializeExpectedResults();
     
     /**
-     * The expected number of {@link LanguageElement}s currently registered in {@link LanguageRegistry}. The initial
-     * value is set in {@link #BasicLanguageRegistryTests(LanguageElement)} based on the value of
-     * {@link LanguageRegistry#size()}.
-     */
-    private int expectedLanguageRegistrySize;
-    
-    /**
      * The {@link LanguageElement} passed to the constructor of this class for testing.
      */
     private LanguageElement testElement;
@@ -82,8 +75,6 @@ public class BasicLanguageRegistryTests {
         this.testElement = testElement;
         List<LanguageElement> languageElementList = new ArrayList<LanguageElement>();
         languageElementList.add(testElement);
-        // Do not re-order the following two lines as the expected number is the number before the addition plus 1
-        expectedLanguageRegistrySize = LanguageRegistry.INSTANCE.size() + 1; 
         LanguageRegistry.INSTANCE.addLanguageElements(languageElementList);
     }
     
@@ -128,16 +119,6 @@ public class BasicLanguageRegistryTests {
     @Parameters
     public static List<Object[]> getTestData() {
         return Arrays.asList(EXPECTED_RESULTS);
-    }
-    
-    /**
-     * Tests whether the {@link #testLanguageElementsCounter} equals {@link LanguageRegistry#size()}. This ensures that
-     * not more and not less elements are registered than those added as part of the unit tests in this class.
-     */
-    @Test
-    public void testLanguageRegistrySize() {
-        assertEquals(expectedLanguageRegistrySize, LanguageRegistry.INSTANCE.size(),
-                "Wrong number of language elements in language registry");
     }
     
     /**
