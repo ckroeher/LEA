@@ -15,6 +15,7 @@
 package net.ssehub.integration;
 
 import java.io.File;
+import java.lang.reflect.Method;
 
 /**
  * This class represents a call <code>c()</code> for operations, extractors, or analyzers, e.g.,
@@ -35,6 +36,11 @@ public class Call extends LanguageElement {
      * The array of names, which denote the elements this call accepts as parameters.
      */
     private String[] parameters;
+    
+    /**
+     * The {@link Method} from where this call was created.
+     */
+    private Method sourceMethod;
 
     /**
      * Constructs a new {@link Call} with the given attributes.
@@ -44,7 +50,8 @@ public class Call extends LanguageElement {
      *        {@link LanguageElementException}
      * @param name the name of this new element
      * @param returnType the name of the type of element(s) this call will return
-     * @param parameters the array of names, which denote the elements this call accepts as parameters 
+     * @param parameters the array of names, which denote the elements this call accepts as parameters
+     * @param sourceMethod the {@link Method} from where this new element is created
      * @param sourceClass the {@link Class} from where this new element is created
      * @param sourcePlugin the {@link File}, which is a Java archive file, from where this new element is created
      * @throws LanguageElementException if any of the above parameters is <code>null</code>, the element type does not
@@ -53,7 +60,7 @@ public class Call extends LanguageElement {
      *         {@link ElementType#ANALYSIS_CALL}, the parameter list is <i>empty</i>, or the name is <i>blank</i>
      */
 //CHECKSTYLE:OFF
-    public Call(ElementType elementType, String name, String returnType, String[] parameters,
+    public Call(ElementType elementType, String name, String returnType, String[] parameters, Method sourceMethod,
             Class<?> sourceClass, File sourcePlugin) throws LanguageElementException {
         super(elementType, name, sourceClass, sourcePlugin);
         if (elementType != ElementType.OPERATION 
@@ -71,6 +78,9 @@ public class Call extends LanguageElement {
         if (parameters == null) {
             throw new LanguageElementException("The parameter list for the new language element is null");
         }
+        if (sourceMethod == null) {
+            throw new LanguageElementException("The source method for the new language element is null");
+        }
         this.returnType = returnType;
         this.parameters = parameters;
     }
@@ -79,7 +89,7 @@ public class Call extends LanguageElement {
     /**
      * Returns the name of the type of element(s) this call will return.
      * 
-     * @return the name of the type of element(s) this call will return
+     * @return the name of the type of element(s) this call will return; never <code>null</code>
      */
     public String getReturnType() {
         return returnType;
@@ -88,9 +98,19 @@ public class Call extends LanguageElement {
     /**
      * Returns the array of names, which denote the elements this call accepts as parameters.
      * 
-     * @return the array of names, which denote the elements this call accepts as parameters
+     * @return the array of names, which denote the elements this call accepts as parameters; never <code>null</code>,
+     *         but may be <i>empty</i>
      */
     public String[] getParameters() {
         return parameters;
+    }
+    
+    /**
+     * Returns the {@link Method} from where this call was created.
+     * 
+     * @return the {@link Method} from where this call was created; never <code>null</code>
+     */
+    public Method getSourceMethod() {
+        return sourceMethod;
     }
 }

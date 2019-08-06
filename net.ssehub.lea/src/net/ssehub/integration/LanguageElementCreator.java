@@ -272,7 +272,8 @@ public class LanguageElementCreator {
         // Create the language element, if the element type is known
         if (specificElementType != null) {
             try {
-                call = new Call(specificElementType, callName, returnType, parameters, sourceClass, sourcePlugin);
+                call = new Call(specificElementType, callName, returnType, parameters, pluginClassMethod, sourceClass,
+                        sourcePlugin);
             } catch (LanguageElementException e) {
                 throw new ExternalElementException("Creating call based on method \"" 
                         + pluginClassMethod.getName() + "\" in class \"" + sourceClass.getSimpleName() 
