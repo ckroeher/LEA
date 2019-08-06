@@ -14,7 +14,7 @@
  */
 package net.ssehub.integration;
 
-import java.util.HashMap;
+
 import java.util.List;
 
 /**
@@ -24,16 +24,7 @@ import java.util.List;
  * @author Christian Kroeher
  *
  */
-public class LanguageRegistry {
-    
-    /*
-     * TODO We need some kind of validation after all external elements are loaded. This validation should check for
-     * each element, or at least for the change identifier and the operations (those elements, that somehow work on/with
-     * other elements), if the elements are available. If not, we do not know what to do with the change identifier or
-     * the operations later.
-     * Suggestion: After the LanguageElementRegistry (or whatever the element database will be), that components has to
-     * perform the validation before it is used. Problematic elements should then be removed.
-     */
+public class LanguageRegistry extends AbstractLanguageRegistry {
 
     /**
      * The singleton instance of this {@link LanguageRegistry}.
@@ -41,124 +32,10 @@ public class LanguageRegistry {
     public static final LanguageRegistry INSTANCE = new LanguageRegistry();
     
     /**
-     * The number of {@link LanguageElement}s currently registered. The initial value of <code>0</code> is set in
-     * {@link #LanguageRegistry()}. It is increased by <code>1</code> for each element added to this registry in 
-     * {@link #addLanguageElements(List)}. 
-     */
-    private static int languageElementCounter;
-    
-    /**
-     * The {@link HashMap} of all available {@link ParameterType}s of the type 
-     * {@link ElementType#ARTIFACT_PARAMETER_TYPE} for the definition of artifacts. Each entry in this set has the 
-     * artifact parameter type name as its key and the corresponding {@link ParameterType} as its value.
-     */
-    private HashMap<String, ParameterType> artifactParameterTypes;
-    
-    /**
-     * The {@link HashMap} of all available {@link ParameterType}s of the type 
-     * {@link ElementType#FRAGMENT_PARAMETER_TYPE} for the definition of fragments. Each entry in this set has the
-     * fragment parameter type name as its key and the corresponding {@link ParameterType} as its value.
-     */
-    private HashMap<String, ParameterType> fragmentParameterTypes;
-    
-    /**
-     * The {@link HashMap} of all available {@link ParameterType}s of the type {@link ElementType#RESULT_PARAMETER_TYPE}
-     * for the definition of results. Each entry in this set has the result parameter type name as its key and the
-     * corresponding {@link ParameterType} as its value.
-     */
-    private HashMap<String, ParameterType> resultParameterTypes;
-    
-    /**
-     * The {@link HashMap} of all available {@link ChangeIdentifier}s for their assignment to artifacts or fragments 
-     * (depending on the particular identifier). Each entry in this set has the change identifier name as its key and
-     * the corresponding {@link ChangeIdentifier} as its value.
-     */
-    private HashMap<String, ChangeIdentifier> changeIdentifiers;
-    
-    /**
-     * The {@link HashMap} of all available {@link Call}s of the type {@link ElementType#OPERATION} for the definition
-     * of general operations. Each entry in this set has the operation name as its key and the corresponding
-     * {@link Call} as its value.
-     * 
-     * TODO calls may have the same name, but different return or parameter types or different numbers of parameters!
-     */
-    private HashMap<String, Call> operations;
-    
-    /**
-     * The {@link HashMap} of all available {@link Call}s of the type {@link ElementType#EXTRACTOR_CALL} for the
-     * definition of fragment extractions from artifacts. Each entry in this set has the extractor (call) name as its
-     * key and the corresponding {@link Call} as its value.
-     * 
-     * TODO calls may have the same name, but different return or parameter types or different numbers of parameters!
-     */
-    private HashMap<String, Call> extractorCalls;
-    
-    /**
-     * The {@link HashMap} of all available {@link Call}s of the type {@link ElementType#ANALYSIS_CALL} for the
-     * definition of analysis results based on fragments. Each entry in this set has the analysis (call) name as its
-     * key and the corresponding {@link Call} as its value.
-     * 
-     * TODO calls may have the same name, but different return or parameter types or different numbers of parameters!
-     */
-    private HashMap<String, Call> analysisCalls;
-    
-    /**
      * Constructs the singleton instance of this {@link LanguageRegistry}.
      */
     private LanguageRegistry() {
-        languageElementCounter = 0;
-        artifactParameterTypes = new HashMap<String, ParameterType>();
-        fragmentParameterTypes = new HashMap<String, ParameterType>();
-        resultParameterTypes = new HashMap<String, ParameterType>();
-        changeIdentifiers = new HashMap<String, ChangeIdentifier>();
-        operations = new HashMap<String, Call>();
-        extractorCalls = new HashMap<String, Call>();
-        analysisCalls = new HashMap<String, Call>();
-    }
-    
-    /**
-     * Adds the {@link LanguageElement}s in the given {@link List} to this {@link LanguageRegistry}. The individual
-     * elements will be stored in separate {@link HashMap}s depending on their respective type.
-     * 
-     * @param newElements the {@link List} of {@link LanguageElement}s to be added to this {@link LanguageRegistry};
-     *        should never be <code>null</code>, but may be <i>empty</i>
-     */
-    public void addLanguageElements(List<LanguageElement> newElements) {
-        for (LanguageElement newElement : newElements) {
-            switch(newElement.getElementType()) {
-            case ARTIFACT_PARAMETER_TYPE:
-                artifactParameterTypes.put(newElement.getName(), (ParameterType) newElement);
-                languageElementCounter++;
-                break;
-            case FRAGMENT_PARAMETER_TYPE:
-                fragmentParameterTypes.put(newElement.getName(), (ParameterType) newElement);
-                languageElementCounter++;
-                break;
-            case RESULT_PARAMETER_TYPE:
-                resultParameterTypes.put(newElement.getName(), (ParameterType) newElement);
-                languageElementCounter++;
-                break;
-            case CHANGE_IDENTIFIER:
-                changeIdentifiers.put(newElement.getName(), (ChangeIdentifier) newElement);
-                languageElementCounter++;
-                break;
-            case OPERATION:
-                operations.put(newElement.getName(), (Call) newElement);
-                languageElementCounter++;
-                break;
-            case EXTRACTOR_CALL:
-                extractorCalls.put(newElement.getName(), (Call) newElement);
-                languageElementCounter++;
-                break;
-            case ANALYSIS_CALL:
-                analysisCalls.put(newElement.getName(), (Call) newElement);
-                languageElementCounter++;
-                break;
-            default:
-                // Should never be reached!
-                break;
-            }
-        }
+        super();
     }
     
     /**
@@ -212,7 +89,12 @@ public class LanguageRegistry {
      *         <code>null</code>, if no such element is registered
      */
     public ParameterType getArtifactParameterType(String name) {
-        return artifactParameterTypes.get(name);
+        ParameterType artifactParameterType = null;
+        List<ParameterType> availableArtifactParameterTypes = artifactParameterTypes.get(name);
+        if (availableArtifactParameterTypes != null) {
+            artifactParameterType = availableArtifactParameterTypes.get(0);
+        }
+        return artifactParameterType;
     }
     
     /**
@@ -224,7 +106,12 @@ public class LanguageRegistry {
      *         <code>null</code>, if no such element is registered
      */
     public ParameterType getFragmentParameterType(String name) {
-        return fragmentParameterTypes.get(name);
+        ParameterType fragmentParameterType = null;
+        List<ParameterType> availableFragmentParameterTypes = fragmentParameterTypes.get(name);
+        if (availableFragmentParameterTypes != null) {
+            fragmentParameterType = availableFragmentParameterTypes.get(0);
+        }
+        return fragmentParameterType;
     }
     
     /**
@@ -236,7 +123,12 @@ public class LanguageRegistry {
      *         <code>null</code>, if no such element is registered
      */
     public ParameterType getResultParameterType(String name) {
-        return resultParameterTypes.get(name);
+        ParameterType resultParameterType = null;
+        List<ParameterType> availableResultParameterTypes = resultParameterTypes.get(name);
+        if (availableResultParameterTypes != null) {
+            resultParameterType = availableResultParameterTypes.get(0);
+        }
+        return resultParameterType;
     }
     
     /**
@@ -246,7 +138,12 @@ public class LanguageRegistry {
      * @return the {@link ChangeIdentifier} with the given name or <code>null</code>, if no such element is registered
      */
     public ChangeIdentifier getChangeIdentifier(String name) {
-        return changeIdentifiers.get(name);
+        ChangeIdentifier changeIdentifier = null;
+        List<ChangeIdentifier> availableChangeIdentifiers = changeIdentifiers.get(name);
+        if (availableChangeIdentifiers != null) {
+            changeIdentifier = availableChangeIdentifiers.get(0);
+        }
+        return changeIdentifier;
     }
     
     /**
@@ -257,7 +154,12 @@ public class LanguageRegistry {
      *         no such element is registered
      */
     public Call getOperation(String name) {
-        return operations.get(name);
+        Call operation = null;
+        List<Call> availableCalls = operations.get(name);
+        if (availableCalls != null) {
+            operation = availableCalls.get(0);
+        }
+        return operation;
     }
     
     /**
@@ -268,7 +170,12 @@ public class LanguageRegistry {
      *         if no such element is registered
      */
     public Call getExtractorCall(String name) {
-        return extractorCalls.get(name);
+        Call extractorCall = null;
+        List<Call> availableCalls = extractorCalls.get(name);
+        if (availableCalls != null) {
+            extractorCall = availableCalls.get(0);
+        }
+        return extractorCall;
     }
     
     /**
@@ -279,7 +186,11 @@ public class LanguageRegistry {
      *         if no such element is registered
      */
     public Call getAnalysisCall(String name) {
-        return analysisCalls.get(name);
+        Call analysisCall = null;
+        List<Call> availableCalls = analysisCalls.get(name);
+        if (availableCalls != null) {
+            analysisCall = availableCalls.get(0);
+        }
+        return analysisCall;
     }
-    
 }
