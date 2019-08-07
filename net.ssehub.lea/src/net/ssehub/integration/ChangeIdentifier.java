@@ -71,4 +71,31 @@ public class ChangeIdentifier extends LanguageElement {
         return assignableElements;
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * In addition, two {@link ChangeIdentifier}s are equal, if the numbers of assignable elements are equal and each
+     * assignable element at a particular index in this {@link ChangeIdentifier} is equal to the assignable element at
+     * the same index in the given {@link ChangeIdentifier}. 
+     */
+    @Override
+    public boolean equals(LanguageElement comparable) {
+        boolean isEqual = super.equals(comparable);
+        if (isEqual) {
+            ChangeIdentifier comparableChangeIdentifier = (ChangeIdentifier) comparable;
+            String[] comparableAssignableElements = comparableChangeIdentifier.getAssignableElements();
+            if (this.assignableElements.length == comparableAssignableElements.length) {
+                int assignableElementsCounter = 0;
+                while (isEqual && assignableElementsCounter < this.assignableElements.length) {
+                    if (!this.assignableElements[assignableElementsCounter].equals(
+                            comparableAssignableElements[assignableElementsCounter])) {
+                        isEqual = false;
+                    }
+                }
+            } else {
+                isEqual = false;
+            }
+        }
+        return isEqual;
+    }
 }
