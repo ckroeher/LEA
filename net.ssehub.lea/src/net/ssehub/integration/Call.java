@@ -83,6 +83,7 @@ public class Call extends LanguageElement {
         }
         this.returnType = returnType;
         this.parameters = parameters;
+        this.sourceMethod = sourceMethod;
     }
 //CHECKSTYLE:ON
     
