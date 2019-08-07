@@ -113,4 +113,43 @@ public class Call extends LanguageElement {
     public Method getSourceMethod() {
         return sourceMethod;
     }
+    
+    /**
+     * {@inheritDoc}
+     * 
+     * In addition, two {@link Call}s are equal, if they have the same:
+     * <ul>
+     * <li>Return type</li>
+     * <li>Source {@link Method}</li>
+     * <li>
+     * Number of parameters, where each parameter at a particular index in this {@link Call} is equal to the parameter
+     * at the same index in the given {@link Call}
+     * </li>
+     * </ul>
+     */
+    @Override
+    public boolean equals(LanguageElement comparable) {
+        boolean isEqual = super.equals(comparable);
+        if (isEqual) {
+            Call comparableCall = (Call) comparable;
+            if (this.returnType.equals(comparableCall.getReturnType()) 
+                    && this.sourceMethod == comparableCall.getSourceMethod()) {
+                String[] comparableParameters = comparableCall.getParameters();
+                if (this.parameters.length == comparableParameters.length) {
+                    int parametersCounter = 0;
+                    while (isEqual && parametersCounter < this.parameters.length) {
+                        if (!this.parameters[parametersCounter].equals(
+                                comparableParameters[parametersCounter])) {
+                            isEqual = false;
+                        }
+                    }
+                } else {
+                    isEqual = false;
+                }
+            } else {
+                isEqual = false;
+            }
+        }
+        return isEqual;
+    }
 }
