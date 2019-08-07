@@ -142,6 +142,7 @@ public class Call extends LanguageElement {
                                 comparableParameters[parametersCounter])) {
                             isEqual = false;
                         }
+                        parametersCounter++;
                     }
                 } else {
                     isEqual = false;

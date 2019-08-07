@@ -91,6 +91,7 @@ public class ChangeIdentifier extends LanguageElement {
                             comparableAssignableElements[assignableElementsCounter])) {
                         isEqual = false;
                     }
+                    assignableElementsCounter++;
                 }
             } else {
                 isEqual = false;
