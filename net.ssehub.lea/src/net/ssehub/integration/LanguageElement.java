@@ -108,4 +108,28 @@ public abstract class LanguageElement {
     public File getSourcePlugin() {
         return sourcePlugin;
     }
+    
+    /**
+     * Compares this {@link LanguageElement} with the given {@link LanguageElement} for equality. This is the case, if
+     * both elements have the same:
+     * <ul>
+     * <li>{@link ElementType}</li>
+     * <li>Name</li>
+     * <li>Source {@link Class}</li>
+     * <li>Source plug-in (the same absolute path of the {@link File})</li>
+     * </ul>
+     * @param comparable the {@link LanguageElement} to compare to this element
+     * @return <code>true</code>, if this {@link LanguageElement} is equal to the given {@link LanguageElement};
+     *         <code>false</code> otherwise
+     */
+    public boolean equals(LanguageElement comparable) {
+        boolean isEqual = false;
+        if (this.elementType == comparable.getElementType()
+                && this.name.equals(comparable.getName())
+                && this.sourceClass == comparable.getSourceClass()
+                && this.sourcePlugin.getAbsolutePath().equals(comparable.getSourcePlugin().getAbsolutePath())) {
+            isEqual = true;
+        }
+        return isEqual;
+    }
 }
