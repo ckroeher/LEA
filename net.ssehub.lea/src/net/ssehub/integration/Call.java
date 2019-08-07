@@ -134,7 +134,7 @@ public class Call extends LanguageElement {
         if (isEqual) {
             Call comparableCall = (Call) comparable;
             if (this.returnType.equals(comparableCall.getReturnType()) 
-                    && this.sourceMethod == comparableCall.getSourceMethod()) {
+                    && this.sourceMethod.toGenericString().equals(comparableCall.getSourceMethod().toGenericString())) {
                 String[] comparableParameters = comparableCall.getParameters();
                 if (this.parameters.length == comparableParameters.length) {
                     int parametersCounter = 0;
