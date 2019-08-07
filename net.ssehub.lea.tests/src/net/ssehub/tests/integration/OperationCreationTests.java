@@ -15,6 +15,7 @@
 package net.ssehub.tests.integration;
 
 import java.io.File;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 
@@ -447,66 +448,77 @@ public class OperationCreationTests extends AbstractCallCreationTest {
      */
     private static final Object[][] EXPECTED_RESULTS = new Object[][] {
         {ClassIntroducingVoidReturnOperation.class, null, true, Call.class, ElementType.OPERATION, 
-            "noReturn", ClassIntroducingVoidReturnOperation.class, sourcePlugin, "void", new String[] {}},
+            "noReturn", ClassIntroducingVoidReturnOperation.class, sourcePlugin, "void", new String[] {},
+            ClassIntroducingVoidReturnOperation.class.getMethods()[0]},
         
         {ClassIntroducingFileReturnOperation.class, null, true, Call.class, ElementType.OPERATION, 
-            "getFile", ClassIntroducingFileReturnOperation.class, sourcePlugin, "File", new String[] {}},
+            "getFile", ClassIntroducingFileReturnOperation.class, sourcePlugin, "File", new String[] {},
+            ClassIntroducingFileReturnOperation.class.getMethods()[0]},
         
         {ClassIntroducingFileReturnAndSingleSimpleParameterOperation.class, null, true, Call.class,
             ElementType.OPERATION, "getFile", ClassIntroducingFileReturnAndSingleSimpleParameterOperation.class,
-            sourcePlugin, "File", new String[] {"File"}},
+            sourcePlugin, "File", new String[] {"File"},
+            ClassIntroducingFileReturnAndSingleSimpleParameterOperation.class.getMethods()[0]},
         
         {ClassIntroducingFileReturnAndMultipleSimpleParametersOperation.class, null, true, Call.class,
             ElementType.OPERATION, "getFile", ClassIntroducingFileReturnAndMultipleSimpleParametersOperation.class,
-            sourcePlugin, "File", new String[] {"File", "String"}},
+            sourcePlugin, "File", new String[] {"File", "String"},
+            ClassIntroducingFileReturnAndMultipleSimpleParametersOperation.class.getMethods()[0]},
         
         {ClassIntroducingFileReturnAndSingleArrayParameterOperation.class, null, true, Call.class,
             ElementType.OPERATION, "getFile", ClassIntroducingFileReturnAndSingleArrayParameterOperation.class,
-            sourcePlugin, "File", new String[] {"File[]"}},
+            sourcePlugin, "File", new String[] {"File[]"},
+            ClassIntroducingFileReturnAndSingleArrayParameterOperation.class.getMethods()[0]},
         
         {ClassIntroducingFileReturnAndSingleListParameterOperation.class, null, true, Call.class,
             ElementType.OPERATION, "getFile", ClassIntroducingFileReturnAndSingleListParameterOperation.class,
-            sourcePlugin, "File", new String[] {"List<File>"}},
+            sourcePlugin, "File", new String[] {"List<File>"},
+            ClassIntroducingFileReturnAndSingleListParameterOperation.class.getMethods()[0]},
         
         {ClassIntroducingFileReturnAndMultipleComplexParameterOperation.class, null, true, Call.class,
             ElementType.OPERATION, "getFile", ClassIntroducingFileReturnAndMultipleComplexParameterOperation.class,
-            sourcePlugin, "File", new String[] {"List<File>", "String[]"}},
+            sourcePlugin, "File", new String[] {"List<File>", "String[]"},
+            ClassIntroducingFileReturnAndMultipleComplexParameterOperation.class.getMethods()[0]},
 
         {ClassIntroducingFileArrayReturnOperation.class, null, true, Call.class, ElementType.OPERATION, 
-            "getFile", ClassIntroducingFileArrayReturnOperation.class, sourcePlugin, "File[]", new String[] {}},
+            "getFile", ClassIntroducingFileArrayReturnOperation.class, sourcePlugin, "File[]", new String[] {},
+            ClassIntroducingFileArrayReturnOperation.class.getMethods()[0]},
         
         {ClassIntroducingFileListReturnOperation.class, null, true, Call.class, ElementType.OPERATION, 
-            "getFile", ClassIntroducingFileListReturnOperation.class, sourcePlugin, "List<File>", new String[] {}},
+            "getFile", ClassIntroducingFileListReturnOperation.class, sourcePlugin, "List<File>", new String[] {},
+            ClassIntroducingFileListReturnOperation.class.getMethods()[0]},
         
         {ClassIntroducingFileReturnWithCustomNameOperation.class, null, true, Call.class, ElementType.OPERATION, 
             "parseFile", ClassIntroducingFileReturnWithCustomNameOperation.class, sourcePlugin, "File",
-            new String[] {}},
+            new String[] {}, ClassIntroducingFileReturnWithCustomNameOperation.class.getMethods()[0]},
         
         {ClassIntroducingFileReturnWithCustomReturnTypeOperation.class, null, true, Call.class, ElementType.OPERATION, 
             "getFile", ClassIntroducingFileReturnWithCustomReturnTypeOperation.class, sourcePlugin, "FileObject",
-            new String[] {}},
+            new String[] {}, ClassIntroducingFileReturnWithCustomReturnTypeOperation.class.getMethods()[0]},
         
         {ClassIntroducingFileReturnWithCustomNameAndReturnTypeOperation.class, null, true, Call.class,
             ElementType.OPERATION, "getFileObject",
             ClassIntroducingFileReturnWithCustomNameAndReturnTypeOperation.class, sourcePlugin, "FileObject",
-            new String[] {}},
+            new String[] {}, ClassIntroducingFileReturnWithCustomNameAndReturnTypeOperation.class.getMethods()[0]},
         
         {ClassIntroducingFileReturnWithIncorrectCustomParametersOperation.class, new ExternalElementException(""),
-            false, null, null, null, null, null, null, null},
+            false, null, null, null, null, null, null, null, null},
         
         {ClassIntroducingFileReturnWithSingleCustomParameterOperation.class, null, true, Call.class,
             ElementType.OPERATION, "getFile", ClassIntroducingFileReturnWithSingleCustomParameterOperation.class,
-            sourcePlugin, "File", new String[] {"FileObject"}},
+            sourcePlugin, "File", new String[] {"FileObject"},
+            ClassIntroducingFileReturnWithSingleCustomParameterOperation.class.getMethods()[0]},
         
         {ClassIntroducingFileReturnWithTooManyCustomParametersOperation.class, new ExternalElementException(""),
-            false, null, null, null, null, null, null, null},
+            false, null, null, null, null, null, null, null, null},
         
         {ClassIntroducingFileReturnWithMultipleCustomParametersOperation.class, null, true, Call.class,
             ElementType.OPERATION, "getFile", ClassIntroducingFileReturnWithMultipleCustomParametersOperation.class,
-            sourcePlugin, "File", new String[] {"FileObject", "Prefix"}},
+            sourcePlugin, "File", new String[] {"FileObject", "Prefix"},
+            ClassIntroducingFileReturnWithMultipleCustomParametersOperation.class.getMethods()[0]},
         
         {ClassIntroducingFileReturnWithTooFewCustomParametersOperation.class, new ExternalElementException(""),
-            false, null, null, null, null, null, null, null}
+            false, null, null, null, null, null, null, null, null}
     };
 
     /**
@@ -529,15 +541,16 @@ public class OperationCreationTests extends AbstractCallCreationTest {
      * @param expectedReturnType the expected name of the type of element(s) the created operation will return
      * @param expectedParameters the expected array of names, which denote the elements the created operation accepts as
      *        parameters
+     * @param expectedSourceMethod the expected {@link Method} from where this call was created
      */
 //CHECKSTYLE:OFF
     public OperationCreationTests(Class<?> testInputClass, ExternalElementException expectedException,
             boolean expectedElementsExistence, Class<?> expectedElementClass, ElementType expectedElementType,
             String expectedElementName, Class<?> expectedElementSourceClass, File expectedElementSourcePlugin,
-            String expectedReturnType, String[] expectedParameters) {
+            String expectedReturnType, String[] expectedParameters, Method expectedSourceMethod) {
         super(testInputClass, expectedException, expectedElementsExistence, expectedElementClass, expectedElementType,
                 expectedElementName, expectedElementSourceClass, expectedElementSourcePlugin, expectedReturnType,
-                expectedParameters);
+                expectedParameters, expectedSourceMethod);
     }
 //CHECKSTYLE:ON
     

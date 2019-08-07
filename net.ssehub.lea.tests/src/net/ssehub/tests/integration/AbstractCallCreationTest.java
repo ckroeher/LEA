@@ -18,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.io.File;
+import java.lang.reflect.Method;
 
 import org.junit.Test;
 
@@ -49,6 +50,11 @@ public abstract class AbstractCallCreationTest extends AbstractLanguageElementCr
     private String[] expectedParameters;
     
     /**
+     * The expected {@link Method} from where this call was created.
+     */
+    private Method expectedSourceMethod;
+    
+    /**
      * The actual name of the type of element(s) the created {@link Call} will return.
      */
     private String actualReturnType;
@@ -57,6 +63,11 @@ public abstract class AbstractCallCreationTest extends AbstractLanguageElementCr
      * The actual array of names, which denote the elements the created {@link Call} accepts as parameters.
      */
     private String[] actualParameters;
+    
+    /**
+     * The actual {@link Method} from where this call was created.
+     */
+    private Method actualSourceMethod;
 
     /**
      * Constructs a new {@link AbstractCallCreationTest} instance.
@@ -78,24 +89,28 @@ public abstract class AbstractCallCreationTest extends AbstractLanguageElementCr
      * @param expectedReturnType the expected name of the type of element(s) the created {@link Call} will return
      * @param expectedParameters the expected array of names, which denote the elements the created {@link Call} accepts
      *        as parameters
+     * @param expectedSourceMethod the expected {@link Method} from where this call was created
      */
 //CHECKSTYLE:OFF
     public AbstractCallCreationTest(Class<?> testInputClass, ExternalElementException expectedException,
             boolean expectedElementsExistence, Class<?> expectedElementClass, ElementType expectedElementType,
             String expectedElementName, Class<?> expectedElementSourceClass, File expectedElementSourcePlugin, 
-            String expectedReturnType, String[] expectedParameters) {
+            String expectedReturnType, String[] expectedParameters, Method expectedSourceMethod) {
         super(testInputClass, expectedException, expectedElementsExistence, expectedElementClass, expectedElementType,
                 expectedElementName, expectedElementSourceClass, expectedElementSourcePlugin);
         this.expectedReturnType = expectedReturnType;
         this.expectedParameters = expectedParameters;
+        this.expectedSourceMethod = expectedSourceMethod;
         
         if (createdElement != null) {            
             Call createdCall = (Call) createdElement;
             actualReturnType = createdCall.getReturnType();
             actualParameters = createdCall.getParameters();
+            actualSourceMethod = createdCall.getSourceMethod();
         } else {
             actualReturnType = null;
             actualParameters = null;
+            actualSourceMethod = null;
         }
     }
 //CHECKSTYLE:ON
@@ -133,6 +148,18 @@ public abstract class AbstractCallCreationTest extends AbstractLanguageElementCr
             }
         } else {
             assertNull(actualParameters, "Parameters should be null");
+        }
+    }
+    
+    /**
+     * Tests whether the {@link #expectedSourceMethod} is equal to the {@link #actualSourceMethod}.
+     */
+    @Test
+    public void testCreatedCallSourceMethod() {
+        if (expectedSourceMethod != null) {
+            assertEquals(expectedSourceMethod, actualSourceMethod, "Wrong source method");
+        } else {
+            assertNull(actualSourceMethod, "Source method should be null");
         }
     }
 }

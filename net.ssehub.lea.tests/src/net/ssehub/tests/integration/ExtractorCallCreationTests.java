@@ -15,6 +15,7 @@
 package net.ssehub.tests.integration;
 
 import java.io.File;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 
@@ -101,12 +102,12 @@ public class ExtractorCallCreationTests extends AbstractCallCreationTest {
      */
     private static final Object[][] EXPECTED_RESULTS = new Object[][] {
         {ClassIntroducingVoidReturnExtractorCall.class, new ExternalElementException(""), false, null, null, null, null,
-            null, null, null},
+            null, null, null, null},
         
         {ClassIntroducingVoidReturnWithCustomReturnTypeExtractorCall.class, null, true, Call.class,
             ElementType.EXTRACTOR_CALL, "extractImplicit", 
             ClassIntroducingVoidReturnWithCustomReturnTypeExtractorCall.class, sourcePlugin, "HiddenElement",
-            new String[] {}}
+            new String[] {}, ClassIntroducingVoidReturnWithCustomReturnTypeExtractorCall.class.getMethods()[0]}
     };
 
     /**
@@ -129,15 +130,16 @@ public class ExtractorCallCreationTests extends AbstractCallCreationTest {
      * @param expectedReturnType the expected name of the type of element(s) the created operation will return
      * @param expectedParameters the expected array of names, which denote the elements the created operation accepts as
      *        parameters
+     * @param expectedSourceMethod the expected {@link Method} from where this call was created
      */
 //CHECKSTYLE:OFF
     public ExtractorCallCreationTests(Class<?> testInputClass, ExternalElementException expectedException,
             boolean expectedElementsExistence, Class<?> expectedElementClass, ElementType expectedElementType,
             String expectedElementName, Class<?> expectedElementSourceClass, File expectedElementSourcePlugin,
-            String expectedReturnType, String[] expectedParameters) {
+            String expectedReturnType, String[] expectedParameters, Method expectedSourceMethod) {
         super(testInputClass, expectedException, expectedElementsExistence, expectedElementClass, expectedElementType,
                 expectedElementName, expectedElementSourceClass, expectedElementSourcePlugin, expectedReturnType,
-                expectedParameters);
+                expectedParameters, expectedSourceMethod);
     }
 //CHECKSTYLE:ON
     
