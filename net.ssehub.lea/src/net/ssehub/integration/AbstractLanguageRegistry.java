@@ -198,7 +198,7 @@ public abstract class AbstractLanguageRegistry {
         if (availableParameterTypes == null) {
             availableParameterTypes = new ArrayList<ParameterType>();
         }
-        if (!containsDuplicate(availableParameterTypes, newParameterType)) {
+        if (!isDuplicate(newParameterType)) {
             availableParameterTypes.add(newParameterType);            
             languageElementCounter++;
             parameterAdded = true;
@@ -208,29 +208,47 @@ public abstract class AbstractLanguageRegistry {
     }
     
     /**
-     * Checks whether the given {@link List} of {@link ParameterType}s contains a {@link ParameterType} that is equal to
-     * the given one. This check considers the source plug-in and the source class only as it expects that the equality
-     * of the names and the {@link ElementType}s are ensured.
-     * 
-     * @param parameterTypeList the {@link List} of {@link ParameterType}s in which will be searched for a duplicate of
-     *        the given {@link ParameterType}; should never be <code>null</code>, but may be <i>empty</i>
-     * @param parameterType the {@link ParameterType} for which a duplicate should be found in the given list; should
-     *        never be <code>null</code>
-     * @return <code>true</code>, if the given list of {@link ParameterType}s contains an element with the same source 
-     *         plug-in and source class as the given {@link ParameterType}; <code>false</code> otherwise
+     * Checks whether the given {@link ParameterType} equals one of the available types in the 
+     * {@link #artifactParameterTypes}, the {@link #fragmentParameterTypes}, or the {@link #resultParameterTypes}.
+     *  
+     * @param parameterType the {@link ParameterType} for which a duplicate should be found; should never be
+     *        <code>null</code>
+     * @return <code>true</code>, if the given {@link ParameterType} equals one of the available types in this registry;
+     *         <code>false</code> otherwise
+     * @see ParameterType#equals(LanguageElement)
      */
-    private boolean containsDuplicate(List<ParameterType> parameterTypeList, ParameterType parameterType) {
+    private boolean isDuplicate(ParameterType parameterType) {
+        boolean isDuplicate = false;
+        if (containsDuplicate(artifactParameterTypes, parameterType) 
+                || containsDuplicate(fragmentParameterTypes, parameterType) 
+                || containsDuplicate(resultParameterTypes, parameterType)) {
+            isDuplicate = true;
+        }
+        return isDuplicate;
+    }
+    
+    /**
+     * Checks whether the given {@link HashMap} contains a {@link ParameterType} that equals the given
+     * {@link ParameterType}. In detail, it first searches for an entry in that map, where the key equals the name of
+     * the given type, and, second, checks each type of the corresponding {@link List} (the value of the entry), if it
+     * equals the given type.
+     * 
+     * @param parameterTypeMap the {@link HashMap} in which will be searched for a duplicate of
+     *        the given {@link ParameterType}; should never be <code>null</code>, but may be <i>empty</i> 
+     * @param parameterType the {@link ParameterType} for which a duplicate should be found in the given map; should
+     *        never be <code>null</code>
+     * @return <code>true</code>, if the given {@link HashMap} contains a {@link ParameterType} that equals the given
+     *         {@link ParameterType}; <code>false</code> otherwise
+     * @see ParameterType#equals(LanguageElement)
+     */
+    private boolean containsDuplicate(HashMap<String, List<ParameterType>> parameterTypeMap,
+            ParameterType parameterType) {
         boolean duplicateFound = false;
-        if (!parameterTypeList.isEmpty()) {
+        List<ParameterType> availableParameterTypes = parameterTypeMap.get(parameterType.getName());
+        if (availableParameterTypes != null && !availableParameterTypes.isEmpty()) {
             int parameterTypeCounter = 0;
-            ParameterType listParameterType;
-            while (!duplicateFound && parameterTypeCounter < parameterTypeList.size()) {
-                listParameterType = parameterTypeList.get(parameterTypeCounter);
-                if (listParameterType.getSourcePlugin().getAbsolutePath().equals(
-                        parameterType.getSourcePlugin().getAbsolutePath())
-                        && listParameterType.getSourceClass() == parameterType.getSourceClass()) {
-                    duplicateFound = true;
-                }
+            while (!duplicateFound && parameterTypeCounter < availableParameterTypes.size()) {
+                duplicateFound = parameterType.equals(availableParameterTypes.get(parameterTypeCounter));
                 parameterTypeCounter++;
             }
         }
@@ -264,32 +282,23 @@ public abstract class AbstractLanguageRegistry {
     }
     
     /**
-     * Checks whether the given {@link List} of {@link ChangeIdentifier}s contains a {@link ChangeIdentifier} that is
-     * equal to the given one. This check considers the source plug-in, the source class, and the assignable elements
-     * only as it expects that the equality of the names and the {@link ElementType}s are ensured.
+     * Checks whether the given {@link List} of {@link ChangeIdentifier}s contains a {@link ChangeIdentifier} that 
+     * equals the given {@link ChangeIdentifier}.
      * 
      * @param changeIdentifierList the {@link List} of {@link ChangeIdentifier}s in which will be searched for a
      *        duplicate of the given {@link ChangeIdentifier}; should never be <code>null</code>, but may be
      *        <i>empty</i>
      * @param changeIdentifier the {@link ChangeIdentifier} for which a duplicate should be found in the given list;
      *        should never be <code>null</code>
-     * @return <code>true</code>, if the given list of {@link ChangeIdentifier}s contains an element with the same
-     *         source plug-in, source class, and assignable elements; <code>false</code> otherwise
+     * @return <code>true</code>, if the given list of {@link ChangeIdentifier}s contains a {@link ChangeIdentifier}
+     *         that equals the given {@link ChangeIdentifier}; <code>false</code> otherwise
      */
     private boolean containsDuplicate(List<ChangeIdentifier> changeIdentifierList, ChangeIdentifier changeIdentifier) {
         boolean duplicateFound = false;
         if (!changeIdentifierList.isEmpty()) {
             int changeIdentifierCounter = 0;
-            ChangeIdentifier listChangeIdentifier;
             while (!duplicateFound && changeIdentifierCounter < changeIdentifierList.size()) {
-                listChangeIdentifier = changeIdentifierList.get(changeIdentifierCounter);
-                if (listChangeIdentifier.getSourcePlugin().getAbsolutePath().equals(
-                        changeIdentifier.getSourcePlugin().getAbsolutePath())
-                        && listChangeIdentifier.getSourceClass() == changeIdentifier.getSourceClass()
-                        && equals(listChangeIdentifier.getAssignableElements(),
-                                changeIdentifier.getAssignableElements())) {
-                    duplicateFound = true;
-                }
+                duplicateFound = changeIdentifier.equals(changeIdentifierList.get(changeIdentifierCounter));
                 changeIdentifierCounter++;
             }
         }
@@ -321,7 +330,7 @@ public abstract class AbstractLanguageRegistry {
         if (availableCalls == null) {
             availableCalls = new ArrayList<Call>();
         }
-        if (!containsDuplicate(availableCalls, newCall)) {
+        if (!isDuplicate(newCall)) {
             availableCalls.add(newCall);            
             languageElementCounter++;
             callAdded = true;
@@ -331,53 +340,49 @@ public abstract class AbstractLanguageRegistry {
     }
     
     /**
-     * Checks whether the given {@link List} of {@link Call}s contains a {@link Call} that is equal to the given one.
-     * This check considers the source plug-in, the source class, the return type, and the parameters only as it expects
-     * that the equality of the names and the {@link ElementType}s are ensured.
-     * 
-     * @param callList the {@link List} of {@link Call}s in which will be searched for a duplicate of the given
-     *        {@link Call}; should never be <code>null</code>, but may be <i>empty</i>
-     * @param call the {@link Call} for which a duplicate should be found in the given list; should never be
-     *        <code>null</code>
-     * @return <code>true</code>, if the given list of {@link ChangeIdentifier}s contains an element with the same
-     *         source plug-in, source class, and assignable elements; <code>false</code> otherwise
+     * Checks whether the given {@link Call} equals one of the available calls in the {@link #operations}, the
+     * {@link #extractorCalls}, or the {@link #analysisCalls}.
+     *  
+     * @param call the {@link Call} for which a duplicate should be found; should never be <code>null</code>
+     * @return <code>true</code>, if the given {@link Call} equals one of the available calls in this registry;
+     *         <code>false</code> otherwise
+     * @see Call#equals(LanguageElement)
      */
-    private boolean containsDuplicate(List<Call> callList, Call call) {
+    private boolean isDuplicate(Call call) {
+        boolean isDuplicate = false;
+        if (containsDuplicate(operations, call) 
+                || containsDuplicate(extractorCalls, call) 
+                || containsDuplicate(analysisCalls, call)) {
+            isDuplicate = true;
+        }
+        return isDuplicate;
+    }
+    
+    /**
+     * Checks whether the given {@link HashMap} contains a {@link Call} that equals the given {@link Call}. In detail,
+     * it first searches for an entry in that map, where the key equals the name of
+     * the given call, and, second, checks each call of the corresponding {@link List} (the value of the entry), if it
+     * equals the given call.
+     * 
+     * @param callMap the {@link HashMap} in which will be searched for a duplicate of the given {@link Call}; should
+     *        never be <code>null</code>, but may be <i>empty</i> 
+     * @param call the {@link Call} for which a duplicate should be found in the given map; should never be
+     *        <code>null</code>
+     * @return <code>true</code>, if the given {@link HashMap} contains a {@link Call} that equals the given
+     *         {@link Call}; <code>false</code> otherwise
+     * @see Call#equals(LanguageElement)
+     */
+    private boolean containsDuplicate(HashMap<String, List<Call>> callMap, Call call) {
         boolean duplicateFound = false;
-        if (!callList.isEmpty()) {
+        List<Call> availableCalls = callMap.get(call.getName());
+        if (availableCalls != null && !availableCalls.isEmpty()) {
             int callCounter = 0;
-            Call listCall;
-            while (!duplicateFound && callCounter < callList.size()) {
-                listCall = callList.get(callCounter);
-                if (listCall.getSourcePlugin().getAbsolutePath().equals(
-                        listCall.getSourcePlugin().getAbsolutePath())
-                        && listCall.getSourceClass() == call.getSourceClass()
-                        && listCall.getReturnType().equals(call.getReturnType())
-                        && equals(listCall.getParameters(), call.getParameters())) {
-                    duplicateFound = true;
-                }
+            while (!duplicateFound && callCounter < availableCalls.size()) {
+                duplicateFound = call.equals(availableCalls.get(callCounter));
                 callCounter++;
             }
         }
         return duplicateFound;
-    }
-    
-    /**
-     * Checks whether the given arrays are equal. This is the case, if each string at a particular index in one array is
-     * equal to the string at the same index in the other array.
-     * 
-     * @param array1 the first array to compare for equality; should never be <code>null</code>, but may be <i>empty</i>
-     * @param array2 the first array to compare for equality; should never be <code>null</code>, but may be <i>empty</i>
-     * @return <code>true</code>, if the given arrays are equal; <code>false</code>otherwise
-     */
-    private boolean equals(String[] array1, String[] array2) {
-        boolean areEqual = (array1.length == array2.length);
-        int arraysElementCounter = 0;
-        while (areEqual && arraysElementCounter < array1.length) {
-            areEqual = (array1[arraysElementCounter].equals(array2[arraysElementCounter]));
-            arraysElementCounter++;
-        }
-        return areEqual;
     }
     
 }
