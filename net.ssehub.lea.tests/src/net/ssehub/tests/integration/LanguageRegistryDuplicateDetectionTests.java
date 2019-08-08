@@ -77,9 +77,9 @@ public class LanguageRegistryDuplicateDetectionTests {
     @Test
     public void testCorrectRejectionOfEqualParameterTypes() {
         try {
-            ParameterType artifactParameterType = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "File",
+            ParameterType artifactParameterType = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "DB",
                     LanguageRegistryDuplicateDetectionTests.class, SOURCE_PLUGIN);
-            ParameterType fragmentParameterType = new ParameterType(ElementType.FRAGMENT_PARAMETER_TYPE, "File",
+            ParameterType fragmentParameterType = new ParameterType(ElementType.FRAGMENT_PARAMETER_TYPE, "DB",
                     LanguageRegistryDuplicateDetectionTests.class, SOURCE_PLUGIN);
             List<LanguageElement> newElements = new ArrayList<LanguageElement>();
             newElements.add(artifactParameterType);
@@ -121,9 +121,9 @@ public class LanguageRegistryDuplicateDetectionTests {
     @Test
     public void testCorrectRejectionOfEqualChangeIdentifiers() {
         try {
-            ChangeIdentifier changeIdentifier1 = new ChangeIdentifier("CI", new String[] {"File"},
+            ChangeIdentifier changeIdentifier1 = new ChangeIdentifier("ChId", new String[] {"File"},
                     LanguageRegistryDuplicateDetectionTests.class, SOURCE_PLUGIN);
-            ChangeIdentifier changeIdentifier2 = new ChangeIdentifier("CI2", new String[] {"File"},
+            ChangeIdentifier changeIdentifier2 = new ChangeIdentifier("ChId2", new String[] {"File"},
                     LanguageRegistryDuplicateDetectionTests.class, SOURCE_PLUGIN);
             List<LanguageElement> newElements = new ArrayList<LanguageElement>();
             newElements.add(changeIdentifier1);
@@ -166,10 +166,10 @@ public class LanguageRegistryDuplicateDetectionTests {
     @Test
     public void testCorrectRejectionOfEqualCalls() {
         try {
-            Call operation = new Call(ElementType.OPERATION, "file", "File", new String[] {"path"}, 
+            Call operation = new Call(ElementType.OPERATION, "files", "File[]", new String[] {"abspath"}, 
                     LanguageRegistryDuplicateDetectionTests.class.getMethods()[0],
                     LanguageRegistryDuplicateDetectionTests.class, SOURCE_PLUGIN);
-            Call extractorCall = new Call(ElementType.EXTRACTOR_CALL, "file", "File", new String[] {"path"}, 
+            Call extractorCall = new Call(ElementType.EXTRACTOR_CALL, "files", "File[]", new String[] {"abspath"}, 
                     LanguageRegistryDuplicateDetectionTests.class.getMethods()[0],
                     LanguageRegistryDuplicateDetectionTests.class, SOURCE_PLUGIN);
             List<LanguageElement> newElements = new ArrayList<LanguageElement>();
