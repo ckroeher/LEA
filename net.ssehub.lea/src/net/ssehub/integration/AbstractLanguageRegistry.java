@@ -188,22 +188,22 @@ public abstract class AbstractLanguageRegistry {
      *        <code>null</code>
      * @return <code>true</code>, if the given {@link ParameterType} was added to the given {@link HashMap};
      *         <code>false</code> otherwise, e.g., if a duplicate of the given element is already available
-     * @see #containsDuplicate(List, ParameterType)
+     * @see #isDuplicate(ParameterType)
      */
     private boolean addParameterType(ParameterType newParameterType,
             HashMap<String, List<ParameterType>> parameterMap) {
         boolean parameterAdded = false;
-        String parameterTypeName = newParameterType.getName();
-        List<ParameterType> availableParameterTypes = parameterMap.remove(parameterTypeName);
-        if (availableParameterTypes == null) {
-            availableParameterTypes = new ArrayList<ParameterType>();
-        }
-        if (!isDuplicate(newParameterType)) {
+        if (!isDuplicate(newParameterType)) {            
+            String parameterTypeName = newParameterType.getName();
+            List<ParameterType> availableParameterTypes = parameterMap.remove(parameterTypeName);
+            if (availableParameterTypes == null) {
+                availableParameterTypes = new ArrayList<ParameterType>();
+            }
             availableParameterTypes.add(newParameterType);            
             languageElementCounter++;
-            parameterAdded = true;
+            parameterAdded = true;            
+            parameterMap.put(parameterTypeName, availableParameterTypes);
         }
-        parameterMap.put(parameterTypeName, availableParameterTypes);
         return parameterAdded;
     }
     
@@ -215,7 +215,7 @@ public abstract class AbstractLanguageRegistry {
      *        <code>null</code>
      * @return <code>true</code>, if the given {@link ParameterType} equals one of the available types in this registry;
      *         <code>false</code> otherwise
-     * @see ParameterType#equals(LanguageElement)
+     * @see #containsDuplicate(HashMap, ParameterType)
      */
     private boolean isDuplicate(ParameterType parameterType) {
         boolean isDuplicate = false;
@@ -321,21 +321,21 @@ public abstract class AbstractLanguageRegistry {
      *        <code>null</code>
      * @return <code>true</code>, if the given {@link Call} was added to the given {@link HashMap}; <code>false</code>
      *         otherwise, e.g., if a duplicate of the given element is already available
-     * @see #containsDuplicate(List, Call)
+     * @see #isDuplicate(Call)
      */
     private boolean addCall(Call newCall, HashMap<String, List<Call>> callMap) {
         boolean callAdded = false;
-        String callName = newCall.getName();
-        List<Call> availableCalls = callMap.remove(callName);
-        if (availableCalls == null) {
-            availableCalls = new ArrayList<Call>();
-        }
         if (!isDuplicate(newCall)) {
+            String callName = newCall.getName();
+            List<Call> availableCalls = callMap.remove(callName);
+            if (availableCalls == null) {
+                availableCalls = new ArrayList<Call>();
+            }
             availableCalls.add(newCall);            
             languageElementCounter++;
             callAdded = true;
+            callMap.put(callName, availableCalls);
         }
-        callMap.put(callName, availableCalls);
         return callAdded;
     }
     
@@ -346,7 +346,7 @@ public abstract class AbstractLanguageRegistry {
      * @param call the {@link Call} for which a duplicate should be found; should never be <code>null</code>
      * @return <code>true</code>, if the given {@link Call} equals one of the available calls in this registry;
      *         <code>false</code> otherwise
-     * @see Call#equals(LanguageElement)
+     * @see #containsDuplicate(HashMap, Call)
      */
     private boolean isDuplicate(Call call) {
         boolean isDuplicate = false;
