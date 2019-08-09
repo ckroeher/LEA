@@ -91,7 +91,7 @@ public class LanguageRegistry extends AbstractLanguageRegistry {
     public ParameterType getArtifactParameterType(String name) {
         ParameterType artifactParameterType = null;
         List<ParameterType> availableArtifactParameterTypes = artifactParameterTypes.get(name);
-        if (availableArtifactParameterTypes != null) {
+        if (availableArtifactParameterTypes != null && !availableArtifactParameterTypes.isEmpty()) {
             artifactParameterType = availableArtifactParameterTypes.get(0);
         }
         return artifactParameterType;
@@ -108,7 +108,7 @@ public class LanguageRegistry extends AbstractLanguageRegistry {
     public ParameterType getFragmentParameterType(String name) {
         ParameterType fragmentParameterType = null;
         List<ParameterType> availableFragmentParameterTypes = fragmentParameterTypes.get(name);
-        if (availableFragmentParameterTypes != null) {
+        if (availableFragmentParameterTypes != null && !availableFragmentParameterTypes.isEmpty()) {
             fragmentParameterType = availableFragmentParameterTypes.get(0);
         }
         return fragmentParameterType;
@@ -125,7 +125,7 @@ public class LanguageRegistry extends AbstractLanguageRegistry {
     public ParameterType getResultParameterType(String name) {
         ParameterType resultParameterType = null;
         List<ParameterType> availableResultParameterTypes = resultParameterTypes.get(name);
-        if (availableResultParameterTypes != null) {
+        if (availableResultParameterTypes != null && !availableResultParameterTypes.isEmpty()) {
             resultParameterType = availableResultParameterTypes.get(0);
         }
         return resultParameterType;
@@ -140,7 +140,7 @@ public class LanguageRegistry extends AbstractLanguageRegistry {
     public ChangeIdentifier getChangeIdentifier(String name) {
         ChangeIdentifier changeIdentifier = null;
         List<ChangeIdentifier> availableChangeIdentifiers = changeIdentifiers.get(name);
-        if (availableChangeIdentifiers != null) {
+        if (availableChangeIdentifiers != null && !availableChangeIdentifiers.isEmpty()) {
             changeIdentifier = availableChangeIdentifiers.get(0);
         }
         return changeIdentifier;
@@ -156,7 +156,7 @@ public class LanguageRegistry extends AbstractLanguageRegistry {
     public Call getOperation(String name) {
         Call operation = null;
         List<Call> availableCalls = operations.get(name);
-        if (availableCalls != null) {
+        if (availableCalls != null && !availableCalls.isEmpty()) {
             operation = availableCalls.get(0);
         }
         return operation;
@@ -172,7 +172,7 @@ public class LanguageRegistry extends AbstractLanguageRegistry {
     public Call getExtractorCall(String name) {
         Call extractorCall = null;
         List<Call> availableCalls = extractorCalls.get(name);
-        if (availableCalls != null) {
+        if (availableCalls != null && !availableCalls.isEmpty()) {
             extractorCall = availableCalls.get(0);
         }
         return extractorCall;
@@ -188,7 +188,7 @@ public class LanguageRegistry extends AbstractLanguageRegistry {
     public Call getAnalysisCall(String name) {
         Call analysisCall = null;
         List<Call> availableCalls = analysisCalls.get(name);
-        if (availableCalls != null) {
+        if (availableCalls != null && !availableCalls.isEmpty()) {
             analysisCall = availableCalls.get(0);
         }
         return analysisCall;
