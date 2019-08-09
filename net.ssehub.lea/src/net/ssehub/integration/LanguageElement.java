@@ -119,7 +119,7 @@ public abstract class LanguageElement {
      * <li>Source {@link Class}</li>
      * <li>Source plug-in (the same absolute path of the {@link File})</li>
      * </ul>
-     * @param comparable the {@link LanguageElement} to compare to this element
+     * @param comparable the {@link LanguageElement} to compare to this element; should never be <code>null</code>
      * @return <code>true</code>, if this {@link LanguageElement} is equal to the given {@link LanguageElement};
      *         <code>false</code> otherwise
      */
@@ -136,7 +136,8 @@ public abstract class LanguageElement {
      * Performs the same equality check as {@link #equals(LanguageElement)}, but without consideration of the 
      * {@link ElementType} of this and the given {@link LanguageElement}.
      * 
-     * @param comparable the {@link LanguageElement} to compare to this element, while ignoring the {@link ElementType}
+     * @param comparable the {@link LanguageElement} to compare to this element, while ignoring the {@link ElementType};
+     *        should never be <code>null</code>
      * @return <code>true</code>, if all attributes except for the {@link ElementType} of this {@link LanguageElement}
      *         are equal to the attributes of the given {@link LanguageElement}; <code>false</code> otherwise
      */

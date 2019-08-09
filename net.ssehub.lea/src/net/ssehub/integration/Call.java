@@ -137,6 +137,15 @@ public class Call extends LanguageElement {
         return isEqual;
     }
     
+    /**
+     * Performs the same equality check as {@link #equals(LanguageElement)}, but without consideration of the 
+     * {@link ElementType} of this and the given {@link LanguageElement}.
+     * 
+     * @param comparable the {@link LanguageElement} to compare to this element, while ignoring the {@link ElementType};
+     *        should never be <code>null</code>
+     * @return <code>true</code>, if all attributes except for the {@link ElementType} of this {@link LanguageElement}
+     *         are equal to the attributes of the given {@link LanguageElement}; <code>false</code> otherwise
+     */
     @Override
     public boolean equalsIgnoreType(LanguageElement comparable) {
         boolean isEqual = super.equalsIgnoreType(comparable);
@@ -149,15 +158,16 @@ public class Call extends LanguageElement {
     /**
      * Checks whether the {@link #returnType}, the {@link #parameters}, and the {@link #sourceMethod} of this
      * {@link Call} and the given {@link LanguageElement} are equal. Hence, this method will cast the given element into
-     * a {@link Call} object.
+     * a {@link Call} object without further checks.
      * 
-     * @param comparable the {@link LanguageElement} to compare to this {@link Call}
+     * @param comparable the {@link LanguageElement} of runtime class {@link Call} to compare to this {@link Call};
+     *        should never be <code>null</code>
      * @return <code>true</code>, if the given {@link LanguageElement} is a {@link Call} and its call-specific
      *         attributes are equal to the attributes of this {@link Call}; <code>false</code> otherwise
      */
     private boolean hasEqualCallAttributes(LanguageElement comparable) {
         boolean hasEqualCallAttributes = true;
-        Call comparableCall = (Call) comparable;
+        Call comparableCall = (Call) comparable; // Callers ensure equality of this and the given elements runtime class
         if (this.returnType.equals(comparableCall.getReturnType()) 
                 && this.sourceMethod.toGenericString().equals(comparableCall.getSourceMethod().toGenericString())) {
             String[] comparableParameters = comparableCall.getParameters();
