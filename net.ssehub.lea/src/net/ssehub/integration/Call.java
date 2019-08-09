@@ -132,26 +132,50 @@ public class Call extends LanguageElement {
     public boolean equals(LanguageElement comparable) {
         boolean isEqual = super.equals(comparable);
         if (isEqual) {
-            Call comparableCall = (Call) comparable;
-            if (this.returnType.equals(comparableCall.getReturnType()) 
-                    && this.sourceMethod.toGenericString().equals(comparableCall.getSourceMethod().toGenericString())) {
-                String[] comparableParameters = comparableCall.getParameters();
-                if (this.parameters.length == comparableParameters.length) {
-                    int parametersCounter = 0;
-                    while (isEqual && parametersCounter < this.parameters.length) {
-                        if (!this.parameters[parametersCounter].equals(
-                                comparableParameters[parametersCounter])) {
-                            isEqual = false;
-                        }
-                        parametersCounter++;
-                    }
-                } else {
-                    isEqual = false;
-                }
-            } else {
-                isEqual = false;
-            }
+            isEqual = hasEqualCallAttributes(comparable);
         }
         return isEqual;
+    }
+    
+    @Override
+    public boolean equalsIgnoreType(LanguageElement comparable) {
+        boolean isEqual = super.equalsIgnoreType(comparable);
+        if (isEqual) {
+            isEqual = hasEqualCallAttributes(comparable);
+        }
+        return isEqual;
+    }
+    
+    /**
+     * Checks whether the {@link #returnType}, the {@link #parameters}, and the {@link #sourceMethod} of this
+     * {@link Call} and the given {@link LanguageElement} are equal. Hence, this method will cast the given element into
+     * a {@link Call} object.
+     * 
+     * @param comparable the {@link LanguageElement} to compare to this {@link Call}
+     * @return <code>true</code>, if the given {@link LanguageElement} is a {@link Call} and its call-specific
+     *         attributes are equal to the attributes of this {@link Call}; <code>false</code> otherwise
+     */
+    private boolean hasEqualCallAttributes(LanguageElement comparable) {
+        boolean hasEqualCallAttributes = true;
+        Call comparableCall = (Call) comparable;
+        if (this.returnType.equals(comparableCall.getReturnType()) 
+                && this.sourceMethod.toGenericString().equals(comparableCall.getSourceMethod().toGenericString())) {
+            String[] comparableParameters = comparableCall.getParameters();
+            if (this.parameters.length == comparableParameters.length) {
+                int parametersCounter = 0;
+                while (hasEqualCallAttributes && parametersCounter < this.parameters.length) {
+                    if (!this.parameters[parametersCounter].equals(
+                            comparableParameters[parametersCounter])) {
+                        hasEqualCallAttributes = false;
+                    }
+                    parametersCounter++;
+                }
+            } else {
+                hasEqualCallAttributes = false;
+            }
+        } else {
+            hasEqualCallAttributes = false;
+        }
+        return hasEqualCallAttributes;
     }
 }

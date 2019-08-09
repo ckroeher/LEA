@@ -125,7 +125,23 @@ public abstract class LanguageElement {
     public boolean equals(LanguageElement comparable) {
         boolean isEqual = false;
         if (this.elementType == comparable.getElementType()
-                && this.name.equals(comparable.getName())
+                && equalsIgnoreType(comparable)) {
+            isEqual = true;
+        }
+        return isEqual;
+    }
+    
+    /**
+     * Performs the same equality check as {@link #equals(LanguageElement)}, but without consideration of the 
+     * {@link ElementType} of this and the given {@link LanguageElement}.
+     * 
+     * @param comparable the {@link LanguageElement} to compare to this element, while ignoring the {@link ElementType}
+     * @return <code>true</code>, if all attributes except for the {@link ElementType} of this {@link LanguageElement}
+     *         are equal to the attributes of the given {@link LanguageElement}; <code>false</code> otherwise
+     */
+    public boolean equalsIgnoreType(LanguageElement comparable) {
+        boolean isEqual = false;
+        if (this.name.equals(comparable.getName())
                 && this.sourceClass == comparable.getSourceClass()
                 && this.sourcePlugin.getAbsolutePath().equals(comparable.getSourcePlugin().getAbsolutePath())) {
             isEqual = true;
