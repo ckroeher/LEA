@@ -378,7 +378,7 @@ public abstract class AbstractLanguageRegistry {
         if (availableCalls != null && !availableCalls.isEmpty()) {
             int callCounter = 0;
             while (!duplicateFound && callCounter < availableCalls.size()) {
-                duplicateFound = call.equals(availableCalls.get(callCounter));
+                duplicateFound = call.equalsIgnoreType(availableCalls.get(callCounter));
                 callCounter++;
             }
         }
