@@ -150,6 +150,42 @@ public class LanguageElementEqualityTests {
     }
     
     /**
+     * Tests whether a {@link ParameterType} is unequal to a {@link ChangeIdentifier}.
+     */
+    @Test
+    public void testCorrectInequalityBetweenParameterTypeAndChangeIdentifier() {
+        try {
+            ParameterType parameterType = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "File",
+                    LanguageElementEqualityTests.class, SOURCE_PLUGIN);
+            ChangeIdentifier changeIdentifier = new ChangeIdentifier("CI", new String[] {"File"},
+                    LanguageElementEqualityTests.class, SOURCE_PLUGIN);
+            
+            assertFalse(parameterType.equals(changeIdentifier),
+                    "Parameter type should be unequal to change identifier");
+        } catch (LanguageElementException e) {
+            assertNull("Unexpected exception thrown", e);
+        }
+    }
+    
+    /**
+     * Tests whether a {@link ParameterType} is unequal to a {@link Call}.
+     */
+    @Test
+    public void testCorrectInequalityBetweenParameterTypeAndCall() {
+        try {
+            ParameterType parameterType = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "File",
+                    LanguageElementEqualityTests.class, SOURCE_PLUGIN);
+            Call call = new Call(ElementType.OPERATION, "file", "File", new String[] {"String"},
+                    LanguageElementEqualityTests.class.getMethods()[0], LanguageElementEqualityTests.class,
+                    SOURCE_PLUGIN);
+            
+            assertFalse(parameterType.equals(call), "Parameter type should be unequal to call");
+        } catch (LanguageElementException e) {
+            assertNull("Unexpected exception thrown", e);
+        }
+    }
+    
+    /**
      * Test whether a single {@link ChangeIdentifier} instance is equal to itself.
      */
     @Test
@@ -283,6 +319,42 @@ public class LanguageElementEqualityTests {
                     LanguageElementEqualityTests.class, new File(""));
             
             assertFalse(changeIdentifier1.equals(changeIdentifier2), "Change Identifiers should be unequal");
+        } catch (LanguageElementException e) {
+            assertNull("Unexpected exception thrown", e);
+        }
+    }
+    
+    /**
+     * Tests whether a {@link ChangeIdentifier} is unequal to a {@link ParameterType}.
+     */
+    @Test
+    public void testCorrectInequalityBetweenChangeIdentifierAndParameterType() {
+        try {
+            ChangeIdentifier changeIdentifier = new ChangeIdentifier("CI", new String[] {"File"},
+                    LanguageElementEqualityTests.class, SOURCE_PLUGIN);
+            ParameterType parameterType = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "File",
+                    LanguageElementEqualityTests.class, SOURCE_PLUGIN);
+            
+            assertFalse(changeIdentifier.equals(parameterType),
+                    "Change identifier should be unequal to parameter type");
+        } catch (LanguageElementException e) {
+            assertNull("Unexpected exception thrown", e);
+        }
+    }
+    
+    /**
+     * Tests whether a {@link ChangeIdentifier} is unequal to a {@link Call}.
+     */
+    @Test
+    public void testCorrectInequalityBetweenChangeIdentifierAndCall() {
+        try {
+            ChangeIdentifier changeIdentifier = new ChangeIdentifier("CI", new String[] {"File"},
+                    LanguageElementEqualityTests.class, SOURCE_PLUGIN);
+            Call call = new Call(ElementType.OPERATION, "file", "File", new String[] {"String"},
+                    LanguageElementEqualityTests.class.getMethods()[0], LanguageElementEqualityTests.class,
+                    SOURCE_PLUGIN);
+            
+            assertFalse(changeIdentifier.equals(call), "Change identifier should be unequal to call");
         } catch (LanguageElementException e) {
             assertNull("Unexpected exception thrown", e);
         }
@@ -476,6 +548,42 @@ public class LanguageElementEqualityTests {
                     new File(""));
             
             assertFalse(call1.equals(call2), "Calls should be unequal");
+        } catch (LanguageElementException e) {
+            assertNull("Unexpected exception thrown", e);
+        }
+    }
+    
+    /**
+     * Tests whether a {@link Call} is unequal to a {@link ParameterType}.
+     */
+    @Test
+    public void testCorrectInequalityBetweenCallAndParameterType() {
+        try {
+            Call call = new Call(ElementType.OPERATION, "file", "File", new String[] {"String"},
+                    LanguageElementEqualityTests.class.getMethods()[0], LanguageElementEqualityTests.class,
+                    SOURCE_PLUGIN);
+            ParameterType parameterType = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "File",
+                    LanguageElementEqualityTests.class, SOURCE_PLUGIN);
+            
+            assertFalse(call.equals(parameterType), "Call should be unequal to parameter type");
+        } catch (LanguageElementException e) {
+            assertNull("Unexpected exception thrown", e);
+        }
+    }
+    
+    /**
+     * Tests whether a {@link Call} is unequal to a {@link ChangeIdentifier}.
+     */
+    @Test
+    public void testCorrectInequalityBetweenCallAndChangeIdentifier() {
+        try {
+            Call call = new Call(ElementType.OPERATION, "file", "File", new String[] {"String"},
+                    LanguageElementEqualityTests.class.getMethods()[0], LanguageElementEqualityTests.class,
+                    SOURCE_PLUGIN);
+            ChangeIdentifier changeIdentifier = new ChangeIdentifier("CI", new String[] {"File"},
+                    LanguageElementEqualityTests.class, SOURCE_PLUGIN);
+            
+            assertFalse(call.equals(changeIdentifier), "Call should be unequal to change identifier");
         } catch (LanguageElementException e) {
             assertNull("Unexpected exception thrown", e);
         }
