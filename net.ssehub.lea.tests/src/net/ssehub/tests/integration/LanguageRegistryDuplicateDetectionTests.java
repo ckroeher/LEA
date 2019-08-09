@@ -35,7 +35,16 @@ import net.ssehub.integration.ParameterType;
  * This class contains unit tests for the {@link LanguageRegistry}, which check the correct rejection of 
  * {@link LanguageElement}s during their addition to the registry, if an equal element already exists in that registry.
  * Tests for the correct acceptance of a single {@link LanguageElement} are defined in the
- * {@link BasicLanguageRegistryTests}.
+ * {@link BasicLanguageRegistryTests}.<br>
+ * <br>
+ * <b>Note:</b> For now, the {@link LanguageRegistry} accepts {@link ParameterType}s, which are only partially equal.
+ * This enables the addition of the same type as, e.g., artifacts and fragment parameter type at the same time. While
+ * this was not planned initially, there might be situations that require such definitions. Hence, the respective tests
+ * that would check for rejections of such types are currently commented out.<br>
+ * {@link ChangeIdentifier}: For this type of {@link LanguageElement} it is sufficient to check for complete equality.
+ * {@link Call}: Here, the declaration of a partially equal call may lead to a rejection. That is, if all properties are
+ * equal except for the {@link ElementType}, which would mean that the same source method is, e.g., an extractor and an
+ * analysis call at the same time.
  * 
  * @author Christian Kroeher
  *
@@ -70,28 +79,28 @@ public class LanguageRegistryDuplicateDetectionTests {
         }
     }
     
-    /**
-     * Test whether the {@link LanguageRegistry} rejects the addition of two equal {@link ParameterType}s. This test
-     * uses two distinct {@link ParameterType} instances.
-     */
-    @Test
-    public void testCorrectRejectionOfEqualParameterTypes() {
-        try {
-            ParameterType artifactParameterType = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "DB",
-                    LanguageRegistryDuplicateDetectionTests.class, SOURCE_PLUGIN);
-            ParameterType fragmentParameterType = new ParameterType(ElementType.FRAGMENT_PARAMETER_TYPE, "DB",
-                    LanguageRegistryDuplicateDetectionTests.class, SOURCE_PLUGIN);
-            List<LanguageElement> newElements = new ArrayList<LanguageElement>();
-            newElements.add(artifactParameterType);
-            newElements.add(fragmentParameterType);
-            List<LanguageElement> rejectedElements = LanguageRegistry.INSTANCE.addLanguageElements(newElements);
-            
-            assertEquals(1, rejectedElements.size(), "Wrong number of rejected new language elements");
-            assertEquals(newElements.get(1), rejectedElements.get(0), "Wrong rejected new language element");
-        } catch (LanguageElementException e) {
-            assertNull("Unexpected exception thrown", e);
-        }
-    }
+//    /**
+//     * Test whether the {@link LanguageRegistry} rejects the addition of two equal {@link ParameterType}s. This test
+//     * uses two distinct {@link ParameterType} instances.
+//     */
+//    @Test
+//    public void testCorrectRejectionOfEqualParameterTypes() {
+//        try {
+//            ParameterType artifactParameterType = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "DB",
+//                    LanguageRegistryDuplicateDetectionTests.class, SOURCE_PLUGIN);
+//            ParameterType fragmentParameterType = new ParameterType(ElementType.FRAGMENT_PARAMETER_TYPE, "DB",
+//                    LanguageRegistryDuplicateDetectionTests.class, SOURCE_PLUGIN);
+//            List<LanguageElement> newElements = new ArrayList<LanguageElement>();
+//            newElements.add(artifactParameterType);
+//            newElements.add(fragmentParameterType);
+//            List<LanguageElement> rejectedElements = LanguageRegistry.INSTANCE.addLanguageElements(newElements);
+//            
+//            assertEquals(1, rejectedElements.size(), "Wrong number of rejected new language elements");
+//            assertEquals(newElements.get(1), rejectedElements.get(0), "Wrong rejected new language element");
+//        } catch (LanguageElementException e) {
+//            assertNull("Unexpected exception thrown", e);
+//        }
+//    }
     
     /**
      * Test whether the {@link LanguageRegistry} rejects the addition of two equal {@link ChangeIdentifier}s. This test
@@ -114,28 +123,28 @@ public class LanguageRegistryDuplicateDetectionTests {
         }
     }
     
-    /**
-     * Test whether the {@link LanguageRegistry} rejects the addition of two equal {@link ChangeIdentifier}s. This test
-     * uses two distinct {@link ChangeIdentifier} instances.
-     */
-    @Test
-    public void testCorrectRejectionOfEqualChangeIdentifiers() {
-        try {
-            ChangeIdentifier changeIdentifier1 = new ChangeIdentifier("ChId", new String[] {"File"},
-                    LanguageRegistryDuplicateDetectionTests.class, SOURCE_PLUGIN);
-            ChangeIdentifier changeIdentifier2 = new ChangeIdentifier("ChId2", new String[] {"File"},
-                    LanguageRegistryDuplicateDetectionTests.class, SOURCE_PLUGIN);
-            List<LanguageElement> newElements = new ArrayList<LanguageElement>();
-            newElements.add(changeIdentifier1);
-            newElements.add(changeIdentifier2);
-            List<LanguageElement> rejectedElements = LanguageRegistry.INSTANCE.addLanguageElements(newElements);
-            
-            assertEquals(1, rejectedElements.size(), "Wrong number of rejected new language elements");
-            assertEquals(newElements.get(1), rejectedElements.get(0), "Wrong rejected new language element");
-        } catch (LanguageElementException e) {
-            assertNull("Unexpected exception thrown", e);
-        }
-    }
+//    /**
+//     * Test whether the {@link LanguageRegistry} rejects the addition of two equal {@link ChangeIdentifier}s. This
+//     * test uses two distinct {@link ChangeIdentifier} instances.
+//     */
+//    @Test
+//    public void testCorrectRejectionOfEqualChangeIdentifiers() {
+//        try {
+//            ChangeIdentifier changeIdentifier1 = new ChangeIdentifier("ChId", new String[] {"File"},
+//                    LanguageRegistryDuplicateDetectionTests.class, SOURCE_PLUGIN);
+//            ChangeIdentifier changeIdentifier2 = new ChangeIdentifier("ChId2", new String[] {"File"},
+//                    LanguageRegistryDuplicateDetectionTests.class, SOURCE_PLUGIN);
+//            List<LanguageElement> newElements = new ArrayList<LanguageElement>();
+//            newElements.add(changeIdentifier1);
+//            newElements.add(changeIdentifier2);
+//            List<LanguageElement> rejectedElements = LanguageRegistry.INSTANCE.addLanguageElements(newElements);
+//            
+//            assertEquals(1, rejectedElements.size(), "Wrong number of rejected new language elements");
+//            assertEquals(newElements.get(1), rejectedElements.get(0), "Wrong rejected new language element");
+//        } catch (LanguageElementException e) {
+//            assertNull("Unexpected exception thrown", e);
+//        }
+//    }
     
     /**
      * Test whether the {@link LanguageRegistry} rejects the addition of two equal {@link Call}s. This test uses the
