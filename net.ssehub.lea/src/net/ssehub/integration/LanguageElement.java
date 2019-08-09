@@ -114,6 +114,7 @@ public abstract class LanguageElement {
      * both elements have the same:
      * <ul>
      * <li>{@link ElementType}</li>
+     * <li>Runtime {@link Class} (retrieved via {@link LanguageElement#getClass()})
      * <li>Name</li>
      * <li>Source {@link Class}</li>
      * <li>Source plug-in (the same absolute path of the {@link File})</li>
@@ -141,7 +142,8 @@ public abstract class LanguageElement {
      */
     public boolean equalsIgnoreType(LanguageElement comparable) {
         boolean isEqual = false;
-        if (this.name.equals(comparable.getName())
+        if (this.getClass() == comparable.getClass()
+                && this.name.equals(comparable.getName())
                 && this.sourceClass == comparable.getSourceClass()
                 && this.sourcePlugin.getAbsolutePath().equals(comparable.getSourcePlugin().getAbsolutePath())) {
             isEqual = true;
