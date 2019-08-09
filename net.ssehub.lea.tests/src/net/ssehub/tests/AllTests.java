@@ -27,6 +27,7 @@ import net.ssehub.tests.integration.ChangeIdentifierCreationTests;
 import net.ssehub.tests.integration.ExtractorCallCreationTests;
 import net.ssehub.tests.integration.FragmentParameterTypeCreationTests;
 import net.ssehub.tests.integration.LanguageElementEqualityTests;
+import net.ssehub.tests.integration.LanguageElementPartialEqualityTests;
 import net.ssehub.tests.integration.LanguageRegistryDuplicateDetectionTests;
 import net.ssehub.tests.integration.OperationCreationTests;
 import net.ssehub.tests.integration.ResultParameterTypeCreationTests;
@@ -60,6 +61,7 @@ import net.ssehub.tests.parsing.BasicResultParsingTests;
     ExtractorCallCreationTests.class,
     AnalysisCallCreationTests.class,
     LanguageElementEqualityTests.class,
+    LanguageElementPartialEqualityTests.class,
     BasicLanguageElementProviderTests.class,
     BasicLanguageRegistryTests.class,
     LanguageRegistryDuplicateDetectionTests.class
