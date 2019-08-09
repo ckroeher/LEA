@@ -97,13 +97,13 @@ public class BasicLanguageRegistryTests {
                         BasicLanguageRegistryTests.class, SOURCE_PLUGIN)},
                 {new ChangeIdentifier("ChangeIdentifier", new String[] {"FileArtifact"},
                         BasicLanguageRegistryTests.class, SOURCE_PLUGIN)},
-                {new Call(ElementType.OPERATION, "file", "File", new String[] {}, 
+                {new Call(ElementType.OPERATION, "file", "FileArtifact", new String[] {}, 
                         BasicLanguageRegistryTests.class.getDeclaredMethod("initializeExpectedResults"),
                         BasicLanguageRegistryTests.class, SOURCE_PLUGIN)},
-                {new Call(ElementType.EXTRACTOR_CALL, "extract", "Block", new String[] {"File"},
+                {new Call(ElementType.EXTRACTOR_CALL, "extract", "BlockFragment", new String[] {"FileArtifact"},
                         BasicLanguageRegistryTests.class.getDeclaredMethod("initializeExpectedResults"),
                         BasicLanguageRegistryTests.class, SOURCE_PLUGIN)},
-                {new Call(ElementType.ANALYSIS_CALL, "analyze", "DeadBlock", new String[] {"Block"},
+                {new Call(ElementType.ANALYSIS_CALL, "analyze", "AnalysisResult", new String[] {"BlockFragment"},
                         BasicLanguageRegistryTests.class.getDeclaredMethod("initializeExpectedResults"),
                         BasicLanguageRegistryTests.class, SOURCE_PLUGIN)}
             };            
