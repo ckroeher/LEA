@@ -598,7 +598,7 @@ public abstract class AbstractLanguageRegistry {
                     callMap = new HashMap<String, List<Call>>();
                     break;
                 }
-                addCall(cachedCall, callMap);
+                addCallUnchecked(cachedCall, callMap);
             }
         }
     }
