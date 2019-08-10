@@ -29,6 +29,7 @@ import net.ssehub.tests.integration.FragmentParameterTypeCreationTests;
 import net.ssehub.tests.integration.LanguageElementEqualityTests;
 import net.ssehub.tests.integration.LanguageElementPartialEqualityTests;
 import net.ssehub.tests.integration.LanguageRegistryDuplicateDetectionTests;
+import net.ssehub.tests.integration.LanguageRegistryValidationTests;
 import net.ssehub.tests.integration.OperationCreationTests;
 import net.ssehub.tests.integration.ResultParameterTypeCreationTests;
 import net.ssehub.tests.parsing.BasicAnalysisDefinitionTests;
@@ -64,7 +65,8 @@ import net.ssehub.tests.parsing.BasicResultParsingTests;
     LanguageElementPartialEqualityTests.class,
     BasicLanguageElementProviderTests.class,
     BasicLanguageRegistryTests.class,
-    LanguageRegistryDuplicateDetectionTests.class
+    LanguageRegistryDuplicateDetectionTests.class,
+    LanguageRegistryValidationTests.class
     })
 public class AllTests {
 
