@@ -80,6 +80,10 @@ public class LanguageRegistry extends AbstractLanguageRegistry {
         return foundElement;
     }
     
+    /*
+     * TODO Think about reasonable getter. This way of doing it is not the best design!
+     */
+    
     /**
      * Returns the {@link ParameterType} of the type {@link ElementType#ARTIFACT_PARAMETER_TYPE}, which has the given
      * name.
