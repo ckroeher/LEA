@@ -16,15 +16,15 @@ package net.ssehub.integration;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Vector;
 
 /**
  * This abstract class provides the attributes and methods for creating the specific, singleton
  * {@link LanguageRegistry}. The purpose of this class is to decouple the management of {@link LanguageElement}s, like
  * the addition of new element or checks regarding duplicated elements, from their retrieval and usage. Hence, this
- * class only contains the core attributes and attributes for building the specific {@link LanguageRegistry}, while
- * the specific registry provides additional methods for using the it.  
+ * class only contains the core attributes and methods for building the specific {@link LanguageRegistry}, while
+ * the specific registry provides additional methods for using it.  
  * 
  * @author Christian Kroeher
  *
@@ -32,7 +32,7 @@ import java.util.Vector;
 public abstract class AbstractLanguageRegistry {
     
     /**
-     * The number of {@link LanguageElement}s currently registered. The initial value of <code>0</code> is set in
+     * The number of currently registered {@link LanguageElement}s. The initial value of <code>0</code> is set in
      * {@link #AbstractLanguageRegistry()}. It is increased by <code>1</code> for each element added to this registry
      * in {@link #addLanguageElements(List)}. 
      */
@@ -91,21 +91,21 @@ public abstract class AbstractLanguageRegistry {
     
     /**
      * The {@link List} of {@link ChangeIdentifier}s for which {@link #isValid(ChangeIdentifier)} returned
-     * <code>false</code> during its addition in {@link #addChangeIdentifier(ChangeIdentifier)}. Each element in this
+     * <code>false</code> during their addition in {@link #addChangeIdentifier(ChangeIdentifier)}. Each element in this
      * list will be re-validated, if a new parameter type is added to this registry.
      * 
      *  @see #reValidateChangeIdentifiers()
      */
-    private List<ChangeIdentifier> invalidChangeIdentifiers;
+    private List<ChangeIdentifier> cachedChangeIdentifiers;
     
     /**
-     * The {@link List} of {@link Call}s for which {@link #isValid(Call)} returned <code>false</code> during its 
+     * The {@link List} of {@link Call}s for which {@link #isValid(Call)} returned <code>false</code> during their 
      * addition in {@link #addCall(Call, HashMap)}. Each element in this list will be re-validated, if a new parameter
      * type is added to this registry.
      * 
      * @see #reValidateCalls()
      */
-    private List<Call> invalidCalls;
+    private List<Call> cachedCalls;
     
     /**
      * Constructs a new {@link AbstractLanguageRegistry} instance.
@@ -119,52 +119,49 @@ public abstract class AbstractLanguageRegistry {
         operations = new HashMap<String, List<Call>>();
         extractorCalls = new HashMap<String, List<Call>>();
         analysisCalls = new HashMap<String, List<Call>>();
-        invalidChangeIdentifiers = new ArrayList<ChangeIdentifier>();
-        invalidCalls = new ArrayList<Call>();
+        cachedChangeIdentifiers = new ArrayList<ChangeIdentifier>();
+        cachedCalls = new ArrayList<Call>();
     }
     
     /**
      * Adds the {@link LanguageElement}s in the given {@link List} to this {@link AbstractLanguageRegistry}. The
-     * individual elements will be stored in separate {@link HashMap}s depending on their respective type.
+     * individual elements will be stored in separate {@link HashMap}s depending on their respective type. However, if
+     * an element does not pass the validation, e.g., due to references to missing language elements, it will be cached
+     * only. If the missing language elements are added, the cached element becomes available in this registry.
      * 
-     * @param newElements the {@link List} of {@link LanguageElement}s to be added to this 
-     *        {@link AbstractLanguageRegistry}; should never be <code>null</code>, but may be <i>empty</i>
+     * @param newElements the {@link List} of {@link LanguageElement}s to add to this {@link AbstractLanguageRegistry};
+     *        should never be <code>null</code>, but may be <i>empty</i>
      * @return a {@link List} of {@link LanguageElement}s that were not added to this registry because of already
      *         existing duplicates; never <code>null</code>, but may be <i>empty</i>, if all given elements were added
-     *         successfully
+     *         successfully, which includes their caching
      * @implNote Repetitive removal and addition of hash map elements is resource consuming. However, as these actions
      *           are performed at start-up only, the performance gain when retrieving and accessing language elements at
      *           runtime is worth doing it here like this.
      */
     public List<LanguageElement> addLanguageElements(List<LanguageElement> newElements) {
         List<LanguageElement> rejectedElements = new ArrayList<LanguageElement>();
+        boolean performRevalidation = false;
         for (LanguageElement newElement : newElements) {
             switch(newElement.getElementType()) {
             case ARTIFACT_PARAMETER_TYPE:
                 if (!addParameterType((ParameterType) newElement, artifactParameterTypes)) {
                     rejectedElements.add(newElement);
                 } else {
-                    // A new parameter type is available. Hence, re-validate the cached invalid language elements.
-                    reValidateChangeIdentifiers();
-                    reValidateCalls();
+                    performRevalidation = true; // New parameter types may enable the usage of cached language elements
                 }
                 break;
             case FRAGMENT_PARAMETER_TYPE:
                 if (!addParameterType((ParameterType) newElement, fragmentParameterTypes)) {
                     rejectedElements.add(newElement);
                 } else {
-                    // A new parameter type is available. Hence, re-validate the cached invalid language elements.
-                    reValidateChangeIdentifiers();
-                    reValidateCalls();
+                    performRevalidation = true; // New parameter types may enable the usage of cached language elements
                 }
                 break;
             case RESULT_PARAMETER_TYPE:
                 if (!addParameterType((ParameterType) newElement, resultParameterTypes)) {
                     rejectedElements.add(newElement);
                 } else {
-                    // A new parameter type is available. Hence, re-validate the cached invalid language elements.
-                    reValidateChangeIdentifiers();
-                    reValidateCalls();
+                    performRevalidation = true; // New parameter types may enable the usage of cached language elements
                 }
                 break;
             case CHANGE_IDENTIFIER:
@@ -192,13 +189,21 @@ public abstract class AbstractLanguageRegistry {
                 break;
             }
         }
+        /*
+         * If new parameter types were added, we can re-validate the cached language elements, which could not be added
+         * in previous calls of this method due to their references to unknown parameter types.
+         */
+        if (performRevalidation) {
+            revalidateCachedLanguageElements();
+        }
         return rejectedElements;
     }
     
     /**
-     * Adds the given {@link ParameterType} to the given {@link HashMap}, if that map does not already contain such a
-     * parameter. The caller of this method must ensure that the {@link ElementType} of the given {@link ParameterType}
-     * and the particular {@link HashMap} match like follows:
+     * Adds the given {@link ParameterType} to the given {@link HashMap} by calling
+     * {@link #addParameterTypeUnchecked(ParameterType, HashMap)}, if the map does not already contain such a parameter.
+     * The caller of this method must ensure that the {@link ElementType} of the given {@link ParameterType} and the
+     * particular {@link HashMap} match as follows:
      * <ul>
      * <li>{@link ElementType#ARTIFACT_PARAMETER_TYPE} requires {@link #artifactParameterTypes}</li>
      * <li>{@link ElementType#FRAGMENT_PARAMETER_TYPE} requires {@link #fragmentParameterTypes}</li>
@@ -217,28 +222,42 @@ public abstract class AbstractLanguageRegistry {
     private boolean addParameterType(ParameterType newParameterType,
             HashMap<String, List<ParameterType>> parameterMap) {
         boolean parameterAdded = false;
-        if (!isDuplicate(newParameterType)) {            
-            String parameterTypeName = newParameterType.getName();
-            List<ParameterType> availableParameterTypes = parameterMap.remove(parameterTypeName);
-            if (availableParameterTypes == null) {
-                availableParameterTypes = new ArrayList<ParameterType>();
-            }
-            availableParameterTypes.add(newParameterType);            
-            languageElementCounter++;
-            parameterAdded = true;            
-            parameterMap.put(parameterTypeName, availableParameterTypes);
+        if (!isDuplicate(newParameterType)) {
+            addParameterTypeUnchecked(newParameterType, parameterMap);
+            parameterAdded = true;
         }
         return parameterAdded;
     }
     
     /**
-     * Checks whether the given {@link ParameterType} equals one of the available types in the 
+     * Adds the given {@link ParameterType} to the given {@link HashMap} without any further checks. If checks are
+     * required, use {@link #addParameterType(ParameterType, HashMap)}.
+     * 
+     * @param newParameterType the {@link ParameterType} to add to the given {@link HashMap}; should never be
+     *        <code>null</code>
+     * @param parameterMap the {@link HashMap} to which the given {@link ParameterType} should be added; should never be
+     *        <code>null</code>
+     */
+    private void addParameterTypeUnchecked(ParameterType newParameterType,
+            HashMap<String, List<ParameterType>> parameterMap) {
+        String parameterTypeName = newParameterType.getName();
+        List<ParameterType> availableParameterTypes = parameterMap.remove(parameterTypeName);
+        if (availableParameterTypes == null) {
+            availableParameterTypes = new ArrayList<ParameterType>();
+        }
+        availableParameterTypes.add(newParameterType);            
+        parameterMap.put(parameterTypeName, availableParameterTypes);
+        languageElementCounter++;
+    }
+    
+    /**
+     * Checks whether the given {@link ParameterType} is a duplicate of another {@link ParameterType} in the 
      * {@link #artifactParameterTypes}, the {@link #fragmentParameterTypes}, or the {@link #resultParameterTypes}.
      *  
      * @param parameterType the {@link ParameterType} for which a duplicate should be found; should never be
      *        <code>null</code>
-     * @return <code>true</code>, if the given {@link ParameterType} equals one of the available types in this registry;
-     *         <code>false</code> otherwise
+     * @return <code>true</code>, if the given {@link ParameterType} is a duplicate of one of the available types in
+     *         this registry; <code>false</code> otherwise
      * @see #containsDuplicate(HashMap, ParameterType)
      */
     private boolean isDuplicate(ParameterType parameterType) {
@@ -257,10 +276,10 @@ public abstract class AbstractLanguageRegistry {
      * the given type, and, second, checks each type of the corresponding {@link List} (the value of the entry), if it
      * equals the given type.
      * 
-     * @param parameterTypeMap the {@link HashMap} in which will be searched for a duplicate of
+     * @param parameterTypeMap the {@link HashMap} in which will be searched for a {@link ParameterType}, which equals
      *        the given {@link ParameterType}; should never be <code>null</code>, but may be <i>empty</i> 
-     * @param parameterType the {@link ParameterType} for which a duplicate should be found in the given map; should
-     *        never be <code>null</code>
+     * @param parameterType the {@link ParameterType} for which an equal {@link ParameterType} should be found in the
+     *        given map; should never be <code>null</code>
      * @return <code>true</code>, if the given {@link HashMap} contains a {@link ParameterType} that equals the given
      *         {@link ParameterType}; <code>false</code> otherwise
      * @see ParameterType#equals(LanguageElement)
@@ -280,14 +299,15 @@ public abstract class AbstractLanguageRegistry {
     }
     
     /**
-     * Adds the given {@link ChangeIdentifier} to the {@link #changeIdentifiers}, if that map does not already contain
-     * such an identifier and that change identifier is valid. In case of an invalid change identifier, it is added to
-     * the {@link #invalidChangeIdentifiers} for re-validation, if new {@link ParameterType}s are added.
+     * Adds the given {@link ChangeIdentifier} to the {@link #changeIdentifiers} by calling 
+     * {@link #addChangeIdentifierUnchecked(ChangeIdentifier)}, if the map does not already contain such an identifier
+     * and that change identifier is valid. In case of an invalid change identifier, it is added to the 
+     * {@link #cachedChangeIdentifiers} for re-validation, if new {@link ParameterType}s are added.
      * 
      * @param newChangeIdentifier the {@link ChangeIdentifier} to add to the {@link #changeIdentifiers}; should never be
      *        <code>null</code>
      * @return <code>true</code>, if the given {@link ChangeIdentifier} was added to the {@link #changeIdentifiers} or
-     *         cached as part of the {@link #invalidChangeIdentifiers}; <code>false</code> otherwise, e.g., if a
+     *         cached as part of the {@link #cachedChangeIdentifiers}; <code>false</code> otherwise, e.g., if a
      *         duplicate of the given element is already available
      * @see #containsDuplicate(List, ChangeIdentifier)
      * @see #isValid(ChangeIdentifier)
@@ -295,22 +315,37 @@ public abstract class AbstractLanguageRegistry {
     private boolean addChangeIdentifier(ChangeIdentifier newChangeIdentifier) {
         boolean changeIdentifierAdded = false;
         String changeIdentifierName = newChangeIdentifier.getName();
+        List<ChangeIdentifier> availableChangeIdentifiers = changeIdentifiers.get(changeIdentifierName);
+        if (availableChangeIdentifiers == null
+                || availableChangeIdentifiers.isEmpty()
+                || (!containsDuplicate(availableChangeIdentifiers, newChangeIdentifier) 
+                        && !containsDuplicate(cachedChangeIdentifiers, newChangeIdentifier))) {
+            if (isValid(newChangeIdentifier)) {
+                addChangeIdentifierUnchecked(newChangeIdentifier);
+            } else {
+                cachedChangeIdentifiers.add(newChangeIdentifier);
+            }
+            changeIdentifierAdded = true;
+        }
+        return changeIdentifierAdded;
+    }
+    
+    /**
+     * Adds the given {@link ChangeIdentifier} to the {@link #changeIdentifiers} without any further checks. If checks
+     * are required, use {@link #addChangeIdentifier(ChangeIdentifier)}.
+     * 
+     * @param newChangeIdentifier the {@link ChangeIdentifier} to add to the {@link #changeIdentifiers}; should never be
+     *        <code>null</code>
+     */
+    private void addChangeIdentifierUnchecked(ChangeIdentifier newChangeIdentifier) {
+        String changeIdentifierName = newChangeIdentifier.getName();
         List<ChangeIdentifier> availableChangeIdentifiers = changeIdentifiers.remove(changeIdentifierName);
         if (availableChangeIdentifiers == null) {
             availableChangeIdentifiers = new ArrayList<ChangeIdentifier>();
         }
-        if (!containsDuplicate(availableChangeIdentifiers, newChangeIdentifier)
-                && !containsDuplicate(invalidChangeIdentifiers, newChangeIdentifier)) {
-            if (isValid(newChangeIdentifier)) {                
-                availableChangeIdentifiers.add(newChangeIdentifier);            
-                languageElementCounter++;
-            } else {
-                invalidChangeIdentifiers.add(newChangeIdentifier);
-            }
-            changeIdentifierAdded = true;
-        }
+        availableChangeIdentifiers.add(newChangeIdentifier);            
         changeIdentifiers.put(changeIdentifierName, availableChangeIdentifiers);
-        return changeIdentifierAdded;
+        languageElementCounter++;
     }
     
     /**
@@ -318,30 +353,30 @@ public abstract class AbstractLanguageRegistry {
      * equals the given {@link ChangeIdentifier}.
      * 
      * @param changeIdentifierList the {@link List} of {@link ChangeIdentifier}s in which will be searched for a
-     *        duplicate of the given {@link ChangeIdentifier}; should never be <code>null</code>, but may be
-     *        <i>empty</i>
-     * @param changeIdentifier the {@link ChangeIdentifier} for which a duplicate should be found in the given list;
-     *        should never be <code>null</code>
+     *        {@link ChangeIdentifier}, which is equal to the given {@link ChangeIdentifier}; should never be
+     *        <code>null</code>, but may be <i>empty</i>
+     * @param changeIdentifier the {@link ChangeIdentifier} for which an equal {@link ChangeIdentifier} should be found
+     *        in the given list; should never be <code>null</code>
      * @return <code>true</code>, if the given list of {@link ChangeIdentifier}s contains a {@link ChangeIdentifier}
      *         that equals the given {@link ChangeIdentifier}; <code>false</code> otherwise
+     * @see ChangeIdentifier#equals(LanguageElement)
      */
     private boolean containsDuplicate(List<ChangeIdentifier> changeIdentifierList, ChangeIdentifier changeIdentifier) {
         boolean duplicateFound = false;
-        if (!changeIdentifierList.isEmpty()) {
-            int changeIdentifierCounter = 0;
-            while (!duplicateFound && changeIdentifierCounter < changeIdentifierList.size()) {
-                duplicateFound = changeIdentifier.equals(changeIdentifierList.get(changeIdentifierCounter));
-                changeIdentifierCounter++;
-            }
+        int changeIdentifierCounter = 0;
+        while (!duplicateFound && changeIdentifierCounter < changeIdentifierList.size()) {
+            duplicateFound = changeIdentifier.equals(changeIdentifierList.get(changeIdentifierCounter));
+            changeIdentifierCounter++;
         }
         return duplicateFound;
     }
     
     /**
-     * Adds the given {@link Call} to the given {@link HashMap}, if that map does not already contain such a call and
-     * the call is valid. In case of an invalid call, it is added to the {@link #invalidCalls} for re-validation, if new
-     * {@link ParameterType}s are added. The caller of this method must ensure that the {@link ElementType} of the given
-     * {@link Call} and the particular {@link HashMap} match like follows:
+     * Adds the given {@link Call} to the given {@link HashMap} by calling {@link #addCallUnchecked(Call, HashMap)},
+     * if the map does not already contain such a call and that call is valid. In case of an invalid call, it is added
+     * to the {@link #cachedCalls} for re-validation, if new {@link ParameterType}s are added. The caller of this 
+     * method must ensure that the {@link ElementType} of the given {@link Call} and the particular {@link HashMap}
+     * match as follows:
      * <ul>
      * <li>{@link ElementType#OPERATION} requires {@link #operations}</li>
      * <li>{@link ElementType#EXTRACTOR_CALL} requires {@link #extractorCalls}</li>
@@ -351,10 +386,10 @@ public abstract class AbstractLanguageRegistry {
      * 
      * @param newCall the {@link Call} to add to the given {@link HashMap}; should never be <code>null</code>
      * @param callMap the {@link HashMap} to which the given {@link Call} should be added; should never be
-     *        <code>null</code>
+     *        <code>null</code>, but may be <i>empty</i>
      * @return <code>true</code>, if the given {@link Call} was added to the given {@link HashMap} or cached as part of
-     *         the {@link #invalidCalls}; <code>false</code> otherwise, e.g., if a duplicate of the given element is
-     *         already available (currently)
+     *         the {@link #cachedCalls}; <code>false</code> otherwise, e.g., if a duplicate of the given element is
+     *         already available
      * @see #isDuplicate(Call)
      * @see #isValid(Call)
      */
@@ -362,16 +397,9 @@ public abstract class AbstractLanguageRegistry {
         boolean callAdded = false;
         if (!isDuplicate(newCall)) {
             if (isValid(newCall)) {                
-                String callName = newCall.getName();
-                List<Call> availableCalls = callMap.remove(callName);
-                if (availableCalls == null) {
-                    availableCalls = new ArrayList<Call>();
-                }
-                availableCalls.add(newCall);            
-                languageElementCounter++;
-                callMap.put(callName, availableCalls);
+                addCallUnchecked(newCall, callMap);
             } else {
-                invalidCalls.add(newCall);
+                cachedCalls.add(newCall);
             }
             callAdded = true;
         }
@@ -379,8 +407,27 @@ public abstract class AbstractLanguageRegistry {
     }
     
     /**
+     * Adds the given {@link Call} to the given {@link HashMap} without any further checks. If checks are required, use
+     * {@link #addCall(Call, HashMap)}.
+     * 
+     * @param newCall the {@link Call} to add to the given {@link HashMap}; should never be <code>null</code>
+     * @param callMap the {@link HashMap} to which the given {@link Call} should be added; should never be
+     *        <code>null</code>
+     */
+    private void addCallUnchecked(Call newCall, HashMap<String, List<Call>> callMap) {
+        String callName = newCall.getName();
+        List<Call> availableCalls = callMap.remove(callName);
+        if (availableCalls == null) {
+            availableCalls = new ArrayList<Call>();
+        }
+        availableCalls.add(newCall);            
+        callMap.put(callName, availableCalls);        
+        languageElementCounter++;
+    }
+    
+    /**
      * Checks whether the given {@link Call} is a duplicate of another {@link Call} in the {@link #operations}, the
-     * {@link #extractorCalls}, the {@link #analysisCalls}, or the {@link #invalidCalls}.
+     * {@link #extractorCalls}, the {@link #analysisCalls}, or the {@link #cachedCalls}.
      *  
      * @param call the {@link Call} for which a duplicate should be found; should never be <code>null</code>
      * @return <code>true</code>, if the given {@link Call} is a duplicate of one of the available calls in this
@@ -393,7 +440,7 @@ public abstract class AbstractLanguageRegistry {
         if (containsDuplicate(operations, call) 
                 || containsDuplicate(extractorCalls, call) 
                 || containsDuplicate(analysisCalls, call)
-                || containsDuplicate(invalidCalls, call)) {
+                || containsDuplicate(cachedCalls, call)) {
             isDuplicate = true;
         }
         return isDuplicate;
@@ -505,63 +552,54 @@ public abstract class AbstractLanguageRegistry {
     }
     
     /**
-     * Validates each {@link ChangeIdentifier} of the current {@link #invalidChangeIdentifiers}. If a change identifier
-     * is now valid, it is removed from the {@link #invalidChangeIdentifiers} and added to the
-     * {@link #changeIdentifiers}.
+     * Re-validates each element in the {@link #cachedChangeIdentifiers} and the {@link #cachedCalls}. If an element is
+     * now valid, it is added to its target {@link HashMap} and removed from the respective cache.
+     * 
+     * @see #isValid(ChangeIdentifier)
+     * @see #addChangeIdentifierUnchecked(ChangeIdentifier)
+     * @see #isValid(Call)
+     * @see #addCall(Call, HashMap)
      */
-    private void reValidateChangeIdentifiers() {
-        Vector<Integer> removableElementIndeces = new Vector<Integer>();
-        ChangeIdentifier invalidChangeIdentifier;
-        for (int i = 0; i < invalidChangeIdentifiers.size(); i++) {
-            invalidChangeIdentifier = invalidChangeIdentifiers.get(i);
-            if (isValid(invalidChangeIdentifier)) {
-                /*
-                 * As the current change identifier is valid, we can safely call the method for adding it to this
-                 * registry. That method will not modify the invalid change identifier list due to the validity of the
-                 * current change identifier.
-                 */
-                addChangeIdentifier(invalidChangeIdentifier);
-                removableElementIndeces.add(i);
+    private void revalidateCachedLanguageElements() {
+        /*
+         * Note: duplicates are filtered out during addition, which also considers the cached elements. Hence, there is
+         * no need for such a check here (again) as no duplicates of cached elements exist in this registry.
+         */
+        
+        // Re-validate cached change identifiers
+        Iterator<ChangeIdentifier> cachedChangeIdentifiersIterator = cachedChangeIdentifiers.iterator();
+        ChangeIdentifier cachedChangeIdentifier;
+        while (cachedChangeIdentifiersIterator.hasNext()) {
+            cachedChangeIdentifier = cachedChangeIdentifiersIterator.next();
+            if (isValid(cachedChangeIdentifier)) {
+                addChangeIdentifierUnchecked(cachedChangeIdentifier);
+                cachedChangeIdentifiersIterator.remove();
             }
         }
-        for (Integer removableElementIndex : removableElementIndeces) {
-            invalidChangeIdentifiers.remove(removableElementIndex.intValue());
-        }
-    }
-    
-    /**
-     * Validates each {@link Call} of the current {@link #invalidCalls}. If a call is now valid, it is removed from the
-     * {@link #invalidCalls} and added to either the {@link #operations}, the {@link #extractorCalls}, or the 
-     * {@link #analysisCalls} depending on its {@link ElementType}.
-     */
-    private void reValidateCalls() {
-        Vector<Integer> removableElementIndeces = new Vector<Integer>();
-        Call invalidCall;
-        for (int i = 0; i < invalidCalls.size(); i++) {
-            invalidCall = invalidCalls.get(i);
-            if (isValid(invalidCall)) {
-                /*
-                 * As the current call is valid, we can safely call the method for adding it to this registry. That
-                 * method will not modify the invalid call list due to the validity of the current call.
-                 */
-                switch(invalidCall.getElementType()) {
+        // Re-validate cached calls
+        Iterator<Call> cachedCallsIterator = cachedCalls.iterator();
+        Call cachedCall;
+        HashMap<String, List<Call>> callMap;
+        while (cachedCallsIterator.hasNext()) {
+            cachedCall = cachedCallsIterator.next();
+            if (isValid(cachedCall)) {
+                switch(cachedCall.getElementType()) {
                 case OPERATION:
-                    addCall(invalidCall, operations);
+                    callMap = operations;
                     break;
                 case EXTRACTOR_CALL:
-                    addCall(invalidCall, extractorCalls);
+                    callMap = extractorCalls;
                     break;
                 case ANALYSIS_CALL:
-                    addCall(invalidCall, analysisCalls);
+                    callMap = analysisCalls;
                     break;
                 default:
                     // Should never be reached
+                    callMap = new HashMap<String, List<Call>>();
+                    break;
                 }
-                removableElementIndeces.add(i);
+                addCall(cachedCall, callMap);
             }
-        }
-        for (Integer removableElementIndex : removableElementIndeces) {
-            invalidCalls.remove(removableElementIndex.intValue());
         }
     }
     
