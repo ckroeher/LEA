@@ -48,6 +48,40 @@ public class LanguageRegistry extends AbstractLanguageRegistry {
     }
     
     /**
+     * Checks whether at least one {@link ChangeIdentifier} with the given name is available.
+     *  
+     * @param name the name of the {@link ChangeIdentifier} to search for
+     * @return <code>true</code>, if at least one {@link ChangeIdentifier} with the given name is available;
+     *         <code>false</code> otherwise
+     */
+    public boolean hasChangeIdentifier(String name) {
+        return changeIdentifiers.containsKey(name);
+    }
+    
+    /**
+     * Checks whether a {@link ChangeIdentifier} is available, which has the given name and is assignable to the given
+     * elements.
+     * 
+     * @param name the name of the {@link ChangeIdentifier} to search for
+     * @param assignableElements the array of elements to which the {@link ChangeIdentifier} should be assignable to
+     * @return <code>true</code>, if a {@link ChangeIdentifier} is available, which has the given name and is assignable
+     *         to the given elements; <code>false</code> otherwise
+     */
+    public boolean hasChangeIdentifier(String name, String[] assignableElements) {
+        boolean hasChangeIdentifer = false;
+        List<ChangeIdentifier> availableChangeIdentifiers = changeIdentifiers.get(name);
+        if (availableChangeIdentifiers != null) {
+            int availableChangeIdentifierCounter = 0;
+            while (!hasChangeIdentifer && availableChangeIdentifierCounter < availableChangeIdentifiers.size()) {
+                hasChangeIdentifer = availableChangeIdentifiers.get(availableChangeIdentifierCounter)
+                        .assignableTo(assignableElements);
+                availableChangeIdentifierCounter++;
+            }
+        }
+        return hasChangeIdentifer;
+    }
+    
+    /**
      * Returns the {@link LanguageElement}, which has the given name. If multiple elements with the same name exist,
      * like equally named operations with different return or parameter types, the first match will be returned.
      * 

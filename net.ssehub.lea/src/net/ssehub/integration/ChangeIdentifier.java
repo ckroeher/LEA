@@ -99,4 +99,33 @@ public class ChangeIdentifier extends LanguageElement {
         }
         return isEqual;
     }
+    
+    /**
+     * Compares the given elements with {@link #assignableElements} of this {@link ChangeIdentifier} independent of
+     * their order in the array for equality. This is the case, if for each given element an equal element in
+     * {@link #assignableElements} exists. 
+     *   
+     * @param elements the elements to compare to the {@link #assignableElements} of this {@link ChangeIdentifier}
+     * @return <code>true</code>, if for each given element an equal element in {@link #assignableElements} exists;
+     *         <code>false</code> otherwise
+     */
+    public boolean assignableTo(String[] elements) {
+        boolean isAssignableTo = true;
+        int elementsCounter = 0;
+        String element;
+        int assignableElementsCounter;
+        boolean equalAssignableElementFound;
+        while (isAssignableTo && elementsCounter < elements.length) {
+            element = elements[elementsCounter];
+            assignableElementsCounter = 0;
+            equalAssignableElementFound = false;
+            while (!equalAssignableElementFound && assignableElementsCounter < assignableElements.length) {
+                equalAssignableElementFound = element.equals(assignableElements[assignableElementsCounter]);
+                assignableElementsCounter++;
+            }
+            isAssignableTo = equalAssignableElementFound;
+            elementsCounter++;
+        }
+        return isAssignableTo;
+    }
 }
