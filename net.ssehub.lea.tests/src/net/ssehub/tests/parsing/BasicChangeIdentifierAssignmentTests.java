@@ -70,7 +70,7 @@ public class BasicChangeIdentifierAssignmentTests extends AbstractParserTest {
     private String[] expectedAssignedElement;
 
     /**
-     * Creates a new {@link BasicAnalysisDefinitionTests} instance.
+     * Creates a new {@link BasicChangeIdentifierAssignmentTests} instance.
      * 
      * @param relativeTestModelFilePath the path and name of the desired test data file relative to the
      *        {@link #TESTDATA_DIRECTORY}; should never be <code>null</code>
