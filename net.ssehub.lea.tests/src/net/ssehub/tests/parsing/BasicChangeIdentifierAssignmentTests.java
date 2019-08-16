@@ -15,20 +15,15 @@
 package net.ssehub.tests.parsing;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
-import org.eclipse.emf.common.util.EList;
-import org.eclipse.xtext.testing.InjectWith;
-import org.eclipse.xtext.testing.XtextRunner;
-import org.eclipse.xtext.testing.util.ParseHelper;
+import java.util.Arrays;
+import java.util.List;
+
 import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import com.google.inject.Inject;
+import org.junit.runners.Parameterized.Parameters;
 
 import net.ssehub.lea.AnalysisDefinition;
 import net.ssehub.lea.ChangeIdentifierAssignment;
-import net.ssehub.tests.LeaInjectorProvider;
 
 /**
  * This class contains basic tests for parsing {@link ChangeIdentifierAssignment}s.
@@ -36,71 +31,115 @@ import net.ssehub.tests.LeaInjectorProvider;
  * @author Christian Kroeher
  *
  */
-@RunWith(XtextRunner.class)
-@InjectWith(LeaInjectorProvider.class)
-public class BasicChangeIdentifierAssignmentTests extends AbstractTest {
+public class BasicChangeIdentifierAssignmentTests extends AbstractParserTest {
+    
+    /**
+     * The expected results for each test data file. Each entry has the following elements:
+     * <ul>
+     * <li>The path and name of the desired test data file relative to the {@link #TESTDATA_DIRECTORY}</li>
+     * <li>The definition of whether it is expected that the actual analysis definition is valid (<code>true</code>) or
+     *     not (<code>false</code>)</li>
+     * <li>The expected number of element declarations in {@link AnalysisDefinition#getElementDeclarations()}</li>
+     * <li>The expected number of change identifier assignments in 
+     *     {@link AnalysisDefinition#getChangeIdentifierAssignments()}</li>
+     * <li>The expected name of the change identifier</li>
+     * <li>The expected number of elements to which the changed identifier is assigned to</li>
+     * <li>The expected elements (names) to which the changed identifier is assigned to</li>
+     * </ul>
+     */
+    private static final Object[][] EXPECTED_RESULTS = new Object[][] {
+        {"basic/ChangeIdentifierAssignmentToSingleElement.lea", true, 1, 1, "FileChangeIdentifier", 1, 
+            new String[] {"codeFiles"}},
+        {"basic/ChangeIdentifierAssignmentToMultipleElements.lea", true, 3, 1, "FileChangeIdentifier", 3, 
+            new String[] {"codeFiles", "buildFiles", "vmFiles"}}
+    };
+    
+    /**
+     * The expected name of the change identifier.
+     */
+    private String expectedChangeIdentifierName;
+    
+    /**
+     * The expected number of elements to which the changed identifier is assigned to.
+     */
+    private int expectedNumberOfAssignedElements;
+    
+    /**
+     * The expected elements (names) to which the changed identifier is assigned to.
+     */
+    private String[] expectedAssignedElement;
 
     /**
-     * This {@link ParseHelper} enables parsing of {@link AnalysisDefinition}s passed as a single string.
+     * Creates a new {@link BasicAnalysisDefinitionTests} instance.
+     * 
+     * @param relativeTestModelFilePath the path and name of the desired test data file relative to the
+     *        {@link #TESTDATA_DIRECTORY}; should never be <code>null</code>
+     * @param expectedAnalysisDefinitionIsValid the definition of whether it is expected that the actual analysis
+     *        definition is valid (<code>true</code>) or not (<code>false</code>)
+     * @param expectedNumberOfElementDeclarations the expected number of element declarations in 
+     *        {@link AnalysisDefinition#getElementDeclarations()}
+     * @param expectedNumberOfChangeIdentifierAssignments the expected number of change identifier assignments in 
+     *        {@link AnalysisDefinition#getChangeIdentifierAssignments()}
+     * @param expectedChangeIdentifierName the expected name of the change identifier
+     * @param expectedNumberOfAssignedElements the expected number of elements to which the changed identifier is
+     *        assigned to
+     * @param expectedAssignedElements the expected elements (names) to which the changed identifier is assigned to
      */
-    @Inject
-    private ParseHelper<AnalysisDefinition> parseHelper;
 //CHECKSTYLE:OFF
+    public BasicChangeIdentifierAssignmentTests(String relativeTestModelFilePath,
+            boolean expectedAnalysisDefinitionIsValid, int expectedNumberOfElementDeclarations,
+            int expectedNumberOfChangeIdentifierAssignments, String expectedChangeIdentifierName, 
+            int expectedNumberOfAssignedElements, String[] expectedAssignedElements) {
+        super(relativeTestModelFilePath, expectedAnalysisDefinitionIsValid, expectedNumberOfElementDeclarations,
+                expectedNumberOfChangeIdentifierAssignments);
+        this.expectedChangeIdentifierName = expectedChangeIdentifierName;
+        this.expectedNumberOfAssignedElements = expectedNumberOfAssignedElements;
+        this.expectedAssignedElement = expectedAssignedElements;
+    }
+//CHECKSTYLE:ON    
     /**
-     * Tests the correct parsing of a single change identifier assignment to a single element.
+     * Returns the expected results as parameters for the tests defined in this class and the super-class.
      * 
-     * @throws Exception if the test data file could not be retrieved or the parser failed
+     * @return the {@link #EXPECTED_RESULTS} as an object-array list
      */
-    @Test
-    public void testChangeIdentifierAssignmentToSingleElement() throws Exception {
-        String model = getModelString(TestType.BASIC, "ChangeIdentifierAssignmentToSingleElement");
-        AnalysisDefinition analysis = parseHelper.parse(model);
-        
-        assertSyntacticalCorrectness(analysis);
-        
-        EList<ChangeIdentifierAssignment> changeIdentifierAssignments = analysis.getChangeIdentifierAssignments();
-        assertEquals(1, changeIdentifierAssignments.size(),
-                "There should only be one change identifier assignment in the test file");
-        String problemDescription = testCorrectChangeIdenitierAssignment(changeIdentifierAssignments.get(0), 1);
-        assertNull(problemDescription, problemDescription);
+    @Parameters
+    public static List<Object[]> getTestData() {
+        return Arrays.asList(EXPECTED_RESULTS);
     }
     
     /**
-     * Tests the correct parsing of a single change identifier assignment to a multiple elements.
-     * 
-     * @throws Exception if the test data file could not be retrieved or the parser failed
+     * Tests whether the change identifier name equals the {@link #expectedChangeIdentifierName}.
      */
     @Test
-    public void testChangeIdentifierAssignmentToMultipleElements() throws Exception {
-        String model = getModelString(TestType.BASIC, "ChangeIdentifierAssignmentToMultipleElements");
-        AnalysisDefinition analysis = parseHelper.parse(model);
-        
-        assertSyntacticalCorrectness(analysis);
-        
-        EList<ChangeIdentifierAssignment> changeIdentifierAssignments = analysis.getChangeIdentifierAssignments();
-        assertEquals(1, changeIdentifierAssignments.size(),
-                "There should only be one change identifier assignment in the test file");
-        String problemDescription = testCorrectChangeIdenitierAssignment(changeIdentifierAssignments.get(0), 3);
-        assertNull(problemDescription, problemDescription);
+    public void testCorrectChangeIdentifierName() {
+        ChangeIdentifierAssignment assignment = getActualAnalysisDefinition().getChangeIdentifierAssignments().get(0);
+        assertEquals(expectedChangeIdentifierName, assignment.getIdentifier(), "Unexpected change identifier name");
     }
     
-//    /**
-//     * Tests the correct parsing of an empty file (model).
-//     * 
-//     * @throws Exception if the test data file could not be retrieved or the parser failed
-//     */
-//    @Test
-//    public void testEmptyFile() throws Exception {
-//        String model = getModelString(TestType.BASIC, "EmptyFile");
-//        AnalysisDefinition analysis = parseHelper.parse(model);
-//        
-//        assertSyntacticalCorrectness(analysis);
-//        
-//        assertEquals(0, analysis.getElementDeclarations().size(),
-//                "An empty analysis definition should not contain element declarations");
-//        assertEquals(0, analysis.getChangeIdentifierAssignments().size(),
-//                "An empty analysis definition should not contain change identifier assignments");
-//    }
+    /**
+     * Tests whether the number of elements to which the change identifier is assigned to equals the 
+     * {@link #expectedNumberOfAssignedElements}.
+     */
+    @Test
+    public void testCorrectNumberOfAssignedElements() {
+        ChangeIdentifierAssignment assignment = getActualAnalysisDefinition().getChangeIdentifierAssignments().get(0);
+        assertEquals(expectedNumberOfAssignedElements, assignment.getElements().size(), 
+                "Unexpected number of elements to which the change identifier is assigned to");
+    }
     
-//CHECKSTYLE:ON
+    /**
+     * Tests whether the elements to which the change identifier is assigned to equal the
+     * {@link #expectedAssignedElement}.
+     */
+    @Test
+    public void testCorrectAssignedElements() {
+        ChangeIdentifierAssignment assignment = getActualAnalysisDefinition().getChangeIdentifierAssignments().get(0);
+        List<String> assignedElements = assignment.getElements();
+        for (int i = 0; i < assignedElements.size(); i++) {
+            assertEquals(expectedAssignedElement[i], assignedElements.get(i), 
+                    "Unexpected element \"" +  assignedElements.get(i) 
+                    + "\" to which the change identifier is assigned to");
+        }
+    }
+
 }

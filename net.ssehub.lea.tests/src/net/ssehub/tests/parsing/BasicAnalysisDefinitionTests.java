@@ -14,18 +14,12 @@
  */
 package net.ssehub.tests.parsing;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import java.util.Arrays;
+import java.util.List;
 
-import org.eclipse.xtext.testing.InjectWith;
-import org.eclipse.xtext.testing.XtextRunner;
-import org.eclipse.xtext.testing.util.ParseHelper;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import com.google.inject.Inject;
+import org.junit.runners.Parameterized.Parameters;
 
 import net.ssehub.lea.AnalysisDefinition;
-import net.ssehub.tests.LeaInjectorProvider;
 
 /**
  * This class contains basic tests for parsing {@link AnalysisDefinition}s.
@@ -33,32 +27,49 @@ import net.ssehub.tests.LeaInjectorProvider;
  * @author Christian Kroeher
  *
  */
-@RunWith(XtextRunner.class)
-@InjectWith(LeaInjectorProvider.class)
-public class BasicAnalysisDefinitionTests extends AbstractTest {
+public class BasicAnalysisDefinitionTests extends AbstractParserTest {
+    
+    /**
+     * The expected results for each test data file. Each entry has the following elements:
+     * <ul>
+     * <li>The path and name of the desired test data file relative to the {@link #TESTDATA_DIRECTORY}</li>
+     * <li>The definition of whether it is expected that the actual analysis definition is valid (<code>true</code>) or
+     *     not (<code>false</code>)</li>
+     * <li>The expected number of element declarations in {@link AnalysisDefinition#getElementDeclarations()}</li>
+     * <li>The expected number of change identifier assignments in 
+     *     {@link AnalysisDefinition#getChangeIdentifierAssignments()}</li>
+     * </ul>
+     */
+    private static final Object[][] EXPECTED_RESULTS = new Object[][] {
+        {"basic/EmptyFile.lea", true, 0, 0},
+        {"basic/InvalidModel.lea", false, 0, 0}
+    };
 
     /**
-     * This {@link ParseHelper} enables parsing of {@link AnalysisDefinition}s passed as a single string.
-     */
-    @Inject
-    private ParseHelper<AnalysisDefinition> parseHelper;
-//CHECKSTYLE:OFF
-    /**
-     * Tests the correct parsing of an empty file (model).
+     * Creates a new {@link BasicAnalysisDefinitionTests} instance.
      * 
-     * @throws Exception if the test data file could not be retrieved or the parser failed
+     * @param relativeTestModelFilePath the path and name of the desired test data file relative to the
+     *        {@link #TESTDATA_DIRECTORY}; should never be <code>null</code>
+     * @param expectedAnalysisDefinitionIsValid the definition of whether it is expected that the actual analysis
+     *        definition is valid (<code>true</code>) or not (<code>false</code>)
+     * @param expectedNumberOfElementDeclarations the expected number of element declarations in 
+     *        {@link AnalysisDefinition#getElementDeclarations()}
+     * @param expectedNumberOfChangeIdentifierAssignments the expected number of change identifier assignments in 
+     *        {@link AnalysisDefinition#getChangeIdentifierAssignments()}
      */
-    @Test
-    public void testEmptyFile() throws Exception {
-        String model = getModelString(TestType.BASIC, "EmptyFile");
-        AnalysisDefinition analysis = parseHelper.parse(model);
-        
-        assertSyntacticalCorrectness(analysis);
-        
-        assertEquals(0, analysis.getElementDeclarations().size(),
-                "An empty analysis definition should not contain element declarations");
-        assertEquals(0, analysis.getChangeIdentifierAssignments().size(),
-                "An empty analysis definition should not contain change identifier assignments");
+    public BasicAnalysisDefinitionTests(String relativeTestModelFilePath, boolean expectedAnalysisDefinitionIsValid,
+            int expectedNumberOfElementDeclarations, int expectedNumberOfChangeIdentifierAssignments) {
+        super(relativeTestModelFilePath, expectedAnalysisDefinitionIsValid, expectedNumberOfElementDeclarations,
+                expectedNumberOfChangeIdentifierAssignments);
     }
-//CHECKSTYLE:ON
+
+    /**
+     * Returns the expected results as parameters for the tests defined in the super-class.
+     * 
+     * @return the {@link #EXPECTED_RESULTS} as an object-array list
+     */
+    @Parameters
+    public static List<Object[]> getTestData() {
+        return Arrays.asList(EXPECTED_RESULTS);
+    }
 }

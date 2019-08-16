@@ -1,1 +1,2 @@
-assign ChangeIdentifier to element
+Artifact<File>[] codeFiles;
+assign FileChangeIdentifier to codeFiles

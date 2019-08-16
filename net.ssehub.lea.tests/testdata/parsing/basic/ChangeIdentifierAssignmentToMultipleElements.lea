@@ -1,1 +1,4 @@
-assign ChangeIdentifier to element1, element2, element3
+Artifact<File>[] codeFiles;
+Artifact<File>[] buildFiles;
+Artifact<File>[] vmFiles;
+assign FileChangeIdentifier to codeFiles, buildFiles, vmFiles
