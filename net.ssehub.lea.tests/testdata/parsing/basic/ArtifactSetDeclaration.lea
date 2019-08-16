@@ -1,1 +1,1 @@
-Artifact<T>[] name;
+Artifact<File>[] name;

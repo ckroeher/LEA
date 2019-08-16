@@ -1,1 +1,1 @@
-Artifact<T>[element : set] name;
+Artifact<File>[element : set] name;

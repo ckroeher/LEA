@@ -1,1 +1,1 @@
-Fragment<T> name;
+Fragment<CodeBlock> name;

@@ -1,1 +1,1 @@
-Artifact<T> name = otherElement;
+Artifact<File> name = otherElement;

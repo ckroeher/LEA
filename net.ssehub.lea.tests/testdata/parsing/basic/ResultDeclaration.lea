@@ -1,1 +1,1 @@
-Result<T> name;
+Result<DeadBlock> name;

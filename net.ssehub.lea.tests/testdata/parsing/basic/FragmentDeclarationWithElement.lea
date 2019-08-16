@@ -1,1 +1,1 @@
-Fragment<T> name = otherElement;
+Fragment<CodeBlock> name = otherElement;

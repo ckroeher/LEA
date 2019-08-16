@@ -1,1 +1,1 @@
-Result<T>[] name = otherSetElement;
+Result<DeadBlock>[] name = otherSetElement;

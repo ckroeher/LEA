@@ -1,1 +1,1 @@
-Result<T> name = call();
+Result<DeadBlock> name = call();

@@ -1,1 +1,1 @@
-Fragment<T>[] name = call();
+Fragment<CodeBlock>[] name = call();

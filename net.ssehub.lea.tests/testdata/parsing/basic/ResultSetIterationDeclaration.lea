@@ -1,1 +1,1 @@
-Result<T>[element : set] name;
+Result<DeadBlock>[element : set] name;

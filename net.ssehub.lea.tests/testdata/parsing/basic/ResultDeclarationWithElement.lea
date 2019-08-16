@@ -1,1 +1,1 @@
-Result<T> name = otherElement;
+Result<DeadBlock> name = otherElement;

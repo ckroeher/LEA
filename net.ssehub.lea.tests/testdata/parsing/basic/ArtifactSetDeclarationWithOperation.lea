@@ -1,1 +1,1 @@
-Artifact<T>[] name = call();
+Artifact<File>[] name = call();
