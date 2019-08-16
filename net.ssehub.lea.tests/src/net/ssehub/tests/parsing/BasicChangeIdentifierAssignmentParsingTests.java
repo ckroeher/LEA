@@ -31,7 +31,7 @@ import net.ssehub.lea.ChangeIdentifierAssignment;
  * @author Christian Kroeher
  *
  */
-public class BasicChangeIdentifierAssignmentTests extends AbstractParserTest {
+public class BasicChangeIdentifierAssignmentParsingTests extends AbstractParserTest {
     
     /**
      * The expected results for each test data file. Each entry has the following elements:
@@ -70,7 +70,7 @@ public class BasicChangeIdentifierAssignmentTests extends AbstractParserTest {
     private String[] expectedAssignedElement;
 
     /**
-     * Creates a new {@link BasicChangeIdentifierAssignmentTests} instance.
+     * Creates a new {@link BasicChangeIdentifierAssignmentParsingTests} instance.
      * 
      * @param relativeTestModelFilePath the path and name of the desired test data file relative to the
      *        {@link #TESTDATA_DIRECTORY}; should never be <code>null</code>
@@ -86,7 +86,7 @@ public class BasicChangeIdentifierAssignmentTests extends AbstractParserTest {
      * @param expectedAssignedElements the expected elements (names) to which the changed identifier is assigned to
      */
 //CHECKSTYLE:OFF
-    public BasicChangeIdentifierAssignmentTests(String relativeTestModelFilePath,
+    public BasicChangeIdentifierAssignmentParsingTests(String relativeTestModelFilePath,
             boolean expectedAnalysisDefinitionIsValid, int expectedNumberOfElementDeclarations,
             int expectedNumberOfChangeIdentifierAssignments, String expectedChangeIdentifierName, 
             int expectedNumberOfAssignedElements, String[] expectedAssignedElements) {

@@ -27,7 +27,7 @@ import net.ssehub.lea.AnalysisDefinition;
  * @author Christian Kroeher
  *
  */
-public class BasicAnalysisDefinitionTests extends AbstractParserTest {
+public class BasicAnalysisDefinitionParsingTests extends AbstractParserTest {
     
     /**
      * The expected results for each test data file. Each entry has the following elements:
@@ -46,7 +46,7 @@ public class BasicAnalysisDefinitionTests extends AbstractParserTest {
     };
 
     /**
-     * Creates a new {@link BasicAnalysisDefinitionTests} instance.
+     * Creates a new {@link BasicAnalysisDefinitionParsingTests} instance.
      * 
      * @param relativeTestModelFilePath the path and name of the desired test data file relative to the
      *        {@link #TESTDATA_DIRECTORY}; should never be <code>null</code>
@@ -57,7 +57,7 @@ public class BasicAnalysisDefinitionTests extends AbstractParserTest {
      * @param expectedNumberOfChangeIdentifierAssignments the expected number of change identifier assignments in 
      *        {@link AnalysisDefinition#getChangeIdentifierAssignments()}
      */
-    public BasicAnalysisDefinitionTests(String relativeTestModelFilePath, boolean expectedAnalysisDefinitionIsValid,
+    public BasicAnalysisDefinitionParsingTests(String relativeTestModelFilePath, boolean expectedAnalysisDefinitionIsValid,
             int expectedNumberOfElementDeclarations, int expectedNumberOfChangeIdentifierAssignments) {
         super(relativeTestModelFilePath, expectedAnalysisDefinitionIsValid, expectedNumberOfElementDeclarations,
                 expectedNumberOfChangeIdentifierAssignments);

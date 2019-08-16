@@ -32,8 +32,8 @@ import net.ssehub.tests.integration.LanguageRegistryDuplicateDetectionTests;
 import net.ssehub.tests.integration.LanguageRegistryValidationTests;
 import net.ssehub.tests.integration.OperationCreationTests;
 import net.ssehub.tests.integration.ResultParameterTypeCreationTests;
-import net.ssehub.tests.parsing.BasicAnalysisDefinitionTests;
-import net.ssehub.tests.parsing.BasicChangeIdentifierAssignmentTests;
+import net.ssehub.tests.parsing.BasicAnalysisDefinitionParsingTests;
+import net.ssehub.tests.parsing.BasicChangeIdentifierAssignmentParsingTests;
 import net.ssehub.tests.parsing.BasicElementDeclarationParsingTests;
 
 /**
@@ -45,9 +45,9 @@ import net.ssehub.tests.parsing.BasicElementDeclarationParsingTests;
 @RunWith(Suite.class)
 @SuiteClasses({
     // Parsing tests
-    BasicAnalysisDefinitionTests.class,
+    BasicAnalysisDefinitionParsingTests.class,
     BasicElementDeclarationParsingTests.class,
-    BasicChangeIdentifierAssignmentTests.class,
+    BasicChangeIdentifierAssignmentParsingTests.class,
     // Integration tests
     BasicLanguageElementCreatorTests.class,
     ArtifactParameterTypeCreationTests.class,
