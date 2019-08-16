@@ -57,8 +57,9 @@ public class BasicAnalysisDefinitionParsingTests extends AbstractParserTest {
      * @param expectedNumberOfChangeIdentifierAssignments the expected number of change identifier assignments in 
      *        {@link AnalysisDefinition#getChangeIdentifierAssignments()}
      */
-    public BasicAnalysisDefinitionParsingTests(String relativeTestModelFilePath, boolean expectedAnalysisDefinitionIsValid,
-            int expectedNumberOfElementDeclarations, int expectedNumberOfChangeIdentifierAssignments) {
+    public BasicAnalysisDefinitionParsingTests(String relativeTestModelFilePath, 
+            boolean expectedAnalysisDefinitionIsValid, int expectedNumberOfElementDeclarations,
+            int expectedNumberOfChangeIdentifierAssignments) {
         super(relativeTestModelFilePath, expectedAnalysisDefinitionIsValid, expectedNumberOfElementDeclarations,
                 expectedNumberOfChangeIdentifierAssignments);
     }
