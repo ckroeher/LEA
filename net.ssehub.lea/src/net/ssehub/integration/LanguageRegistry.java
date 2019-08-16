@@ -82,6 +82,48 @@ public class LanguageRegistry extends AbstractLanguageRegistry {
     }
     
     /**
+     * Checks whether at least one {@link ParameterType} of the type {@link ElementType#ARTIFACT_PARAMETER_TYPE} with
+     * the given name is available.
+     *  
+     * @param name the name of the {@link ParameterType} of the type {@link ElementType#ARTIFACT_PARAMETER_TYPE} to
+     *        search for
+     * @return <code>true</code>, if at least one {@link ParameterType} of the type
+     *         {@link ElementType#ARTIFACT_PARAMETER_TYPE} with the given name is available; <code>false</code>
+     *         otherwise
+     */
+    public boolean hasArtifactParameterType(String name) {
+        return artifactParameterTypes.containsKey(name);
+    }
+    
+    /**
+     * Checks whether at least one {@link ParameterType} of the type {@link ElementType#FRAGMENT_PARAMETER_TYPE} with
+     * the given name is available.
+     *  
+     * @param name the name of the {@link ParameterType} of the type {@link ElementType#FRAGMENT_PARAMETER_TYPE} to
+     *        search for
+     * @return <code>true</code>, if at least one {@link ParameterType} of the type
+     *         {@link ElementType#FRAGMENT_PARAMETER_TYPE} with the given name is available; <code>false</code>
+     *         otherwise
+     */
+    public boolean hasFragmentParameterType(String name) {
+        return fragmentParameterTypes.containsKey(name);
+    }
+    
+    /**
+     * Checks whether at least one {@link ParameterType} of the type {@link ElementType#RESULT_PARAMETER_TYPE} with
+     * the given name is available.
+     *  
+     * @param name the name of the {@link ParameterType} of the type {@link ElementType#RESULT_PARAMETER_TYPE} to
+     *        search for
+     * @return <code>true</code>, if at least one {@link ParameterType} of the type
+     *         {@link ElementType#RESULT_PARAMETER_TYPE} with the given name is available; <code>false</code>
+     *         otherwise
+     */
+    public boolean hasResultParameterType(String name) {
+        return resultParameterTypes.containsKey(name);
+    }
+    
+    /**
      * Returns the {@link LanguageElement}, which has the given name. If multiple elements with the same name exist,
      * like equally named operations with different return or parameter types, the first match will be returned.
      * 

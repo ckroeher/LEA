@@ -57,6 +57,54 @@ public class LeaValidator extends AbstractLeaValidator {
             }
         }
     }
+    
+//    /**
+//     * TODO.
+//     * 
+//     * @param analysis the {@link AnalysisDefinition} in which all {@link ElementDeclaration}s will be validated
+//     */
+//    @Check
+//    public void checkValidElementDeclarations(AnalysisDefinition analysis) {
+//        EList<ElementDeclaration> elementDeclarations = analysis.getElementDeclarations();
+//        for (ElementDeclaration elementDeclaration : elementDeclarations) {
+//            
+//        }
+//    }
+    
+    /**
+     * TODO.
+     * 
+     * @param declaration the {@link ElementDeclaration} to validate
+     */
+    @Check
+    public void checkValidElementDeclaration(ElementDeclaration declaration) {
+        String elementGenericType = declaration.getGenericTyp();
+        String elementParameterType = declaration.getParameterType();
+        switch(elementGenericType) {
+        case "Artifact":
+            if (!LanguageRegistry.INSTANCE.hasArtifactParameterType(elementParameterType)) {
+                error("Unknown parameter type \"" + elementParameterType + "\"", declaration,
+                        LeaPackage.Literals.ELEMENT_DECLARATION__PARAMETER_TYPE);
+            }
+            break;
+        case "Fragment":
+            if (!LanguageRegistry.INSTANCE.hasFragmentParameterType(elementParameterType)) {
+                error("Unknown parameter type \"" + elementParameterType + "\"", declaration,
+                        LeaPackage.Literals.ELEMENT_DECLARATION__PARAMETER_TYPE);
+            }
+            break;
+        case "Result":
+            if (!LanguageRegistry.INSTANCE.hasResultParameterType(elementParameterType)) {
+                error("Unknown parameter type \"" + elementParameterType + "\"", declaration,
+                        LeaPackage.Literals.ELEMENT_DECLARATION__PARAMETER_TYPE);
+            }
+            break;
+        default:
+            error("Unsupported \"" + elementGenericType + "\"", declaration,
+                    LeaPackage.Literals.ELEMENT_DECLARATION__GENERIC_TYP);
+            break;
+        }
+    }
 
     /**
      * Checks each {@link ChangeIdentifierAssignment} in the given {@link AnalysisDefinition} for being valid. This is
