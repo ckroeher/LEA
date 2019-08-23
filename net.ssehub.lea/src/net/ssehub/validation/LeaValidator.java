@@ -266,7 +266,7 @@ public class LeaValidator extends AbstractLeaValidator {
      * <ul>
      * <li>The {@link ElementDeclaration#getGenericTyp()}s are equal</li>
      * <li>The {@link ElementDeclaration#getParameterType()}s are equal and</li>
-     * <li>The {@link ElementDeclaration#getSet()}s are equal</li>
+     * <li>The {@link ElementDeclaration#getSet()} definitions are equal</li>
      * </ul>
      * 
      * @param ed1 the first {@link ElementDeclaration} to compare for equal types
@@ -277,7 +277,7 @@ public class LeaValidator extends AbstractLeaValidator {
     private boolean haveEqualTypes(ElementDeclaration ed1, ElementDeclaration ed2) {
         return ed1.getGenericTyp().equals(ed2.getGenericTyp()) 
                 && ed1.getParameterType().equals(ed2.getParameterType())
-                && ed1.getSet() == ed2.getSet();
+                && (ed1.getSet() == null) == (ed2.getSet() == null);
     }
     
     /**
