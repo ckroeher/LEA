@@ -1,1 +1,2 @@
+Artifact<File>[] otherSetElement;
 Artifact<File>[] name = otherSetElement;

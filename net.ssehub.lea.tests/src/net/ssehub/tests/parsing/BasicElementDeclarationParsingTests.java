@@ -19,6 +19,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.util.Arrays;
 import java.util.List;
 
+import org.eclipse.emf.common.util.EList;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runners.Parameterized.Parameters;
 
@@ -52,26 +54,26 @@ public class BasicElementDeclarationParsingTests extends AbstractParserTest {
     private static final Object[][] EXPECTED_RESULTS = new Object[][] {
         // Artifact declarations
         {"basic/ArtifactDeclaration.lea", true, 1, 0, "Artifact", "File", false, "name"},
-        {"basic/ArtifactDeclarationWithElement.lea", true, 1, 0, "Artifact", "File", false, "name"},
+        {"basic/ArtifactDeclarationWithElement.lea", true, 2, 0, "Artifact", "File", false, "name"},
         {"basic/ArtifactDeclarationWithOperation.lea", true, 1, 0, "Artifact", "File", false, "name"},
         {"basic/ArtifactSetDeclaration.lea", true, 1, 0, "Artifact", "File", true, "name"},
-        {"basic/ArtifactSetDeclarationWithElement.lea", true, 1, 0, "Artifact", "File", true, "name"},
+        {"basic/ArtifactSetDeclarationWithElement.lea", true, 2, 0, "Artifact", "File", true, "name"},
         {"basic/ArtifactSetDeclarationWithOperation.lea", true, 1, 0, "Artifact", "File", true, "name"},
         {"basic/ArtifactSetIterationDeclaration.lea", true, 1, 0, "Artifact", "File", true, "name"},
         // Fragment declarations
         {"basic/FragmentDeclaration.lea", true, 1, 0, "Fragment", "CodeBlock", false, "name"},
-        {"basic/FragmentDeclarationWithElement.lea", true, 1, 0, "Fragment", "CodeBlock", false, "name"},
+        {"basic/FragmentDeclarationWithElement.lea", true, 2, 0, "Fragment", "CodeBlock", false, "name"},
         {"basic/FragmentDeclarationWithOperation.lea", true, 1, 0, "Fragment", "CodeBlock", false, "name"},
         {"basic/FragmentSetDeclaration.lea", true, 1, 0, "Fragment", "CodeBlock", true, "name"},
-        {"basic/FragmentSetDeclarationWithElement.lea", true, 1, 0, "Fragment", "CodeBlock", true, "name"},
+        {"basic/FragmentSetDeclarationWithElement.lea", true, 2, 0, "Fragment", "CodeBlock", true, "name"},
         {"basic/FragmentSetDeclarationWithOperation.lea", true, 1, 0, "Fragment", "CodeBlock", true, "name"},
         {"basic/FragmentSetIterationDeclaration.lea", true, 1, 0, "Fragment", "CodeBlock", true, "name"},
         // Result declarations
         {"basic/ResultDeclaration.lea", true, 1, 0, "Result", "DeadBlock", false, "name"},
-        {"basic/ResultDeclarationWithElement.lea", true, 1, 0, "Result", "DeadBlock", false, "name"},
+        {"basic/ResultDeclarationWithElement.lea", true, 2, 0, "Result", "DeadBlock", false, "name"},
         {"basic/ResultDeclarationWithOperation.lea", true, 1, 0, "Result", "DeadBlock", false, "name"},
         {"basic/ResultSetDeclaration.lea", true, 1, 0, "Result", "DeadBlock", true, "name"},
-        {"basic/ResultSetDeclarationWithElement.lea", true, 1, 0, "Result", "DeadBlock", true, "name"},
+        {"basic/ResultSetDeclarationWithElement.lea", true, 2, 0, "Result", "DeadBlock", true, "name"},
         {"basic/ResultSetDeclarationWithOperation.lea", true, 1, 0, "Result", "DeadBlock", true, "name"},
         {"basic/ResultSetIterationDeclaration.lea", true, 1, 0, "Result", "DeadBlock", true, "name"}
     };
@@ -98,6 +100,11 @@ public class BasicElementDeclarationParsingTests extends AbstractParserTest {
     private String expectedName;
     
     // TODO setIteration? initialization=Assignment?
+    
+    /**
+     * The actual {@link ElementDeclaration}. This value is set in {@link #setActualElementDeclaration()}.
+     */
+    private ElementDeclaration actualElementDeclaration;
     
     /**
      * Creates a new {@link BasicElementDeclarationParsingTests} instance.
@@ -140,40 +147,61 @@ public class BasicElementDeclarationParsingTests extends AbstractParserTest {
     }
     
     /**
-     * Tests whether the {@link ElementDeclaration#getGenericTyp()} equals the {@link #expectedGenericType}.
+     * Sets the value of {@link #actualElementDeclaration} based on the current {@link AnalysisDefinition} from
+     * {@link #getActualAnalysisDefinition()}.
+     */
+    @Before
+    public void setActualElementDeclaration() {
+        // As element names must be unique, the element declaration with the expected name is the one to test
+        AnalysisDefinition actualAnalysisDefinition = getActualAnalysisDefinition();
+        if (actualAnalysisDefinition != null) {            
+            EList<ElementDeclaration> actualElementDeclarations = actualAnalysisDefinition.getElementDeclarations();
+            int actualElementDeclarationCounter = 0;
+            while (actualElementDeclaration == null 
+                    && actualElementDeclarationCounter < actualElementDeclarations.size()) {
+                if (actualElementDeclarations.get(actualElementDeclarationCounter).getName().equals(expectedName)) {
+                    actualElementDeclaration = actualElementDeclarations.get(actualElementDeclarationCounter);
+                }
+                actualElementDeclarationCounter++;
+            }
+        } else {
+            System.err.println("BasicElementDeclarationParsingTests failed due to missing actual analysis definition");
+        }
+    }
+    
+    /**
+     * Tests whether the generic type of the {@link #actualElementDeclaration} equals the {@link #expectedGenericType}.
      */
     @Test
     public void testCorrectGenericType() {
-        ElementDeclaration elementDeclaration = getActualAnalysisDefinition().getElementDeclarations().get(0);
-        assertEquals(expectedGenericType, elementDeclaration.getGenericTyp(), "Unexpected generic type");
+        assertEquals(expectedGenericType, actualElementDeclaration.getGenericTyp(), "Unexpected generic type");
     }
     
     /**
-     * Tests whether the {@link ElementDeclaration#getParameterType()} equals the {@link #expectedParameterType}.
+     * Tests whether the parameter type of the {@link #actualElementDeclaration} equals the 
+     * {@link #expectedParameterType}.
      */
     @Test
     public void testCorrectParameterType() {
-        ElementDeclaration elementDeclaration = getActualAnalysisDefinition().getElementDeclarations().get(0);
-        assertEquals(expectedParameterType, elementDeclaration.getParameterType(), "Unexpected parameter type");
+        assertEquals(expectedParameterType, actualElementDeclaration.getParameterType(), "Unexpected parameter type");
     }
     
     /**
-     * Tests whether the {@link ElementDeclaration#getSet()} is available as defined by {@link #expectedSetDefinition}.
+     * Tests whether the set definition of the {@link #actualElementDeclaration} is available as defined by 
+     * {@link #expectedSetDefinition}.
      */
     @Test
     public void testCorrectSetDefinition() {
-        ElementDeclaration elementDeclaration = getActualAnalysisDefinition().getElementDeclarations().get(0);
-        assertEquals(expectedSetDefinition, (elementDeclaration.getSet() != null), 
+        assertEquals(expectedSetDefinition, (actualElementDeclaration.getSet() != null), 
                 "Unexpected (un)availability of set definition");
     }
     
     /**
-     * Tests whether the {@link ElementDeclaration#getName()} equals the {@link #expectedName}.
+     * Tests whether the name of the {@link #actualElementDeclaration} equals the {@link #expectedName}.
      */
     @Test
     public void testCorrectName() {
-        ElementDeclaration elementDeclaration = getActualAnalysisDefinition().getElementDeclarations().get(0);
-        assertEquals(expectedName, elementDeclaration.getName(), "Unexpected name");
+        assertEquals(expectedName, actualElementDeclaration.getName(), "Unexpected name");
     }
 
 }

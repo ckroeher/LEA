@@ -1,1 +1,2 @@
+Artifact<File> otherElement;
 Artifact<File> name = otherElement;

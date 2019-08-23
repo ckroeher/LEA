@@ -1,1 +1,2 @@
+Result<DeadBlock>[] otherSetElement;
 Result<DeadBlock>[] name = otherSetElement;

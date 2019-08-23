@@ -1,1 +1,2 @@
+Result<DeadBlock> otherElement;
 Result<DeadBlock> name = otherElement;

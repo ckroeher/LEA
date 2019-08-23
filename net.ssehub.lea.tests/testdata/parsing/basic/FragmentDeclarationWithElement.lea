@@ -1,1 +1,2 @@
+Fragment<CodeBlock> otherElement;
 Fragment<CodeBlock> name = otherElement;
