@@ -15,6 +15,7 @@
 package net.ssehub.integration;
 
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -121,6 +122,75 @@ public class LanguageRegistry extends AbstractLanguageRegistry {
      */
     public boolean hasResultParameterType(String name) {
         return resultParameterTypes.containsKey(name);
+    }
+    
+    /**
+     * Returns the return type of the {@link Call} identified by the given name and parameter types. This method
+     * searches in {@link AbstractLanguageRegistry#extractorCalls}, {@link AbstractLanguageRegistry#analysisCalls}, and
+     * {@link AbstractLanguageRegistry#operations} in that order and returns the return type of the first matching call.
+     * 
+     * @param name the name of the {@link Call} for which the return type shall be returned; should never be 
+     *        <code>null</code> nor <i>blank</i>
+     * @param parameterTypes the optional array of parameters the {@link Call} should accept in the given order; can be
+     *        <code>null</code> to indicate that the desired {@link Call} does not accept any parameters
+     * @return the return type of the {@link Call} identified by the given name and parameter types or
+     *         <code>null</code>, if no such {@link Call} is available
+     * @see #getCallReturnType(HashMap, String, String[])
+     */
+    public String getCallReturnType(String name, String[] parameterTypes) {
+        String callReturnType = getCallReturnType(extractorCalls, name, parameterTypes);
+        if (callReturnType == null) {
+            callReturnType = getCallReturnType(analysisCalls, name, parameterTypes);
+        }
+        if (callReturnType == null) {
+            callReturnType = getCallReturnType(operations, name, parameterTypes);
+        }
+        return callReturnType;
+    }
+    
+    /**
+     * Searches in the given {@link HashMap} for a {@link Call} with the given name and parameter types and returns its
+     * return type.
+     * 
+     * @param map the {@link HashMap} in which to search for a {@link Call} with the given attributes
+     * @param name the name of the {@link Call} for which the return type shall be returned; should never be 
+     *        <code>null</code> nor <i>blank</i>
+     * @param parameterTypes the optional array of parameters the {@link Call} should accept in the given order; can be
+     *        <code>null</code> to indicate that the desired {@link Call} does not accept any parameters
+     * @return the return type of the {@link Call} identified by the given name and parameter types or
+     *         <code>null</code>, if no such {@link Call} is available in the given map
+     */
+    private String getCallReturnType(HashMap<String, List<Call>> map, String name, String[] parameterTypes) {
+        String callReturnType = null;
+        List<Call> availableCalls = map.get(name);
+        if (availableCalls != null) {
+            // Name already equal, hence, we only need to check for equal parameters
+            int availableCallsCounter = 0;
+            int numberOfParameterTypes = 0;
+            if (parameterTypes != null) {
+                numberOfParameterTypes = parameterTypes.length;
+            }
+            Call availableCall;
+            boolean parametersEqual;
+            int parametersCounter;
+            while (callReturnType == null && availableCallsCounter < availableCalls.size()) {
+                availableCall = availableCalls.get(availableCallsCounter);
+                if (availableCall.getParameters().length == numberOfParameterTypes) {
+                    parametersEqual = true;
+                    parametersCounter = 0;
+                    while (parametersEqual && parametersCounter < parameterTypes.length) {
+                        parametersEqual = parameterTypes[parametersCounter]
+                                .equals(availableCall.getParameters()[parametersCounter]);
+                        parametersCounter++;
+                    }
+                    if (parametersEqual) {
+                        callReturnType = availableCall.getReturnType();
+                    }
+                }
+                availableCallsCounter++;
+            }
+        }
+        return callReturnType;
     }
     
     /**
