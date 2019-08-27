@@ -25,10 +25,12 @@ import net.ssehub.integration.ChangeIdentifier;
 import net.ssehub.integration.LanguageRegistry;
 import net.ssehub.lea.AnalysisDefinition;
 import net.ssehub.lea.Assignment;
+import net.ssehub.lea.Call;
 import net.ssehub.lea.ChangeIdentifierAssignment;
 import net.ssehub.lea.ElementDeclaration;
 import net.ssehub.lea.LeaPackage;
 import net.ssehub.lea.Operation;
+import net.ssehub.lea.Parameter;
 
 /**
  * This class contains custom validation rules.
@@ -64,14 +66,12 @@ public class LeaValidator extends AbstractLeaValidator {
     
     /**
      * Checks the given {@link ElementDeclaration} for being valid. This is the case, if:
-     * <ul> TODO
-     * <li>The name of the change identifier defined as part of the {@link ChangeIdentifierAssignment} identifies an
-     *     available {@link ChangeIdentifier} in the {@link LanguageRegistry}</li>
-     * <li>The elements (names) to which the change identifier is assigned to in the {@link ChangeIdentifierAssignment}
-     *     reference {@link ElementDeclaration}s in the {@link Resource} of the given
-     *     {@link ChangeIdentifierAssignment}</li>
-     * <li>The assignable elements (names) match the supported assignable elements of the identified
-     *     {@link ChangeIdentifier} above</li>
+     * <ul>
+     * <li>The parameter type used for the {@link ElementDeclaration} identifies an available parameter type in the
+     *     {@link LanguageRegistry} for the generic type used for the {@link ElementDeclaration}</li>
+     * <li>The name is defined for the {@link ElementDeclaration}</li>
+     * <li>If that {@link ElementDeclaration} includes an initialization, the assigned element or operation determining
+     *     the initial value has the same type as the one used for the {@link ElementDeclaration}</li>
      * </ul>
      *  
      * @param declaration the {@link ElementDeclaration} to validate
@@ -101,11 +101,10 @@ public class LeaValidator extends AbstractLeaValidator {
             }
             break;
         default:
-            error("Unsupported \"" + elementGenericType + "\"", declaration,
+            error("Unsupported generic type \"" + elementGenericType + "\"", declaration,
                     LeaPackage.Literals.ELEMENT_DECLARATION__GENERIC_TYP);
             break;
         }
-        
         // 2. Name defined correctly?
         String elementName = declaration.getName();
         if (elementName != null && !elementName.isBlank()) {
@@ -116,12 +115,12 @@ public class LeaValidator extends AbstractLeaValidator {
         } else {
             error("Missing element name", declaration, LeaPackage.Literals.ELEMENT_DECLARATION__NAME);
         }
-        
         // 3. Initialization matches defined type (including set definition)?
         Assignment elementInitialization = declaration.getInitialization();
         if (elementInitialization != null) {
             String assignedElementName = elementInitialization.getElement();
             if (assignedElementName != null) {
+                // Element initialization with other artifact, fragment, or result element (declaration)
                 ElementDeclaration assignedElement = getElementDeclaration(elementInitialization.getElement(),
                         declaration.eResource());
                 if (assignedElement != null) {
@@ -135,11 +134,12 @@ public class LeaValidator extends AbstractLeaValidator {
             } else {
                 Operation assignedOperation = elementInitialization.getOperation();
                 if (assignedOperation != null) {
+                    // Element initialization with operation
                     if (!haveEqualTypes(declaration, assignedOperation)) {
                         error("Type mismatch", declaration, LeaPackage.Literals.ELEMENT_DECLARATION__INITIALIZATION);
                     }
                 } else {
-                    // If this point is reached, there is neither an assigned element nor operation -> error
+                    // Element initialization with neither an assigned element nor operation -> should not be possible
                     error("Missing assignment for initialization", declaration,
                             LeaPackage.Literals.ELEMENT_DECLARATION__INITIALIZATION);
                 }
@@ -196,8 +196,7 @@ public class LeaValidator extends AbstractLeaValidator {
     }
     
     /**
-     * Searches in the given {@link EList} of {@link ElementDeclaration}s for an {@link ElementDeclaration} with the
-     * given name and returns it.
+     * Searches in the given {@link Resource} for an {@link ElementDeclaration} with the given name and returns it.
      * 
      * @param name the name of the {@link ElementDeclaration} to be found in the given {@link Resource}; should never be
      *        <code>null</code> nor <i>blank</i>
@@ -269,30 +268,145 @@ public class LeaValidator extends AbstractLeaValidator {
      * <li>The {@link ElementDeclaration#getSet()} definitions are equal</li>
      * </ul>
      * 
-     * @param ed1 the first {@link ElementDeclaration} to compare for equal types
-     * @param ed2 the second {@link ElementDeclaration} to compare for equal types
+     * @param ed1 the first {@link ElementDeclaration} to compare for equal types; should never be <code>null</code>
+     * @param ed2 the second {@link ElementDeclaration} to compare for equal types; should never be <code>null</code>
      * @return <code>true</code>, if the given {@link ElementDeclaration}s have the same types; <code>false</code>
      *         otherwise
      */
     private boolean haveEqualTypes(ElementDeclaration ed1, ElementDeclaration ed2) {
         return ed1.getGenericTyp().equals(ed2.getGenericTyp()) 
                 && ed1.getParameterType().equals(ed2.getParameterType())
-                && (ed1.getSet() == null) == (ed2.getSet() == null);
+                && ((ed1.getSet() == null) == (ed2.getSet() == null));
     }
     
     /**
      * Checks whether the type of the given {@link ElementDeclaration} is equal to the type of the return value of the
-     * given {@link Operation}. This is the case, if: TODO
+     * given {@link Operation}. This is the case, if {@link ElementDeclaration#getParameterType()} equals the resolved 
+     * type of the operation.
      *  
      * @param elementDeclaration the {@link ElementDeclaration} to compare to the given {@link Operation} regarding
-     *        element and return value type
+     *        element and return value type; should never be <code>null</code>
      * @param operation the {@link Operation} to compare to the given {@link ElementDeclaration} regarding
-     *        element and return value type
+     *        element and return value type; should never be <code>null</code>
      * @return <code>true</code>, if the type of the given {@link ElementDeclaration} is equal to the type of the return
      *         value of the given {@link Operation}; <code>false</code> otherwise
+     * @see #resolveToType(Operation)
      */
     private boolean haveEqualTypes(ElementDeclaration elementDeclaration, Operation operation) {
-        return true;
+        return elementDeclaration.getParameterType().equals(resolveToType(operation));
+    }
+    
+    /**
+     * Resolves the given {@link Operation} to its (return) type by resolving its inherent elements and {@link Call}s.
+     * 
+     * @param operation the {@link Operation} to resolve to its type; should never be <code>null</code>
+     * @return the return type of the given {@link Operation} or <code>null</code>, if resolving that type failed, e.g.,
+     *         due to unavailable elements in the {@link LanguageRegistry} or undefined language elements in the 
+     *         {@link AnalysisDefinition} used as operation parameters
+     * @see #resolveToType(EList)
+     */
+    private String resolveToType(Operation operation) {
+        String resolvedType = null;
+        
+        /*
+         * TODO handling element.call() via operation.getElement() currently missing as this is anyway not supported as
+         * supposed. If such calls are realized, implement corresponding validation here.
+         */
+        
+        resolvedType = resolveToType(operation.getCall());
+        
+        return resolvedType;
+    }
+    
+    /**
+     * Resolves the concatenated {@link Call}s in the given {@link EList} to the final (return) type and returns it. The
+     * concatenation is interpreted in the order of the {@link Calls} in the {@link EList}. Hence, the dependencies of
+     * the {@link Call}s within the {@link EList} are considered in that order during their individual resolution 
+     * regarding their (return) types.
+     *  
+     * @param concatenatedCalls the {@link EList} of concatenated {@link Call}s for which the type shall be returned;
+     *        should never be <code>null</code> nor <i>empty</i>
+     * @return the (return) type of the concatenated {@link Call}s in the given {@link EList} as a {@link String} or
+     *         <code>null</code>, if resolving the individual types or those of the calls parameters failed
+     * @see #resolveToType(Call) 
+     */
+    private String resolveToType(EList<Call> concatenatedCalls) {
+        String resolvedType = null;
+        
+        /*
+         * TODO handling concatenated calls, like "a().b()", currently missing as this is anyway not supported as
+         * supposed. If such calls are realized, implement corresponding validation here.
+         */
+        
+        resolvedType = resolveToType(concatenatedCalls.get(0));
+        
+        return resolvedType;
+    }
+    
+    /**
+     * Resolves the given {@link Call} to its (return) type using its name and optional parameters and returns it.
+     * 
+     * @param call the {@link Call} for which the type shall be returned; should never be <code>null</code>
+     * @return the (return) type of the given {@link Call} as a {@link String} or <code>null</code>, if resolving its
+     *         type or those of its parameters failed
+     * @see #resolveToTypes(EList)
+     * @see LanguageRegistry#getCallReturnType(String, String[])
+     */
+    private String resolveToType(Call call) {
+        String[] resolvedParameterTypes = null;
+        if (call.getParameters() != null) {
+            resolvedParameterTypes = resolveToTypes(call.getParameters().getParameterList());
+        }
+        return LanguageRegistry.INSTANCE.getCallReturnType(call.getName(), resolvedParameterTypes);
+    }
+    
+    /**
+     * Resolves each {@link Parameter} in the given {@link EList} to its type and returns them as a single array, which
+     * contains the types in the order of the {@link Parameter}s in the {@link EList}.
+     * 
+     * @param parameterList the {@link EList} of {@link Parameter} for which the types shall be returned; should never
+     *        be <code>null</code> nor <i>empty</i>
+     * @return an array of {@link Strings}, which represent the types of the given {@link Parameter}s or 
+     *         <code>null</code>, if resolving one of the parameters failed
+     */
+    private String[] resolveToTypes(EList<Parameter> parameterList) {
+        String[] resolvedTypes = new String[parameterList.size()];
+        boolean unresolvableTypeFound = false;
+        int parameterCounter = 0;
+        Parameter parameter;
+        while (!unresolvableTypeFound && parameterCounter < parameterList.size()) {
+            parameter = parameterList.get(parameterCounter);
+            if (parameter.getText() != null && !parameter.getText().isBlank()) {
+                // Parameter is a string with quotation marks
+                resolvedTypes[parameterCounter] = "String";
+            } else if (parameter.getElement() != null) {
+                ElementDeclaration parameterElementDeclaration = getElementDeclaration(parameter.getElement(),
+                        parameter.eResource());
+                if (parameterElementDeclaration != null) {
+                    // Parameter is another artifact, fragment, or result element
+                    resolvedTypes[parameterCounter] = parameterElementDeclaration.getParameterType();
+                } else {
+                    // Parameter could not be resolved to a type due to missing element declaration
+                    unresolvableTypeFound = true;
+                    resolvedTypes = null;
+                }
+            } else if (parameter.getOperation() != null) {
+                String resolvedOperationType = resolveToType(parameter.getOperation());
+                if (resolvedOperationType != null) {
+                    resolvedTypes[parameterCounter] = resolvedOperationType;
+                } else {
+                    // Parameter could not be resolved to a type due not resolvable operation
+                    unresolvableTypeFound = true;
+                    resolvedTypes = null;
+                }
+            } else {
+                // Parameter could not be resolved to a type due to missing, incomplete, or unknown parameter definition
+                unresolvableTypeFound = true;
+                resolvedTypes = null;
+            }
+            parameterCounter++;
+        }
+        return resolvedTypes;
     }
     
 }
