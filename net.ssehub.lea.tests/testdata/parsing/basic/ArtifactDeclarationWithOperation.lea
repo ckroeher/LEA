@@ -1,1 +1,1 @@
-Artifact<File> name = call();
+Artifact<File> name = file("main.c");

@@ -35,6 +35,7 @@ import org.junit.runners.Parameterized;
 import com.google.inject.Injector;
 
 import net.ssehub.LeaStandaloneSetup;
+import net.ssehub.integration.Call;
 import net.ssehub.integration.ChangeIdentifier;
 import net.ssehub.integration.ElementType;
 import net.ssehub.integration.LanguageElement;
@@ -169,6 +170,25 @@ public abstract class AbstractParserTest {
             ChangeIdentifier blockChangeIdentifier = new ChangeIdentifier("BlockChangeIdentifier",
                     new String[] {"CodeBlock"}, AbstractParserTest.class, SOURCE_PLUGIN);
             requiredLanguageElements.add(blockChangeIdentifier);
+            
+            Call singleFileCall = new Call(ElementType.OPERATION, "file", "File", new String[] {"String"}, 
+                    AbstractParserTest.class.getMethods()[0], AbstractParserTest.class, SOURCE_PLUGIN);
+            requiredLanguageElements.add(singleFileCall);
+            Call allFilesCall = new Call(ElementType.OPERATION, "files", "File", new String[] {"String"}, 
+                    AbstractParserTest.class.getMethods()[0], AbstractParserTest.class, SOURCE_PLUGIN);
+            requiredLanguageElements.add(allFilesCall); // TODO how to know that this returns a set?
+            
+            Call codeExtractorCall = new Call(ElementType.EXTRACTOR_CALL, "codeExtractor", "CodeBlock", new String[] {},
+                    AbstractParserTest.class.getMethods()[0], AbstractParserTest.class, SOURCE_PLUGIN);
+            requiredLanguageElements.add(codeExtractorCall);
+            
+            Call deadCodeAnaylsisCall = new Call(ElementType.ANALYSIS_CALL, "deadCodeAnalysis", "DeadBlock",
+                    new String[] {}, AbstractParserTest.class.getMethods()[0], AbstractParserTest.class, SOURCE_PLUGIN);
+            requiredLanguageElements.add(deadCodeAnaylsisCall);
+            
+            ParameterType stringParameterType = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "String",
+                    AbstractParserTest.class, SOURCE_PLUGIN); // TODO type not specific to artifacts -> build-in types?
+            requiredLanguageElements.add(stringParameterType);
             
             LanguageRegistry.INSTANCE.addLanguageElements(requiredLanguageElements);
         } catch (LanguageElementException e) {

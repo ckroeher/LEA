@@ -1,1 +1,1 @@
-Fragment<CodeBlock>[] name = call();
+Fragment<CodeBlock>[] name = codeExtractor();
