@@ -248,6 +248,35 @@ public class LeaValidator extends AbstractLeaValidator {
     }
     
     /**
+     * Checks whether the elements to which a change identifier is assigned to in the given 
+     * {@link ChangeIdentifierAssignment} are initialized.
+     * 
+     * @param changeIdentifierAssignment the {@link ChangeIdentifierAssignment} to check for correct initialization of
+     *        the assignable elements
+     */
+    @Check
+    public void checkAssignableElementsInitialized(ChangeIdentifierAssignment changeIdentifierAssignment) {
+        EList<String> assignableElementNames = changeIdentifierAssignment.getElements();
+        ElementDeclaration assignableElementDeclaration;
+        for (String assignableElementName : assignableElementNames) {
+            assignableElementDeclaration = getElementDeclaration(assignableElementName,
+                    changeIdentifierAssignment.eResource());
+            /*
+             * No further checks or errors messages, if the assignable element is not declared; this is done by
+             * checkValidChangeIdentifierAssignment(ChangeIdentifierAssignment changeIdentifierAssignment). 
+             */
+            if (assignableElementDeclaration != null) {
+                Assignment assignableElementDeclarationAssignmnet = assignableElementDeclaration.getInitialization();
+                if (assignableElementDeclarationAssignmnet == null 
+                        || !isAssignmentInitialized(assignableElementDeclarationAssignmnet)) {
+                    error("Element \"" + assignableElementName + "\" may not have been initialized", 
+                            changeIdentifierAssignment, LeaPackage.Literals.CHANGE_IDENTIFIER_ASSIGNMENT__ELEMENTS);
+                }
+            }
+        }
+    }
+    
+    /**
      * Searches in the given {@link Resource} for an {@link ElementDeclaration} with the given name and returns it.
      * 
      * @param name the name of the {@link ElementDeclaration} to be found in the given {@link Resource}; should never be
