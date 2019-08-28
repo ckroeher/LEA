@@ -1,2 +1,2 @@
-Result<DeadBlock> otherElement;
+Result<DeadBlock> otherElement = deadCodeAnalysis();
 Result<DeadBlock> name = otherElement;

@@ -1,2 +1,2 @@
-Result<DeadBlock>[] otherSetElement;
+Result<DeadBlock>[] otherSetElement = deadCodeAnalysis();
 Result<DeadBlock>[] name = otherSetElement;

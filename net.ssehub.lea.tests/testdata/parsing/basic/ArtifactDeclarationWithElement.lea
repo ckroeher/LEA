@@ -1,2 +1,2 @@
-Artifact<File> otherElement;
+Artifact<File> otherElement = file("main.c");
 Artifact<File> name = otherElement;

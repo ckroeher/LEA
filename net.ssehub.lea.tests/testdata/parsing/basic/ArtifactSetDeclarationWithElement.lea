@@ -1,2 +1,2 @@
-Artifact<File>[] otherSetElement;
+Artifact<File>[] otherSetElement = files("*.c");
 Artifact<File>[] name = otherSetElement;

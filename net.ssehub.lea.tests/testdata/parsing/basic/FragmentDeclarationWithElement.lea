@@ -1,2 +1,2 @@
-Fragment<CodeBlock> otherElement;
+Fragment<CodeBlock> otherElement = codeExtractor();
 Fragment<CodeBlock> name = otherElement;
