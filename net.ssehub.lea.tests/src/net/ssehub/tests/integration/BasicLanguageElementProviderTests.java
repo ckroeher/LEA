@@ -19,15 +19,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.io.File;
+import java.util.List;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import net.ssehub.integration.ElementType;
 import net.ssehub.integration.ExternalElementException;
 import net.ssehub.integration.LanguageElement;
 import net.ssehub.integration.LanguageElementProvider;
 import net.ssehub.integration.LanguageRegistry;
+import net.ssehub.integration.ParameterType;
 
 /**
  * This class contains some basic unit tests for the {@link LanguageElementProvider}.
@@ -178,11 +179,11 @@ public class BasicLanguageElementProviderTests {
                     "A plug-in with classes introducing a new element should increase the number of elements in the "
                     + "language directory by 1");
             // Check if it is the expected element
-            LanguageElement registeredElement = 
-                    LanguageRegistry.INSTANCE.getLanguageElement(expectedRegisteredElementName);
+            List<ParameterType> registerdArtifactParameterTypes = 
+                    LanguageRegistry.INSTANCE.getArtifactParameterTypes(expectedRegisteredElementName);
             try {
-                assertEquals(ElementType.ARTIFACT_PARAMETER_TYPE, registeredElement.getElementType(), 
-                        "Wrong language element element type");
+                assertEquals(expectedRegisteredElementName, registerdArtifactParameterTypes.get(0).getName(),
+                        "Wrong language element");
             } catch (NullPointerException e) {
                 assertNull(e, "Language registry does not contain element with name \"" + expectedRegisteredElementName 
                         + "\"");

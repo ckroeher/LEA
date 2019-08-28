@@ -64,7 +64,14 @@ public class BasicLanguageRegistryTests {
     /**
      * The {@link LanguageElement} passed to the constructor of this class for testing.
      */
-    private LanguageElement testElement;
+    private LanguageElement expectedElement;
+    
+    /**
+     * The {@link LanguageElement} actually registered in the {@link LanguageRegistry}.
+     * 
+     * @see #getRegisteredElement()
+     */
+    private LanguageElement actualElement;
     
     /**
      * Creates a new {@link BasicLanguageRegistryTests} instance.
@@ -72,10 +79,11 @@ public class BasicLanguageRegistryTests {
      * @param testElement the {@link LanguageElement} for testing
      */
     public BasicLanguageRegistryTests(LanguageElement testElement) {
-        this.testElement = testElement;
+        this.expectedElement = testElement;
         List<LanguageElement> languageElementList = new ArrayList<LanguageElement>();
         languageElementList.add(testElement);
         LanguageRegistry.INSTANCE.addLanguageElements(languageElementList);
+        actualElement = getRegisteredElement();
     }
     
     /**
@@ -125,76 +133,198 @@ public class BasicLanguageRegistryTests {
     }
     
     /**
-     * Tests whether the {@link LanguageRegistry} contains a {@link LanguageElement} with the same name the 
-     * {@link #testElement}.
+     * Tests whether the name of the {@link #expectedElement} equals the name of the {@link #actualElement}.
      */
     @Test
     public void testRegisteredLanguageElementName() {
-        LanguageElement registeredElement = LanguageRegistry.INSTANCE.getLanguageElement(testElement.getName());
-        assertEquals(testElement, registeredElement, "Language registry does not contain element with name \"" 
-                + testElement.getName() + "\"");
+        try {            
+            assertEquals(expectedElement.getName(), actualElement.getName(),
+                    "Language registry does not contain element with name \"" + expectedElement.getName() + "\"");
+        } catch (NullPointerException e) {
+            assertEquals(null, e, "Language registry does not contain element with name \"" + expectedElement.getName() 
+                    + "\"");
+        } 
     }
     
     /**
-     * Tests whether the {@link LanguageRegistry} contains a {@link LanguageElement} of the same class as the 
-     * {@link #testElement}.
+     * Tests whether the class of the {@link #expectedElement} equals the class of the {@link #actualElement}.
      */
     @Test
     public void testRegisteredLanguageElementClass() {
-        LanguageElement registeredElement = LanguageRegistry.INSTANCE.getLanguageElement(testElement.getName());
         try {            
-            assertEquals(testElement.getClass(), registeredElement.getClass(), "Wrong language element class");
+            assertEquals(expectedElement.getClass(), actualElement.getClass(), "Wrong language element class");
         } catch (NullPointerException e) {
-            assertEquals(null, e, "Language registry does not contain element with name \"" + testElement.getName() 
+            assertEquals(null, e, "Language registry does not contain element with name \"" + expectedElement.getName() 
                     + "\"");
         }
     }
 
     /**
-     * Tests whether the {@link LanguageRegistry} contains a {@link LanguageElement} with the same {@link ElementType}
-     * as the {@link #testElement}.
+     * Tests whether the {@link ElementType} of the {@link #expectedElement} equals the {@link ElementType} of the 
+     * {@link #actualElement}.
      */
     @Test
     public void testRegisteredLanguageElementElementType() {
-        LanguageElement registeredElement = LanguageRegistry.INSTANCE.getLanguageElement(testElement.getName());
         try {            
-            assertEquals(testElement.getElementType(), registeredElement.getElementType(),
+            assertEquals(expectedElement.getElementType(), actualElement.getElementType(),
                     "Wrong language element element type");
         } catch (NullPointerException e) {
-            assertEquals(null, e, "Language registry does not contain element with name \"" + testElement.getName() 
+            assertEquals(null, e, "Language registry does not contain element with name \"" + expectedElement.getName() 
                     + "\"");
         }
     }
     
     /**
-     * Tests whether the {@link LanguageRegistry} contains a {@link LanguageElement} with the same source {@link Class}
-     * as the {@link #testElement}.
+     * Tests whether the source class of the {@link #expectedElement} equals the source class of the 
+     * {@link #actualElement}.
      */
     @Test
     public void testRegisteredLanguageElementSourceClass() {
-        LanguageElement registeredElement = LanguageRegistry.INSTANCE.getLanguageElement(testElement.getName());
         try {            
-            assertEquals(testElement.getSourceClass(), registeredElement.getSourceClass(),
+            assertEquals(expectedElement.getSourceClass(), actualElement.getSourceClass(),
                     "Wrong language element source class");
         } catch (NullPointerException e) {
-            assertEquals(null, e, "Language registry does not contain element with name \"" + testElement.getName() 
+            assertEquals(null, e, "Language registry does not contain element with name \"" + expectedElement.getName() 
                     + "\"");
         }
     }
     
     /**
-     * Tests whether the {@link LanguageRegistry} contains a {@link LanguageElement} with the same source plug-in (a 
-     * {@link File}) as the {@link #testElement}.
+     * Tests whether the source plug-in of the {@link #expectedElement} equals the source plug-in of the 
+     * {@link #actualElement}.
      */
     @Test
     public void testRegisteredLanguageElementSourcePlugin() {
-        LanguageElement registeredElement = LanguageRegistry.INSTANCE.getLanguageElement(testElement.getName());
         try {            
-            assertEquals(testElement.getSourcePlugin(), registeredElement.getSourcePlugin(),
+            assertEquals(expectedElement.getSourcePlugin(), actualElement.getSourcePlugin(),
                     "Wrong language element source plug-in");
         } catch (NullPointerException e) {
-            assertEquals(null, e, "Language registry does not contain element with name \"" + testElement.getName() 
+            assertEquals(null, e, "Language registry does not contain element with name \"" + expectedElement.getName() 
                     + "\"");
         }
+    }
+    
+    /**
+     * Searches in the {@link LanguageRegistry} for an {@link LanguageElement}, which has the same {@link ElementType},
+     * name, source class, and source plug-in as the current {@link #expectedElement}, and returns it.
+     * 
+     * @return the {@link LanguageElement} in the {@link LanguageRegistry} with the same {@link ElementType}, name,
+     *         source class, and source plug-in as the current {@link #expectedElement} or <code>null</code>, if no such
+     *         element is registered
+     */
+    private LanguageElement getRegisteredElement() {
+        LanguageElement registeredElement;
+        switch(expectedElement.getElementType()) {
+        case ARTIFACT_PARAMETER_TYPE:
+            registeredElement = getRegisteredParameterType(
+                    LanguageRegistry.INSTANCE.getArtifactParameterTypes(expectedElement.getName()));
+            break;
+        case FRAGMENT_PARAMETER_TYPE:
+            registeredElement = getRegisteredParameterType(
+                    LanguageRegistry.INSTANCE.getFragmentParameterTypes(expectedElement.getName()));
+            break;
+        case RESULT_PARAMETER_TYPE:
+            registeredElement = getRegisteredParameterType(
+                    LanguageRegistry.INSTANCE.getResultParameterTypes(expectedElement.getName()));
+            break;
+        case CHANGE_IDENTIFIER:
+            registeredElement = getRegisteredChangeIdentifier(
+                    LanguageRegistry.INSTANCE.getChangeIdentifiers(expectedElement.getName()));
+            break;
+        case OPERATION:
+            registeredElement = getRegisteredCall(
+                    LanguageRegistry.INSTANCE.getOperations(expectedElement.getName()));
+            break;
+        case EXTRACTOR_CALL:
+            registeredElement = getRegisteredCall(
+                    LanguageRegistry.INSTANCE.getExtractorCalls(expectedElement.getName()));
+            break;
+        case ANALYSIS_CALL:
+            registeredElement = getRegisteredCall(
+                    LanguageRegistry.INSTANCE.getAnalysisCall(expectedElement.getName()));
+            break;
+        default:
+            registeredElement = null; // Should never be reached
+            break;
+        }
+        return registeredElement;
+    }
+    
+    /**
+     * Searches in the given {@link List} of {@link ParameterType}s for an {@link LanguageElement}, which has the same 
+     * source class and source plug-in as the current {@link #expectedElement}, and returns it.
+     * 
+     * @param searchList the {@link List} of {@link ParameterType}s to search in
+     * @return the {@link LanguageElement} with the same source class and source plug-in as the current
+     *         {@link #expectedElement} or <code>null</code>, if no such element is registered
+     */
+    private LanguageElement getRegisteredParameterType(List<ParameterType> searchList) {
+        LanguageElement registeredElement = null;
+        if (searchList != null) {
+            int registeredParametersCounter = 0;
+            ParameterType registeredParameter;
+            while (registeredElement == null && registeredParametersCounter < searchList.size()) {
+                registeredParameter = searchList.get(registeredParametersCounter);
+                if (registeredParameter.getSourceClass() == expectedElement.getSourceClass() 
+                        && registeredParameter.getSourcePlugin().getAbsolutePath().equals(
+                                expectedElement.getSourcePlugin().getAbsolutePath())) {
+                    registeredElement = registeredParameter;
+                }
+                registeredParametersCounter++;
+            }
+        }
+        return registeredElement;
+    }
+    
+    /**
+     * Searches in the given {@link List} of {@link ChangeIdentifier}s for an {@link LanguageElement}, which has the
+     * same source class and source plug-in as the current {@link #expectedElement}, and returns it.
+     * 
+     * @param searchList the {@link List} of {@link ChangeIdentifier}s to search in
+     * @return the {@link LanguageElement} with the same source class and source plug-in as the current
+     *         {@link #expectedElement} or <code>null</code>, if no such element is registered
+     */
+    private LanguageElement getRegisteredChangeIdentifier(List<ChangeIdentifier> searchList) {
+        LanguageElement registeredElement = null;
+        if (searchList != null) {
+            int registeredChangeIdentifierCounter = 0;
+            ChangeIdentifier registeredChangeIdentifier;
+            while (registeredElement == null && registeredChangeIdentifierCounter < searchList.size()) {
+                registeredChangeIdentifier = searchList.get(registeredChangeIdentifierCounter);
+                if (registeredChangeIdentifier.getSourceClass() == expectedElement.getSourceClass() 
+                        && registeredChangeIdentifier.getSourcePlugin().getAbsolutePath().equals(
+                                expectedElement.getSourcePlugin().getAbsolutePath())) {
+                    registeredElement = registeredChangeIdentifier;
+                }
+                registeredChangeIdentifierCounter++;
+            }
+        }
+        return registeredElement;
+    }
+    
+    /**
+     * Searches in the given {@link List} of {@link Call}s for an {@link LanguageElement}, which has the same source
+     * class and source plug-in as the current {@link #expectedElement}, and returns it.
+     * 
+     * @param searchList the {@link List} of {@link Call}s to search in
+     * @return the {@link LanguageElement} with the same source class and source plug-in as the current
+     *         {@link #expectedElement} or <code>null</code>, if no such element is registered
+     */
+    private LanguageElement getRegisteredCall(List<Call> searchList) {
+        LanguageElement registeredElement = null;
+        if (searchList != null) {
+            int registeredCallsCounter = 0;
+            Call registeredCall;
+            while (registeredElement == null && registeredCallsCounter < searchList.size()) {
+                registeredCall = searchList.get(registeredCallsCounter);
+                if (registeredCall.getSourceClass() == expectedElement.getSourceClass() 
+                        && registeredCall.getSourcePlugin().getAbsolutePath().equals(
+                                expectedElement.getSourcePlugin().getAbsolutePath())) {
+                    registeredElement = registeredCall;
+                }
+                registeredCallsCounter++;
+            }
+        }
+        return registeredElement;
     }
 }
