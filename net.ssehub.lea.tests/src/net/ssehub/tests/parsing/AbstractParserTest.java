@@ -318,6 +318,9 @@ public abstract class AbstractParserTest {
                     }
                 }
             }
+        } else {
+            System.out.println("File \"" + testDataFile.getAbsolutePath() 
+                    + "\" for reading model does not exist or is not a file");
         }
         return modelString;
     }
