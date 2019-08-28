@@ -34,7 +34,9 @@ public class AdvancedElementDeclarationParsingTests extends AbstractParserTest {
         {"advanced/ArtifactDeclarationWithSetElement.lea", false, 2, 0},
         {"advanced/ArtifactDeclarationWithSetReturnOperation.lea", false, 1, 0},
         {"advanced/ArtifactSetDeclarationWithElement.lea", false, 2, 0},
-        {"advanced/ArtifactSetDeclarationWithNoSetReturnOperation.lea", false, 1, 0}
+        {"advanced/ArtifactSetDeclarationWithNoSetReturnOperation.lea", false, 1, 0},
+        {"advanced/ChangeIdentifierAssignmentToNotInitializedElement.lea", false, 1, 1},
+        {"advanced/ChangeIdentifierAssignmentToPartiallyInitializedElements.lea", false, 3, 1}
     };
 
     /**

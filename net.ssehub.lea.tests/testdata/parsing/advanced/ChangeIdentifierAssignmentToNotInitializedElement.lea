@@ -1,0 +1,2 @@
+Artifact<File>[] codeFiles;
+assign FileChangeIdentifier to codeFiles

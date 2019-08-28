@@ -1,0 +1,4 @@
+Artifact<File>[] codeFiles;
+Artifact<File>[] buildFiles;
+Artifact<File>[] vmFiles = files("Kconfig");
+assign FileChangeIdentifier to codeFiles, buildFiles, vmFiles
