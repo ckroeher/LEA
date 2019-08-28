@@ -1,0 +1,4 @@
+// Should be valid
+Artifact<File>[] files = files("*.c");
+Artifact<File>[] filesAssigned = files;
+Artifact<File>[] assignedFilesAssigned = filesAssigned;

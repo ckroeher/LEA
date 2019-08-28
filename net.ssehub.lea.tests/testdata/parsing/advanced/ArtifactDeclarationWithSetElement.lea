@@ -1,0 +1,3 @@
+// Should be invalid because of mismatch regarding the set definition
+Artifact<File>[] files = files("*.c");
+Artifact<File> filesAssigned = files;

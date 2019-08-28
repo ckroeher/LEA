@@ -1,0 +1,4 @@
+// Should be invalid because uninitialized "files" --> there is no value assigned
+Artifact<File> files;
+Artifact<File> filesAssigned = files;
+Artifact<File> assignedFilesAssigned = filesAssigned;
