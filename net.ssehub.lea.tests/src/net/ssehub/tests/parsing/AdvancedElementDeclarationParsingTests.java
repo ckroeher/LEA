@@ -31,12 +31,14 @@ public class AdvancedElementDeclarationParsingTests extends AbstractParserTest {
     private static final Object[][] EXPECTED_RESULTS = new Object[][] {
         {"advanced/ArtifactDeclarationChainWithEqualTypesInitialized.lea", true, 3, 0},
         {"advanced/ArtifactDeclarationChainWithEqualTypesNotInitialized.lea", false, 3, 0},
+        {"advanced/ArtifactDeclarationWithNotInitializedOperationStartElement.lea", false, 2, 0},
         {"advanced/ArtifactDeclarationWithSetElement.lea", false, 2, 0},
         {"advanced/ArtifactDeclarationWithSetReturnOperation.lea", false, 1, 0},
         {"advanced/ArtifactSetDeclarationWithElement.lea", false, 2, 0},
         {"advanced/ArtifactSetDeclarationWithNoSetReturnOperation.lea", false, 1, 0},
         {"advanced/ChangeIdentifierAssignmentToNotInitializedElement.lea", false, 1, 1},
-        {"advanced/ChangeIdentifierAssignmentToPartiallyInitializedElements.lea", false, 3, 1}
+        {"advanced/ChangeIdentifierAssignmentToPartiallyInitializedElements.lea", false, 3, 1},
+        {"advanced/FragmentDeclarationWithOperationReferencingArtifact.lea", true, 2, 0}
     };
 
     /**

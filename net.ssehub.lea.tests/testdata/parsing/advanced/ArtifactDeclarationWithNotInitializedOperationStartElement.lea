@@ -1,0 +1,2 @@
+Artifact<File>[] files;
+Artifact<File>[] fileSubset = files.filter("A*");

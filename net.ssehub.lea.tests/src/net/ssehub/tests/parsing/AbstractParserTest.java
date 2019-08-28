@@ -178,9 +178,15 @@ public abstract class AbstractParserTest {
                     AbstractParserTest.class.getMethods()[0], AbstractParserTest.class, SOURCE_PLUGIN);
             requiredLanguageElements.add(allFilesCall); // TODO how to know that this returns a set?
             
-            Call codeExtractorCall = new Call(ElementType.EXTRACTOR_CALL, "codeExtractor", "CodeBlock", new String[] {},
-                    AbstractParserTest.class.getMethods()[0], AbstractParserTest.class, SOURCE_PLUGIN);
-            requiredLanguageElements.add(codeExtractorCall);
+            Call codeExtractorCallWithtoutParameters = new Call(ElementType.EXTRACTOR_CALL, "codeExtractor",
+                    "CodeBlock", new String[] {}, AbstractParserTest.class.getMethods()[0], AbstractParserTest.class,
+                    SOURCE_PLUGIN);
+            requiredLanguageElements.add(codeExtractorCallWithtoutParameters);
+            
+            Call codeExtractorCallWithParameters = new Call(ElementType.EXTRACTOR_CALL, "codeExtractor", "CodeBlock", 
+                    new String[] {"File"}, AbstractParserTest.class.getMethods()[0], AbstractParserTest.class,
+                    SOURCE_PLUGIN);
+            requiredLanguageElements.add(codeExtractorCallWithParameters);
             
             Call deadCodeAnaylsisCall = new Call(ElementType.ANALYSIS_CALL, "deadCodeAnalysis", "DeadBlock",
                     new String[] {}, AbstractParserTest.class.getMethods()[0], AbstractParserTest.class, SOURCE_PLUGIN);
