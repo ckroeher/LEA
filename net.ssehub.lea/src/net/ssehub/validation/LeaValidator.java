@@ -31,6 +31,7 @@ import net.ssehub.lea.ElementDeclaration;
 import net.ssehub.lea.LeaPackage;
 import net.ssehub.lea.Operation;
 import net.ssehub.lea.Parameter;
+import net.ssehub.lea.ParameterList;
 
 /**
  * This class contains custom validation rules.
@@ -196,7 +197,7 @@ public class LeaValidator extends AbstractLeaValidator {
             isAssignmentInitialized = true;
         }
         return isAssignmentInitialized;
-    } // TODO similar checks for elements a change identifier is assigned to and the parameters of a call (and tests!)
+    }
     
     
     /**
@@ -271,6 +272,65 @@ public class LeaValidator extends AbstractLeaValidator {
                         || !isAssignmentInitialized(assignableElementDeclarationAssignmnet)) {
                     error("Element \"" + assignableElementName + "\" may not have been initialized", 
                             changeIdentifierAssignment, LeaPackage.Literals.CHANGE_IDENTIFIER_ASSIGNMENT__ELEMENTS);
+                }
+            }
+        }
+    }
+    
+    /**
+     * Checks whether the start element of the given {@link Operation} is initialized, if that element exists, like 
+     * <code>file.getPath()</code>, where <code>file</code> must be initialized.
+     * 
+     * @param operation the {@link Operation} to check for correct initialization of the start element
+     */
+    public void checkOperationElementInitialized(Operation operation) {
+        String startElementName = operation.getElement();
+        if (startElementName != null) {
+            ElementDeclaration startElementDeclaration = getElementDeclaration(startElementName, operation.eResource());
+            /*
+             * No further checks or errors messages, if the start element is not declared; this is done by
+             * checkValidElementDeclaration(ElementDeclaration declaration). 
+             */
+            if (startElementDeclaration != null) {
+                Assignment startElementDeclarationAssignment = startElementDeclaration.getInitialization();
+                if (startElementDeclarationAssignment == null 
+                        || !isAssignmentInitialized(startElementDeclarationAssignment)) {
+                    error("Element \"" + startElementName + "\" may not have been initialized", operation, 
+                            LeaPackage.Literals.OPERATION__ELEMENT);
+                }
+            }
+        }
+    }
+    
+    /**
+     * Checks whether the parameters of the given {@link Call} are initialized, if that call requires parameters and
+     * these parameters are other element.
+     * 
+     * @param call the {@link Call} to check for correct initialization of its parameters
+     */
+    public void checkCallParametersInitialized(Call call) {
+        ParameterList parameterList = call.getParameters();
+        if (parameterList != null) {
+            EList<Parameter> parameters = parameterList.getParameterList();
+            String parameterName;
+            for (Parameter parameter : parameters) {
+                parameterName = parameter.getElement();
+                if (parameterName != null) {
+                    ElementDeclaration parameterElementDeclaration = getElementDeclaration(parameterName,
+                            call.eResource());
+                    /*
+                     * No further checks or errors messages, if the start element is not declared; this is done by
+                     * checkValidElementDeclaration(ElementDeclaration declaration). 
+                     */
+                    if (parameterElementDeclaration != null) {
+                        Assignment parameterElementDeclarationAssignment = 
+                                parameterElementDeclaration.getInitialization();
+                        if (parameterElementDeclarationAssignment == null 
+                                || !isAssignmentInitialized(parameterElementDeclarationAssignment)) {
+                            error("Element \"" + parameterName + "\" may not have been initialized", parameter, 
+                                    LeaPackage.Literals.PARAMETER__ELEMENT);
+                        }
+                    }
                 }
             }
         }
