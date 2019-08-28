@@ -148,6 +148,58 @@ public class LeaValidator extends AbstractLeaValidator {
     }
     
     /**
+     * Checks whether the initialization (assignment) of the given {@link ElementDeclaration} is itself initialized, if
+     * the given {@link ElementDeclaration} is initialized with another artifact, fragment, or result element.
+     * 
+     * @param elementDeclaration the {@link ElementDeclaration} to check for correct initialization
+     */
+    @Check
+    public void checkInitializationInitialized(ElementDeclaration elementDeclaration) {
+        Assignment initializationAssignment = elementDeclaration.getInitialization();
+        if (initializationAssignment != null && !isInitializationInitialized(initializationAssignment)) {
+            error("Element \"" + initializationAssignment.getElement() + "\" may not have been initialized", 
+                    elementDeclaration, LeaPackage.Literals.ELEMENT_DECLARATION__INITIALIZATION);
+        }
+    }
+    
+    /**
+     * Checks whether the given (initialization) {@link Assignment} is itself initialized, if the given 
+     * {@link Assignment} references another artifact, fragment, or result element. Hence, this method recursively calls
+     * itself every time an assignment references another element. In case that the {@link Assignment}
+     * is an operation call, this method assumes that the operation is a correct initialization.
+     * 
+     * @param initializationAssignment the {@link Assignment} to check for correct initialization 
+     * @return <code>true</code>, if the assignment represents a correct initialization; <code>false</code> otherwise
+     */
+    private boolean isInitializationInitialized(Assignment initializationAssignment) {
+        boolean isInitializationInitialized = false;
+        String assignedElementName = initializationAssignment.getElement();
+        if (assignedElementName != null) {
+            ElementDeclaration assignedElementDeclaration = 
+                    getElementDeclaration(assignedElementName, initializationAssignment.eResource());
+            /*
+             * No further checks or errors messages, if the assigned element is not declared; this is done by
+             * checkValidElementDeclaration(ElementDeclaration declaration). 
+             */
+            if (assignedElementDeclaration != null) {
+                Assignment assignedElementDeclarationInitialization = assignedElementDeclaration.getInitialization();
+                if (assignedElementDeclarationInitialization != null) {
+                    isInitializationInitialized = isInitializationInitialized(assignedElementDeclarationInitialization);
+                }
+            }
+        } else {
+            /*
+             * There is no element assigned, but an operation is called. Hence, we assume that the initialization is
+             * done by that operation correctly. All other checks regarding type safety, etc. are done by 
+             * checkValidElementDeclaration(ElementDeclaration declaration)
+             */
+            isInitializationInitialized = true;
+        }
+        return isInitializationInitialized;
+    }
+    
+    
+    /**
      * Checks the given {@link ChangeIdentifierAssignment} for being valid. This is the case, if:
      * <ul>
      * <li>The name of the change identifier defined as part of the {@link ChangeIdentifierAssignment} identifies an
