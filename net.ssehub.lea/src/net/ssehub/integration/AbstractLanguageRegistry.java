@@ -599,6 +599,7 @@ public abstract class AbstractLanguageRegistry {
                     break;
                 }
                 addCallUnchecked(cachedCall, callMap);
+                cachedCallsIterator.remove();
             }
         }
     }
