@@ -1,4 +1,4 @@
-Artifact<File>[] codeFiles;
-Artifact<File>[] buildFiles;
-Artifact<File>[] vmFiles;
+Artifact<File>[] codeFiles = files("*.c");
+Artifact<File>[] buildFiles = files("Makefile");
+Artifact<File>[] vmFiles = files("Kconfig");
 assign FileChangeIdentifier to codeFiles, buildFiles, vmFiles

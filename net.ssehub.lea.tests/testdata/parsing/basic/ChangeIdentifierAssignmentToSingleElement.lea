@@ -1,2 +1,2 @@
-Artifact<File>[] codeFiles;
+Artifact<File>[] codeFiles = files("*.c");
 assign FileChangeIdentifier to codeFiles
