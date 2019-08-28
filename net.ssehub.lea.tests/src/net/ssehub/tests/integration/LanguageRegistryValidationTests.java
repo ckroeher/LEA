@@ -16,7 +16,7 @@ package net.ssehub.tests.integration;
 
 import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
@@ -72,7 +72,7 @@ public class LanguageRegistryValidationTests {
              *              2. No availability of the new change identifier in the registry
              */
             assertEquals(0, rejectedElements.size(), "No rejected language elements expected");
-            assertNull(LanguageRegistry.INSTANCE.getChangeIdentifier(changeIdentifier.getName()), 
+            assertFalse(hasChangeIdentifier(changeIdentifier), 
                     "No change identifier with name \"" + changeIdentifier.getName() + "\" expected");
             
             // Step 2: Clear the lists for the next step
@@ -91,11 +91,32 @@ public class LanguageRegistryValidationTests {
              *              2. Availability of the new change identifier in the registry
              */
             assertEquals(0, rejectedElements.size(), "No rejected language elements expected");
-            assertTrue(LanguageRegistry.INSTANCE.getChangeIdentifier(
-                    changeIdentifier.getName()).equals(changeIdentifier), "Equal change identifier expected");
+            assertTrue(hasChangeIdentifier(changeIdentifier), "Equal change identifier expected");
         } catch (LanguageElementException e) {
             assertNull("Unexpected exception thrown", e);
         }
+    }
+    
+    /**
+     * Checks whether the {@link LanguageRegistry} contains a {@link ChangeIdentifier} that equals the given one.
+     * 
+     * @param searchedChangeIdentifier the {@link ChangeIdentifier} to search for
+     * @return <code>true</code>, if the {@link LanguageRegistry} contains a {@link ChangeIdentifier} that equals the
+     *         given one; <code>false</code> otherwise
+     */
+    private boolean hasChangeIdentifier(ChangeIdentifier searchedChangeIdentifier) {
+        boolean hasChangeIdentifier = false;
+        List<ChangeIdentifier> registeredChangeIdentifiers = 
+                LanguageRegistry.INSTANCE.getChangeIdentifiers(searchedChangeIdentifier.getName());
+        if (registeredChangeIdentifiers != null) {
+            int registeredChangeIdentifiersCounter = 0;
+            while (!hasChangeIdentifier && registeredChangeIdentifiersCounter < registeredChangeIdentifiers.size()) {
+                hasChangeIdentifier = registeredChangeIdentifiers.get(registeredChangeIdentifiersCounter).equals(
+                        searchedChangeIdentifier);
+                registeredChangeIdentifiersCounter++;
+            }
+        }
+        return hasChangeIdentifier;
     }
     
     /**
@@ -118,8 +139,7 @@ public class LanguageRegistryValidationTests {
              *              2. No availability of the new call in the registry
              */
             assertEquals(0, rejectedElements.size(), "No rejected language elements expected");
-            assertNull(LanguageRegistry.INSTANCE.getOperation(call.getName()), 
-                    "No change identifier with name \"" + call.getName() + "\" expected");
+            assertFalse(hasCall(call), "No change identifier with name \"" + call.getName() + "\" expected");
             
             // Step 2: Clear the lists for the next step
             newElements.clear();
@@ -137,10 +157,31 @@ public class LanguageRegistryValidationTests {
              *              2. Availability of the new call in the registry
              */
             assertEquals(0, rejectedElements.size(), "No rejected language elements expected");
-            assertTrue(LanguageRegistry.INSTANCE.getOperation(call.getName()).equals(call),
-                    "Equal call expected");
+            assertTrue(hasCall(call), "Equal call expected");
         } catch (LanguageElementException e) {
             assertNull("Unexpected exception thrown", e);
         }
+    }
+    
+    /**
+     * Checks whether the {@link LanguageRegistry} contains a {@link Call} of the type {@link ElementType#OPERATION}
+     * that equals the given one.
+     * 
+     * @param searchedCall the {@link Call} to search for
+     * @return <code>true</code>, if the {@link LanguageRegistry} contains a {@link Call} of the type 
+     *         {@link ElementType#OPERATION} that equals the given one; <code>false</code> otherwise
+     */
+    private boolean hasCall(Call searchedCall) {
+        boolean hasCall = false;
+        List<Call> registeredOperations = 
+                LanguageRegistry.INSTANCE.getOperations(searchedCall.getName());
+        if (registeredOperations != null) {
+            int registeredOperationsCounter = 0;
+            while (!hasCall && registeredOperationsCounter < registeredOperations.size()) {
+                hasCall = registeredOperations.get(registeredOperationsCounter).equals(searchedCall);
+                registeredOperationsCounter++;
+            }
+        }
+        return hasCall;
     }
 }
