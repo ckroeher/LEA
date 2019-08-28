@@ -156,7 +156,7 @@ public class LeaValidator extends AbstractLeaValidator {
     @Check
     public void checkInitializationInitialized(ElementDeclaration elementDeclaration) {
         Assignment initializationAssignment = elementDeclaration.getInitialization();
-        if (initializationAssignment != null && !isInitializationInitialized(initializationAssignment)) {
+        if (initializationAssignment != null && !isAssignmentInitialized(initializationAssignment)) {
             error("Element \"" + initializationAssignment.getElement() + "\" may not have been initialized", 
                     elementDeclaration, LeaPackage.Literals.ELEMENT_DECLARATION__INITIALIZATION);
         }
@@ -171,8 +171,8 @@ public class LeaValidator extends AbstractLeaValidator {
      * @param initializationAssignment the {@link Assignment} to check for correct initialization 
      * @return <code>true</code>, if the assignment represents a correct initialization; <code>false</code> otherwise
      */
-    private boolean isInitializationInitialized(Assignment initializationAssignment) {
-        boolean isInitializationInitialized = false;
+    private boolean isAssignmentInitialized(Assignment initializationAssignment) {
+        boolean isAssignmentInitialized = false;
         String assignedElementName = initializationAssignment.getElement();
         if (assignedElementName != null) {
             ElementDeclaration assignedElementDeclaration = 
@@ -184,7 +184,7 @@ public class LeaValidator extends AbstractLeaValidator {
             if (assignedElementDeclaration != null) {
                 Assignment assignedElementDeclarationInitialization = assignedElementDeclaration.getInitialization();
                 if (assignedElementDeclarationInitialization != null) {
-                    isInitializationInitialized = isInitializationInitialized(assignedElementDeclarationInitialization);
+                    isAssignmentInitialized = isAssignmentInitialized(assignedElementDeclarationInitialization);
                 }
             }
         } else {
@@ -193,10 +193,10 @@ public class LeaValidator extends AbstractLeaValidator {
              * done by that operation correctly. All other checks regarding type safety, etc. are done by 
              * checkValidElementDeclaration(ElementDeclaration declaration)
              */
-            isInitializationInitialized = true;
+            isAssignmentInitialized = true;
         }
-        return isInitializationInitialized;
-    }
+        return isAssignmentInitialized;
+    } // TODO similar checks for elements a change identifier is assigned to and the parameters of a call (and tests!)
     
     
     /**
@@ -345,6 +345,7 @@ public class LeaValidator extends AbstractLeaValidator {
      * @see #resolveToType(Operation)
      */
     private boolean haveEqualTypes(ElementDeclaration elementDeclaration, Operation operation) {
+        // TODO it is not only the operation return type, but also, if that operation returns a single element or a set
         return elementDeclaration.getParameterType().equals(resolveToType(operation));
     }
     
