@@ -194,153 +194,85 @@ public class LanguageRegistry extends AbstractLanguageRegistry {
     }
     
     /**
-     * Returns the {@link LanguageElement}, which has the given name. If multiple elements with the same name exist,
-     * like equally named operations with different return or parameter types, the first match will be returned.
-     * 
-     * TODO method which returns all elements with the given name?
+     * Returns a {@link List} of all {@link ParameterType}s of the type {@link ElementType#ARTIFACT_PARAMETER_TYPE},
+     * which have the given name.
      *  
-     * @param name the name of the {@link LanguageElement}, which should be returned
-     * @return the (first found) {@link LanguageElement} with the given name or <code>null</code>, if no such element is
-     *         registered
+     * @param name the name of the artifact parameter type(s), which should be returned
+     * @return the {@link List} of all {@link ParameterType}s of the type {@link ElementType#ARTIFACT_PARAMETER_TYPE}
+     *         with the given name or <code>null</code>, if no such elements are registered
      */
-    public LanguageElement getLanguageElement(String name) {
-        LanguageElement foundElement = getArtifactParameterType(name);
-        if (foundElement == null) {
-            foundElement = getFragmentParameterType(name);
-        }
-        if (foundElement == null) {
-            foundElement = getResultParameterType(name);
-        }
-        if (foundElement == null) {
-            foundElement = getChangeIdentifier(name);
-        }
-        if (foundElement == null) {
-            foundElement = getOperation(name);
-        }
-        if (foundElement == null) {
-            foundElement = getExtractorCall(name);
-        }
-        if (foundElement == null) {
-            foundElement = getAnalysisCall(name);
-        }
-        return foundElement;
+    public List<ParameterType> getArtifactParameterTypes(String name) {
+        return artifactParameterTypes.get(name);
     }
     
-    /*
-     * TODO Think about reasonable getter. This way of doing it is not the best design!
+    /**
+     * Returns a {@link List} of all {@link ParameterType}s of the type {@link ElementType#FRAGMENT_PARAMETER_TYPE},
+     * which have the given name.
+     *  
+     * @param name the name of the fragment parameter type(s), which should be returned
+     * @return the {@link List} of all {@link ParameterType}s of the type {@link ElementType#FRAGMENT_PARAMETER_TYPE}
+     *         with the given name or <code>null</code>, if no such elements are registered
      */
+    public List<ParameterType> getFragmentParameterTypes(String name) {
+        return fragmentParameterTypes.get(name);
+    }
     
     /**
-     * Returns the {@link ParameterType} of the type {@link ElementType#ARTIFACT_PARAMETER_TYPE}, which has the given
+     * Returns a {@link List} of all {@link ParameterType}s of the type {@link ElementType#RESULT_PARAMETER_TYPE},
+     * which have the given name.
+     *  
+     * @param name the name of the result parameter type(s), which should be returned
+     * @return the {@link List} of all {@link ParameterType}s of the type {@link ElementType#RESULT_PARAMETER_TYPE}
+     *         with the given name or <code>null</code>, if no such elements are registered
+     */
+    public List<ParameterType> getResultParameterTypes(String name) {
+        return resultParameterTypes.get(name);
+    }
+    
+    /**
+     * Returns a {@link List} of all {@link ChangeIdentifier}s, which have the given name.
+     *  
+     * @param name the name of the change identifier(s), which should be returned
+     * @return the {@link List} of all {@link ChangeIdentifier}s with the given name or <code>null</code>, if no such
+     *         elements are registered
+     */
+    public List<ChangeIdentifier> getChangeIdentifiers(String name) {
+        return changeIdentifiers.get(name);
+    }
+    
+    /**
+     * Returns a {@link List} of all {@link Call}s of the type {@link ElementType#OPERATION}, which have the given name.
+     *  
+     * @param name the name of the operation(s), which should be returned
+     * @return the {@link List} of all {@link Call}s of the type {@link ElementType#OPERATION} with the given name or
+     *         <code>null</code>, if no such elements are registered
+     */
+    public List<Call> getOperations(String name) {
+        return operations.get(name);
+    }
+    
+    /**
+     * Returns a {@link List} of all {@link Call}s of the type {@link ElementType#EXTRACTOR_CALL}, which have the given
      * name.
      *  
-     * @param name the name of the artifact parameter type, which should be returned
-     * @return the {@link ParameterType} of the type {@link ElementType#ARTIFACT_PARAMETER_TYPE} with the given name or
-     *         <code>null</code>, if no such element is registered
+     * @param name the name of the extractor call(s), which should be returned
+     * @return the {@link List} of all {@link Call}s of the type {@link ElementType#EXTRACTOR_CALL} with the given name
+     *         or <code>null</code>, if no such elements are registered
      */
-    public ParameterType getArtifactParameterType(String name) {
-        ParameterType artifactParameterType = null;
-        List<ParameterType> availableArtifactParameterTypes = artifactParameterTypes.get(name);
-        if (availableArtifactParameterTypes != null && !availableArtifactParameterTypes.isEmpty()) {
-            artifactParameterType = availableArtifactParameterTypes.get(0);
-        }
-        return artifactParameterType;
+    public List<Call> getExtractorCalls(String name) {
+        return extractorCalls.get(name);
     }
     
     /**
-     * Returns the {@link ParameterType} of the type {@link ElementType#FRAGMENT_PARAMETER_TYPE}, which has the given
+     * Returns a {@link List} of all {@link Call}s of the type {@link ElementType#ANALYSIS_CALL}, which have the given
      * name.
      *  
-     * @param name the name of the fragment parameter type, which should be returned
-     * @return the {@link ParameterType} of the type {@link ElementType#FRAGMENT_PARAMETER_TYPE} with the given name or
-     *         <code>null</code>, if no such element is registered
+     * @param name the name of the analysis call(s), which should be returned
+     * @return the {@link List} of all {@link Call}s of the type {@link ElementType#ANALYSIS_CALL} with the given name
+     *         or <code>null</code>, if no such elements are registered
      */
-    public ParameterType getFragmentParameterType(String name) {
-        ParameterType fragmentParameterType = null;
-        List<ParameterType> availableFragmentParameterTypes = fragmentParameterTypes.get(name);
-        if (availableFragmentParameterTypes != null && !availableFragmentParameterTypes.isEmpty()) {
-            fragmentParameterType = availableFragmentParameterTypes.get(0);
-        }
-        return fragmentParameterType;
+    public List<Call> getAnalysisCall(String name) {
+        return analysisCalls.get(name);
     }
     
-    /**
-     * Returns the {@link ParameterType} of the type {@link ElementType#RESULT_PARAMETER_TYPE}, which has the given
-     * name.
-     *  
-     * @param name the name of the result parameter type, which should be returned
-     * @return the {@link ParameterType} of the type {@link ElementType#RESULT_PARAMETER_TYPE} with the given name or
-     *         <code>null</code>, if no such element is registered
-     */
-    public ParameterType getResultParameterType(String name) {
-        ParameterType resultParameterType = null;
-        List<ParameterType> availableResultParameterTypes = resultParameterTypes.get(name);
-        if (availableResultParameterTypes != null && !availableResultParameterTypes.isEmpty()) {
-            resultParameterType = availableResultParameterTypes.get(0);
-        }
-        return resultParameterType;
-    }
-    
-    /**
-     * Returns the {@link ChangeIdentifier}, which has the given name.
-     *  
-     * @param name the name of the change identifier, which should be returned
-     * @return the {@link ChangeIdentifier} with the given name or <code>null</code>, if no such element is registered
-     */
-    public ChangeIdentifier getChangeIdentifier(String name) {
-        ChangeIdentifier changeIdentifier = null;
-        List<ChangeIdentifier> availableChangeIdentifiers = changeIdentifiers.get(name);
-        if (availableChangeIdentifiers != null && !availableChangeIdentifiers.isEmpty()) {
-            changeIdentifier = availableChangeIdentifiers.get(0);
-        }
-        return changeIdentifier;
-    }
-    
-    /**
-     * Returns the {@link Call} of the type {@link ElementType#OPERATION}, which has the given name.
-     *  
-     * @param name the name of the operation, which should be returned
-     * @return the {@link Call} of the type {@link ElementType#OPERATION} with the given name or <code>null</code>, if
-     *         no such element is registered
-     */
-    public Call getOperation(String name) {
-        Call operation = null;
-        List<Call> availableCalls = operations.get(name);
-        if (availableCalls != null && !availableCalls.isEmpty()) {
-            operation = availableCalls.get(0);
-        }
-        return operation;
-    }
-    
-    /**
-     * Returns the {@link Call} of the type {@link ElementType#EXTRACTOR_CALL}, which has the given name.
-     *  
-     * @param name the name of the extractor call, which should be returned
-     * @return the {@link Call} of the type {@link ElementType#EXTRACTOR_CALL} with the given name or <code>null</code>,
-     *         if no such element is registered
-     */
-    public Call getExtractorCall(String name) {
-        Call extractorCall = null;
-        List<Call> availableCalls = extractorCalls.get(name);
-        if (availableCalls != null && !availableCalls.isEmpty()) {
-            extractorCall = availableCalls.get(0);
-        }
-        return extractorCall;
-    }
-    
-    /**
-     * Returns the {@link Call} of the type {@link ElementType#ANALYSIS_CALL}, which has the given name.
-     *  
-     * @param name the name of the analysis call, which should be returned
-     * @return the {@link Call} of the type {@link ElementType#ANALYSIS_CALL} with the given name or <code>null</code>,
-     *         if no such element is registered
-     */
-    public Call getAnalysisCall(String name) {
-        Call analysisCall = null;
-        List<Call> availableCalls = analysisCalls.get(name);
-        if (availableCalls != null && !availableCalls.isEmpty()) {
-            analysisCall = availableCalls.get(0);
-        }
-        return analysisCall;
-    }
 }
