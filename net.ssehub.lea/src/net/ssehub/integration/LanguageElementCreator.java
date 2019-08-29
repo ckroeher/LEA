@@ -235,6 +235,7 @@ public class LanguageElementCreator {
         String callName = null;
         String returnType = null;
         String[] parameters = null;
+        String parentParameterType = null;
         if (pluginClassMethod.isAnnotationPresent(Operation.class)) {
             // The pluginClassMethod declares a general operation, like "op()" or "var.op()"
             specificElementType = ElementType.OPERATION;
@@ -242,6 +243,9 @@ public class LanguageElementCreator {
             Operation customAnnotation = pluginClassMethod.getAnnotation(Operation.class);
             if (!customAnnotation.name().isBlank()) {
                 callName = customAnnotation.name();
+            }
+            if (!customAnnotation.isMemberOf().isBlank()) {
+                parentParameterType = customAnnotation.isMemberOf();
             }
             returnType = createLanguageElementName(pluginClassMethod.getGenericReturnType().getTypeName(),
                     customAnnotation.returnType());
@@ -272,8 +276,15 @@ public class LanguageElementCreator {
         // Create the language element, if the element type is known
         if (specificElementType != null) {
             try {
-                call = new Call(specificElementType, callName, returnType, parameters, pluginClassMethod, sourceClass,
-                        sourcePlugin);
+                if (parentParameterType != null) {
+                    // This call is a member operation, like "var.op()" 
+                    call = new Call(callName, returnType, parameters, parentParameterType, pluginClassMethod,
+                            sourceClass, sourcePlugin);
+                } else {
+                    // This call is global operation, like "op()"
+                    call = new Call(specificElementType, callName, returnType, parameters, pluginClassMethod,
+                            sourceClass, sourcePlugin);
+                }
             } catch (LanguageElementException e) {
                 throw new ExternalElementException("Creating call based on method \"" 
                         + pluginClassMethod.getName() + "\" in class \"" + sourceClass.getSimpleName() 
