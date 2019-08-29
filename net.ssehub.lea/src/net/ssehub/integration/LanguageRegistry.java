@@ -252,6 +252,19 @@ public class LanguageRegistry extends AbstractLanguageRegistry {
     }
     
     /**
+     * Returns a {@link List} of all {@link Call}s of the type {@link ElementType#OPERATION}, which represent member
+     * operations for the {@link ParameterType} identified by the given name.
+     *  
+     * @param name the name of the {@link ParameterType} for which all member operations should be returned
+     * @return the {@link List} of all {@link Call}s of the type {@link ElementType#OPERATION}, which represent member
+     *         operations for the {@link ParameterType} identified by the given name or <code>null</code>, if no such
+     *         elements are registered
+     */
+    public List<Call> getMemberOperations(String name) {
+        return operations.get(name);
+    }
+    
+    /**
      * Returns a {@link List} of all {@link Call}s of the type {@link ElementType#EXTRACTOR_CALL}, which have the given
      * name.
      *  
