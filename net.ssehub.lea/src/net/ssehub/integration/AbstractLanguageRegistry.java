@@ -76,6 +76,13 @@ public abstract class AbstractLanguageRegistry {
     protected HashMap<String, List<Call>> operations;
     
     /**
+     * The {@link HashMap} of all available {@link Call}s of the type {@link ElementType#OPERATION} for the definition
+     * of member operations on parameter type instances. Each entry in this map has a parameter type name as its key and
+     * a {@link List} of {@link Call}s that represent member operations for that parameter type as its value.
+     */
+    protected HashMap<String, List<Call>> memberOperations;
+    
+    /**
      * The {@link HashMap} of all available {@link Call}s of the type {@link ElementType#EXTRACTOR_CALL} for the
      * definition of fragment extractions from artifacts. Each entry in this map has a particular extractor (call) name
      * as its key and a {@link List} of {@link Call}s with that name as its value.
@@ -117,6 +124,7 @@ public abstract class AbstractLanguageRegistry {
         resultParameterTypes = new HashMap<String, List<ParameterType>>();
         changeIdentifiers = new HashMap<String, List<ChangeIdentifier>>();
         operations = new HashMap<String, List<Call>>();
+        memberOperations = new HashMap<String, List<Call>>();
         extractorCalls = new HashMap<String, List<Call>>();
         analysisCalls = new HashMap<String, List<Call>>();
         cachedChangeIdentifiers = new ArrayList<ChangeIdentifier>();
@@ -170,8 +178,15 @@ public abstract class AbstractLanguageRegistry {
                 }
                 break;
             case OPERATION:
-                if (!addCall((Call) newElement, operations)) {
-                    rejectedElements.add(newElement);
+                Call newOperation = (Call) newElement;
+                if (newOperation.isMemberOperation()) {
+                    if (!addCall((Call) newElement, memberOperations)) {
+                        rejectedElements.add(newElement);
+                    }
+                } else {                    
+                    if (!addCall((Call) newElement, operations)) {
+                        rejectedElements.add(newElement);
+                    }
                 }
                 break;
             case EXTRACTOR_CALL:
@@ -373,11 +388,15 @@ public abstract class AbstractLanguageRegistry {
     
     /**
      * Adds the given {@link Call} to the given {@link HashMap} by calling {@link #addCallUnchecked(Call, HashMap)},
-     * if the map does not already contain such a call and that call is valid. In case of an invalid call, it is added
-     * to the {@link #cachedCalls} for re-validation, if new {@link ParameterType}s are added. The caller of this 
-     * method must ensure that the {@link ElementType} of the given {@link Call} and the particular {@link HashMap}
-     * match as follows:
+     * if this language registry does not already contain such a call and that call is valid. In case of an invalid 
+     * call, it is added to the {@link #cachedCalls} for re-validation, if new {@link ParameterType}s are added. The
+     * caller of this method must ensure that the {@link ElementType} of the given {@link Call} and the particular 
+     * {@link HashMap} match as follows:
      * <ul>
+     * <li>{@link ElementType#OPERATION} requires {@link #operations}, if {@link Call#isMemberOperation()} returns 
+     *     <code>false</code></li>
+     * <li>{@link ElementType#OPERATION} requires {@link #memberOperations}, if {@link Call#isMemberOperation()}
+     *     returns <code>true</code></li>    
      * <li>{@link ElementType#OPERATION} requires {@link #operations}</li>
      * <li>{@link ElementType#EXTRACTOR_CALL} requires {@link #extractorCalls}</li>
      * <li>{@link ElementType#ANALYSIS_CALL} requires {@link #analysisCalls}</li>
@@ -396,7 +415,7 @@ public abstract class AbstractLanguageRegistry {
     private boolean addCall(Call newCall, HashMap<String, List<Call>> callMap) {
         boolean callAdded = false;
         if (!isDuplicate(newCall)) {
-            if (isValid(newCall)) {                
+            if (isValid(newCall)) {
                 addCallUnchecked(newCall, callMap);
             } else {
                 cachedCalls.add(newCall);
@@ -408,26 +427,44 @@ public abstract class AbstractLanguageRegistry {
     
     /**
      * Adds the given {@link Call} to the given {@link HashMap} without any further checks. If checks are required, use
-     * {@link #addCall(Call, HashMap)}.
+     * {@link #addCall(Call, HashMap)}.<br>
+     * <br>
+     * The way of retrieving the actual {@link List} to which the given {@link Call} will be added depends on whether
+     * the given {@link Call} is a member operation ({@link Call#isMemberOperation()} return <code>true</code>) or not.
+     * In the former case, the key for retrieving the {@link List} will be {@link Call#getParentParameterType()}, while
+     * in the latter case, the key will be {@link Call#getName()}. The caller of this method must ensure, that the given
+     * parameters conform to this behavior.
      * 
      * @param newCall the {@link Call} to add to the given {@link HashMap}; should never be <code>null</code>
      * @param callMap the {@link HashMap} to which the given {@link Call} should be added; should never be
      *        <code>null</code>
      */
     private void addCallUnchecked(Call newCall, HashMap<String, List<Call>> callMap) {
-        String callName = newCall.getName();
-        List<Call> availableCalls = callMap.remove(callName);
+        String mapKey;
+        if (newCall.isMemberOperation()) {
+            // Member operations use their parent parameter type as key
+            mapKey = newCall.getParentParameterType();
+        } else {
+            // General operations use their name as key
+            mapKey = newCall.getName();
+        }
+        List<Call> availableCalls = callMap.remove(mapKey);
         if (availableCalls == null) {
             availableCalls = new ArrayList<Call>();
         }
         availableCalls.add(newCall);            
-        callMap.put(callName, availableCalls);        
+        callMap.put(mapKey, availableCalls);        
         languageElementCounter++;
     }
     
     /**
-     * Checks whether the given {@link Call} is a duplicate of another {@link Call} in the {@link #operations}, the
-     * {@link #extractorCalls}, the {@link #analysisCalls}, or the {@link #cachedCalls}.
+     * Checks whether the given {@link Call} is a duplicate of another {@link Call} in the:
+     * <ul>
+     * <li>{@link #memberOperations}, if {@link Call#isMemberOperation()} returns <code>true</code></li>
+     * <li>{@link #operations}, the {@link #extractorCalls}, the {@link #analysisCalls}, or the 
+     *     {@link #cachedCalls}, if {@link Call#isMemberOperation()} returns <code>false</code></li>
+     * </ul>
+     * for the given {@link Call}.
      *  
      * @param call the {@link Call} for which a duplicate should be found; should never be <code>null</code>
      * @return <code>true</code>, if the given {@link Call} is a duplicate of one of the available calls in this
@@ -437,9 +474,11 @@ public abstract class AbstractLanguageRegistry {
      */
     private boolean isDuplicate(Call call) {
         boolean isDuplicate = false;
-        if (containsDuplicate(operations, call) 
-                || containsDuplicate(extractorCalls, call) 
-                || containsDuplicate(analysisCalls, call)
+        if (call.isMemberOperation()) {
+            isDuplicate = containsDuplicate(memberOperations, call.getParentParameterType(), call);
+        } else if (containsDuplicate(operations, call.getName(), call) 
+                || containsDuplicate(extractorCalls, call.getName(), call) 
+                || containsDuplicate(analysisCalls, call.getName(), call)
                 || containsDuplicate(cachedCalls, call)) {
             isDuplicate = true;
         }
@@ -448,20 +487,22 @@ public abstract class AbstractLanguageRegistry {
     
     /**
      * Checks whether the given {@link HashMap} contains a {@link Call} that is a duplicate of the given {@link Call}.
-     * In detail, it first searches for an entry in that map, where the key equals the name of the given call, and,
-     * second, checks each call of the corresponding {@link List} (the value of the entry), if it is a duplicate of the
+     * In detail, it first searches for an entry in that map, where the key equals the given search key, and, second,
+     * checks each call of the corresponding {@link List} (the value of the entry), if it is a duplicate of the
      * given call.
      * 
      * @param callMap the {@link HashMap} in which will be searched for a duplicate of the given {@link Call}; should
-     *        never be <code>null</code>, but may be <i>empty</i> 
+     *        never be <code>null</code>, but may be <i>empty</i>
+     * @param searchKey the key, which shall be used to retrieve the {@link List} of the given {@link HashMap}; should
+     *        never be <code>null</code> nor <i>blank</i>
      * @param call the {@link Call} for which a duplicate should be found in the given map; should never be
      *        <code>null</code>
      * @return <code>true</code>, if the given {@link HashMap} contains a {@link Call} that is a duplicate of the given
      *         {@link Call}; <code>false</code> otherwise
      * @see #containsDuplicate(List, Call)
      */
-    private boolean containsDuplicate(HashMap<String, List<Call>> callMap, Call call) {
-        return containsDuplicate(callMap.get(call.getName()), call);
+    private boolean containsDuplicate(HashMap<String, List<Call>> callMap, String searchKey, Call call) {
+        return containsDuplicate(callMap.get(searchKey), call);
     }
     
     /**
@@ -503,17 +544,27 @@ public abstract class AbstractLanguageRegistry {
     /**
      * Checks whether the return type retrieved by {@link Call#getReturnType()} and each element in
      * {@link Call#getParameters()} of the given {@link Call} represents a {@link ParameterType} available in this
-     * registry.
+     * registry. In case that {@link Call#isMemberOperation()} returns <code>true</code>, an additional check for the 
+     * availability of a {@link ParameterType} represented by {@link Call#getParentParameterType()} is performed.
      * 
-     * @param call the {@link Call}, which should be validated regarding the presence of its return type and parameters
-     *        in this registry; should never be <code>null</code>
-     * @return <code>true</code>, if the return type and the parameters are available; <code>false</code> otherwise
+     * @param call the {@link Call}, which should be validated regarding the presence of its return type, parameters,
+     *        and (optional) parent parameter type in this registry; should never be <code>null</code>
+     * @return <code>true</code>, if the return type, the parameters, and (optional) the parent parameter type are
+     *         available; <code>false</code> otherwise
      * @see #isParameterTypeAvailable(String)
      * @see #areParameterTypesAvailable(String[])
      */
     private boolean isValid(Call call) {
-        return isParameterTypeAvailable(call.getReturnType())
-                && areParameterTypesAvailable(call.getParameters());
+        boolean isValid = false;
+        if (call.isMemberOperation()) {
+            isValid = isParameterTypeAvailable(call.getParentParameterType())
+                    && isParameterTypeAvailable(call.getReturnType())
+                    && areParameterTypesAvailable(call.getParameters());
+        } else {
+            isValid = isParameterTypeAvailable(call.getReturnType())
+                    && areParameterTypesAvailable(call.getParameters());
+        }
+        return isValid;
     }
     
     /**
@@ -585,7 +636,11 @@ public abstract class AbstractLanguageRegistry {
             if (isValid(cachedCall)) {
                 switch(cachedCall.getElementType()) {
                 case OPERATION:
-                    callMap = operations;
+                    if (cachedCall.isMemberOperation()) {
+                        callMap = memberOperations;
+                    } else {                    
+                        callMap = operations;
+                    }
                     break;
                 case EXTRACTOR_CALL:
                     callMap = extractorCalls;
