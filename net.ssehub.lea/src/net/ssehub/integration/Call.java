@@ -55,9 +55,9 @@ public class Call extends LanguageElement {
      * @param sourceClass the {@link Class} from where this new element is created
      * @param sourcePlugin the {@link File}, which is a Java archive file, from where this new element is created
      * @throws LanguageElementException if any of the above parameters is <code>null</code>, the element type does not
-     *         match one of those defined above, the return type is <i>blank</i> or, the return type is 
+     *         match one of those defined above, the return type is <i>blank</i>, or the return type is 
      *         <code>void</code> and the element type is either {@link ElementType#EXTRACTOR_CALL} or 
-     *         {@link ElementType#ANALYSIS_CALL}, the parameter list is <i>empty</i>, or the name is <i>blank</i>
+     *         {@link ElementType#ANALYSIS_CALL}, or the name is <i>blank</i>
      */
 //CHECKSTYLE:OFF
     public Call(ElementType elementType, String name, String returnType, String[] parameters, Method sourceMethod,
