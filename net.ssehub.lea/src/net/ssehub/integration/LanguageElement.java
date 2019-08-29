@@ -35,6 +35,12 @@ public abstract class LanguageElement {
     private String name;
     
     /**
+     * The fully qualified name as a concatenation of the canonical name of the {@link #sourceClass} and the (simple)
+     * {@link #name} of this element.
+     */
+    private String fullyQualifiedName;
+    
+    /**
      * The {@link Class} from where this element was created.
      */
     private Class<?> sourceClass;
@@ -71,6 +77,7 @@ public abstract class LanguageElement {
         this.name = name;
         this.sourceClass = sourceClass;
         this.sourcePlugin = sourcePlugin;
+        this.fullyQualifiedName = sourceClass.getCanonicalName() + "." + name;
     }
     
     /**
@@ -83,12 +90,22 @@ public abstract class LanguageElement {
     }
     
     /**
-     * Returns the name of this element.
+     * Returns the (simple) name of this element.
      * 
      * @return the name of this element; never <code>null</code> nor <i>blank</i>
      */
     public String getName() {
         return name;
+    }
+    
+    /**
+     * Returns the fully qualified name by concatenating the canonical name of the {@link #sourceClass} with the 
+     * (simple) {@link #name} of this element.
+     * 
+     * @return the fully qualified name of this element; never <code>null</code> nor <i>blank</i>
+     */
+    public String getFullyQualifiedName() {
+        return fullyQualifiedName;
     }
     
     /**
