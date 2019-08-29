@@ -71,27 +71,6 @@ public class Call extends LanguageElement {
         super(elementType, name, sourceClass, sourcePlugin);
         initializeCall(elementType, returnType, parameters, sourceMethod);
         this.parentParameterType = null;
-//        if (elementType != ElementType.OPERATION 
-//                && elementType != ElementType.EXTRACTOR_CALL 
-//                && elementType != ElementType.ANALYSIS_CALL) {
-//            throw new LanguageElementException("Type mismatch: \"" + elementType + "\" is not a valid call type");
-//        }
-//        if (returnType == null || returnType.isBlank()) {
-//            throw new LanguageElementException("The return type for the new language element is null or blank");
-//        }
-//        if (returnType.equals("void") && 
-//                (elementType == ElementType.EXTRACTOR_CALL || elementType == ElementType.ANALYSIS_CALL)) {
-//            throw new LanguageElementException("Extractor and analysis calls must have a non-void return type");
-//        }
-//        if (parameters == null) {
-//            throw new LanguageElementException("The parameter list for the new language element is null");
-//        }
-//        if (sourceMethod == null) {
-//            throw new LanguageElementException("The source method for the new language element is null");
-//        }
-//        this.returnType = returnType;
-//        this.parameters = parameters;
-//        this.sourceMethod = sourceMethod;
     }
 //CHECKSTYLE:ON
     
@@ -182,6 +161,28 @@ public class Call extends LanguageElement {
      */
     public String[] getParameters() {
         return parameters;
+    }
+    
+    /**
+     * Checks whether this call is a member operation (<code>true</code>) or not (<code>false</code>).
+     * 
+     * @return <code>true</code>, if this call is a member operation; <code>false</code> otherwise
+     * @see #isMemberOperationOf(String)
+     */
+    public boolean isMemberOperation() {
+        return parentParameterType != null;
+    }
+    
+    /**
+     * Checks whether this call is a member operation of the parameter type identified by the given name
+     * (<code>true</code>) or not (<code>false</code>).
+     * 
+     * @param parameterTypeName the name of the parameter type to check whether this call is a member operation of it
+     * @return <code>true</code>, if this call is a member operation of the parameter type identified by the given name;
+     *         <code>false</code> otherwise
+     */
+    public boolean isMemberOperationOf(String parameterTypeName) {
+        return parentParameterType.equals(parameterTypeName);
     }
     
     /**
