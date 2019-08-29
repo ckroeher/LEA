@@ -38,6 +38,12 @@ public class Call extends LanguageElement {
     private String[] parameters;
     
     /**
+     * The name of the parameter type for which this call represents a member operation. May be <code>null</code>, if
+     * this call does not represent a member operation.
+     */
+    private String parentParameterType;
+    
+    /**
      * The {@link Method} from where this call was created.
      */
     private Method sourceMethod;
@@ -63,6 +69,79 @@ public class Call extends LanguageElement {
     public Call(ElementType elementType, String name, String returnType, String[] parameters, Method sourceMethod,
             Class<?> sourceClass, File sourcePlugin) throws LanguageElementException {
         super(elementType, name, sourceClass, sourcePlugin);
+        initializeCall(elementType, returnType, parameters, sourceMethod);
+        this.parentParameterType = null;
+//        if (elementType != ElementType.OPERATION 
+//                && elementType != ElementType.EXTRACTOR_CALL 
+//                && elementType != ElementType.ANALYSIS_CALL) {
+//            throw new LanguageElementException("Type mismatch: \"" + elementType + "\" is not a valid call type");
+//        }
+//        if (returnType == null || returnType.isBlank()) {
+//            throw new LanguageElementException("The return type for the new language element is null or blank");
+//        }
+//        if (returnType.equals("void") && 
+//                (elementType == ElementType.EXTRACTOR_CALL || elementType == ElementType.ANALYSIS_CALL)) {
+//            throw new LanguageElementException("Extractor and analysis calls must have a non-void return type");
+//        }
+//        if (parameters == null) {
+//            throw new LanguageElementException("The parameter list for the new language element is null");
+//        }
+//        if (sourceMethod == null) {
+//            throw new LanguageElementException("The source method for the new language element is null");
+//        }
+//        this.returnType = returnType;
+//        this.parameters = parameters;
+//        this.sourceMethod = sourceMethod;
+    }
+//CHECKSTYLE:ON
+    
+    /**
+     * Constructs a new {@link Call} of the type {@link ElementType#OPERATION} and with the given attributes, which will
+     * represent a member operations of a {@link ParameterType}, e.g., 
+     * <code>parameterTypeInstance.memberOperation()</code>. Hence, this constructor requires a parent parameter type as
+     * an additional parameter. For general {@link Call}s use 
+     * {@link #Call(ElementType, String, String, String[], Method, Class, File)}.
+     * 
+     * @param name the name of this new element
+     * @param returnType the name of the type of element(s) this call will return
+     * @param parameters the array of names, which denote the elements this call accepts as parameters
+     * @param parentParameterType the name of the parameter type for which this call represents a member operation
+     * @param sourceMethod the {@link Method} from where this new element is created
+     * @param sourceClass the {@link Class} from where this new element is created
+     * @param sourcePlugin the {@link File}, which is a Java archive file, from where this new element is created
+     * @throws LanguageElementException if any of the above parameters is <code>null</code>, the return type is 
+     *         <i>blank</i>, the parent parameter type is <i>blank</i>, or the name is <i>blank</i>
+     */
+//CHECKSTYLE:OFF
+    public Call(String name, String returnType, String[] parameters, String parentParameterType,
+            Method sourceMethod, Class<?> sourceClass, File sourcePlugin) throws LanguageElementException {
+        super(ElementType.OPERATION, name, sourceClass, sourcePlugin);
+        initializeCall(ElementType.OPERATION, returnType, parameters, sourceMethod);
+        if (parentParameterType == null || parentParameterType.isBlank()) {
+            throw new LanguageElementException("The parent parameter type for the new language element is not defined");
+        }
+        this.parentParameterType = parentParameterType;
+    }
+//CHECKSTYLE:ON
+    
+    /**
+     * Initializes the attributes of this {@link Call} with the given parameter values.
+     * 
+     * 
+     * @param elementType the {@link ElementType} of this new element, which must be {@link ElementType#OPERATION},
+     *        {@link ElementType#EXTRACTOR_CALL}, or {@link ElementType#ANALYSIS_CALL}; any other type leads to a 
+     *        {@link LanguageElementException}
+     * 
+     * @param returnType the name of the type of element(s) this call will return
+     * @param parameters the array of names, which denote the elements this call accepts as parameters
+     * @param sourceMethod the {@link Method} from where this new element is created
+     * @throws LanguageElementException if return type, parameters, or source method are <code>null</code>, the element
+     *         type does not  match one of those defined above, the return type is <i>blank</i>, or the return type is 
+     *         <code>void</code> and the element type is either {@link ElementType#EXTRACTOR_CALL} or 
+     *         {@link ElementType#ANALYSIS_CALL}, or the name is <i>blank</i>
+     */
+    private void initializeCall(ElementType elementType, String returnType, String[] parameters, Method sourceMethod) 
+            throws LanguageElementException {
         if (elementType != ElementType.OPERATION 
                 && elementType != ElementType.EXTRACTOR_CALL 
                 && elementType != ElementType.ANALYSIS_CALL) {
@@ -71,8 +150,8 @@ public class Call extends LanguageElement {
         if (returnType == null || returnType.isBlank()) {
             throw new LanguageElementException("The return type for the new language element is null or blank");
         }
-        if (returnType.equals("void") && 
-                (elementType == ElementType.EXTRACTOR_CALL || elementType == ElementType.ANALYSIS_CALL)) {
+        if (returnType.equals("void") 
+                && (elementType == ElementType.EXTRACTOR_CALL || elementType == ElementType.ANALYSIS_CALL)) {
             throw new LanguageElementException("Extractor and analysis calls must have a non-void return type");
         }
         if (parameters == null) {
@@ -85,7 +164,6 @@ public class Call extends LanguageElement {
         this.parameters = parameters;
         this.sourceMethod = sourceMethod;
     }
-//CHECKSTYLE:ON
     
     /**
      * Returns the name of the type of element(s) this call will return.
@@ -104,6 +182,17 @@ public class Call extends LanguageElement {
      */
     public String[] getParameters() {
         return parameters;
+    }
+    
+    /**
+     * Returns the name of the parameter type for which this call represents a member operation.
+     * 
+     * @return the name of the parameter type for which this call represents a member operation or never 
+     *         <code>null</code>, if this call is not a member operation
+     * @see #Call(String, String, String[], String, Method, Class, File)
+     */
+    public String getParentParameterType() {
+        return parentParameterType;
     }
     
     /**
