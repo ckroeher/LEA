@@ -23,6 +23,7 @@ import java.lang.annotation.Target;
 
 import net.ssehub.integration.Call;
 import net.ssehub.integration.ElementType;
+import net.ssehub.integration.ParameterType;
 
 /**
  * Indicates that the annotated method represents a {@link Call} of the type {@link ElementType#OPERATION}.
@@ -62,4 +63,17 @@ public @interface Operation {
      *         default value is an <i>empty</i> array
      */
     public String[] parameters() default { };
+    
+    /**
+     * Returns the name of the {@link ParameterType} for which this {@link ElementType#OPERATION} represents a member
+     * operation. If this name is defined, the annotated method is interpreted as a member method of the defined 
+     * {@link ParameterType} and, hence, can only be called like <code>parameterTypeInstance.method()</code>. If this 
+     * name is not defined, the annotated method is interpreted as global method and, hence, can only be called like 
+     * <code>method()</code>.
+     * 
+     * @return the name of the {@link ParameterType} for which this {@link ElementType#OPERATION} represents a member
+     *         operation; the default value is an <i>empty</i> string, which results in interpreting the annotated 
+     *         method as being global
+     */
+    public String isMemberOf() default "";
 }
