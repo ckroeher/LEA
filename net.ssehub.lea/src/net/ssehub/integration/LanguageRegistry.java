@@ -261,7 +261,7 @@ public class LanguageRegistry extends AbstractLanguageRegistry {
      *         elements are registered
      */
     public List<Call> getMemberOperations(String name) {
-        return operations.get(name);
+        return memberOperations.get(name);
     }
     
     /**
