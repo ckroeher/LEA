@@ -331,10 +331,8 @@ public abstract class AbstractLanguageRegistry {
         boolean changeIdentifierAdded = false;
         String changeIdentifierName = newChangeIdentifier.getName();
         List<ChangeIdentifier> availableChangeIdentifiers = changeIdentifiers.get(changeIdentifierName);
-        if (availableChangeIdentifiers == null
-                || availableChangeIdentifiers.isEmpty()
-                || (!containsDuplicate(availableChangeIdentifiers, newChangeIdentifier) 
-                        && !containsDuplicate(cachedChangeIdentifiers, newChangeIdentifier))) {
+        if (!containsDuplicate(availableChangeIdentifiers, newChangeIdentifier)
+                && !containsDuplicate(cachedChangeIdentifiers, newChangeIdentifier)) {
             if (isValid(newChangeIdentifier)) {
                 addChangeIdentifierUnchecked(newChangeIdentifier);
             } else {
@@ -368,8 +366,7 @@ public abstract class AbstractLanguageRegistry {
      * equals the given {@link ChangeIdentifier}.
      * 
      * @param changeIdentifierList the {@link List} of {@link ChangeIdentifier}s in which will be searched for a
-     *        {@link ChangeIdentifier}, which is equal to the given {@link ChangeIdentifier}; should never be
-     *        <code>null</code>, but may be <i>empty</i>
+     *        {@link ChangeIdentifier}, which is equal to the given {@link ChangeIdentifier}
      * @param changeIdentifier the {@link ChangeIdentifier} for which an equal {@link ChangeIdentifier} should be found
      *        in the given list; should never be <code>null</code>
      * @return <code>true</code>, if the given list of {@link ChangeIdentifier}s contains a {@link ChangeIdentifier}
@@ -378,10 +375,12 @@ public abstract class AbstractLanguageRegistry {
      */
     private boolean containsDuplicate(List<ChangeIdentifier> changeIdentifierList, ChangeIdentifier changeIdentifier) {
         boolean duplicateFound = false;
-        int changeIdentifierCounter = 0;
-        while (!duplicateFound && changeIdentifierCounter < changeIdentifierList.size()) {
-            duplicateFound = changeIdentifier.equals(changeIdentifierList.get(changeIdentifierCounter));
-            changeIdentifierCounter++;
+        if (changeIdentifierList != null && !changeIdentifierList.isEmpty()) {            
+            int changeIdentifierCounter = 0;
+            while (!duplicateFound && changeIdentifierCounter < changeIdentifierList.size()) {
+                duplicateFound = changeIdentifier.equals(changeIdentifierList.get(changeIdentifierCounter));
+                changeIdentifierCounter++;
+            }
         }
         return duplicateFound;
     }
