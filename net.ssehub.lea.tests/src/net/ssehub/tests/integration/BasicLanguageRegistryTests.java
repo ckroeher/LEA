@@ -108,6 +108,9 @@ public class BasicLanguageRegistryTests {
                 {new Call(ElementType.OPERATION, "file", "FileArtifact", new String[] {}, 
                         BasicLanguageRegistryTests.class.getDeclaredMethod("initializeExpectedResults"),
                         BasicLanguageRegistryTests.class, SOURCE_PLUGIN)},
+                {new Call("memberOperation", "FileArtifact", new String[] {}, "FileArtifact", 
+                        BasicLanguageRegistryTests.class.getDeclaredMethod("initializeExpectedResults"),
+                        BasicLanguageRegistryTests.class, SOURCE_PLUGIN)},
                 {new Call(ElementType.EXTRACTOR_CALL, "extract", "BlockFragment", new String[] {"FileArtifact"},
                         BasicLanguageRegistryTests.class.getDeclaredMethod("initializeExpectedResults"),
                         BasicLanguageRegistryTests.class, SOURCE_PLUGIN)},
@@ -232,8 +235,14 @@ public class BasicLanguageRegistryTests {
                     LanguageRegistry.INSTANCE.getChangeIdentifiers(expectedElement.getName()));
             break;
         case OPERATION:
-            registeredElement = getRegisteredCall(
-                    LanguageRegistry.INSTANCE.getOperations(expectedElement.getName()));
+            Call expectedCallElement = (Call) expectedElement;
+            if (expectedCallElement.isMemberOperation()) {
+                registeredElement = getRegisteredCall(
+                        LanguageRegistry.INSTANCE.getMemberOperations(expectedCallElement.getParentParameterType()));
+            } else {                
+                registeredElement = getRegisteredCall(
+                        LanguageRegistry.INSTANCE.getOperations(expectedElement.getName()));
+            }
             break;
         case EXTRACTOR_CALL:
             registeredElement = getRegisteredCall(
