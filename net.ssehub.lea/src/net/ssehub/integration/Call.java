@@ -247,9 +247,9 @@ public class Call extends LanguageElement {
     }
     
     /**
-     * Checks whether the {@link #returnType}, the {@link #parameters}, and the {@link #sourceMethod} of this
-     * {@link Call} and the given {@link LanguageElement} are equal. Hence, this method will cast the given element into
-     * a {@link Call} object without further checks.
+     * Checks whether the {@link #returnType}, the {@link #parameters}, the {@link #sourceMethod}, and the 
+     * {@link #parentParameterType} of this {@link Call} and the given {@link LanguageElement} are equal. Hence, this
+     * method will cast the given element into a {@link Call} object without further checks.
      * 
      * @param comparable the {@link LanguageElement} of runtime class {@link Call} to compare to this {@link Call};
      *        should never be <code>null</code>
@@ -261,15 +261,23 @@ public class Call extends LanguageElement {
         Call comparableCall = (Call) comparable; // Callers ensure equality of this and the given elements runtime class
         if (this.returnType.equals(comparableCall.getReturnType()) 
                 && this.sourceMethod.toGenericString().equals(comparableCall.getSourceMethod().toGenericString())) {
-            String[] comparableParameters = comparableCall.getParameters();
-            if (this.parameters.length == comparableParameters.length) {
-                int parametersCounter = 0;
-                while (hasEqualCallAttributes && parametersCounter < this.parameters.length) {
-                    if (!this.parameters[parametersCounter].equals(
-                            comparableParameters[parametersCounter])) {
-                        hasEqualCallAttributes = false;
+//CHECKSTYLE:OFF
+            if ((this.parentParameterType == null && comparableCall.getParentParameterType() == null)
+                    || (this.parentParameterType != null && comparableCall.getParentParameterType() != null
+                        && this.parentParameterType.equals(comparableCall.getParentParameterType()))) {
+//CHECKSTYLE:ON
+                String[] comparableParameters = comparableCall.getParameters();
+                if (this.parameters.length == comparableParameters.length) {
+                    int parametersCounter = 0;
+                    while (hasEqualCallAttributes && parametersCounter < this.parameters.length) {
+                        if (!this.parameters[parametersCounter].equals(
+                                comparableParameters[parametersCounter])) {
+                            hasEqualCallAttributes = false;
+                        }
+                        parametersCounter++;
                     }
-                    parametersCounter++;
+                } else {
+                    hasEqualCallAttributes = false;
                 }
             } else {
                 hasEqualCallAttributes = false;
