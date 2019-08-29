@@ -177,7 +177,8 @@ public class Call extends LanguageElement {
      * Checks whether this call is a member operation of the parameter type identified by the given name
      * (<code>true</code>) or not (<code>false</code>).
      * 
-     * @param parameterTypeName the name of the parameter type to check whether this call is a member operation of it
+     * @param parameterTypeName the name of the parameter type to check whether this call is a member operation of it;
+     *        should never be <code>null</code>
      * @return <code>true</code>, if this call is a member operation of the parameter type identified by the given name;
      *         <code>false</code> otherwise
      */
