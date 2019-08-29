@@ -17,6 +17,7 @@ package net.ssehub.tests.integration;
 import static org.junit.Assert.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.util.List;
@@ -24,6 +25,7 @@ import java.util.List;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import net.ssehub.integration.Call;
 import net.ssehub.integration.ExternalElementException;
 import net.ssehub.integration.LanguageElement;
 import net.ssehub.integration.LanguageElementProvider;
@@ -187,6 +189,78 @@ public class BasicLanguageElementProviderTests {
             } catch (NullPointerException e) {
                 assertNull(e, "Language registry does not contain element with name \"" + expectedRegisteredElementName 
                         + "\"");
+            }
+        } catch (ExternalElementException e) {
+            assertNull(e, "Exception thrown");
+        }
+    }
+    
+    /**
+     * Tests the correct scan of a plug-in, which contains Java classes that introduce new member operations. This 
+     * should yield corresponding {@link LanguageElement}s in the {@link LanguageRegistry}.
+     */
+    @Test
+    public void testPluginWithNewMemberOperations() {
+        int expectedLanguageElementSize = LanguageRegistry.INSTANCE.size() + 6;
+        try {
+            elementProvider.detectLanguageElements(new File(TESTDATA_DIRECTORY, "pluginWithNewMemberOperations"));
+            assertEquals(expectedLanguageElementSize, LanguageRegistry.INSTANCE.size(), 
+                    "A plug-in with classes introducing new elements should increase the number of elements in the "
+                    + "language directory by 6");
+            /*
+             * There should be the following member operations:
+             *    1. getAbsolutePath() for artifact parameter type NewFile
+             *    2. getAbsolutePath() for artifact parameter type FileWithMemberOperation
+             *    3. getPath() for artifact parameter type FileWithMemberOperation
+             */
+            try {
+                ParameterType newFile = LanguageRegistry.INSTANCE.getArtifactParameterTypes("NewFile").get(0);
+                // 1. getAbsolutePath() for artifact parameter type NewFile
+                Call getAbsolutePathForNewFile = 
+                        LanguageRegistry.INSTANCE.getMemberOperations(newFile.getName()).get(0);
+                assertTrue(getAbsolutePathForNewFile.isMemberOperation(), "Call \"" 
+                        + getAbsolutePathForNewFile.getFullyQualifiedName() + "\" should be a member operation"); 
+                assertTrue(getAbsolutePathForNewFile.isMemberOperationOf(newFile.getName()), "Call \"" 
+                        + getAbsolutePathForNewFile.getFullyQualifiedName() + "\" should be a member operation of \"" 
+                        + newFile.getFullyQualifiedName() + "\"");
+                assertEquals(newFile.getName(), getAbsolutePathForNewFile.getParentParameterType(), "Call \"" 
+                        + getAbsolutePathForNewFile.getFullyQualifiedName() + "\" should have \"" 
+                        + newFile.getFullyQualifiedName() + "\" as parent parameter type");
+                
+                ParameterType fileWithMemberOperation = 
+                        LanguageRegistry.INSTANCE.getArtifactParameterTypes("FileWithMemberOperation").get(0);
+                // 2. getAbsolutePath() for artifact parameter type FileWithMemberOperation
+                Call getAbsolutePathForFileWithMemberOperation = 
+                        LanguageRegistry.INSTANCE.getMemberOperations(fileWithMemberOperation.getName()).get(0);
+                assertTrue(getAbsolutePathForFileWithMemberOperation.isMemberOperation(), "Call \"" 
+                        + getAbsolutePathForFileWithMemberOperation.getFullyQualifiedName() 
+                        + "\" should be a member operation"); 
+                assertTrue(getAbsolutePathForFileWithMemberOperation
+                        .isMemberOperationOf(fileWithMemberOperation.getName()), "Call \"" 
+                        + getAbsolutePathForFileWithMemberOperation.getFullyQualifiedName() 
+                        + "\" should be a member operation of \"" + fileWithMemberOperation.getFullyQualifiedName() 
+                        + "\"");
+                assertEquals(fileWithMemberOperation.getName(), 
+                        getAbsolutePathForFileWithMemberOperation.getParentParameterType(), "Call \"" 
+                                + getAbsolutePathForFileWithMemberOperation.getFullyQualifiedName() 
+                                + "\" should have \"" + fileWithMemberOperation.getFullyQualifiedName() 
+                                + "\" as parent parameter type");
+                // 3. getPath() for artifact parameter type FileWithMemberOperation
+                Call getPathForFileWithMemberOperation = 
+                        LanguageRegistry.INSTANCE.getMemberOperations(fileWithMemberOperation.getName()).get(1);
+                assertTrue(getPathForFileWithMemberOperation.isMemberOperation(), "Call \"" 
+                        + getPathForFileWithMemberOperation.getFullyQualifiedName() 
+                        + "\" should be a member operation"); 
+                assertTrue(getPathForFileWithMemberOperation.isMemberOperationOf(fileWithMemberOperation.getName()), 
+                        "Call \"" + getPathForFileWithMemberOperation.getFullyQualifiedName() 
+                        + "\" should be a member operation of \"" + fileWithMemberOperation.getFullyQualifiedName() 
+                        + "\"");
+                assertEquals(fileWithMemberOperation.getName(), 
+                        getPathForFileWithMemberOperation.getParentParameterType(), "Call \"" 
+                                + getPathForFileWithMemberOperation.getFullyQualifiedName() + "\" should have \"" 
+                                + fileWithMemberOperation.getFullyQualifiedName() + "\" as parent parameter type");
+            } catch (NullPointerException e) {
+                assertNull(e, "Language registry does not contain required elements");
             }
         } catch (ExternalElementException e) {
             assertNull(e, "Exception thrown");
