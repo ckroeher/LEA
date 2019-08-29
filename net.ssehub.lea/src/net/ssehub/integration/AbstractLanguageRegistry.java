@@ -475,7 +475,8 @@ public abstract class AbstractLanguageRegistry {
     private boolean isDuplicate(Call call) {
         boolean isDuplicate = false;
         if (call.isMemberOperation()) {
-            isDuplicate = containsDuplicate(memberOperations, call.getParentParameterType(), call);
+            isDuplicate = containsDuplicate(memberOperations, call.getParentParameterType(), call)
+                    || containsDuplicate(cachedCalls, call);
         } else if (containsDuplicate(operations, call.getName(), call) 
                 || containsDuplicate(extractorCalls, call.getName(), call) 
                 || containsDuplicate(analysisCalls, call.getName(), call)
