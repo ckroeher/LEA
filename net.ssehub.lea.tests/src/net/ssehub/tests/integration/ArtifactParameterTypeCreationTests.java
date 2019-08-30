@@ -154,6 +154,7 @@ public class ArtifactParameterTypeCreationTests extends AbstractLanguageElementC
      * <li>The expected {@link Class} of the created {@link LanguageElement}</li>
      * <li>The expected {@link ElementType} of the created {@link LanguageElement}</li>
      * <li>The expected name of the created {@link LanguageElement}</li>
+     * <li>The expected fully-qualified name of the created {@link LanguageElement}</li>
      * <li>The expected {@link Class} from which the {@link LanguageElement} was created</li>
      * <li>The expected {@link File} denoting the source plug-in of the {@link Class} from which a 
      * {@link LanguageElement} was created
@@ -162,34 +163,42 @@ public class ArtifactParameterTypeCreationTests extends AbstractLanguageElementC
      */
     private static final Object[][] EXPECTED_RESULTS = new Object[][] {
         {SimpleArtifactParameterType.class, null, true, ParameterType.class, ElementType.ARTIFACT_PARAMETER_TYPE, 
-            SimpleArtifactParameterType.class.getSimpleName(), SimpleArtifactParameterType.class, sourcePlugin},
+            SimpleArtifactParameterType.class.getSimpleName(), SimpleArtifactParameterType.class.getCanonicalName(), 
+            SimpleArtifactParameterType.class, sourcePlugin},
         
         {SimpleArtifactParameterTypeWithSymbolicName.class, null, true, ParameterType.class, 
-            ElementType.ARTIFACT_PARAMETER_TYPE, "File", SimpleArtifactParameterTypeWithSymbolicName.class,
-            sourcePlugin},
+            ElementType.ARTIFACT_PARAMETER_TYPE, "File", 
+            SimpleArtifactParameterTypeWithSymbolicName.class.getCanonicalName(),
+            SimpleArtifactParameterTypeWithSymbolicName.class, sourcePlugin},
         
         {SimpleArtifactParameterTypeWithSymbolicParameterName.class, null, true, ParameterType.class,
             ElementType.ARTIFACT_PARAMETER_TYPE,
             SimpleArtifactParameterTypeWithSymbolicParameterName.class.getSimpleName(),
+            SimpleArtifactParameterTypeWithSymbolicParameterName.class.getCanonicalName(),
             SimpleArtifactParameterTypeWithSymbolicParameterName.class, sourcePlugin},
             
         {SimpleArtifactParameterTypeWithSymbolicNameAndParameterName.class, null, true, ParameterType.class,
             ElementType.ARTIFACT_PARAMETER_TYPE, 
-            "File", SimpleArtifactParameterTypeWithSymbolicNameAndParameterName.class, sourcePlugin},
+            "File", SimpleArtifactParameterTypeWithSymbolicNameAndParameterName.class.getCanonicalName(),
+            SimpleArtifactParameterTypeWithSymbolicNameAndParameterName.class, sourcePlugin},
         
         {GenericArtifactParameterType.class, null, true, ParameterType.class, ElementType.ARTIFACT_PARAMETER_TYPE, 
-            "GenericArtifactParameterType<File>", GenericArtifactParameterType.class, sourcePlugin},
+            "GenericArtifactParameterType<File>", GenericArtifactParameterType.class.getCanonicalName(), 
+            GenericArtifactParameterType.class, sourcePlugin},
         
         {GenericArtifactParameterTypeWithSymbolicName.class, null, true, ParameterType.class,
-            ElementType.ARTIFACT_PARAMETER_TYPE, "File<File>", GenericArtifactParameterTypeWithSymbolicName.class,
-            sourcePlugin},
+            ElementType.ARTIFACT_PARAMETER_TYPE, "File<File>", 
+            GenericArtifactParameterTypeWithSymbolicName.class.getCanonicalName(),
+            GenericArtifactParameterTypeWithSymbolicName.class, sourcePlugin},
         
         {GenericArtifactParameterTypeWithSymbolicParameterName.class, null, true, ParameterType.class,
             ElementType.ARTIFACT_PARAMETER_TYPE, "GenericArtifactParameterTypeWithSymbolicParameterName<MyFile>",
+            GenericArtifactParameterTypeWithSymbolicParameterName.class.getCanonicalName(),
             GenericArtifactParameterTypeWithSymbolicParameterName.class, sourcePlugin},
         
         {GenericArtifactParameterTypeWithSymbolicNameAndParameterName.class, null, true, ParameterType.class,
             ElementType.ARTIFACT_PARAMETER_TYPE, "File<MyFile>",
+            GenericArtifactParameterTypeWithSymbolicNameAndParameterName.class.getCanonicalName(),
             GenericArtifactParameterTypeWithSymbolicNameAndParameterName.class, sourcePlugin}
     };
     
@@ -207,6 +216,7 @@ public class ArtifactParameterTypeCreationTests extends AbstractLanguageElementC
      * @param expectedElementClass the expected {@link Class} of the created {@link LanguageElement}
      * @param expectedElementType the expected {@link ElementType} of the created {@link LanguageElement}
      * @param expectedElementName the expected name of the created {@link LanguageElement}
+     * @param expectedElementFullyQualifiedName the expected fully-qualified name of the created {@link LanguageElement}
      * @param expectedElementSourceClass the expected {@link Class} from which the {@link LanguageElement} was created
      * @param expectedElementSourcePlugin the expected {@link File} denoting the source plug-in of the {@link Class}
      *        from which a {@link LanguageElement} was created
@@ -214,9 +224,11 @@ public class ArtifactParameterTypeCreationTests extends AbstractLanguageElementC
 //CHECKSTYLE:OFF
     public ArtifactParameterTypeCreationTests(Class<?> testInputClass, ExternalElementException expectedException,
             boolean expectedElementsExistence, Class<?> expectedElementClass, ElementType expectedElementType,
-            String expectedElementName, Class<?> expectedElementSourceClass, File expectedElementSourcePlugin) {
+            String expectedElementName, String expectedElementFullyQualifiedName, Class<?> expectedElementSourceClass,
+            File expectedElementSourcePlugin) {
         super(testInputClass, expectedException, expectedElementsExistence, expectedElementClass, expectedElementType,
-                expectedElementName, expectedElementSourceClass, expectedElementSourcePlugin);
+                expectedElementName, expectedElementFullyQualifiedName, expectedElementSourceClass,
+                expectedElementSourcePlugin);
     }
 //CHECKSTYLE:ON
     

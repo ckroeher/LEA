@@ -92,6 +92,7 @@ public class AnalysisCallCreationTests extends AbstractCallCreationTest {
      * <li>The expected {@link Class} of the created {@link LanguageElement}</li>
      * <li>The expected {@link ElementType} of the created {@link LanguageElement}</li>
      * <li>The expected name of the created {@link LanguageElement}</li>
+     * <li>The expected fully-qualified name of the created {@link LanguageElement}</li>
      * <li>The expected {@link Class} from which the {@link LanguageElement} was created</li>
      * <li>The expected {@link File} denoting the source plug-in of the {@link Class} from which a 
      * {@link LanguageElement} was created
@@ -102,10 +103,11 @@ public class AnalysisCallCreationTests extends AbstractCallCreationTest {
      */
     private static final Object[][] EXPECTED_RESULTS = new Object[][] {
         {ClassIntroducingVoidReturnAnalysisCall.class, new ExternalElementException(""), false, null, null, null, null,
-            null, null, null, null},
+            null, null, null, null, null},
         
         {ClassIntroducingVoidReturnWithCustomReturnTypeAnalysisCall.class, null, true, Call.class,
             ElementType.ANALYSIS_CALL, "provideImplicit", 
+            ClassIntroducingVoidReturnWithCustomReturnTypeAnalysisCall.class.getMethods()[0].toGenericString(),
             ClassIntroducingVoidReturnWithCustomReturnTypeAnalysisCall.class, sourcePlugin, "HiddenResult",
             new String[] {}, ClassIntroducingVoidReturnWithCustomReturnTypeAnalysisCall.class.getMethods()[0]}
     };
@@ -124,6 +126,7 @@ public class AnalysisCallCreationTests extends AbstractCallCreationTest {
      * @param expectedElementClass the expected {@link Class} of the created {@link LanguageElement}
      * @param expectedElementType the expected {@link ElementType} of the created {@link LanguageElement}
      * @param expectedElementName the expected name of the created {@link LanguageElement}
+     * @param expectedElementFullyQualifiedName the expected fully-qualified name of the created {@link LanguageElement}
      * @param expectedElementSourceClass the expected {@link Class} from which the {@link LanguageElement} was created
      * @param expectedElementSourcePlugin the expected {@link File} denoting the source plug-in of the {@link Class}
      *        from which a {@link LanguageElement} was created
@@ -135,11 +138,12 @@ public class AnalysisCallCreationTests extends AbstractCallCreationTest {
 //CHECKSTYLE:OFF
     public AnalysisCallCreationTests(Class<?> testInputClass, ExternalElementException expectedException,
             boolean expectedElementsExistence, Class<?> expectedElementClass, ElementType expectedElementType,
-            String expectedElementName, Class<?> expectedElementSourceClass, File expectedElementSourcePlugin,
-            String expectedReturnType, String[] expectedParameters, Method expectedSourceMethod) {
+            String expectedElementName, String expectedElementFullyQualifiedName, Class<?> expectedElementSourceClass,
+            File expectedElementSourcePlugin, String expectedReturnType, String[] expectedParameters, 
+            Method expectedSourceMethod) {
         super(testInputClass, expectedException, expectedElementsExistence, expectedElementClass, expectedElementType,
-                expectedElementName, expectedElementSourceClass, expectedElementSourcePlugin, expectedReturnType,
-                expectedParameters, expectedSourceMethod);
+                expectedElementName, expectedElementFullyQualifiedName, expectedElementSourceClass, 
+                expectedElementSourcePlugin, expectedReturnType, expectedParameters, expectedSourceMethod);
     }
 //CHECKSTYLE:ON
     

@@ -83,6 +83,7 @@ public abstract class AbstractCallCreationTest extends AbstractLanguageElementCr
      * @param expectedElementClass the expected {@link Class} of the created {@link LanguageElement}
      * @param expectedElementType the expected {@link ElementType} of the created {@link LanguageElement}
      * @param expectedElementName the expected name of the created {@link LanguageElement}
+     * @param expectedElementFullyQualifiedName the expected fully-qualified name of the created {@link LanguageElement}
      * @param expectedElementSourceClass the expected {@link Class} from which the {@link LanguageElement} was created
      * @param expectedElementSourcePlugin the expected {@link File} denoting the source plug-in of the {@link Class}
      *        from which a {@link LanguageElement} was created
@@ -94,10 +95,12 @@ public abstract class AbstractCallCreationTest extends AbstractLanguageElementCr
 //CHECKSTYLE:OFF
     public AbstractCallCreationTest(Class<?> testInputClass, ExternalElementException expectedException,
             boolean expectedElementsExistence, Class<?> expectedElementClass, ElementType expectedElementType,
-            String expectedElementName, Class<?> expectedElementSourceClass, File expectedElementSourcePlugin, 
-            String expectedReturnType, String[] expectedParameters, Method expectedSourceMethod) {
+            String expectedElementName, String expectedElementFullyQualifiedName, Class<?> expectedElementSourceClass,
+            File expectedElementSourcePlugin, String expectedReturnType, String[] expectedParameters,
+            Method expectedSourceMethod) {
         super(testInputClass, expectedException, expectedElementsExistence, expectedElementClass, expectedElementType,
-                expectedElementName, expectedElementSourceClass, expectedElementSourcePlugin);
+                expectedElementName, expectedElementFullyQualifiedName, expectedElementSourceClass, 
+                expectedElementSourcePlugin);
         this.expectedReturnType = expectedReturnType;
         this.expectedParameters = expectedParameters;
         this.expectedSourceMethod = expectedSourceMethod;

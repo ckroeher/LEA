@@ -154,6 +154,7 @@ public class ResultParameterTypeCreationTests extends AbstractLanguageElementCre
      * <li>The expected {@link Class} of the created {@link LanguageElement}</li>
      * <li>The expected {@link ElementType} of the created {@link LanguageElement}</li>
      * <li>The expected name of the created {@link LanguageElement}</li>
+     * <li>The expected fully-qualified name of the created {@link LanguageElement}</li>
      * <li>The expected {@link Class} from which the {@link LanguageElement} was created</li>
      * <li>The expected {@link File} denoting the source plug-in of the {@link Class} from which a 
      * {@link LanguageElement} was created
@@ -162,34 +163,42 @@ public class ResultParameterTypeCreationTests extends AbstractLanguageElementCre
      */
     private static final Object[][] EXPECTED_RESULTS = new Object[][] {
         {SimpleResultParameterType.class, null, true, ParameterType.class, ElementType.RESULT_PARAMETER_TYPE, 
-            SimpleResultParameterType.class.getSimpleName(), SimpleResultParameterType.class, sourcePlugin},
+            SimpleResultParameterType.class.getSimpleName(), SimpleResultParameterType.class.getCanonicalName(),
+            SimpleResultParameterType.class, sourcePlugin},
         
         {SimpleResultParameterTypeWithSymbolicName.class, null, true, ParameterType.class,
-            ElementType.RESULT_PARAMETER_TYPE, "DeadBlock", SimpleResultParameterTypeWithSymbolicName.class,
-            sourcePlugin},
+            ElementType.RESULT_PARAMETER_TYPE, "DeadBlock", 
+            SimpleResultParameterTypeWithSymbolicName.class.getCanonicalName(),
+            SimpleResultParameterTypeWithSymbolicName.class, sourcePlugin},
         
         {SimpleResultParameterTypeWithSymbolicParameterName.class, null, true, ParameterType.class,
             ElementType.RESULT_PARAMETER_TYPE, 
-            SimpleResultParameterTypeWithSymbolicParameterName.class.getSimpleName(), 
+            SimpleResultParameterTypeWithSymbolicParameterName.class.getSimpleName(),
+            SimpleResultParameterTypeWithSymbolicParameterName.class.getCanonicalName(),
             SimpleResultParameterTypeWithSymbolicParameterName.class, sourcePlugin},
         
         {SimpleResultParameterTypeWithSymbolicNameAndParameterName.class, null, true, ParameterType.class,
             ElementType.RESULT_PARAMETER_TYPE, "DeadBlock", 
+            SimpleResultParameterTypeWithSymbolicNameAndParameterName.class.getCanonicalName(),
             SimpleResultParameterTypeWithSymbolicNameAndParameterName.class, sourcePlugin},
         
         {GenericResultParameterType.class, null, true, ParameterType.class, ElementType.RESULT_PARAMETER_TYPE, 
-            "GenericResultParameterType<File>", GenericResultParameterType.class, sourcePlugin},
+            "GenericResultParameterType<File>", GenericResultParameterType.class.getCanonicalName(), 
+            GenericResultParameterType.class, sourcePlugin},
         
         {GenericResultParameterTypeWithSymbolicName.class, null, true, ParameterType.class,
-            ElementType.RESULT_PARAMETER_TYPE, "DeadBlock<File>", GenericResultParameterTypeWithSymbolicName.class,
-            sourcePlugin},
+            ElementType.RESULT_PARAMETER_TYPE, "DeadBlock<File>", 
+            GenericResultParameterTypeWithSymbolicName.class.getCanonicalName(), 
+            GenericResultParameterTypeWithSymbolicName.class, sourcePlugin},
         
         {GenericResultParameterTypeWithSymbolicParameterName.class, null, true, ParameterType.class,
             ElementType.RESULT_PARAMETER_TYPE, "GenericResultParameterTypeWithSymbolicParameterName<Code>",
+            GenericResultParameterTypeWithSymbolicParameterName.class.getCanonicalName(), 
             GenericResultParameterTypeWithSymbolicParameterName.class, sourcePlugin},
         
         {GenericResultParameterTypeWithSymbolicNameAndParameterName.class, null, true, ParameterType.class,
             ElementType.RESULT_PARAMETER_TYPE, "DeadBlock<Code>",
+            GenericResultParameterTypeWithSymbolicNameAndParameterName.class.getCanonicalName(),
             GenericResultParameterTypeWithSymbolicNameAndParameterName.class, sourcePlugin}
     };
     
@@ -207,6 +216,7 @@ public class ResultParameterTypeCreationTests extends AbstractLanguageElementCre
      * @param expectedElementClass the expected {@link Class} of the created {@link LanguageElement}
      * @param expectedElementType the expected {@link ElementType} of the created {@link LanguageElement}
      * @param expectedElementName the expected name of the created {@link LanguageElement}
+     * @param expectedElementFullyQualifiedName the expected fully-qualified name of the created {@link LanguageElement}
      * @param expectedElementSourceClass the expected {@link Class} from which the {@link LanguageElement} was created
      * @param expectedElementSourcePlugin the expected {@link File} denoting the source plug-in of the {@link Class}
      *        from which a {@link LanguageElement} was created
@@ -214,9 +224,11 @@ public class ResultParameterTypeCreationTests extends AbstractLanguageElementCre
 //CHECKSTYLE:OFF
     public ResultParameterTypeCreationTests(Class<?> testInputClass, ExternalElementException expectedException,
             boolean expectedElementsExistence, Class<?> expectedElementClass, ElementType expectedElementType,
-            String expectedElementName, Class<?> expectedElementSourceClass, java.io.File expectedElementSourcePlugin) {
+            String expectedElementName, String expectedElementFullyQualifiedName, Class<?> expectedElementSourceClass, 
+            java.io.File expectedElementSourcePlugin) {
         super(testInputClass, expectedException, expectedElementsExistence, expectedElementClass, expectedElementType,
-                expectedElementName, expectedElementSourceClass, expectedElementSourcePlugin);
+                expectedElementName, expectedElementFullyQualifiedName, expectedElementSourceClass, 
+                expectedElementSourcePlugin);
     }
 //CHECKSTYLE:ON
 

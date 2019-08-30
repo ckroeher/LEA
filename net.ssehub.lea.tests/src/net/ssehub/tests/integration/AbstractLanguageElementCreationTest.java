@@ -86,6 +86,11 @@ public abstract class AbstractLanguageElementCreationTest extends AbstractCreati
     private String actualElementName;
     
     /**
+     * The actual fully-qualified name of the created {@link LanguageElement}. 
+     */
+    private String actualElementFullyQualifiedName;
+    
+    /**
      * The actual {@link Class} from which the {@link LanguageElement} was created. 
      */
     private Class<?> actualElementSourceClass;
@@ -124,6 +129,11 @@ public abstract class AbstractLanguageElementCreationTest extends AbstractCreati
     private String expectedElementName;
     
     /**
+     * The expected fully-qualified name of the created {@link LanguageElement}. 
+     */
+    private String expectedElementFullyQualifiedName;
+    
+    /**
      * The expected {@link Class} from which the {@link LanguageElement} was created. 
      */
     private Class<?> expectedElementSourceClass;
@@ -148,6 +158,7 @@ public abstract class AbstractLanguageElementCreationTest extends AbstractCreati
      * @param expectedElementClass the expected {@link Class} of the created {@link LanguageElement}
      * @param expectedElementType the expected {@link ElementType} of the created {@link LanguageElement}
      * @param expectedElementName the expected name of the created {@link LanguageElement}
+     * @param expectedElementFullyQualifiedName the expected fully-qualified name of the created {@link LanguageElement}
      * @param expectedElementSourceClass the expected {@link Class} from which the {@link LanguageElement} was created
      * @param expectedElementSourcePlugin the expected {@link File} denoting the source plug-in of the {@link Class}
      *        from which a {@link LanguageElement} was created
@@ -155,13 +166,15 @@ public abstract class AbstractLanguageElementCreationTest extends AbstractCreati
 //CHECKSTYLE:OFF
     public AbstractLanguageElementCreationTest(Class<?> testInputClass, ExternalElementException expectedException, 
             boolean expectedElementsExistence, Class<?> expectedElementClass, ElementType expectedElementType,
-            String expectedElementName, Class<?> expectedElementSourceClass, File expectedElementSourcePlugin) {
+            String expectedElementName, String expectedElementFullyQualifiedName, Class<?> expectedElementSourceClass,
+            File expectedElementSourcePlugin) {
         // Set the expected values
         this.expectedException = expectedException;
         this.expectedElementsExistence = expectedElementsExistence;
         this.expectedElementClass = expectedElementClass;
         this.expectedElementType = expectedElementType;
         this.expectedElementName = expectedElementName;
+        this.expectedElementFullyQualifiedName = expectedElementFullyQualifiedName;
         this.expectedElementSourceClass = expectedElementSourceClass;
         this.expectedElementSourcePlugin = expectedElementSourcePlugin;
         // Create the language element from the given test input class and set the actual values
@@ -178,6 +191,7 @@ public abstract class AbstractLanguageElementCreationTest extends AbstractCreati
             actualElementClass = createdElement.getClass();
             actualElementType = createdElement.getElementType();
             actualElementName = createdElement.getName();
+            actualElementFullyQualifiedName = createdElement.getFullyQualifiedName();
             actualElementSourceClass = createdElement.getSourceClass();
             actualElementSourcePlugin = createdElement.getSourcePlugin();
             actualException = null;
@@ -187,6 +201,7 @@ public abstract class AbstractLanguageElementCreationTest extends AbstractCreati
             actualElementClass = null;
             actualElementType = null;
             actualElementName = null;
+            actualElementFullyQualifiedName = null;
             actualElementSourceClass = null;
             actualElementSourcePlugin = null;
             actualException = e;
@@ -245,6 +260,15 @@ public abstract class AbstractLanguageElementCreationTest extends AbstractCreati
     @Test
     public void testCreatedElementName() {
         assertEquals(expectedElementName, actualElementName, "Wrong element name");
+    }
+    
+    /**
+     * Tests whether the first element in {@link #createdElements} has the {@link #expectedElementFullyQualifiedName}.
+     */
+    @Test
+    public void testCreatedElementFullyQualifiedName() {
+        assertEquals(expectedElementFullyQualifiedName, actualElementFullyQualifiedName, 
+                "Wrong fully-qualified element name");
     }
     
     /**

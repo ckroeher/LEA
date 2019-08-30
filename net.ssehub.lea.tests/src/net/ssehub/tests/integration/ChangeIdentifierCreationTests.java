@@ -101,6 +101,7 @@ public class ChangeIdentifierCreationTests extends AbstractLanguageElementCreati
      * <li>The expected {@link Class} of the created {@link LanguageElement}</li>
      * <li>The expected {@link ElementType} of the created {@link LanguageElement}</li>
      * <li>The expected name of the created {@link LanguageElement}</li>
+     * <li>The expected fully-qualified name of the created {@link LanguageElement}</li>
      * <li>The expected {@link Class} from which the {@link LanguageElement} was created</li>
      * <li>The expected {@link File} denoting the source plug-in of the {@link Class} from which a 
      * {@link LanguageElement} was created
@@ -111,19 +112,22 @@ public class ChangeIdentifierCreationTests extends AbstractLanguageElementCreati
      */
     private static final Object[][] EXPECTED_RESULTS = new Object[][] {
         {ChangeIdentifierWithEmptyAssignableTo.class, new ExternalElementException(""), false, null, null, null, null,
-            null, null},
+            null, null, null},
         
         {ChangeIdentifierWithSingleAssignableElement.class, null, true, ChangeIdentifier.class,
             ElementType.CHANGE_IDENTIFIER, ChangeIdentifierWithSingleAssignableElement.class.getSimpleName(),
+            ChangeIdentifierWithSingleAssignableElement.class.getCanonicalName(),
             ChangeIdentifierWithSingleAssignableElement.class, sourcePlugin, new String[]{"File"}},
         
         {ChangeIdentifierWithMultipleAssignableElements.class, null, true, ChangeIdentifier.class,
             ElementType.CHANGE_IDENTIFIER, ChangeIdentifierWithMultipleAssignableElements.class.getSimpleName(),
+            ChangeIdentifierWithMultipleAssignableElements.class.getCanonicalName(),
             ChangeIdentifierWithMultipleAssignableElements.class, sourcePlugin,
             new String[]{"File", "Database", "Stream"}},
         
         {ChangeIdentifierWithSingleAssignableElementAndSymbolicName.class, null, true, ChangeIdentifier.class,
-            ElementType.CHANGE_IDENTIFIER, "ChangeIdentifier",
+            ElementType.CHANGE_IDENTIFIER, "ChangeIdentifier", 
+            ChangeIdentifierWithSingleAssignableElementAndSymbolicName.class.getCanonicalName(),
             ChangeIdentifierWithSingleAssignableElementAndSymbolicName.class, sourcePlugin, new String[]{"File"}}
     };
     
@@ -151,6 +155,7 @@ public class ChangeIdentifierCreationTests extends AbstractLanguageElementCreati
      * @param expectedElementClass the expected {@link Class} of the created {@link LanguageElement}
      * @param expectedElementType the expected {@link ElementType} of the created {@link LanguageElement}
      * @param expectedElementName the expected name of the created {@link LanguageElement}
+     * @param expectedElementFullyQualifiedName the expected fully-qualified name of the created {@link LanguageElement}
      * @param expectedElementSourceClass the expected {@link Class} from which the {@link LanguageElement} was created
      * @param expectedElementSourcePlugin the expected {@link File} denoting the source plug-in of the {@link Class}
      *        from which a {@link LanguageElement} was created
@@ -160,10 +165,11 @@ public class ChangeIdentifierCreationTests extends AbstractLanguageElementCreati
 //CHECKSTYLE:OFF
     public ChangeIdentifierCreationTests(Class<?> testInputClass, ExternalElementException expectedException,
             boolean expectedElementsExistence, Class<?> expectedElementClass, ElementType expectedElementType,
-            String expectedElementName, Class<?> expectedElementSourceClass, File expectedElementSourcePlugin,
-            String[] expectedAssignableElements) {
+            String expectedElementName, String expectedElementFullyQualifiedName, Class<?> expectedElementSourceClass, 
+            File expectedElementSourcePlugin, String[] expectedAssignableElements) {
         super(testInputClass, expectedException, expectedElementsExistence, expectedElementClass, expectedElementType,
-                expectedElementName, expectedElementSourceClass, expectedElementSourcePlugin);
+                expectedElementName, expectedElementFullyQualifiedName, expectedElementSourceClass,
+                expectedElementSourcePlugin);
         this.expectedAssignableElements = expectedAssignableElements;
         if (createdElement != null) {
             ChangeIdentifier changeIdentifier = (ChangeIdentifier) createdElement;

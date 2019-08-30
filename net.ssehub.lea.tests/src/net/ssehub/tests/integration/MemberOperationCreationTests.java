@@ -108,6 +108,7 @@ public class MemberOperationCreationTests extends AbstractCallCreationTest {
      * {@link LanguageElement} was created
      * </li>
      * <li>The expected name of the type of element(s) the created call will return</li>
+     * <li>The expected fully-qualified name of the created {@link LanguageElement}</li>
      * <li>The expected array of names, which denote the elements the created call accepts as parameters</li>
      * <li>The expected source {@link Method} from which the {@link LanguageElement} was created</li>
      * <li>The declaration of whether it is expected that the created {@link Call} is a member operation
@@ -119,10 +120,12 @@ public class MemberOperationCreationTests extends AbstractCallCreationTest {
      */
     private static final Object[][] EXPECTED_RESULTS = new Object[][] {
         {ClassIntroducingSimpleMemberOperation.class, null, true, Call.class, ElementType.OPERATION, 
-            "getFile", ClassIntroducingSimpleMemberOperation.class, sourcePlugin, "File", new String[] {},
+            "getFile", ClassIntroducingSimpleMemberOperation.class.getMethods()[0].toGenericString(),
+            ClassIntroducingSimpleMemberOperation.class, sourcePlugin, "File", new String[] {},
             ClassIntroducingSimpleMemberOperation.class.getMethods()[0], true, true, "Path"},
         {ClassIntroducingNoMemberOperation.class, null, true, Call.class, ElementType.OPERATION, 
-            "getFile", ClassIntroducingNoMemberOperation.class, sourcePlugin, "File", new String[] {},
+            "getFile", ClassIntroducingNoMemberOperation.class.getMethods()[0].toGenericString(),
+            ClassIntroducingNoMemberOperation.class, sourcePlugin, "File", new String[] {},
             ClassIntroducingNoMemberOperation.class.getMethods()[0], false, false, null}
     };
     
@@ -174,6 +177,7 @@ public class MemberOperationCreationTests extends AbstractCallCreationTest {
      * @param expectedElementClass the expected {@link Class} of the created {@link LanguageElement}
      * @param expectedElementType the expected {@link ElementType} of the created {@link LanguageElement}
      * @param expectedElementName the expected name of the created {@link LanguageElement}
+     * @param expectedElementFullyQualifiedName the expected fully-qualified name of the created {@link LanguageElement}
      * @param expectedElementSourceClass the expected {@link Class} from which the {@link LanguageElement} was created
      * @param expectedElementSourcePlugin the expected {@link File} denoting the source plug-in of the {@link Class}
      *        from which a {@link LanguageElement} was created
@@ -191,12 +195,13 @@ public class MemberOperationCreationTests extends AbstractCallCreationTest {
 //CHECKSTYLE:OFF
     public MemberOperationCreationTests(Class<?> testInputClass, ExternalElementException expectedException,
             boolean expectedElementsExistence, Class<?> expectedElementClass, ElementType expectedElementType,
-            String expectedElementName, Class<?> expectedElementSourceClass, File expectedElementSourcePlugin,
-            String expectedReturnType, String[] expectedParameters, Method expectedSourceMethod, 
-            boolean expectedMemberOperation, boolean expectedMemberOperationOf, String expectedParentParameterType) {
+            String expectedElementName, String expectedElementFullyQualifiedName, Class<?> expectedElementSourceClass,
+            File expectedElementSourcePlugin, String expectedReturnType, String[] expectedParameters, 
+            Method expectedSourceMethod, boolean expectedMemberOperation, boolean expectedMemberOperationOf,
+            String expectedParentParameterType) {
         super(testInputClass, expectedException, expectedElementsExistence, expectedElementClass, expectedElementType,
-                expectedElementName, expectedElementSourceClass, expectedElementSourcePlugin, expectedReturnType,
-                expectedParameters, expectedSourceMethod);
+                expectedElementName, expectedElementFullyQualifiedName, expectedElementSourceClass, 
+                expectedElementSourcePlugin, expectedReturnType, expectedParameters, expectedSourceMethod);
         this.expectedMemberOperation = expectedMemberOperation;
         this.expectedMemberOperationOf = expectedMemberOperationOf;
         this.expectedParentParameterType = expectedParentParameterType;

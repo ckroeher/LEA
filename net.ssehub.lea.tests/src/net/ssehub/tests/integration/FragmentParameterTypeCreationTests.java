@@ -154,6 +154,7 @@ public class FragmentParameterTypeCreationTests extends AbstractLanguageElementC
      * <li>The expected {@link Class} of the created {@link LanguageElement}</li>
      * <li>The expected {@link ElementType} of the created {@link LanguageElement}</li>
      * <li>The expected name of the created {@link LanguageElement}</li>
+     * <li>The expected fully-qualified name of the created {@link LanguageElement}</li>
      * <li>The expected {@link Class} from which the {@link LanguageElement} was created</li>
      * <li>The expected {@link File} denoting the source plug-in of the {@link Class} from which a 
      * {@link LanguageElement} was created
@@ -162,34 +163,42 @@ public class FragmentParameterTypeCreationTests extends AbstractLanguageElementC
      */
     private static final Object[][] EXPECTED_RESULTS = new Object[][] {
         {SimpleFragmentParameterType.class, null, true, ParameterType.class, ElementType.FRAGMENT_PARAMETER_TYPE, 
-            SimpleFragmentParameterType.class.getSimpleName(), SimpleFragmentParameterType.class, sourcePlugin},
+            SimpleFragmentParameterType.class.getSimpleName(), SimpleFragmentParameterType.class.getCanonicalName(),
+            SimpleFragmentParameterType.class, sourcePlugin},
         
         {SimpleFragmentParameterTypeWithSymbolicName.class, null, true, ParameterType.class,
-            ElementType.FRAGMENT_PARAMETER_TYPE, "Block", SimpleFragmentParameterTypeWithSymbolicName.class,
-            sourcePlugin},
+            ElementType.FRAGMENT_PARAMETER_TYPE, "Block", 
+            SimpleFragmentParameterTypeWithSymbolicName.class.getCanonicalName(),
+            SimpleFragmentParameterTypeWithSymbolicName.class, sourcePlugin},
         
         {SimpleFragmentParameterTypeWithSymbolicParameterName.class, null, true, ParameterType.class, 
             ElementType.FRAGMENT_PARAMETER_TYPE,
             SimpleFragmentParameterTypeWithSymbolicParameterName.class.getSimpleName(),
+            SimpleFragmentParameterTypeWithSymbolicParameterName.class.getCanonicalName(),
             SimpleFragmentParameterTypeWithSymbolicParameterName.class, sourcePlugin},
         
         {SimpleFragmentParameterTypeWithSymbolicNameAndParameterName.class, null, true, ParameterType.class,
-            ElementType.FRAGMENT_PARAMETER_TYPE, "Block",
+            ElementType.FRAGMENT_PARAMETER_TYPE, "Block", 
+            SimpleFragmentParameterTypeWithSymbolicNameAndParameterName.class.getCanonicalName(),
             SimpleFragmentParameterTypeWithSymbolicNameAndParameterName.class, sourcePlugin},
 
         {GenericFragmentParameterType.class, null, true, ParameterType.class, ElementType.FRAGMENT_PARAMETER_TYPE, 
-            "GenericFragmentParameterType<File>", GenericFragmentParameterType.class, sourcePlugin},
+            "GenericFragmentParameterType<File>", GenericFragmentParameterType.class.getCanonicalName(),
+            GenericFragmentParameterType.class, sourcePlugin},
         
         {GenericFragmentParameterTypeWithSymbolicName.class, null, true, ParameterType.class,
-            ElementType.FRAGMENT_PARAMETER_TYPE, "Block<File>", GenericFragmentParameterTypeWithSymbolicName.class,
-            sourcePlugin},
+            ElementType.FRAGMENT_PARAMETER_TYPE, "Block<File>", 
+            GenericFragmentParameterTypeWithSymbolicName.class.getCanonicalName(),
+            GenericFragmentParameterTypeWithSymbolicName.class, sourcePlugin},
         
         {GenericFragmentParameterTypeWithSymbolicParameterName.class, null, true, ParameterType.class,
             ElementType.FRAGMENT_PARAMETER_TYPE, "GenericFragmentParameterTypeWithSymbolicParameterName<Code>",
+            GenericFragmentParameterTypeWithSymbolicParameterName.class.getCanonicalName(),
             GenericFragmentParameterTypeWithSymbolicParameterName.class, sourcePlugin},
         
         {GenericFragmentParameterTypeWithSymbolicNameAndParameterName.class, null, true, ParameterType.class,
             ElementType.FRAGMENT_PARAMETER_TYPE, "Block<Code>",
+            GenericFragmentParameterTypeWithSymbolicNameAndParameterName.class.getCanonicalName(),
             GenericFragmentParameterTypeWithSymbolicNameAndParameterName.class, sourcePlugin}
     };
     
@@ -207,6 +216,7 @@ public class FragmentParameterTypeCreationTests extends AbstractLanguageElementC
      * @param expectedElementClass the expected {@link Class} of the created {@link LanguageElement}
      * @param expectedElementType the expected {@link ElementType} of the created {@link LanguageElement}
      * @param expectedElementName the expected name of the created {@link LanguageElement}
+     * @param expectedElementFullyQualifiedName the expected fully-qualified name of the created {@link LanguageElement}
      * @param expectedElementSourceClass the expected {@link Class} from which the {@link LanguageElement} was created
      * @param expectedElementSourcePlugin the expected {@link File} denoting the source plug-in of the {@link Class}
      *        from which a {@link LanguageElement} was created
@@ -214,9 +224,11 @@ public class FragmentParameterTypeCreationTests extends AbstractLanguageElementC
 //CHECKSTYLE:OFF
     public FragmentParameterTypeCreationTests(Class<?> testInputClass, ExternalElementException expectedException,
             boolean expectedElementsExistence, Class<?> expectedElementClass, ElementType expectedElementType,
-            String expectedElementName, Class<?> expectedElementSourceClass, java.io.File expectedElementSourcePlugin) {
+            String expectedElementName, String expectedElementFullyQualifiedName, Class<?> expectedElementSourceClass,
+            java.io.File expectedElementSourcePlugin) {
         super(testInputClass, expectedException, expectedElementsExistence, expectedElementClass, expectedElementType,
-                expectedElementName, expectedElementSourceClass, expectedElementSourcePlugin);
+                expectedElementName, expectedElementFullyQualifiedName, expectedElementSourceClass,
+                expectedElementSourcePlugin);
     }
 //CHECKSTYLE:ON
 
