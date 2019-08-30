@@ -63,6 +63,14 @@ public class ChangeIdentifier extends LanguageElement {
     }
     
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getFullyQualifiedName() {
+        return getSourceClass().getCanonicalName();
+    }
+    
+    /**
      * Returns the array of names, which denote the elements to which this change identifier is assignable to.
      * 
      * @return the array of names, which denote the elements to which this change identifier is assignable to

@@ -48,4 +48,11 @@ public class ParameterType extends LanguageElement {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getFullyQualifiedName() {
+        return getSourceClass().getCanonicalName();
+    }
 }

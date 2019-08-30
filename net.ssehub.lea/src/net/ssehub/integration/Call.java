@@ -145,6 +145,14 @@ public class Call extends LanguageElement {
     }
     
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getFullyQualifiedName() {
+        return sourceMethod.toGenericString();
+    }
+    
+    /**
      * Returns the name of the type of element(s) this call will return.
      * 
      * @return the name of the type of element(s) this call will return; never <code>null</code>
