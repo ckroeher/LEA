@@ -25,6 +25,11 @@ import java.io.File;
  *
  */
 public class ParameterType extends LanguageElement {
+    
+    /**
+     * The fully-qualified name of this element.
+     */
+    private String fullyQualifiedName;
 
     /**
      * Constructs a new {@link ParameterType} with the given attributes.
@@ -46,6 +51,10 @@ public class ParameterType extends LanguageElement {
                 && elementType != ElementType.RESULT_PARAMETER_TYPE) {
             throw new LanguageElementException("Type mismatch: \"" + elementType + "\" is not a valid parameter type");
         }
+        // Construct the fully-qualified name of this element
+        String sourceClassCanonicalName = sourceClass.getCanonicalName();
+        int substringEndIndex = sourceClassCanonicalName.lastIndexOf('.') + 1;
+        fullyQualifiedName = sourceClassCanonicalName.substring(0, substringEndIndex) + name;
     }
 
     /**
@@ -53,6 +62,6 @@ public class ParameterType extends LanguageElement {
      */
     @Override
     public String getFullyQualifiedName() {
-        return getSourceClass().getCanonicalName();
+        return fullyQualifiedName;
     }
 }

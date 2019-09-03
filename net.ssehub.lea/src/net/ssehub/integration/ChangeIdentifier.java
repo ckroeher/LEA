@@ -23,7 +23,7 @@ import java.io.File;
  * @author Christian Kroeher
  *
  */
-public class ChangeIdentifier extends LanguageElement {
+public class ChangeIdentifier extends LanguageElement implements IFinalizable {
     
     /**
      * The constant {@link ElementType} of all instances of this class: {@link ElementType#CHANGE_IDENTIFIER}.
@@ -31,32 +31,57 @@ public class ChangeIdentifier extends LanguageElement {
     private static final ElementType ELEMENT_TYPE = ElementType.CHANGE_IDENTIFIER;
     
     /**
-     * The array of names, which denote the elements to which this change identifier is assignable to.
+     * The fully-qualified name of this element.
      */
-    private String[] assignableElements;
-
+    private String fullyQualifiedName;
+    
     /**
-     * Constructs a new {@link ChangeIdentifier} with the given attributes. This constructor sets the element type 
-     * for the new element to {@link ElementType#CHANGE_IDENTIFIER} automatically.
+     * The array of {@link ParameterType}s to which this change identifier is assignable to.
+     */
+    private ParameterType[] assignableElements;
+    
+    /**
+     * Constructs a new <b>premature</b> {@link ChangeIdentifier} with the given attributes omitting the required 
+     * definition of elements to which the new change identifier is assignable to. These elements must be added using
+     * {@link ChangeIdentifier#setAssignableElements(ParameterType[])} in order to {@link ChangeIdentifier#isFinal()}
+     * returning <code>true</code> and, hence, enabling the addition of this change identifier to the 
+     * {@link LanguageRegistry}. Further, this constructor sets the element type for the new change identifier to
+     * {@link ElementType#CHANGE_IDENTIFIER} automatically.
      * 
      * @param name the name of this new element
-     * @param assignableElements the array of names, which denote the elements to which this change identifier is
-     *        assignable to
      * @param sourceClass the {@link Class} from where this new element is created
      * @param sourcePlugin the {@link File}, which is a Java archive file, from where this new element is created
-     * @throws LanguageElementException if any of the above parameters is <code>null</code>, the array of assignable
-     *         elements is <i>empty</i>, or the name is <i>blank</i>
+     * @throws LanguageElementException if any of the above parameters is <code>null</code>, or the name is <i>blank</i>
      */
-    public ChangeIdentifier(String name, String[] assignableElements, Class<?> sourceClass, File sourcePlugin)
-            throws LanguageElementException {
+    public ChangeIdentifier(String name, Class<?> sourceClass, File sourcePlugin) throws LanguageElementException {
         super(ELEMENT_TYPE, name, sourceClass, sourcePlugin);
+        assignableElements = null;
+        // Construct the fully-qualified name of this element
+        String sourceClassCanonicalName = sourceClass.getCanonicalName();
+        int substringEndIndex = sourceClassCanonicalName.lastIndexOf('.') + 1;
+        fullyQualifiedName = sourceClassCanonicalName.substring(0, substringEndIndex) + name;
+    }
+    
+    /**
+     * Sets the given {@link ParameterType}s as elements to which this change identifier is assignable to.
+     * 
+     * @param assignableElements the array of {@link ParameterType}s to be set as elements to which this change
+     *        identifier is assignable to
+     * @throws LanguageElementException if the elements to which this change identifier is assignable to are already 
+     *         defined, the given array is <code>null</code>, is <i>empty</i>, or one of the elements of that array is
+     *         actually <code>null</code>
+     */
+    public void setAssignableElements(ParameterType[] assignableElements) throws LanguageElementException {
+        if (this.assignableElements != null) {
+            throw new LanguageElementException("Elements to which this change identifier is assignable to already "
+                    + "defined");
+        }
         if (assignableElements == null || assignableElements.length == 0) {
             throw new LanguageElementException("Missing elements to which this change identifier is assignable to");
         }
-        // Check in addition if the elements to which this change identifier is assignable to are not blank
         for (int i = 0; i < assignableElements.length; i++) {
-            if (assignableElements[i].isBlank()) {
-                throw new LanguageElementException("Blank element to which this change identifier is assignable to");
+            if (assignableElements[i] == null) {
+                throw new LanguageElementException("Null element to which this change identifier is assignable to");
             }
         }
         this.assignableElements = assignableElements;
@@ -67,15 +92,17 @@ public class ChangeIdentifier extends LanguageElement {
      */
     @Override
     public String getFullyQualifiedName() {
-        return getSourceClass().getCanonicalName();
+        return fullyQualifiedName;
     }
     
     /**
-     * Returns the array of names, which denote the elements to which this change identifier is assignable to.
+     * Returns the array of {@link ParameterType}s to which this change identifier is assignable to.
      * 
-     * @return the array of names, which denote the elements to which this change identifier is assignable to
+     * @return the array of {@link ParameterType}s to which this change identifier is assignable to or
+     *         <code>null</code>, if the construction of this change identifier is not completed yet
+     * @see #isFinal() 
      */
-    public String[] getAssignableElements() {
+    public ParameterType[] getAssignableElements() {
         return assignableElements;
     }
 
@@ -91,7 +118,7 @@ public class ChangeIdentifier extends LanguageElement {
         boolean isEqual = super.equals(comparable);
         if (isEqual) {
             ChangeIdentifier comparableChangeIdentifier = (ChangeIdentifier) comparable;
-            String[] comparableAssignableElements = comparableChangeIdentifier.getAssignableElements();
+            ParameterType[] comparableAssignableElements = comparableChangeIdentifier.getAssignableElements();
             if (this.assignableElements.length == comparableAssignableElements.length) {
                 int assignableElementsCounter = 0;
                 while (isEqual && assignableElementsCounter < this.assignableElements.length) {
@@ -113,14 +140,15 @@ public class ChangeIdentifier extends LanguageElement {
      * their order in the array for equality. This is the case, if for each given element an equal element in
      * {@link #assignableElements} exists. 
      *   
-     * @param elements the elements to compare to the {@link #assignableElements} of this {@link ChangeIdentifier}
+     * @param elements the elements to compare to the {@link #assignableElements} of this {@link ChangeIdentifier};
+     *        should never be <code>null</code> nor <i>empty</i>
      * @return <code>true</code>, if for each given element an equal element in {@link #assignableElements} exists;
      *         <code>false</code> otherwise
      */
-    public boolean assignableTo(String[] elements) {
+    public boolean assignableTo(ParameterType[] elements) {
         boolean isAssignableTo = true;
         int elementsCounter = 0;
-        String element;
+        ParameterType element;
         int assignableElementsCounter;
         boolean equalAssignableElementFound;
         while (isAssignableTo && elementsCounter < elements.length) {
@@ -135,5 +163,15 @@ public class ChangeIdentifier extends LanguageElement {
             elementsCounter++;
         }
         return isAssignableTo;
+    }
+
+    /**
+     * {@inheritDoc}<br>
+     * <br>
+     * For {@link ChangeIdentifier}s, the construction is completed, if the assignable elements are available.
+     */
+    @Override
+    public boolean isFinal() {
+        return (assignableElements != null);
     }
 }

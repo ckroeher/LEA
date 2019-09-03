@@ -72,11 +72,26 @@ public class LanguageRegistry extends AbstractLanguageRegistry {
         boolean hasChangeIdentifer = false;
         List<ChangeIdentifier> availableChangeIdentifiers = changeIdentifiers.get(name);
         if (availableChangeIdentifiers != null) {
-            int availableChangeIdentifierCounter = 0;
-            while (!hasChangeIdentifer && availableChangeIdentifierCounter < availableChangeIdentifiers.size()) {
-                hasChangeIdentifer = availableChangeIdentifiers.get(availableChangeIdentifierCounter)
-                        .assignableTo(assignableElements);
-                availableChangeIdentifierCounter++;
+            ParameterType[] correspondingParameterTypes = new ParameterType[assignableElements.length];
+            boolean correspondingParameterTypesAvailable = true;
+            int elementsCounter = 0;
+            ParameterType correspondingParameterType;
+            while (correspondingParameterTypesAvailable && elementsCounter < assignableElements.length) {
+                correspondingParameterType = getParameterType(assignableElements[elementsCounter]);
+                if (correspondingParameterType != null) {
+                    correspondingParameterTypes[elementsCounter] = correspondingParameterType;
+                } else {
+                    correspondingParameterTypesAvailable = false;
+                }
+                elementsCounter++;
+            }
+            if (correspondingParameterTypesAvailable) {                
+                elementsCounter = 0;
+                while (!hasChangeIdentifer && elementsCounter < availableChangeIdentifiers.size()) {
+                    hasChangeIdentifer = availableChangeIdentifiers.get(elementsCounter)
+                            .assignableTo(correspondingParameterTypes);
+                    elementsCounter++;
+                }
             }
         }
         return hasChangeIdentifer;
@@ -122,6 +137,43 @@ public class LanguageRegistry extends AbstractLanguageRegistry {
      */
     public boolean hasResultParameterType(String name) {
         return resultParameterTypes.containsKey(name);
+    }
+    
+    /**
+     * Returns the {@link ParameterType}, which has the given fully-qualified name, regardless of its 
+     * {@link ElementType}.
+     * 
+     * @param fullyQualifiedName the fully-qualified name of the {@link ParameterType} to search for; should never be
+     *        <code>null</code> nor <i>blank</i>
+     * @return the {@link ParameterType} with the given fully-qualified name or <code>null</code>, if no such 
+     *         {@link ParameterType} is available
+     */
+    public ParameterType getParameterType(String fullyQualifiedName) {
+        ParameterType parameterType = null;
+        String simpleName = fullyQualifiedName.substring(fullyQualifiedName.lastIndexOf(".") + 1);
+        List<ParameterType> availableParameterTypes = artifactParameterTypes.get(simpleName);
+        if (availableParameterTypes == null) {
+            availableParameterTypes = fragmentParameterTypes.get(simpleName);
+            if (availableParameterTypes == null) {
+                availableParameterTypes = resultParameterTypes.get(simpleName);
+            }
+        }
+        if (availableParameterTypes != null) {
+            if (availableParameterTypes.size() == 1) {
+                parameterType = availableParameterTypes.get(0);
+            } else {                
+                int availableParameterTypesCounter = 0;
+                ParameterType availableParameterType;
+                while (parameterType == null && availableParameterTypesCounter < availableParameterTypes.size()) {
+                    availableParameterType = availableParameterTypes.get(availableParameterTypesCounter);
+                    if (availableParameterType.getFullyQualifiedName().equals(fullyQualifiedName)) {
+                        parameterType = availableParameterType;
+                    }
+                    availableParameterTypesCounter++;
+                }
+            }
+        }
+        return parameterType;
     }
     
     /**
@@ -180,11 +232,11 @@ public class LanguageRegistry extends AbstractLanguageRegistry {
                     parametersCounter = 0;
                     while (parametersEqual && parametersCounter < parameterTypes.length) {
                         parametersEqual = parameterTypes[parametersCounter]
-                                .equals(availableCall.getParameters()[parametersCounter]);
+                                .equals(availableCall.getParameters()[parametersCounter].getName());
                         parametersCounter++;
                     }
                     if (parametersEqual) {
-                        callReturnType = availableCall.getReturnType();
+                        callReturnType = availableCall.getReturnType().getName();
                     }
                 }
                 availableCallsCounter++;

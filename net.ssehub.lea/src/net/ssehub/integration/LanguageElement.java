@@ -30,7 +30,7 @@ public abstract class LanguageElement {
     private ElementType elementType;
     
     /**
-     * The name of this element. This is also the user-visible name when using the language.
+     * The name of this element.
      */
     private String name;
     
@@ -83,7 +83,7 @@ public abstract class LanguageElement {
     }
     
     /**
-     * Returns the (simple) name of this element.
+     * Returns the name of this element.
      * 
      * @return the name of this element; never <code>null</code> nor <i>blank</i>
      */

@@ -29,9 +29,9 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 /**
- * This class provides {@link LanguageElement}s from external plug-ins. It therefore loads all plug-ins from a given
- * directory, loads their classes, and passes them iteratively to the {@link LanguageElementCreator} for creating the
- * language elements. The created elements are then passed to the {@link LanguageRegistry}.
+ * This class is responsible for detecting external plug-ins (<code>*.jar</code>-files), extracting their classes, and
+ * passing them individually to the {@link LanguageElementCreator} for {@link LanguageElement} creation. The created
+ * {@link LanguageElement}s are added to the {@link LanguageRegistry} by the {@link LanguageElementCreator}.
  * 
  * @author Christian Kroeher
  *
@@ -49,49 +49,58 @@ public class LanguageElementProvider {
     private static final String JAVA_CLASS_FILE_EXTENSION = ".class";
     
     /**
-     * The {@link LanguageRegistry} to which new {@link LanguageElement}s should be provided.
+     * The {@link LanguageElementCreator} for creating {@link LanguageElement}s based on the detected plug-ins and their
+     * classes.
      */
-    private LanguageRegistry languageRegistry;
-
+    private LanguageElementCreator languageElementCreator;
+    
     /**
      * Constructs a new {@link LanguageElementProvider}.
-     * 
-     * @param languageRegistry the {@link LanguageRegistry} to which new {@link LanguageElement}s should be provided 
      */
-    public LanguageElementProvider(LanguageRegistry languageRegistry) {
-        this.languageRegistry = languageRegistry;
+    public LanguageElementProvider() {
+        languageElementCreator = new LanguageElementCreator();
     }
     
     /**
-     * Scans all plug-ins (<code>*.jar</code>-files) in the given plug-in directory for classes that contain the custom
-     * annotations, which classify the class, its attributes, or its methods to represent language elements. Based on 
-     * these annotated elements, the {@link LanguageElementCreator} creates corresponding {@link LanguageElement}s,
-     * which this class passes to the {@link LanguageRegistry}.
+     * Detects all plug-ins (<code>*.jar</code>-files) on each given search path (including sub-directories), extracts
+     * their classes, and passes them individually to the {@link LanguageElementCreator} for {@link LanguageElement}
+     * creation.
      *  
-     * @param pluginDirectory the {@link File} denoting a directory, in which all plug-ins (<code>*.jar</code>-files)
-     *        should be scanned for classes introducing new language elements
-     * @throws ExternalElementException if the given directory is <code>null</code>, does not exist, is not a directory,
-     *         or detecting language elements from the plug-ins in that directory causes an internal error; it is 
-     *         <b>not</b> thrown, if no plug-ins or elements could be found
+     * @param searchPaths the @{@link List} of {@link String}s of which each denotes a path to a directory to search in
+     *        for plug-ins (<code>*.jar</code>-files)
+     * @throws ExternalElementException if the given @{@link List} of {@link String}s denoting the search paths is
+     *         <code>null</code> or <i>empty</i>, one of those {@link String}s does not denote a directory, or
+     *         retrieving the {@link URL} of a plug-in failed; it is <b>not</b> thrown, if no plug-ins or language
+     *         elements could be found
      */
-    public void detectLanguageElements(File pluginDirectory) throws ExternalElementException {
-        checkDirectory(pluginDirectory);
-        List<File> plugins = getJarFiles(pluginDirectory);
-        URL[] pluginUrls = getPluginUrls(plugins);
-        for (File plugin : plugins) {
-            detectLanguageElements(plugin, pluginUrls);
+    public void detectLanguageElements(List<String> searchPaths) throws ExternalElementException {
+        if (searchPaths != null && !searchPaths.isEmpty()) {
+            File pluginDirectory;
+            for (String searchPath : searchPaths) {
+                pluginDirectory = new File(searchPath);
+                checkDirectory(pluginDirectory);
+                List<File> plugins = getJarFiles(pluginDirectory);
+                URL[] pluginUrls = getPluginUrls(plugins);
+                for (File plugin : plugins) {
+                    detectLanguageElements(plugin, pluginUrls);
+                }
+            }
+            languageElementCreator.finalizeCreations();
+        } else {
+            throw new ExternalElementException("No paths to search for plug-ins specified");
         }
     }
     
     /**
-     * Detects language elements declared in the classes of the given {@link File}, which is assumed to be a Java
-     * archive file, and adds these elements to the {@link LanguageRegistry}. Note that, if the given plug-in could not
-     * be read or classes could not be loaded to detect language elements, the user will be informed by TODO. There is
-     * no further error propagation at this point, as this method is called for each plug-in individually and, hence, 
-     * an error for one plug-in should not prevent reading other plug-ins.
+     * Extracts the classes of the given {@link File}, which is assumed to be a Java archive file
+     * (<code>*.jar</code>-file), and passes them individually to the {@link LanguageElementCreator} for
+     * {@link LanguageElement} creation. Note that, if the given plug-in could not be read or classes could not be
+     * loaded to detect language elements, the user will be informed by TODO. There is no further error propagation at
+     * this point, as this method is called for each plug-in individually and, hence, an error for one plug-in should
+     * not prevent reading other plug-ins.
      * 
-     * @param plugin the {@link File} denoting a Java archive file in which all classes will be scanned for declaring
-     *        language elements; should never be <code>null</code> 
+     * @param plugin the {@link File} denoting a Java archive file from which each class will be extracted and passed to
+     *        the {@link LanguageElementCreator} for {@link LanguageElement} creation; should never be <code>null</code>
      * @param pluginUrls the array of {@link URL}s of all available Java archive files for class loading; although
      *        this method only processes a single plug-in (Java archive file), that plug-in may depend on other
      *        plug-ins, which have to be available for this method to detect language elements in the given plug-in;
@@ -104,12 +113,11 @@ public class LanguageElementProvider {
     private void detectLanguageElements(File plugin, URL[] pluginUrls) {
         try {
             List<String> pluginClassNames = getPluginClassNames(plugin);
-            LanguageElementCreator elementCreator = new LanguageElementCreator();
             Class<?> pluginClass;
             for (String pluginClassName : pluginClassNames) {
                 try {
                     pluginClass = Class.forName(pluginClassName, false, new URLClassLoader(pluginUrls));
-                    languageRegistry.addLanguageElements(elementCreator.createLanguageElements(pluginClass, plugin));
+                    languageElementCreator.createLanguageElements(pluginClass, plugin);
                 } catch (LinkageError | ClassNotFoundException | SecurityException e) {
                     throw new ExternalElementException("Could not load class \"" + pluginClassName + "\"", e);
                 } catch (NullPointerException e) {
