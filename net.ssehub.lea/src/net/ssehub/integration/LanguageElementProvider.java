@@ -65,7 +65,9 @@ public class LanguageElementProvider {
     /**
      * Detects all plug-ins (<code>*.jar</code>-files) on each given search path (including sub-directories), extracts
      * their classes, and passes them individually to the {@link LanguageElementCreator} for {@link LanguageElement}
-     * creation.
+     * creation.<br>
+     * <br>
+     * <b>Note</b> that calling this method clears the current {@link LanguageRegistry}.
      *  
      * @param searchPaths the @{@link List} of {@link String}s of which each denotes a path to a directory to search in
      *        for plug-ins (<code>*.jar</code>-files)
@@ -73,8 +75,10 @@ public class LanguageElementProvider {
      *         <code>null</code> or <i>empty</i>, one of those {@link String}s does not denote a directory, or
      *         retrieving the {@link URL} of a plug-in failed; it is <b>not</b> thrown, if no plug-ins or language
      *         elements could be found
+     * @see LanguageRegistry#clear()
      */
     public void detectLanguageElements(List<String> searchPaths) throws ExternalElementException {
+        LanguageRegistry.INSTANCE.clear();
         if (searchPaths != null && !searchPaths.isEmpty()) {
             File pluginDirectory;
             for (String searchPath : searchPaths) {

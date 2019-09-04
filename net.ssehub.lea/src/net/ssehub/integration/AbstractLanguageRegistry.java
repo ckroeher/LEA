@@ -111,6 +111,23 @@ public abstract class AbstractLanguageRegistry {
     }
     
     /**
+     * Removes all elements from this registry. The {@link #artifactParameterTypes}, {@link #fragmentParameterTypes},
+     * {@link #resultParameterTypes}, {@link #changeIdentifiers}, {@link #operations}, {@link #memberOperations},
+     * {@link #extractorCalls}, and {@link #analysisCalls} will be empty after this call returns.
+     */
+    public void clear() {
+        languageElementCounter = 0;
+        artifactParameterTypes.clear();
+        fragmentParameterTypes.clear();
+        resultParameterTypes.clear();
+        changeIdentifiers.clear();
+        operations.clear();
+        memberOperations.clear();
+        extractorCalls.clear();
+        analysisCalls.clear();
+    }
+    
+    /**
      * Adds the given {@link ParameterType} as an artifact parameter type to this registry. Hence, the addition is only
      * successful, if the given @{@link ParameterType} is not <code>null</code>, calling
      * {@link ParameterType#getElementType()} returns {@link ElementType#ARTIFACT_PARAMETER_TYPE}, and the registry does
