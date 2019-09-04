@@ -122,20 +122,22 @@ public class LanguageElementCreator {
     private void createParameterType(Class<?> pluginClass, File sourcePlugin) 
             throws ExternalElementException {
         ElementType parameterTypeElementType = getElementType(pluginClass);
-        String parameterTypeName = getParameterTypeName(pluginClass);
-        try {
-            ParameterType parameterType = new ParameterType(parameterTypeElementType, parameterTypeName, pluginClass, 
-                    sourcePlugin);
-            if (!languageRegistry.addArtifactParameterType(parameterType) 
-                    && !languageRegistry.addFragmentParameterType(parameterType)
-                    && !languageRegistry.addResultParameterType(parameterType)) {
-                throw new ExternalElementException("Adding " + parameterTypeElementType + " \"" + parameterTypeName 
-                        + "\" to language registry failed"); 
+        if (parameterTypeElementType != null) {            
+            String parameterTypeName = getParameterTypeName(pluginClass);
+            try {
+                ParameterType parameterType = new ParameterType(parameterTypeElementType, parameterTypeName,
+                        pluginClass, sourcePlugin);
+                if (!languageRegistry.addArtifactParameterType(parameterType) 
+                        && !languageRegistry.addFragmentParameterType(parameterType)
+                        && !languageRegistry.addResultParameterType(parameterType)) {
+                    throw new ExternalElementException("Adding " + parameterTypeElementType + " \"" + parameterTypeName 
+                            + "\" to language registry failed"); 
+                }
+            } catch (LanguageElementException e) {
+                throw new ExternalElementException("Creating " + parameterTypeElementType + " based on class \"" 
+                        + pluginClass.getSimpleName() + "\" in plug-in \"" + sourcePlugin.getAbsolutePath() 
+                        + "\" failed", e);
             }
-        } catch (LanguageElementException e) {
-            throw new ExternalElementException("Creating " + parameterTypeElementType + " based on class \"" 
-                    + pluginClass.getSimpleName() + "\" in plug-in \"" + sourcePlugin.getAbsolutePath() 
-                    + "\" failed", e);
         }
     }
     
@@ -201,14 +203,16 @@ public class LanguageElementCreator {
     private void initializeCall(Method pluginClassMethod, Class<?> pluginClass, File sourcePlugin) 
             throws ExternalElementException {
         ElementType callElementType = getElementType(pluginClassMethod);
-        String callName = getCallName(pluginClassMethod);
-        try {
-            Call call = new Call(callElementType, callName, pluginClassMethod, pluginClass, sourcePlugin);
-            cachedCalls.add(call);
-        } catch (LanguageElementException e) {
-            throw new ExternalElementException("Creating " + callElementType + " based on method \"" 
-                    + pluginClassMethod.getName() + "\" in class \"" + pluginClass.getSimpleName() 
-                    + "\" of plug-in \"" + sourcePlugin.getAbsolutePath() + "\" failed", e);
+        if (callElementType != null) {            
+            String callName = getCallName(pluginClassMethod);
+            try {
+                Call call = new Call(callElementType, callName, pluginClassMethod, pluginClass, sourcePlugin);
+                cachedCalls.add(call);
+            } catch (LanguageElementException e) {
+                throw new ExternalElementException("Creating " + callElementType + " based on method \"" 
+                        + pluginClassMethod.getName() + "\" in class \"" + pluginClass.getSimpleName() 
+                        + "\" of plug-in \"" + sourcePlugin.getAbsolutePath() + "\" failed", e);
+            }
         }
     }
     
