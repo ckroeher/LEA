@@ -36,41 +36,76 @@ public enum ElementType {
      * Defines the element to be an artifact parameter type <code>T</code>. It can be used as follows: 
      * <code><b>Artifact</b>&lt;T&gt; ...</code>
      */
-    ARTIFACT_PARAMETER_TYPE,
+    ARTIFACT_PARAMETER_TYPE {
+        @Override
+        public String toString() {
+            return "artifact parameter type";
+        }
+    },
     
     /**
      * Defines the element to be a fragment parameter type <code>T</code>. It can be used as follows: 
      * <code><b>Fragment</b>&lt;T&gt; ...</code>
      */
-    FRAGMENT_PARAMETER_TYPE,
+    FRAGMENT_PARAMETER_TYPE {
+        @Override
+        public String toString() {
+            return "fragment parameter type";
+        }
+    },
     
     /**
      * Defines the element to be a result parameter type <code>T</code>. It can be used as follows: 
      * <code><b>Result</b>&lt;T&gt; ...</code>
      */
-    RESULT_PARAMETER_TYPE,
+    RESULT_PARAMETER_TYPE {
+        @Override
+        public String toString() {
+            return "result parameter type";
+        }
+    },
     
     /**
      * Defines the element to be a change identifier <code>CI</code>. It can be used as follows: 
      * <code><b>apply</b> CI <b>to</b> ...</code> 
      */
-    CHANGE_IDENTIFIER,
+    CHANGE_IDENTIFIER {
+        @Override
+        public String toString() {
+            return "change identifier";
+        }
+    },
     
     /**
      * Defines the element to be an operation <code>op()</code>. The way it can be used depends on the specific type of
      * operation, e.g., <code>element.op()</code>, or <code>op()</code>, etc.
      */
-    OPERATION,
+    OPERATION {
+        @Override
+        public String toString() {
+            return "operation";
+        }
+    },
     
     /**
      * Defines the element to be an extractor call <code>ex()</code>. The way it can be used depends on the specific
      * extractor, e.g., <code>Fragment&lt;T&gt; name = ex()</code>, etc.
      */
-    EXTRACTOR_CALL,
+    EXTRACTOR_CALL {
+        @Override
+        public String toString() {
+            return "extractor call";
+        }
+    },
     
     /**
      * Defines the element to be an analysis call <code>an()</code>. The way it can be used depends on the specific
      * analyzer, e.g., <code>Result&lt;T&gt; name = an()</code>, etc.
      */
-    ANALYSIS_CALL
+    ANALYSIS_CALL {
+        @Override
+        public String toString() {
+            return "analysis call";
+        }
+    }
 }
