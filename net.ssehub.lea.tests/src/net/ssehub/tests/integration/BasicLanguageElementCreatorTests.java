@@ -18,8 +18,6 @@ import static org.junit.Assert.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-import java.util.List;
-
 import org.junit.Test;
 
 import net.ssehub.integration.ExternalElementException;
@@ -83,9 +81,7 @@ public class BasicLanguageElementCreatorTests extends AbstractCreationTest {
     @Test
     public void testNullAsSourcePluginDuringNoElementIntroduction() {
         try {
-            List<LanguageElement> createdElements = 
-                    elementCreator.createLanguageElements(BasicLanguageElementCreatorTests.class, null);
-            assertEquals(0, createdElements.size(), "Language elements created although source plug-in is null");
+            elementCreator.createLanguageElements(BasicLanguageElementCreatorTests.class, null);
         } catch (ExternalElementException | NullPointerException e) {
             assertNull(e, "Exception thrown");
         }

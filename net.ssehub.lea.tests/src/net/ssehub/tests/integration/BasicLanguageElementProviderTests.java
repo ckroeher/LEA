@@ -20,9 +20,10 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
 import net.ssehub.integration.Call;
@@ -51,11 +52,12 @@ public class BasicLanguageElementProviderTests {
     private static LanguageElementProvider elementProvider;
     
     /**
-     * Prepares the elements commonly used by all unit tests defined in this class.
+     * Creates a new {@link LanguageElementProvider} instance for each of the unit tests in this class to avoid side-
+     * effects, which cannot occur in production as the element provider is called exactly once to create all elements.
      */
-    @BeforeClass
-    public static void prepare() {
-        elementProvider = new LanguageElementProvider(LanguageRegistry.INSTANCE);
+    @Before
+    public void prepare() {
+        elementProvider = new LanguageElementProvider();
     }
     
     /**
@@ -72,15 +74,24 @@ public class BasicLanguageElementProviderTests {
         }
     }
     
+    /*
+     * TODO The following two tests are currently obsolete as the LanguageElementProvider does not throw any exception
+     * anymore, if a given search path does not denote a valid directory, but simply skips that path. If we have proper
+     * error messages to be retrieved somewhere, we can reestablish this test. 
+     */
+    
     /**
      * Tests the correct throw of an {@link ExternalElementException}, if the plug-in directory ({@link File}), in which
      * external plug-ins should be found, does not exist (in the file system).
      */
     @Test
     public void testNonExistingPluginDirectory() {
+        File pluginDirectory = new File("nonexistingdir");
+        List<String> searchPaths = new ArrayList<String>();
+        searchPaths.add(pluginDirectory.getAbsolutePath());
         try {
-            elementProvider.detectLanguageElements(new File("nonexistingdir"));
-            fail("No exception thrown");
+            elementProvider.detectLanguageElements(searchPaths);
+//            fail("No exception thrown");
         } catch (ExternalElementException e) {
             assertEquals(e.getClass(), ExternalElementException.class, "Wrong exception thrown");
         }
@@ -92,9 +103,12 @@ public class BasicLanguageElementProviderTests {
      */
     @Test
     public void testFileAsPluginDirectory() {
+        File pluginDirectory = new File(TESTDATA_DIRECTORY, "/emptyPlugin/EmptyPlugin.jar");
+        List<String> searchPaths = new ArrayList<String>();
+        searchPaths.add(pluginDirectory.getAbsolutePath());
         try {
-            elementProvider.detectLanguageElements(new File(TESTDATA_DIRECTORY, "/emptyPlugin/EmptyPlugin.jar"));
-            fail("No exception thrown");
+            elementProvider.detectLanguageElements(searchPaths);
+//            fail("No exception thrown");
         } catch (ExternalElementException e) {
             assertEquals(e.getClass(), ExternalElementException.class, "Wrong exception thrown");
         }
@@ -107,9 +121,12 @@ public class BasicLanguageElementProviderTests {
      */
     @Test
     public void testEmptyDirectory() {
+        File pluginDirectory = new File(TESTDATA_DIRECTORY, "emptyDirectory");
+        List<String> searchPaths = new ArrayList<String>();
+        searchPaths.add(pluginDirectory.getAbsolutePath());
         int expectedLanguageElementSize = LanguageRegistry.INSTANCE.size();
         try {
-            elementProvider.detectLanguageElements(new File(TESTDATA_DIRECTORY, "emptyDirectory"));
+            elementProvider.detectLanguageElements(searchPaths);
             assertEquals(expectedLanguageElementSize, LanguageRegistry.INSTANCE.size(), 
                     "An empty plug-in directory should not change the number of elements in the language directory");
         } catch (ExternalElementException e) {
@@ -123,9 +140,12 @@ public class BasicLanguageElementProviderTests {
      */
     @Test
     public void testEmptyPlugin() {
+        File pluginDirectory = new File(TESTDATA_DIRECTORY, "emptyPlugin");
+        List<String> searchPaths = new ArrayList<String>();
+        searchPaths.add(pluginDirectory.getAbsolutePath());
         int expectedLanguageElementSize = LanguageRegistry.INSTANCE.size();
         try {
-            elementProvider.detectLanguageElements(new File(TESTDATA_DIRECTORY, "emptyPlugin"));
+            elementProvider.detectLanguageElements(searchPaths);
             assertEquals(expectedLanguageElementSize, LanguageRegistry.INSTANCE.size(), 
                     "An empty plug-in should not change the number of elements in the language directory");
         } catch (ExternalElementException e) {
@@ -139,9 +159,12 @@ public class BasicLanguageElementProviderTests {
      */
     @Test
     public void testPluginWithoutJavaClasses() {
+        File pluginDirectory = new File(TESTDATA_DIRECTORY, "pluginWithoutJavaClasses");
+        List<String> searchPaths = new ArrayList<String>();
+        searchPaths.add(pluginDirectory.getAbsolutePath());
         int expectedLanguageElementSize = LanguageRegistry.INSTANCE.size();
         try {
-            elementProvider.detectLanguageElements(new File(TESTDATA_DIRECTORY, "pluginWithoutJavaClasses"));
+            elementProvider.detectLanguageElements(searchPaths);
             assertEquals(expectedLanguageElementSize, LanguageRegistry.INSTANCE.size(), 
                     "A plug-in without Java classes should not change the number of elements in the language "
                     + "directory");
@@ -156,9 +179,12 @@ public class BasicLanguageElementProviderTests {
      */
     @Test
     public void testPluginWithoutNewElements() {
+        File pluginDirectory = new File(TESTDATA_DIRECTORY, "pluginWithoutNewElements");
+        List<String> searchPaths = new ArrayList<String>();
+        searchPaths.add(pluginDirectory.getAbsolutePath());
         int expectedLanguageElementSize = LanguageRegistry.INSTANCE.size();
         try {
-            elementProvider.detectLanguageElements(new File(TESTDATA_DIRECTORY, "pluginWithoutNewElements"));
+            elementProvider.detectLanguageElements(searchPaths);
             assertEquals(expectedLanguageElementSize, LanguageRegistry.INSTANCE.size(), 
                     "A plug-in with classes not introducing new elements should not change the number of elements in "
                     + "the language directory");
@@ -173,10 +199,13 @@ public class BasicLanguageElementProviderTests {
      */
     @Test
     public void testPluginWithNewElements() {
+        File pluginDirectory = new File(TESTDATA_DIRECTORY, "pluginWithNewElements");
+        List<String> searchPaths = new ArrayList<String>();
+        searchPaths.add(pluginDirectory.getAbsolutePath());
         int expectedLanguageElementSize = LanguageRegistry.INSTANCE.size() + 1;
         String expectedRegisteredElementName = "NewElement";
         try {
-            elementProvider.detectLanguageElements(new File(TESTDATA_DIRECTORY, "pluginWithNewElements"));
+            elementProvider.detectLanguageElements(searchPaths);
             assertEquals(expectedLanguageElementSize, LanguageRegistry.INSTANCE.size(), 
                     "A plug-in with classes introducing a new element should increase the number of elements in the "
                     + "language directory by 1");
@@ -201,9 +230,12 @@ public class BasicLanguageElementProviderTests {
      */
     @Test
     public void testPluginWithNewMemberOperations() {
+        File pluginDirectory = new File(TESTDATA_DIRECTORY, "pluginWithNewMemberOperations");
+        List<String> searchPaths = new ArrayList<String>();
+        searchPaths.add(pluginDirectory.getAbsolutePath());
         int expectedLanguageElementSize = LanguageRegistry.INSTANCE.size() + 6;
         try {
-            elementProvider.detectLanguageElements(new File(TESTDATA_DIRECTORY, "pluginWithNewMemberOperations"));
+            elementProvider.detectLanguageElements(searchPaths);
             assertEquals(expectedLanguageElementSize, LanguageRegistry.INSTANCE.size(), 
                     "A plug-in with classes introducing new elements should increase the number of elements in the "
                     + "language directory by 6");
@@ -223,7 +255,7 @@ public class BasicLanguageElementProviderTests {
                 assertTrue(getAbsolutePathForNewFile.isMemberOperationOf(newFile.getName()), "Call \"" 
                         + getAbsolutePathForNewFile.getFullyQualifiedName() + "\" should be a member operation of \"" 
                         + newFile.getFullyQualifiedName() + "\"");
-                assertEquals(newFile.getName(), getAbsolutePathForNewFile.getParentParameterType(), "Call \"" 
+                assertEquals(newFile.getName(), getAbsolutePathForNewFile.getParentParameterType().getName(), "Call \"" 
                         + getAbsolutePathForNewFile.getFullyQualifiedName() + "\" should have \"" 
                         + newFile.getFullyQualifiedName() + "\" as parent parameter type");
                 
@@ -241,7 +273,7 @@ public class BasicLanguageElementProviderTests {
                         + "\" should be a member operation of \"" + fileWithMemberOperation.getFullyQualifiedName() 
                         + "\"");
                 assertEquals(fileWithMemberOperation.getName(), 
-                        getAbsolutePathForFileWithMemberOperation.getParentParameterType(), "Call \"" 
+                        getAbsolutePathForFileWithMemberOperation.getParentParameterType().getName(), "Call \"" 
                                 + getAbsolutePathForFileWithMemberOperation.getFullyQualifiedName() 
                                 + "\" should have \"" + fileWithMemberOperation.getFullyQualifiedName() 
                                 + "\" as parent parameter type");
@@ -256,7 +288,7 @@ public class BasicLanguageElementProviderTests {
                         + "\" should be a member operation of \"" + fileWithMemberOperation.getFullyQualifiedName() 
                         + "\"");
                 assertEquals(fileWithMemberOperation.getName(), 
-                        getPathForFileWithMemberOperation.getParentParameterType(), "Call \"" 
+                        getPathForFileWithMemberOperation.getParentParameterType().getName(), "Call \"" 
                                 + getPathForFileWithMemberOperation.getFullyQualifiedName() + "\" should have \"" 
                                 + fileWithMemberOperation.getFullyQualifiedName() + "\" as parent parameter type");
             } catch (NullPointerException e) {
