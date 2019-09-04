@@ -168,7 +168,7 @@ public class ChangeIdentifier extends LanguageElement implements IFinalizable {
     /**
      * {@inheritDoc}<br>
      * <br>
-     * For {@link ChangeIdentifier}s, the construction is completed, if the assignable elements are available.
+     * For {@link ChangeIdentifier}s, the construction is completed, if the {@link #assignableElements} are available.
      */
     @Override
     public boolean isFinal() {

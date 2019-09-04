@@ -94,7 +94,8 @@ public abstract class LanguageElement {
     /**
      * Returns the fully-qualified name of this element.
      * 
-     * @return the fully-qualified name of this element; never <code>null</code> nor <i>blank</i>
+     * @return the fully-qualified name of this element or <code>null</code>, if this element is {@link Call} for which
+     *         {@link Call#isFinal()} returns <code>false</code>
      */
     public abstract String getFullyQualifiedName();
     
@@ -122,7 +123,7 @@ public abstract class LanguageElement {
      * <ul>
      * <li>{@link ElementType}</li>
      * <li>Runtime {@link Class} (retrieved via {@link LanguageElement#getClass()})
-     * <li>Name</li>
+     * <li>Fully-qualified name</li>
      * <li>Source {@link Class}</li>
      * <li>Source plug-in (the same absolute path of the {@link File})</li>
      * </ul>
@@ -151,7 +152,7 @@ public abstract class LanguageElement {
     public boolean equalsIgnoreType(LanguageElement comparable) {
         boolean isEqual = false;
         if (this.getClass() == comparable.getClass()
-                && this.name.equals(comparable.getName())
+                && this.getFullyQualifiedName().equals(comparable.getFullyQualifiedName())
                 && this.sourceClass == comparable.getSourceClass()
                 && this.sourcePlugin.getAbsolutePath().equals(comparable.getSourcePlugin().getAbsolutePath())) {
             isEqual = true;

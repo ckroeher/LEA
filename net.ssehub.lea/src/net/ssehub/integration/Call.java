@@ -82,10 +82,10 @@ public class Call extends LanguageElement implements IFinalizable {
             throw new LanguageElementException("The source method for the new language element is null");
         }
         this.sourceMethod = sourceMethod;
+        fullyQualifiedName = null;
         returnType = null;
         parameters = null;
         parentParameterType = null;
-        // TODO Construct the fully-qualified name of this element
     }
     
     /**
@@ -108,6 +108,8 @@ public class Call extends LanguageElement implements IFinalizable {
             throw new LanguageElementException("Extractor and analysis calls must have a non-void return type");
         }
         this.returnType = returnType;
+        // Try to construct the fully-qualified name of this element, if also the parameters are available
+        constructFullyQualifiedName();
     }
     
     /**
@@ -130,6 +132,8 @@ public class Call extends LanguageElement implements IFinalizable {
             }
         }
         this.parameters = parameters;
+        // Try to construct the fully-qualified name of this element, if also the return type is available
+        constructFullyQualifiedName();
     }
     
     /**
@@ -154,6 +158,19 @@ public class Call extends LanguageElement implements IFinalizable {
             throw new LanguageElementException("The parent parameter type for this call is null");
         }
         this.parentParameterType = parentParameterType;
+    }
+    
+    /**
+     * Constructs the {@link #fullyQualifiedName} of this call, if and only if the {@link #returnType} and the 
+     * {@link #parameters} are available and, hence, {@link #isFinal()} returns <code>true</code>.
+     */
+    private void constructFullyQualifiedName() {
+        if (isFinal()) {
+            String sourceMethodGenericString = sourceMethod.toGenericString();
+            int indexOfLastWhitespace = sourceMethodGenericString.lastIndexOf(' ');
+            fullyQualifiedName = sourceMethodGenericString.substring(indexOfLastWhitespace + 1)
+                    .replaceAll("\\$|\\#", ".");
+        }
     }
     
     /**
@@ -311,7 +328,8 @@ public class Call extends LanguageElement implements IFinalizable {
     /**
      * {@inheritDoc}<br>
      * <br>
-     * For {@link Calls}s, the construction is completed, if the return type and the parameters are available.
+     * For {@link Calls}s, the construction is completed, if the {@link #returnType} and the {@link #parameters} are
+     * available.
      */
     @Override
     public boolean isFinal() {
