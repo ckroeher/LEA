@@ -53,22 +53,9 @@ public class LanguageElementCreator {
     private List<net.ssehub.integration.ChangeIdentifier> cachedChangeIdentifiers;
     
     /**
-     * The {@link List} of cached {@link Call}s of the type {@link ElementType#OPERATION}. Their construction will be
-     * completed in {@link #finalizeCreations()}.
+     * The {@link List} of cached {@link Call}s. Their construction will be completed in {@link #finalizeCreations()}.
      */
-    private List<Call> cachedOperations;
-    
-    /**
-     * The {@link List} of cached {@link Call}s of the type {@link ElementType#EXTRACTOR_CALL}. Their construction will
-     * be completed in {@link #finalizeCreations()}.
-     */
-    private List<Call> cachedExtractorCalls;
-    
-    /**
-     * The {@link List} of cached {@link Call}s of the type {@link ElementType#ANALYSIS_CALL}. Their construction will
-     * be completed in {@link #finalizeCreations()}.
-     */
-    private List<Call> cachedAnalysisCalls;
+    private List<Call> cachedCalls;
 
     /**
      * Constructs a new {@link LanguageElementCreator}.
@@ -79,9 +66,7 @@ public class LanguageElementCreator {
     public LanguageElementCreator() {
         languageRegistry = LanguageRegistry.INSTANCE;
         cachedChangeIdentifiers = new ArrayList<net.ssehub.integration.ChangeIdentifier>();
-        cachedOperations = new ArrayList<Call>();
-        cachedExtractorCalls = new ArrayList<Call>();
-        cachedAnalysisCalls = new ArrayList<Call>();
+        cachedCalls = new ArrayList<Call>();
     }
     
     /**
@@ -136,63 +121,21 @@ public class LanguageElementCreator {
      */
     private void createParameterType(Class<?> pluginClass, File sourcePlugin) 
             throws ExternalElementException {
-        ParameterType parameterType = null;
-        ElementType parameterTypeElementType = null;
-        String parameterTypeName = null;
-        if (pluginClass.isAnnotationPresent(ArtifactParameterType.class)) {
-            // The pluginClass declares a type T for defining artifacts, like "Artifact<T> myArtifact;"
-            parameterTypeElementType = ElementType.ARTIFACT_PARAMETER_TYPE;
-            ArtifactParameterType customAnnotation = pluginClass.getAnnotation(ArtifactParameterType.class);
-            parameterTypeName = createLanguageElementName(pluginClass, customAnnotation.name(),
-                    customAnnotation.parameterName());
-            try {
-                parameterType = new ParameterType(parameterTypeElementType, parameterTypeName, pluginClass, 
-                        sourcePlugin);
-                if (!languageRegistry.addArtifactParameterType(parameterType)) {
-                    throw new ExternalElementException("Adding artifact parameter type \"" + parameterTypeName 
-                            + "\" to language registry failed");
-                }
-            } catch (LanguageElementException e) {
-                throw new ExternalElementException("Creating artifact parameter type based on class \"" 
-                        + pluginClass.getSimpleName() + "\" in plug-in \"" + sourcePlugin.getAbsolutePath() 
-                        + "\" failed", e);
+        ElementType parameterTypeElementType = getElementType(pluginClass);
+        String parameterTypeName = getParameterTypeName(pluginClass);
+        try {
+            ParameterType parameterType = new ParameterType(parameterTypeElementType, parameterTypeName, pluginClass, 
+                    sourcePlugin);
+            if (!languageRegistry.addArtifactParameterType(parameterType) 
+                    && !languageRegistry.addFragmentParameterType(parameterType)
+                    && !languageRegistry.addResultParameterType(parameterType)) {
+                throw new ExternalElementException("Adding " + parameterTypeElementType + " \"" + parameterTypeName 
+                        + "\" to language registry failed"); 
             }
-        } else if (pluginClass.isAnnotationPresent(FragmentParameterType.class)) {
-            // The pluginClass declares a type T for defining fragments, like "Fragment<T> myFragment;"
-            parameterTypeElementType = ElementType.FRAGMENT_PARAMETER_TYPE;
-            FragmentParameterType customAnnotation = pluginClass.getAnnotation(FragmentParameterType.class);
-            parameterTypeName = createLanguageElementName(pluginClass, customAnnotation.name(),
-                    customAnnotation.parameterName());
-            try {
-                parameterType = new ParameterType(parameterTypeElementType, parameterTypeName, pluginClass, 
-                        sourcePlugin);
-                if (!languageRegistry.addFragmentParameterType(parameterType)) {
-                    throw new ExternalElementException("Adding fragment parameter type \"" + parameterTypeName 
-                            + "\" to language registry failed");
-                }
-            } catch (LanguageElementException e) {
-                throw new ExternalElementException("Creating fragment parameter type based on class \"" 
-                        + pluginClass.getSimpleName() + "\" in plug-in \"" + sourcePlugin.getAbsolutePath() 
-                        + "\" failed", e);
-            }
-        } else if (pluginClass.isAnnotationPresent(ResultParameterType.class)) {
-            // The pluginClass declares a type T for defining results, like "Result<T> myResult;"
-            parameterTypeElementType = ElementType.RESULT_PARAMETER_TYPE;
-            ResultParameterType customAnnotation = pluginClass.getAnnotation(ResultParameterType.class);
-            parameterTypeName = createLanguageElementName(pluginClass, customAnnotation.name(),
-                    customAnnotation.parameterName());
-            try {
-                parameterType = new ParameterType(parameterTypeElementType, parameterTypeName, pluginClass, 
-                        sourcePlugin);
-                if (!languageRegistry.addResultParameterType(parameterType)) {
-                    throw new ExternalElementException("Adding result parameter type \"" + parameterTypeName 
-                            + "\" to language registry failed");
-                }
-            } catch (LanguageElementException e) {
-                throw new ExternalElementException("Creating result parameter type based on class \"" 
-                        + pluginClass.getSimpleName() + "\" in plug-in \"" + sourcePlugin.getAbsolutePath() 
-                        + "\" failed", e);
-            }
+        } catch (LanguageElementException e) {
+            throw new ExternalElementException("Creating " + parameterTypeElementType + " based on class \"" 
+                    + pluginClass.getSimpleName() + "\" in plug-in \"" + sourcePlugin.getAbsolutePath() 
+                    + "\" failed", e);
         }
     }
     
@@ -257,60 +200,25 @@ public class LanguageElementCreator {
      */
     private void initializeCall(Method pluginClassMethod, Class<?> pluginClass, File sourcePlugin) 
             throws ExternalElementException {
-        Call call = null;
-        ElementType callElementType = null;
-        String callName = null;
-        if (pluginClassMethod.isAnnotationPresent(Operation.class)) {
-            // The pluginClassMethod declares a general operation, like "op()" or "var.op()"
-            callElementType = ElementType.OPERATION;
-            Operation customAnnotation = pluginClassMethod.getAnnotation(Operation.class);
-            callName = createLanguageElementName(pluginClassMethod.getName(), customAnnotation.name());
-            try {
-                call = new Call(callElementType, callName, pluginClassMethod, pluginClass, sourcePlugin);
-                cachedOperations.add(call);
-            } catch (LanguageElementException e) {
-                throw new ExternalElementException("Creating operation based on method \"" 
-                        + pluginClassMethod.getName() + "\" in class \"" + pluginClass.getSimpleName() 
-                        + "\" of plug-in \"" + sourcePlugin.getAbsolutePath() + "\" failed", e);
-            }
-        } else if (pluginClassMethod.isAnnotationPresent(ExtractorCall.class)) {
-            // The pluginClassMethod declares an extractor call for extracting fragments, like "Fragment<T> f = call()"
-            callElementType = ElementType.EXTRACTOR_CALL;
-            ExtractorCall customAnnotation = pluginClassMethod.getAnnotation(ExtractorCall.class);
-            callName = createLanguageElementName(pluginClassMethod.getName(), customAnnotation.name());
-            try {
-                call = new Call(callElementType, callName, pluginClassMethod, pluginClass, sourcePlugin);
-                cachedExtractorCalls.add(call);
-            } catch (LanguageElementException e) {
-                throw new ExternalElementException("Creating extractor call based on method \"" 
-                        + pluginClassMethod.getName() + "\" in class \"" + pluginClass.getSimpleName() 
-                        + "\" of plug-in \"" + sourcePlugin.getAbsolutePath() + "\" failed", e);
-            }
-        } else if (pluginClassMethod.isAnnotationPresent(AnalysisCall.class)) {
-            // The pluginClassMethod declares an analysis call for providing results, like "Result<T> f = call()"
-            callElementType = ElementType.ANALYSIS_CALL;
-            AnalysisCall customAnnotation = pluginClassMethod.getAnnotation(AnalysisCall.class);
-            callName = createLanguageElementName(pluginClassMethod.getName(), customAnnotation.name());
-            try {
-                call = new Call(callElementType, callName, pluginClassMethod, pluginClass, sourcePlugin);
-                cachedAnalysisCalls.add(call);
-            } catch (LanguageElementException e) {
-                throw new ExternalElementException("Creating analysis call based on method \"" 
-                        + pluginClassMethod.getName() + "\" in class \"" + pluginClass.getSimpleName() 
-                        + "\" of plug-in \"" + sourcePlugin.getAbsolutePath() + "\" failed", e);
-            }
+        ElementType callElementType = getElementType(pluginClassMethod);
+        String callName = getCallName(pluginClassMethod);
+        try {
+            Call call = new Call(callElementType, callName, pluginClassMethod, pluginClass, sourcePlugin);
+            cachedCalls.add(call);
+        } catch (LanguageElementException e) {
+            throw new ExternalElementException("Creating " + callElementType + " based on method \"" 
+                    + pluginClassMethod.getName() + "\" in class \"" + pluginClass.getSimpleName() 
+                    + "\" of plug-in \"" + sourcePlugin.getAbsolutePath() + "\" failed", e);
         }
     }
     
     /**
-     * Completes the construction of all {@link #cachedChangeIdentifiers}, {@link #cachedOperations}, 
-     * {@link #cachedExtractorCalls}, and {@link #cachedAnalysisCalls} and adds them to the {@link LanguageRegistry}.
+     * Completes the construction of all {@link #cachedChangeIdentifiers} and {@link #cachedCalls} and adds them to the 
+     * {@link LanguageRegistry}.
      * 
      * @throws ExternalElementException if completing the construction of one of the above elements failed
      * @see #finalizeChangeIdentifier(net.ssehub.integration.ChangeIdentifier)
-     * @see #finalizeOperation(Call)
-     * @see #finalizeExtractorCall(Call)
-     * @see #finalizeAnalysisCall(Call)
+     * @see #finalizeCall(Call, String, String[], String)
      */
     public void finalizeCreations() throws ExternalElementException {
         for (net.ssehub.integration.ChangeIdentifier changeIdentifier : cachedChangeIdentifiers) {
@@ -318,20 +226,12 @@ public class LanguageElementCreator {
         }
         cachedChangeIdentifiers = null;
         
-        for (Call call : cachedOperations) {
-            finalizeOperation(call);
+        Method sourceMethod;
+        for (Call call : cachedCalls) {
+            sourceMethod = call.getSourceMethod();
+            finalizeCall(call, getReturnType(sourceMethod), getParameters(sourceMethod), getParentParameterType(call));
         }
-        cachedOperations = null;
-        
-        for (Call call : cachedExtractorCalls) {
-            finalizeExtractorCall(call);
-        }
-        cachedExtractorCalls = null;
-        
-        for (Call call : cachedAnalysisCalls) {
-            finalizeAnalysisCall(call);
-        }
-        cachedAnalysisCalls = null;
+        cachedCalls = null;
     }
     
     /**
@@ -369,95 +269,8 @@ public class LanguageElementCreator {
     
     /**
      * Completes the construction of the given {@link Call} by setting the {@link ParameterType}s, which represent the
-     * return type, parameters, and (optional) parent parameter type of the given {@link Call}, if these types are
+     * return type, parameters, and (optionally) the parent parameter type of the given {@link Call}, if these types are
      * available in the {@link LanguageRegistry}. The completely constructed {@link Call} is then added to the
-     * {@link LanguageRegistry} as an operation.
-     * 
-     * @param call the {@link Call} for which the construction shall be be completed; should never be <code>null</code>
-     *        and must have {@link ElementType#OPERATION} as element type
-     * @throws ExternalElementException if completing the construction of the given {@link Call} or its addition to the
-     *         {@link LanguageRegistry} failed
-     * @see #finalizeCall(Call, String, String[])
-     * @see LanguageRegistry#addOperation(Call)
-     */
-    private void finalizeOperation(Call call) throws ExternalElementException {
-        Operation operationAnnotation = call.getSourceMethod().getAnnotation(Operation.class);
-        String parentParameterTypeString = operationAnnotation.isMemberOf();
-        if (!parentParameterTypeString.isBlank()) {
-            ParameterType parentParameterType = languageRegistry.getParameterType(parentParameterTypeString);
-            try {
-                call.setParentParameterType(parentParameterType);
-            } catch (LanguageElementException e) {
-                throw new ExternalElementException("Setting parent parameter type for operation \"" 
-                        + call.getFullyQualifiedName() + "\" failed", e);
-            }
-        }
-        String operationReturnType = createLanguageElementName(call.getSourceMethod().getGenericReturnType()
-                .getTypeName(), operationAnnotation.returnType());
-        String[] operationParameters = createCallParameters(call.getSourceMethod(),
-                operationAnnotation.parameters());
-        finalizeCall(call, operationReturnType, operationParameters);
-        if (!languageRegistry.addOperation(call)) {
-            throw new ExternalElementException("Adding operation \"" + call.getName() 
-                    + "\" to language registry failed");
-        }
-    }
-    
-    /**
-     * Completes the construction of the given {@link Call} by setting the {@link ParameterType}s, which represent the
-     * return type and parameters of the given {@link Call}, if these types are available in the
-     * {@link LanguageRegistry}. The completely constructed {@link Call} is then added to the {@link LanguageRegistry}
-     * as an extractor call.
-     * 
-     * @param call the {@link Call} for which the construction shall be be completed; should never be <code>null</code>
-     *        and must have {@link ElementType#EXTRACTOR_CALL} as element type
-     * @throws ExternalElementException if completing the construction of the given {@link Call} or its addition to the
-     *         {@link LanguageRegistry} failed
-     * @see #finalizeCall(Call, String, String[])
-     * @see LanguageRegistry#addExtractorCall(Call)
-     */
-    private void finalizeExtractorCall(Call call) throws ExternalElementException {
-        ExtractorCall extractorCallAnnotation = call.getSourceMethod().getAnnotation(ExtractorCall.class);
-        String extractorCallReturnType = createLanguageElementName(call.getSourceMethod().getGenericReturnType()
-                .getTypeName(), extractorCallAnnotation.returnType());
-        String[] extractorCallParameters = createCallParameters(call.getSourceMethod(),
-                extractorCallAnnotation.parameters());
-        finalizeCall(call, extractorCallReturnType, extractorCallParameters);
-        if (!languageRegistry.addExtractorCall(call)) {
-            throw new ExternalElementException("Adding extractor call \"" + call.getName()
-                    + "\" to language registry failed");
-        }
-    }
-    
-    /**
-     * Completes the construction of the given {@link Call} by setting the {@link ParameterType}s, which represent the
-     * return type and parameters of the given {@link Call}, if these types are available in the
-     * {@link LanguageRegistry}. The completely constructed {@link Call} is then added to the {@link LanguageRegistry}
-     * as an analysis call.
-     * 
-     * @param call the {@link Call} for which the construction shall be be completed; should never be <code>null</code>
-     *        and must have {@link ElementType#ANALYSIS_CALL} as element type
-     * @throws ExternalElementException if completing the construction of the given {@link Call} or its addition to the
-     *         {@link LanguageRegistry} failed
-     * @see #finalizeCall(Call, String, String[])
-     * @see LanguageRegistry#addAnalysisCall(Call)
-     */
-    private void finalizeAnalysisCall(Call call) throws ExternalElementException {
-        AnalysisCall analysisCallAnnotation = call.getSourceMethod().getAnnotation(AnalysisCall.class);
-        String analysisCallReturnType = createLanguageElementName(call.getSourceMethod().getGenericReturnType()
-                .getTypeName(), analysisCallAnnotation.returnType());
-        String[] analysisCallParameters = createCallParameters(call.getSourceMethod(),
-                analysisCallAnnotation.parameters());
-        finalizeCall(call, analysisCallReturnType, analysisCallParameters);
-        if (!languageRegistry.addAnalysisCall(call)) {
-            throw new ExternalElementException("Adding analysis call \"" + call.getName()
-                    + "\" to language registry failed");
-        }
-    }
-    
-    /**
-     * Completes the construction of the given {@link Call} by setting the {@link ParameterType}s, which represent the
-     * return type and parameters of the given {@link Call}, if these types are available in the
      * {@link LanguageRegistry}.
      * 
      * @param call the {@link Call} for which the construction shall be be completed; should never be <code>null</code>
@@ -465,16 +278,22 @@ public class LanguageElementCreator {
      *        {@link Call}; should never be <code>null</code>
      * @param parameters the array of {@link String}s representing the fully-qualified names of the parameters of the
      *        given {@link Call}; should never be <code>null</code> but may be <i>empty</i>
+     * @param parentParameterType the {@link String} representing the optional parent parameter type of the given
+     *        {@link Call}; may be <code>null</code> to indicate that the given {@link Call} does not have a parent
+     *        parameter type
      * @throws ExternalElementException if completing the construction of the given {@link Call} failed
      */
-    private void finalizeCall(Call call, String returnType, String[] parameters) throws ExternalElementException {
-        ParameterType returnTypeParameterType = languageRegistry.getParameterType(returnType);
+    private void finalizeCall(Call call, String returnType, String[] parameters, String parentParameterType) 
+            throws ExternalElementException {
+        // Set the return type
+        ParameterType callParameterType = languageRegistry.getParameterType(returnType);
         try {            
-            call.setReturnType(returnTypeParameterType);
+            call.setReturnType(callParameterType);
         } catch (LanguageElementException e) {
             throw new ExternalElementException("Setting return type for call \"" + call.getFullyQualifiedName() 
                     + "\" failed", e);
         }
+        // Set the parameters
         ParameterType[] parameterParameterTypes = new ParameterType[parameters.length];
         for (int i = 0; i < parameters.length; i++) {
             parameterParameterTypes[i] = languageRegistry.getParameterType(parameters[i]);
@@ -485,6 +304,116 @@ public class LanguageElementCreator {
             throw new ExternalElementException("Setting parameters for call \"" + call.getFullyQualifiedName() 
             + "\" failed", e);
         }
+        // Set the parent parameter type, if available
+        if (parentParameterType != null) {
+            callParameterType = languageRegistry.getParameterType(parentParameterType);
+            try {            
+                call.setParentParameterType(callParameterType);
+            } catch (LanguageElementException e) {
+                throw new ExternalElementException("Setting parent parameter type for call \"" 
+                        + call.getFullyQualifiedName() + "\" failed", e);
+            }
+        }
+        // Finally, add the call dependent on its element type to the language registry
+        switch (call.getElementType()) {
+        case OPERATION:
+            if (!languageRegistry.addOperation(call)) {
+                throw new ExternalElementException("Adding operation \"" + call.getFullyQualifiedName() 
+                        + "\" to language registry failed");
+            }
+            break;
+        case EXTRACTOR_CALL:
+            if (!languageRegistry.addExtractorCall(call)) {
+                throw new ExternalElementException("Adding extractor call \"" + call.getFullyQualifiedName()
+                        + "\" to language registry failed");
+            }
+            break;
+        case ANALYSIS_CALL:
+            if (!languageRegistry.addAnalysisCall(call)) {
+                throw new ExternalElementException("Adding analysis call \"" + call.getFullyQualifiedName()
+                        + "\" to language registry failed");
+            }
+            break;
+        default:
+            // Should never be reached
+            break;
+        }
+    }
+    
+    /**
+     * Returns the return type for a {@link Call} based on the custom annotations the given {@link Method} is annotated
+     * with.
+     * 
+     * @param sourceMethod the source {@link Method} of the {@link Call} for which the return type shall be returned;
+     *        should never be <code>null</code>
+     * @return the {@link String} representing the return type of the {@link Call} of the given source {@link Method};
+     *         never <code>null</code> nor <i>blank</i>
+     */
+    private String getReturnType(Method sourceMethod) {
+        String returnType = null;
+        String symbolicReturnType = null;
+        if (sourceMethod.isAnnotationPresent(Operation.class)) {
+            Operation annotation = sourceMethod.getAnnotation(Operation.class);
+            symbolicReturnType = annotation.returnType();
+        } else if (sourceMethod.isAnnotationPresent(ExtractorCall.class)) {
+            ExtractorCall annotation = sourceMethod.getAnnotation(ExtractorCall.class);
+            symbolicReturnType = annotation.returnType();
+        } else if (sourceMethod.isAnnotationPresent(AnalysisCall.class)) {
+            AnalysisCall annotation = sourceMethod.getAnnotation(AnalysisCall.class);
+            symbolicReturnType = annotation.returnType();
+        }
+        returnType = createLanguageElementName(sourceMethod.getGenericReturnType().getTypeName(), symbolicReturnType);
+        return returnType;
+    }
+    
+    /**
+     * Returns the parameter for a {@link Call} based on the custom annotations the given {@link Method} is annotated
+     * with.
+     * 
+     * @param sourceMethod the source {@link Method} of the {@link Call} for which the parameters shall be returned;
+     *        should never be <code>null</code>
+     * @return the array of {@link String}s representing the parameters of the {@link Call} of the given source
+     *         {@link Method}; never <code>null</code> nor <i>blank</i>
+     * @throws ExternalElementException if the number of given symbolic parameters does not match the number of
+     *         declared parameters of the given method
+     */
+    private String[] getParameters(Method sourceMethod) throws ExternalElementException {
+        String[] parameters = null;
+        String[] symbolicParameters = null;
+        if (sourceMethod.isAnnotationPresent(Operation.class)) {
+            Operation annotation = sourceMethod.getAnnotation(Operation.class);
+            symbolicParameters = annotation.parameters();
+        } else if (sourceMethod.isAnnotationPresent(ExtractorCall.class)) {
+            ExtractorCall annotation = sourceMethod.getAnnotation(ExtractorCall.class);
+            symbolicParameters = annotation.parameters();
+        } else if (sourceMethod.isAnnotationPresent(AnalysisCall.class)) {
+            AnalysisCall annotation = sourceMethod.getAnnotation(AnalysisCall.class);
+            symbolicParameters = annotation.parameters();
+        }
+        parameters = createCallParameters(sourceMethod, symbolicParameters);
+        return parameters;
+    }
+    
+    /**
+     * Returns the (optional) parent parameter type of the given {@link Call} of the type {@link ElementType#OPERATION}
+     * based on the custom annotation the given {@link Call}'s source method is annotated with.
+     * 
+     * @param call the {@link Call} for which the parent parameter type shall be returned; should never be 
+     *        <code>null</code>
+     * @return the {@link String} representing the parent parameter type of the given {@link Call} or <code>null</code>,
+     *         if the given {@link Call} is not of the type {@link ElementType#OPERATION} or no parent parameter type is
+     *         defined; never <i>blank</i>
+     */
+    private String getParentParameterType(Call call) {
+        String parentParameterType = null;
+        if (call.getElementType() == ElementType.OPERATION) {
+            Operation operationAnnotation = call.getSourceMethod().getAnnotation(Operation.class);
+            parentParameterType = operationAnnotation.isMemberOf();
+            if (parentParameterType.isBlank()) {
+                parentParameterType = null;
+            }
+        }
+        return parentParameterType;
     }
     
     /**
@@ -525,6 +454,116 @@ public class LanguageElementCreator {
     }
     
     /**
+     * Returns the {@link ElementType} for a {@link ParameterType} based on the custom annotations the given 
+     * {@link Class} is annotated with. That mapping is as follows:
+     * <ul>
+     * <li>{@link ArtifactParameterType} returns {@link ElementType#ARTIFACT_PARAMETER_TYPE}</li>
+     * <li>{@link FragmentParameterType} returns {@link ElementType#FRAGMENT_PARAMETER_TYPE}</li>
+     * <li>{@link ResultParameterType} returns {@link ElementType#RESULT_PARAMETER_TYPE}</li>
+     * </ul>
+     * 
+     * @param pluginClass the {@link Class} from which the {@link ParameterType} will be created; should never be
+     *        <code>null</code>
+     * @return the {@link ElementType} of the {@link ParameterType} created from the given {@link Class} as defined
+     *         above or <code>null</code> if none of the above annotations could be found
+     */
+    private ElementType getElementType(Class<?> pluginClass) {
+        ElementType elementType = null;
+        if (pluginClass.isAnnotationPresent(ArtifactParameterType.class)) {
+            elementType = ElementType.ARTIFACT_PARAMETER_TYPE;
+        } else if (pluginClass.isAnnotationPresent(FragmentParameterType.class)) {
+            elementType = ElementType.FRAGMENT_PARAMETER_TYPE;
+        } else if (pluginClass.isAnnotationPresent(ResultParameterType.class)) {
+            elementType = ElementType.RESULT_PARAMETER_TYPE;
+        }
+        return elementType;
+    }
+    
+    /**
+     * Returns the {@link ElementType} for a {@link Call} based on the custom annotations the given 
+     * {@link Method} is annotated with. That mapping is as follows:
+     * <ul>
+     * <li>{@link Operation} returns {@link ElementType#OPERATION}</li>
+     * <li>{@link ExtractorCall} returns {@link ElementType#EXTRACTOR_CALL}</li>
+     * <li>{@link AnalysisCall} returns {@link ElementType#ANALYSIS_CALL}</li>
+     * </ul>
+     * 
+     * @param pluginClassMethod the {@link Method} from which the {@link Call} will be created; should never be
+     *        <code>null</code>
+     * @return the {@link ElementType} of the {@link Call} created from the given {@link Method} as defined
+     *         above or <code>null</code> if none of the above annotations could be found
+     */
+    private ElementType getElementType(Method pluginClassMethod) {
+        ElementType elementType = null;
+        if (pluginClassMethod.isAnnotationPresent(Operation.class)) {
+            elementType = ElementType.OPERATION;
+        } else if (pluginClassMethod.isAnnotationPresent(ExtractorCall.class)) {
+            elementType = ElementType.EXTRACTOR_CALL;
+        } else if (pluginClassMethod.isAnnotationPresent(AnalysisCall.class)) {
+            elementType = ElementType.ANALYSIS_CALL;
+        }
+        return elementType;
+    }
+    
+    /**
+     * Returns the name for a {@link ParameterType} created by either the name of the given {@link Class} or the custom
+     * annotations.
+     * 
+     * @param pluginClass the {@link Class} from which the {@link ParameterType} will be created; should never be
+     *        <code>null</code>
+     * @return the {@link String} representing the name of the {@link ParameterType} created from the given
+     *         {@link Class}; never <code>null</code> nor <i>blank</i>
+     * @see #createLanguageElementName(Class, String, String)
+     */
+    private String getParameterTypeName(Class<?> pluginClass) {
+        String parameterTypeName = null;
+        String symbolicName = null;
+        String symbolicParameterName = null;
+        if (pluginClass.isAnnotationPresent(ArtifactParameterType.class)) {
+            ArtifactParameterType annotation = pluginClass.getAnnotation(ArtifactParameterType.class);
+            symbolicName = annotation.name();
+            symbolicParameterName = annotation.parameterName();
+        } else if (pluginClass.isAnnotationPresent(FragmentParameterType.class)) {
+            FragmentParameterType annotation = pluginClass.getAnnotation(FragmentParameterType.class);
+            symbolicName = annotation.name();
+            symbolicParameterName = annotation.parameterName();
+        } else if (pluginClass.isAnnotationPresent(ResultParameterType.class)) {
+            ResultParameterType annotation = pluginClass.getAnnotation(ResultParameterType.class);
+            symbolicName = annotation.name();
+            symbolicParameterName = annotation.parameterName();
+        }
+        parameterTypeName = createLanguageElementName(pluginClass, symbolicName, symbolicParameterName);
+        return parameterTypeName;
+    }
+    
+    /**
+     * Returns the name for a {@link Call} created by either the name of the given {@link Method} or the custom
+     * annotations.
+     * 
+     * @param pluginClassMethod the {@link Method} from which the {@link Call} will be created; should never be
+     *        <code>null</code>
+     * @return the {@link String} representing the name of the {@link Call} created from the given
+     *         {@link Method}; never <code>null</code> nor <i>blank</i>
+     * @see #createLanguageElementName(String, String)
+     */
+    private String getCallName(Method pluginClassMethod) {
+        String callName = null;
+        String symbolicName = null;
+        if (pluginClassMethod.isAnnotationPresent(Operation.class)) {
+            Operation annotation = pluginClassMethod.getAnnotation(Operation.class);
+            symbolicName = annotation.name();
+        } else if (pluginClassMethod.isAnnotationPresent(ExtractorCall.class)) {
+            ExtractorCall annotation = pluginClassMethod.getAnnotation(ExtractorCall.class);
+            symbolicName = annotation.name();
+        } else if (pluginClassMethod.isAnnotationPresent(AnalysisCall.class)) {
+            AnalysisCall annotation = pluginClassMethod.getAnnotation(AnalysisCall.class);
+            symbolicName = annotation.name();
+        }
+        callName = createLanguageElementName(pluginClassMethod.getName(), symbolicName);
+        return callName;
+    }
+    
+    /**
      * Creates the (symbolic) name for the language element represented by the given {@link Class}. This name is either
      * constructed by the given symbolic names (typically defined by the annotation values) or by the elements of the
      * class declaration.
@@ -537,7 +576,7 @@ public class LanguageElementCreator {
      *        given {@link Class} is a generic one; the name that will be returned, if it is not blank; should never be
      *        <code>null</code>
      * @return the (symbolic) name for the language element represented by the given {@link Class}; never 
-     *         <code>null</code> nor <i>empty</i>
+     *         <code>null</code> nor <i>blank</i>
      */
     private String createLanguageElementName(Class<?> pluginClass, String symbolicName, String symbolicParameterName) {
         StringBuilder elementNameBuilder = new StringBuilder();
@@ -571,13 +610,15 @@ public class LanguageElementCreator {
     
     /**
      * Creates the (symbolic) name for a language element with the given declared type name. The name is either
-     * constructed by the given declared type name, which is the fully-qualified type name includes the possible generic
-     * declaration and the generic parameter types, or the given symbolic type name (typically defined by the annotation
-     * values).
+     * constructed by the given declared type name, which is the fully-qualified type name including the possible
+     * generic declaration and the generic parameter types, or the given symbolic type name (typically defined by the
+     * annotation values).
      * 
-     * @param declaredTypeName the fully-qualified, declared type name from which a name should be created
-     * @param symbolicTypeName the name that will be returned, if it is not blank
-     * @return name for a language element
+     * @param declaredTypeName the fully-qualified, declared type name from which a name should be created; should never
+     *        be <code>null</code> nor <i>blank</i>
+     * @param symbolicTypeName the name that will be returned, if it is not <i>blank</i>; should never be
+     *        <code>null</code>
+     * @return the (symbolic) name for a language element; never <code>null</code> nor <i>blank</i>
      */
     private String createLanguageElementName(String declaredTypeName, String symbolicTypeName) {
         String elementName = symbolicTypeName;
