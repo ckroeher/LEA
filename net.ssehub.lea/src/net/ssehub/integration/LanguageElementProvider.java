@@ -58,6 +58,7 @@ public class LanguageElementProvider {
      * Constructs a new {@link LanguageElementProvider}.
      */
     public LanguageElementProvider() {
+        // Use only one single instance for the creation of all elements due to the caching mechanism in the creator
         languageElementCreator = new LanguageElementCreator();
     }
     
@@ -78,11 +79,15 @@ public class LanguageElementProvider {
             File pluginDirectory;
             for (String searchPath : searchPaths) {
                 pluginDirectory = new File(searchPath);
-                checkDirectory(pluginDirectory);
-                List<File> plugins = getJarFiles(pluginDirectory);
-                URL[] pluginUrls = getPluginUrls(plugins);
-                for (File plugin : plugins) {
-                    detectLanguageElements(plugin, pluginUrls);
+                if (pluginDirectory.exists() && pluginDirectory.isDirectory()) {                    
+                    List<File> plugins = getJarFiles(pluginDirectory);
+                    URL[] pluginUrls = getPluginUrls(plugins);
+                    for (File plugin : plugins) {
+                        detectLanguageElements(plugin, pluginUrls);
+                    }
+                } else {
+                    // TODO Inform about invalid search path / plug-in directory
+                    System.out.println("Search path denotes not a valid directory: " + searchPath);
                 }
             }
             languageElementCreator.finalizeCreations();
@@ -243,22 +248,5 @@ public class LanguageElementProvider {
         }
         return jarFiles;
     }
-    
-    /**
-     * Checks the given {@link File} for being not <code>null</code>, for existence, and for being a directory.
-     * 
-     * @param directory the {@link File} to be checked
-     * @throws ExternalElementException if the given file is <code>null</code>, does not exist, or is not a directory
-     */
-    private void checkDirectory(File directory) throws ExternalElementException {
-        if (directory == null) {
-            throw new ExternalElementException("The plug-in directory is null");
-        } else if (!directory.exists()) {
-            throw new ExternalElementException("The plug-in directory \"" + directory.getAbsolutePath() 
-                    + "\" does not exist");
-        } else if (!directory.isDirectory()) {
-            throw new ExternalElementException("The plug-in directory \"" + directory.getAbsolutePath() 
-                    + "\" is not a directory");
-        }
-    }
+
 }
