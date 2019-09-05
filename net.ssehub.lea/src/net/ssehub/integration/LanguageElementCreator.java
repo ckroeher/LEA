@@ -127,9 +127,7 @@ public class LanguageElementCreator {
             try {
                 ParameterType parameterType = new ParameterType(parameterTypeElementType, parameterTypeName,
                         pluginClass, sourcePlugin);
-                if (!languageRegistry.addArtifactParameterType(parameterType) 
-                        && !languageRegistry.addFragmentParameterType(parameterType)
-                        && !languageRegistry.addResultParameterType(parameterType)) {
+                if (!languageRegistry.addParameterType(parameterType)) {
                     throw new ExternalElementException("Adding " + parameterTypeElementType + " \"" + parameterTypeName 
                             + "\" to language registry failed"); 
                 }
@@ -318,29 +316,10 @@ public class LanguageElementCreator {
                         + call.getFullyQualifiedName() + "\" failed", e);
             }
         }
-        // Finally, add the call dependent on its element type to the language registry
-        switch (call.getElementType()) {
-        case OPERATION:
-            if (!languageRegistry.addOperation(call)) {
-                throw new ExternalElementException("Adding operation \"" + call.getFullyQualifiedName() 
-                        + "\" to language registry failed");
-            }
-            break;
-        case EXTRACTOR_CALL:
-            if (!languageRegistry.addExtractorCall(call)) {
-                throw new ExternalElementException("Adding extractor call \"" + call.getFullyQualifiedName()
-                        + "\" to language registry failed");
-            }
-            break;
-        case ANALYSIS_CALL:
-            if (!languageRegistry.addAnalysisCall(call)) {
-                throw new ExternalElementException("Adding analysis call \"" + call.getFullyQualifiedName()
-                        + "\" to language registry failed");
-            }
-            break;
-        default:
-            // Should never be reached
-            break;
+        // Finally, add the call to the language registry
+        if (!languageRegistry.addCall(call)) {
+            throw new ExternalElementException("Adding " + call.getElementType() + " \"" + call.getFullyQualifiedName() 
+                    + "\" to language registry failed");
         }
     }
     
