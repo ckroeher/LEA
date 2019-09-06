@@ -95,8 +95,9 @@ public abstract class AbstractLanguageRegistry {
             if (availableParameterTypes == null) {
                 availableParameterTypes = new ArrayList<ParameterType>();
             }
-            availableParameterTypes.add(parameterType);            
-            additionSuccessful = (parameterTypes.put(parameterTypeName, availableParameterTypes) != null);
+            availableParameterTypes.add(parameterType);
+            parameterTypes.put(parameterTypeName, availableParameterTypes);
+            additionSuccessful = parameterTypes.containsKey(parameterTypeName);
             if (additionSuccessful) {                
                 languageElementCounter++;
             }
@@ -123,7 +124,8 @@ public abstract class AbstractLanguageRegistry {
                 availableChangeIdentifiers = new ArrayList<ChangeIdentifier>();
             }
             availableChangeIdentifiers.add(changeIdentifier);
-            additionSuccessful = (changeIdentifiers.put(changeIdentifierName, availableChangeIdentifiers) != null);
+            changeIdentifiers.put(changeIdentifierName, availableChangeIdentifiers);
+            additionSuccessful = changeIdentifiers.containsKey(changeIdentifierName);
             if (additionSuccessful) {                
                 languageElementCounter++;
             }
@@ -148,8 +150,9 @@ public abstract class AbstractLanguageRegistry {
             if (availableCalls == null) {
                 availableCalls = new ArrayList<Call>();
             }
-            availableCalls.add(call);        
-            additionSuccessful = (calls.put(callName, availableCalls) != null);
+            availableCalls.add(call);
+            calls.put(callName, availableCalls);
+            additionSuccessful = calls.containsKey(callName);
             if (additionSuccessful) {                
                 languageElementCounter++;
             }
