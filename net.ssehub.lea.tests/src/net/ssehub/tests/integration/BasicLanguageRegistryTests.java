@@ -17,7 +17,6 @@ package net.ssehub.tests.integration;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -48,6 +47,11 @@ import net.ssehub.integration.ParameterType;
 public class BasicLanguageRegistryTests {
     
     /**
+     * The identifier of this class.
+     */
+    private static final String ID = "[BasicLanguageRegistryTests]";
+    
+    /**
      * The {@link File} denoting the source plug-in of the {@link Class} from which a {@link LanguageElement} should be
      * created. This is just a dummy file as it has no impact on the actual creation, but is only used as a constructor
      * parameter.
@@ -55,16 +59,46 @@ public class BasicLanguageRegistryTests {
     private static final File SOURCE_PLUGIN = new File("./");
     
     /**
-     * The expected results. Each element is again an array of exactly one specific {@link LanguageElement}.
+     * The expected results including the respective test {@link LanguageElement}.
      * 
      * @see {@link BasicLanguageRegistryTests#initializeExpectedResults()}
      */
     private static final Object[][] EXPECTED_RESULTS = initializeExpectedResults();
     
     /**
+     * The reference of this class to the {@link LanguageRegistry}.
+     */
+    private LanguageRegistry languageRegistry = LanguageRegistry.INSTANCE;
+    
+    /**
      * The {@link LanguageElement} passed to the constructor of this class for testing.
      */
     private LanguageElement expectedElement;
+    
+    /**
+     * The expectation of whether the {@link #expectedElement} is successfully added to the {@link LanguageRegistry}
+     * (<code>true</code>) or not (<code>false</code>). 
+     */
+    private boolean expectedAdditionOfLanguageElement;
+    
+    /**
+     * The expectation of whether the {@link #expectedElement} is available in the {@link LanguageRegistry}
+     * (<code>true</code>) or not (<code>false</code>), if checking that existence relies on the name only (non-unique).
+     */
+    private boolean expectedHasAnyLanguageElementBySimpleName;
+    
+    /**
+     * The expectation of whether the {@link #expectedElement} is available in the {@link LanguageRegistry}
+     * (<code>true</code>) or not (<code>false</code>), if checking that existence relies on the fully-qualified name
+     * only (non-unique).
+     */
+    private boolean expectedHasAnyLanguageElementByFullyQualifiedName;
+    
+    /**
+     * The expectation of whether the {@link #expectedElement} is available in the {@link LanguageRegistry}
+     * (<code>true</code>) or not (<code>false</code>), if checking that existence relies on the name only (unique).
+     */
+    private boolean expectedHasUniqueLanguageElementBySimpleName;
     
     /**
      * The {@link LanguageElement} actually registered in the {@link LanguageRegistry}.
@@ -74,16 +108,38 @@ public class BasicLanguageRegistryTests {
     private LanguageElement actualElement;
     
     /**
+     * The fact of whether the {@link #expectedElement} is successfully added to the {@link LanguageRegistry}
+     * (<code>true</code>) or not (<code>false</code>). 
+     */
+    private boolean actualAdditionOfLanguageElement;
+    
+    /**
      * Creates a new {@link BasicLanguageRegistryTests} instance.
      * 
      * @param testElement the {@link LanguageElement} for testing
+     * @param expectedAdditionOfLanguageElement the expectation of whether the given {@link LanguageElement} is
+     *        successfully added to the {@link LanguageRegistry} (<code>true</code>) or not (<code>false</code>)
+     * @param expectedHasAnyLanguageElementBySimpleName the expectation of whether the {@link #expectedElement} is
+     *        available in the {@link LanguageRegistry} (<code>true</code>) or not (<code>false</code>), if checking
+     *        that existence relies on the name only (non-unique)
+     * @param expectedHasAnyLanguageElementByFullyQualifiedName the expectation of whether the {@link #expectedElement}
+     *        is available in the {@link LanguageRegistry} (<code>true</code>) or not (<code>false</code>), if checking
+     *        that existence relies on the fully-qualified name only (non-unique)
+     * @param expectedHasUniqueLanguageElementBySimpleName the expectation of whether the {@link #expectedElement} is
+     *        available in the {@link LanguageRegistry} (<code>true</code>) or not (<code>false</code>), if checking
+     *        that existence relies on the name only (unique)
      */
-    public BasicLanguageRegistryTests(LanguageElement testElement) {
+    public BasicLanguageRegistryTests(LanguageElement testElement, boolean expectedAdditionOfLanguageElement, 
+            boolean expectedHasAnyLanguageElementBySimpleName, 
+            boolean expectedHasAnyLanguageElementByFullyQualifiedName, 
+            boolean expectedHasUniqueLanguageElementBySimpleName) {
         this.expectedElement = testElement;
-        List<LanguageElement> languageElementList = new ArrayList<LanguageElement>();
-        languageElementList.add(testElement);
-        LanguageRegistry.INSTANCE.addLanguageElements(languageElementList);
-        actualElement = getRegisteredElement();
+        this.expectedAdditionOfLanguageElement = expectedAdditionOfLanguageElement;
+        this.expectedHasAnyLanguageElementBySimpleName = expectedHasAnyLanguageElementBySimpleName;
+        this.expectedHasAnyLanguageElementByFullyQualifiedName = expectedHasAnyLanguageElementByFullyQualifiedName;
+        this.expectedHasUniqueLanguageElementBySimpleName = expectedHasUniqueLanguageElementBySimpleName;
+        
+        actualAdditionOfLanguageElement = addToLanguageRegistry(testElement);
     }
     
     /**
@@ -96,29 +152,34 @@ public class BasicLanguageRegistryTests {
     private static Object[][] initializeExpectedResults() {
         Object[][] expectedResults = null;
         try {
-            expectedResults = new Object[][] {
-                {new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "FileArtifact",
-                        BasicLanguageRegistryTests.class, SOURCE_PLUGIN)},
-                {new ParameterType(ElementType.FRAGMENT_PARAMETER_TYPE, "BlockFragment",
-                        BasicLanguageRegistryTests.class, SOURCE_PLUGIN)},
-                {new ParameterType(ElementType.RESULT_PARAMETER_TYPE, "AnalysisResult",
-                        BasicLanguageRegistryTests.class, SOURCE_PLUGIN)},
-                {new ChangeIdentifier("ChangeIdentifier", new String[] {"FileArtifact"},
-                        BasicLanguageRegistryTests.class, SOURCE_PLUGIN)},
-                {new Call(ElementType.OPERATION, "file", "FileArtifact", new String[] {}, 
-                        BasicLanguageRegistryTests.class.getDeclaredMethod("initializeExpectedResults"),
-                        BasicLanguageRegistryTests.class, SOURCE_PLUGIN)},
-                {new Call("memberOperation", "FileArtifact", new String[] {}, "FileArtifact", 
-                        BasicLanguageRegistryTests.class.getDeclaredMethod("initializeExpectedResults"),
-                        BasicLanguageRegistryTests.class, SOURCE_PLUGIN)},
-                {new Call(ElementType.EXTRACTOR_CALL, "extract", "BlockFragment", new String[] {"FileArtifact"},
-                        BasicLanguageRegistryTests.class.getDeclaredMethod("initializeExpectedResults"),
-                        BasicLanguageRegistryTests.class, SOURCE_PLUGIN)},
-                {new Call(ElementType.ANALYSIS_CALL, "analyze", "AnalysisResult", new String[] {"BlockFragment"},
-                        BasicLanguageRegistryTests.class.getDeclaredMethod("initializeExpectedResults"),
-                        BasicLanguageRegistryTests.class, SOURCE_PLUGIN)}
-            };            
-        } catch (LanguageElementException | NoSuchMethodException e) {
+            expectedResults = new Object[8][4];
+            ParameterType artifactParameterType = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "FileArtifact",
+                    BasicLanguageRegistryTests.class, SOURCE_PLUGIN);
+            expectedResults[0] = new Object[] {artifactParameterType, true, true, true, true};
+            expectedResults[1] = new Object[] {new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "FileArtifact",
+                    Object.class, SOURCE_PLUGIN), true, true, true, false};
+            expectedResults[2] = new Object[] {new ParameterType(ElementType.FRAGMENT_PARAMETER_TYPE, "BlockFragment",
+                    BasicLanguageRegistryTests.class, SOURCE_PLUGIN), true, true, true, true};
+            expectedResults[3] = new Object[] {new ParameterType(ElementType.RESULT_PARAMETER_TYPE, "AnalysisResult",
+                    BasicLanguageRegistryTests.class, SOURCE_PLUGIN), true, true, true, true};
+            
+            expectedResults[4] = new Object[] {new ChangeIdentifier("ChangeIdentifier",
+                    BasicLanguageRegistryTests.class, SOURCE_PLUGIN), false, false, false, false};
+            ChangeIdentifier completeChangeIdentifier = new ChangeIdentifier("ChangeIdentifier",
+                    BasicLanguageRegistryTests.class, SOURCE_PLUGIN);
+            completeChangeIdentifier.setAssignableElements(new ParameterType[] {artifactParameterType});
+            expectedResults[5] = new Object[] {completeChangeIdentifier, true, true, true, true};
+            
+            expectedResults[6] = new Object[] {new Call(ElementType.OPERATION, "operate",
+                    BasicLanguageRegistryTests.class.getDeclaredMethods()[0], BasicLanguageRegistryTests.class,
+                    SOURCE_PLUGIN), false, false, false, false};
+            Call completeCall = new Call(ElementType.OPERATION, "operate",
+                    BasicLanguageRegistryTests.class.getDeclaredMethods()[0], BasicLanguageRegistryTests.class,
+                    SOURCE_PLUGIN);
+            completeCall.setReturnType(artifactParameterType);
+            completeCall.setParameters(new ParameterType[] {artifactParameterType});
+            expectedResults[7] = new Object[] {completeCall, true, false, false, false};
+        } catch (LanguageElementException e) {
             System.err.println("Error while initializing expected results");
             e.printStackTrace();
         }
@@ -136,204 +197,96 @@ public class BasicLanguageRegistryTests {
     }
     
     /**
-     * Tests whether the name of the {@link #expectedElement} equals the name of the {@link #actualElement}.
-     */
-    @Test
-    public void testRegisteredLanguageElementName() {
-        try {            
-            assertEquals(expectedElement.getName(), actualElement.getName(),
-                    "Language registry does not contain element with name \"" + expectedElement.getName() + "\"");
-        } catch (NullPointerException e) {
-            assertEquals(null, e, "Language registry does not contain element with name \"" + expectedElement.getName() 
-                    + "\"");
-        } 
-    }
-    
-    /**
-     * Tests whether the class of the {@link #expectedElement} equals the class of the {@link #actualElement}.
-     */
-    @Test
-    public void testRegisteredLanguageElementClass() {
-        try {            
-            assertEquals(expectedElement.getClass(), actualElement.getClass(), "Wrong language element class");
-        } catch (NullPointerException e) {
-            assertEquals(null, e, "Language registry does not contain element with name \"" + expectedElement.getName() 
-                    + "\"");
-        }
-    }
-
-    /**
-     * Tests whether the {@link ElementType} of the {@link #expectedElement} equals the {@link ElementType} of the 
-     * {@link #actualElement}.
-     */
-    @Test
-    public void testRegisteredLanguageElementElementType() {
-        try {            
-            assertEquals(expectedElement.getElementType(), actualElement.getElementType(),
-                    "Wrong language element element type");
-        } catch (NullPointerException e) {
-            assertEquals(null, e, "Language registry does not contain element with name \"" + expectedElement.getName() 
-                    + "\"");
-        }
-    }
-    
-    /**
-     * Tests whether the source class of the {@link #expectedElement} equals the source class of the 
-     * {@link #actualElement}.
-     */
-    @Test
-    public void testRegisteredLanguageElementSourceClass() {
-        try {            
-            assertEquals(expectedElement.getSourceClass(), actualElement.getSourceClass(),
-                    "Wrong language element source class");
-        } catch (NullPointerException e) {
-            assertEquals(null, e, "Language registry does not contain element with name \"" + expectedElement.getName() 
-                    + "\"");
-        }
-    }
-    
-    /**
-     * Tests whether the source plug-in of the {@link #expectedElement} equals the source plug-in of the 
-     * {@link #actualElement}.
-     */
-    @Test
-    public void testRegisteredLanguageElementSourcePlugin() {
-        try {            
-            assertEquals(expectedElement.getSourcePlugin(), actualElement.getSourcePlugin(),
-                    "Wrong language element source plug-in");
-        } catch (NullPointerException e) {
-            assertEquals(null, e, "Language registry does not contain element with name \"" + expectedElement.getName() 
-                    + "\"");
-        }
-    }
-    
-    /**
-     * Searches in the {@link LanguageRegistry} for an {@link LanguageElement}, which has the same {@link ElementType},
-     * name, source class, and source plug-in as the current {@link #expectedElement}, and returns it.
+     * Adds the given {@link LanguageElement} to the {@link LanguageRegistry}.
      * 
-     * @return the {@link LanguageElement} in the {@link LanguageRegistry} with the same {@link ElementType}, name,
-     *         source class, and source plug-in as the current {@link #expectedElement} or <code>null</code>, if no such
-     *         element is registered
+     * @param languageElement the {@link LanguageElement} to add to the {@link LanguageRegistry}
+     * @return <code>true</code>, if adding the given {@link LanguageElement} to the {@link LanguageRegistry} was
+     *         successful; <code>false</code> otherwise
      */
-    private LanguageElement getRegisteredElement() {
-        LanguageElement registeredElement;
-        switch(expectedElement.getElementType()) {
-        case ARTIFACT_PARAMETER_TYPE:
-            registeredElement = getRegisteredParameterType(
-                    LanguageRegistry.INSTANCE.getArtifactParameterTypes(expectedElement.getName()));
-            break;
-        case FRAGMENT_PARAMETER_TYPE:
-            registeredElement = getRegisteredParameterType(
-                    LanguageRegistry.INSTANCE.getFragmentParameterTypes(expectedElement.getName()));
-            break;
-        case RESULT_PARAMETER_TYPE:
-            registeredElement = getRegisteredParameterType(
-                    LanguageRegistry.INSTANCE.getResultParameterTypes(expectedElement.getName()));
-            break;
-        case CHANGE_IDENTIFIER:
-            registeredElement = getRegisteredChangeIdentifier(
-                    LanguageRegistry.INSTANCE.getChangeIdentifiers(expectedElement.getName()));
-            break;
-        case OPERATION:
-            Call expectedCallElement = (Call) expectedElement;
-            if (expectedCallElement.isMemberOperation()) {
-                registeredElement = getRegisteredCall(
-                        LanguageRegistry.INSTANCE.getMemberOperations(expectedCallElement.getParentParameterType()));
-            } else {                
-                registeredElement = getRegisteredCall(
-                        LanguageRegistry.INSTANCE.getOperations(expectedElement.getName()));
-            }
-            break;
-        case EXTRACTOR_CALL:
-            registeredElement = getRegisteredCall(
-                    LanguageRegistry.INSTANCE.getExtractorCalls(expectedElement.getName()));
-            break;
-        case ANALYSIS_CALL:
-            registeredElement = getRegisteredCall(
-                    LanguageRegistry.INSTANCE.getAnalysisCall(expectedElement.getName()));
-            break;
-        default:
-            registeredElement = null; // Should never be reached
-            break;
+    private boolean addToLanguageRegistry(LanguageElement languageElement) {
+        boolean addedSuccessfully = false;
+        if (languageElement instanceof ParameterType) {
+            ParameterType parameterType = (ParameterType) languageElement;
+            addedSuccessfully = languageRegistry.addParameterType(parameterType);
+        } else if (languageElement instanceof ChangeIdentifier) {
+            ChangeIdentifier changeIdentifier = (ChangeIdentifier) languageElement;
+            addedSuccessfully = languageRegistry.addChangeIdentifier(changeIdentifier);
+        } else if (languageElement instanceof Call) {
+            Call call = (Call) languageElement;
+            addedSuccessfully = languageRegistry.addCall(call);
+        } else {
+            System.out.println(ID + " Language element \"" + languageElement.getFullyQualifiedName() 
+                    + " is of unknown instance");
         }
-        return registeredElement;
+        return addedSuccessfully;
     }
     
     /**
-     * Searches in the given {@link List} of {@link ParameterType}s for an {@link LanguageElement}, which has the same 
-     * source class and source plug-in as the current {@link #expectedElement}, and returns it.
-     * 
-     * @param searchList the {@link List} of {@link ParameterType}s to search in
-     * @return the {@link LanguageElement} with the same source class and source plug-in as the current
-     *         {@link #expectedElement} or <code>null</code>, if no such element is registered
+     * Tests whether the {@link #expectedAdditionOfLanguageElement} matches the 
+     * {@link #actualAdditionOfLanguageElement}. 
      */
-    private LanguageElement getRegisteredParameterType(List<ParameterType> searchList) {
-        LanguageElement registeredElement = null;
-        if (searchList != null) {
-            int registeredParametersCounter = 0;
-            ParameterType registeredParameter;
-            while (registeredElement == null && registeredParametersCounter < searchList.size()) {
-                registeredParameter = searchList.get(registeredParametersCounter);
-                if (registeredParameter.getSourceClass() == expectedElement.getSourceClass() 
-                        && registeredParameter.getSourcePlugin().getAbsolutePath().equals(
-                                expectedElement.getSourcePlugin().getAbsolutePath())) {
-                    registeredElement = registeredParameter;
-                }
-                registeredParametersCounter++;
-            }
-        }
-        return registeredElement;
+    @Test
+    public void testAdditionOfLanguageElement() {
+        assertEquals(expectedAdditionOfLanguageElement, actualAdditionOfLanguageElement, 
+                "Addition of language element not as expected");
     }
     
     /**
-     * Searches in the given {@link List} of {@link ChangeIdentifier}s for an {@link LanguageElement}, which has the
-     * same source class and source plug-in as the current {@link #expectedElement}, and returns it.
-     * 
-     * @param searchList the {@link List} of {@link ChangeIdentifier}s to search in
-     * @return the {@link LanguageElement} with the same source class and source plug-in as the current
-     *         {@link #expectedElement} or <code>null</code>, if no such element is registered
+     * Tests whether the {@link #expectedElement} is available in the {@link LanguageRegistry}, if checking the 
+     * existence relies on the simple name only (non-unique).
      */
-    private LanguageElement getRegisteredChangeIdentifier(List<ChangeIdentifier> searchList) {
-        LanguageElement registeredElement = null;
-        if (searchList != null) {
-            int registeredChangeIdentifierCounter = 0;
-            ChangeIdentifier registeredChangeIdentifier;
-            while (registeredElement == null && registeredChangeIdentifierCounter < searchList.size()) {
-                registeredChangeIdentifier = searchList.get(registeredChangeIdentifierCounter);
-                if (registeredChangeIdentifier.getSourceClass() == expectedElement.getSourceClass() 
-                        && registeredChangeIdentifier.getSourcePlugin().getAbsolutePath().equals(
-                                expectedElement.getSourcePlugin().getAbsolutePath())) {
-                    registeredElement = registeredChangeIdentifier;
-                }
-                registeredChangeIdentifierCounter++;
-            }
+    @Test
+    public void testHasAnyLanguageElementBySimpleName() {
+        boolean actualHasLanguageElement = false;
+        if (expectedElement instanceof ParameterType) {
+            actualHasLanguageElement = languageRegistry.hasParameterType(expectedElement.getName(), false);
+        } else if (expectedElement instanceof ChangeIdentifier) {
+            actualHasLanguageElement = languageRegistry.hasChangeIdentifier(expectedElement.getName(), false);
+        } else if (expectedElement instanceof Call) {
+            System.out.println(ID + " Skipping \"" + expectedElement.getFullyQualifiedName() + "\" as a(n) " 
+                    + expectedElement.getElementType() + " cannot be found by name only");
         }
-        return registeredElement;
+        assertEquals(expectedHasAnyLanguageElementBySimpleName, actualHasLanguageElement, 
+                "Language registry does not have any lanuage element by name only as expected");
     }
     
     /**
-     * Searches in the given {@link List} of {@link Call}s for an {@link LanguageElement}, which has the same source
-     * class and source plug-in as the current {@link #expectedElement}, and returns it.
-     * 
-     * @param searchList the {@link List} of {@link Call}s to search in
-     * @return the {@link LanguageElement} with the same source class and source plug-in as the current
-     *         {@link #expectedElement} or <code>null</code>, if no such element is registered
+     * Tests whether the {@link #expectedElement} is available in the {@link LanguageRegistry}, if checking the 
+     * existence relies on the fully-qualified name only (non-unique).
      */
-    private LanguageElement getRegisteredCall(List<Call> searchList) {
-        LanguageElement registeredElement = null;
-        if (searchList != null) {
-            int registeredCallsCounter = 0;
-            Call registeredCall;
-            while (registeredElement == null && registeredCallsCounter < searchList.size()) {
-                registeredCall = searchList.get(registeredCallsCounter);
-                if (registeredCall.getSourceClass() == expectedElement.getSourceClass() 
-                        && registeredCall.getSourcePlugin().getAbsolutePath().equals(
-                                expectedElement.getSourcePlugin().getAbsolutePath())) {
-                    registeredElement = registeredCall;
-                }
-                registeredCallsCounter++;
-            }
+    @Test
+    public void testHasAnyLanguageElementByFullyQualifiedName() {
+        boolean actualHasLanguageElement = false;
+        if (expectedElement instanceof ParameterType) {
+            actualHasLanguageElement = languageRegistry.hasParameterType(expectedElement.getFullyQualifiedName(),
+                    false);
+        } else if (expectedElement instanceof ChangeIdentifier) {
+            actualHasLanguageElement = languageRegistry.hasChangeIdentifier(expectedElement.getFullyQualifiedName(),
+                    false);
+        } else if (expectedElement instanceof Call) {
+            System.out.println(ID + " Skipping \"" + expectedElement.getFullyQualifiedName() + "\" as a(n) " 
+                    + expectedElement.getElementType() + " cannot be found by fully-qualified name only");
         }
-        return registeredElement;
+        assertEquals(expectedHasAnyLanguageElementByFullyQualifiedName, actualHasLanguageElement, 
+                "Language registry does not have any lanuage element by fully-qualified name only as expected");
+    }
+    
+    /**
+     * Tests whether the {@link #expectedElement} is available in the {@link LanguageRegistry}, if checking the 
+     * existence relies on the simple name only (unique).
+     */
+    @Test
+    public void testHasUniqueLanguageElementBySimpleName() {
+        boolean actualHasLanguageElement = false;
+        if (expectedElement instanceof ParameterType) {
+            actualHasLanguageElement = languageRegistry.hasParameterType(expectedElement.getName(), true);
+        } else if (expectedElement instanceof ChangeIdentifier) {
+            actualHasLanguageElement = languageRegistry.hasChangeIdentifier(expectedElement.getName(), true);
+        } else if (expectedElement instanceof Call) {
+            System.out.println(ID + " Skipping \"" + expectedElement.getFullyQualifiedName() + "\" as a(n) " 
+                    + expectedElement.getElementType() + " cannot be found by name only");
+        }
+        assertEquals(expectedHasUniqueLanguageElementBySimpleName, actualHasLanguageElement, 
+                "Language registry does not have unique lanuage element by name only as expected");
     }
 }
