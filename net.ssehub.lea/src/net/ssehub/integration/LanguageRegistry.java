@@ -16,7 +16,6 @@ package net.ssehub.integration;
 
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -50,99 +49,6 @@ public class LanguageRegistry extends AbstractLanguageRegistry {
     }
     
     /**
-     * Checks whether a(n unique) {@link ParameterType} of the type {@link ElementType#ARTIFACT_PARAMETER_TYPE} with the
-     * given name is available.<br>
-     * <br>
-     * This method initially treats the given name as simple name and returns <code>true</code>, if a single
-     * {@link ParameterType} of the type {@link ElementType#ARTIFACT_PARAMETER_TYPE} matches that simple name 
-     * independent of the value of <code>isUnique</code>. If this initial check does not result in an unique match, this
-     * method proceeds depending on the result as follows:
-     * <ul>
-     * <li>The <b>initial check does not result in any matches</b>: this method retries its check treating the given
-     *     name as fully-qualified name, which must result in a single match (returns <code>true</code>) or none 
-     *     (returns <code>false</code>) independent of the value of <code>isUnique</code>.</li>
-     * <li>The <b>initial check results in multiple matches</b>:</li>
-     *     <ul>
-     *     <li>The value of <code>isUnique</code> is <code>true</code>: this method returns <code>false</code></li>
-     *     <li>The value of <code>isUnique</code> is <code>false</code>: this method returns <code>true</code></li>
-     *     </ul>
-     * </ul>
-     * 
-     * @param name the name of the (unique) {@link ParameterType} of the type 
-     *        {@link ElementType#ARTIFACT_PARAMETER_TYPE} to search for
-     * @param isUnique must be <code>true</code> to further check whether a {@link ParameterType} matching the given
-     *        name is unique; <code>false</code> otherwise 
-     * @return <code>true</code>, if a(n unique) {@link ParameterType} of the type 
-     *         {@link ElementType#ARTIFACT_PARAMETER_TYPE} with the given name is available; <code>false</code>
-     *         otherwise
-     */
-    public boolean hasArtifactParameterType(String name, boolean isUnique) {
-        return hasParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, name, isUnique);
-    }
-    
-    /**
-     * Checks whether a(n unique) {@link ParameterType} of the type {@link ElementType#FRAGMENT_PARAMETER_TYPE} with the
-     * given name is available.<br>
-     * <br>
-     * This method initially treats the given name as simple name and returns <code>true</code>, if a single
-     * {@link ParameterType} of the type {@link ElementType#FRAGMENT_PARAMETER_TYPE} matches that simple name 
-     * independent of the value of <code>isUnique</code>. If this initial check does not result in an unique match, this
-     * method proceeds depending on the result as follows:
-     * <ul>
-     * <li>The <b>initial check does not result in any matches</b>: this method retries its check treating the given
-     *     name as fully-qualified name, which must result in a single match (returns <code>true</code>) or none 
-     *     (returns <code>false</code>) independent of the value of <code>isUnique</code>.</li>
-     * <li>The <b>initial check results in multiple matches</b>:</li>
-     *     <ul>
-     *     <li>The value of <code>isUnique</code> is <code>true</code>: this method returns <code>false</code></li>
-     *     <li>The value of <code>isUnique</code> is <code>false</code>: this method returns <code>true</code></li>
-     *     </ul>
-     * </ul>
-     * 
-     * @param name the name of the (unique) {@link ParameterType} of the type 
-     *        {@link ElementType#FRAGMENT_PARAMETER_TYPE} to search for
-     * @param isUnique must be <code>true</code> to further check whether a {@link ParameterType} matching the given
-     *        name is unique; <code>false</code> otherwise 
-     * @return <code>true</code>, if a(n unique) {@link ParameterType} of the type 
-     *         {@link ElementType#FRAGMENT_PARAMETER_TYPE} with the given name is available; <code>false</code>
-     *         otherwise
-     */
-    public boolean hasFragmentParameterType(String name, boolean isUnique) {
-        return hasParameterType(ElementType.FRAGMENT_PARAMETER_TYPE, name, isUnique);
-    }
-    
-    /**
-     * Checks whether a(n unique) {@link ParameterType} of the type {@link ElementType#RESULT_PARAMETER_TYPE} with the
-     * given name is available.<br>
-     * <br>
-     * This method initially treats the given name as simple name and returns <code>true</code>, if a single
-     * {@link ParameterType} of the type {@link ElementType#RESULT_PARAMETER_TYPE} matches that simple name 
-     * independent of the value of <code>isUnique</code>. If this initial check does not result in an unique match, this
-     * method proceeds depending on the result as follows:
-     * <ul>
-     * <li>The <b>initial check does not result in any matches</b>: this method retries its check treating the given
-     *     name as fully-qualified name, which must result in a single match (returns <code>true</code>) or none 
-     *     (returns <code>false</code>) independent of the value of <code>isUnique</code>.</li>
-     * <li>The <b>initial check results in multiple matches</b>:</li>
-     *     <ul>
-     *     <li>The value of <code>isUnique</code> is <code>true</code>: this method returns <code>false</code></li>
-     *     <li>The value of <code>isUnique</code> is <code>false</code>: this method returns <code>true</code></li>
-     *     </ul>
-     * </ul>
-     * 
-     * @param name the name of the (unique) {@link ParameterType} of the type 
-     *        {@link ElementType#RESULT_PARAMETER_TYPE} to search for
-     * @param isUnique must be <code>true</code> to further check whether a {@link ParameterType} matching the given
-     *        name is unique; <code>false</code> otherwise 
-     * @return <code>true</code>, if a(n unique) {@link ParameterType} of the type 
-     *         {@link ElementType#RESULT_PARAMETER_TYPE} with the given name is available; <code>false</code>
-     *         otherwise
-     */
-    public boolean hasResultParameterType(String name, boolean isUnique) {
-        return hasParameterType(ElementType.RESULT_PARAMETER_TYPE, name, isUnique);
-    }
-    
-    /**
      * Checks whether a(n unique) {@link ParameterType} of the given {@link ElementType} with the given name is
      * available.<br>
      * <br>
@@ -168,7 +74,7 @@ public class LanguageRegistry extends AbstractLanguageRegistry {
      * @return <code>true</code>, if a(n unique) {@link ParameterType} of the given {@link ElementType} with the given
      *         name is available; <code>false</code> otherwise
      */
-    private boolean hasParameterType(ElementType elementType, String name, boolean isUnique) {
+    public boolean hasParameterType(ElementType elementType, String name, boolean isUnique) {
         boolean hasParameterType = false;
         // Initial check treating the give name as simple name
         List<ParameterType> availableParameterTypes = parameterTypes.get(name);
@@ -425,156 +331,509 @@ public class LanguageRegistry extends AbstractLanguageRegistry {
     }
     
     /**
-     * Checks whether a(n unique) {@link Call} of the type {@link ElementType#OPERATION} with the given name is
+     * Checks whether a(n unique) {@link Call} of the given {@link ElementType} with the given name is available.<br>
+     * <br>
+     * This method initially treats the given name as simple name. If no {@link Call}s match that simple name, this
+     * method retries detecting available {@link Call}s treating the given name as fully-qualified name. If in any of
+     * these case one or more {@link Call}s are detected, their {@link ElementType} and name are compared against the
+     * given ones. This results in the following return value:
+     * <ul>
+     * <li><code>true</code>, if <code>isUnique</code> is <code>true</code> and exactly one {@link Call} matches
+     *     the given {@link ElementType} and the given name</li>
+     * <li><code>true</code>, if <code>isUnique</code> is <code>false</code> and at least one {@link Call} matches
+     *     the given {@link ElementType} and the given name</li>
+     * <li><code>false</code>, in all other cases</li>
+     * </ul>
+     * 
+     * @param elementType the {@link ElementType} of the (unique) {@link Call} to search for; should never be
+     *        <code>null</code>
+     * @param name the name of the (unique) {@link Call} to search for; should never be <code>null</code>
+     * @param isUnique must be <code>true</code> to further check whether a {@link Call} matching the given
+     *        {@link ElementType} name is unique; <code>false</code> otherwise 
+     * @return <code>true</code>, if a(n unique) {@link Call} of the type given {@link ElementType} with the given
+     *         name is available; <code>false</code> otherwise
+     */
+    public boolean hasCall(ElementType elementType, String name, boolean isUnique) {
+        boolean hasCall = false;
+        List<Call> availableCall = getCalls(elementType, name);
+        if (availableCall != null && (!isUnique || availableCall.size() == 1)) {
+            hasCall = true;
+        }
+        return hasCall;
+    }
+    
+    /**
+     * Checks whether a(n unique) {@link Call} of the given {@link ElementType} with the given name and 
+     * {@link ParameterType} denoting the return type is available.<br>
+     * <br>
+     * This method initially treats the given name as simple name. If no {@link Call}s match that simple name, this
+     * method retries detecting available {@link Call}s treating the given name as fully-qualified name. If in any of
+     * these case one or more {@link Call}s are detected, their {@link ElementType}, name, and return type are compared
+     * against the given ones. This results in the following return value:
+     * <ul>
+     * <li><code>true</code>, if <code>isUnique</code> is <code>true</code> and exactly one {@link Call} matches
+     *     the given {@link ElementType}, the given name, and the given return type</li>
+     * <li><code>true</code>, if <code>isUnique</code> is <code>false</code> and at least one {@link Call} matches
+     *     the given {@link ElementType} and the given name, and the given return type</li>
+     * <li><code>false</code>, in all other cases</li>
+     * </ul>
+     * 
+     * @param elementType the {@link ElementType} of the (unique) {@link Call} to search for; should never be
+     *        <code>null</code>
+     * @param name the name of the (unique) {@link Call} to search for; should never be <code>null</code>
+     * @param returnType the {@link ParameterType} denoting the return type of the {@link Call}s to search for; should
+     *        never be <code>null</code>
+     * @param isUnique must be <code>true</code> to further check whether a {@link Call} matching the given
+     *        {@link ElementType} name is unique; <code>false</code> otherwise 
+     * @return <code>true</code>, if a(n unique) {@link Call} of the type given {@link ElementType} with the given
+     *         name and return type is available; <code>false</code> otherwise
+     */
+    public boolean hasCall(ElementType elementType, String name, ParameterType returnType, boolean isUnique) {
+        boolean hasCall = false;
+        List<Call> availableCall = getCalls(elementType, name, returnType);
+        if (availableCall != null && (!isUnique || availableCall.size() == 1)) {
+            hasCall = true;
+        }
+        return hasCall;
+    }
+    
+    /**
+     * Checks whether a(n unique) {@link Call} of the given {@link ElementType} with the given name and 
+     * {@link ParameterType}s denoting the parameters is available.<br>
+     * <br>
+     * This method initially treats the given name as simple name. If no {@link Call}s match that simple name, this
+     * method retries detecting available {@link Call}s treating the given name as fully-qualified name. If in any of
+     * these case one or more {@link Call}s are detected, their {@link ElementType}, name, and parameters are compared
+     * against the given ones. This results in the following return value:
+     * <ul>
+     * <li><code>true</code>, if <code>isUnique</code> is <code>true</code> and exactly one {@link Call} matches
+     *     the given {@link ElementType}, the given name, and the given parameters</li>
+     * <li><code>true</code>, if <code>isUnique</code> is <code>false</code> and at least one {@link Call} matches
+     *     the given {@link ElementType} and the given name, and the given parameters</li>
+     * <li><code>false</code>, in all other cases</li>
+     * </ul>
+     * 
+     * @param elementType the {@link ElementType} of the (unique) {@link Call} to search for; should never be
+     *        <code>null</code>
+     * @param name the name of the (unique) {@link Call} to search for; should never be <code>null</code>
+     * @param parameters the array of {@link ParameterType}s denoting the parameters of the {@link Call}s to search for;
+     *        <code>null</code> or an <i>empty</i> array indicates that the {@link Calls} should not have any parameters
+     * @param isUnique must be <code>true</code> to further check whether a {@link Call} matching the given
+     *        {@link ElementType} name is unique; <code>false</code> otherwise 
+     * @return <code>true</code>, if a(n unique) {@link Call} of the type given {@link ElementType} with the given
+     *         name and parameters is available; <code>false</code> otherwise
+     */
+    public boolean hasCall(ElementType elementType, String name, ParameterType[] parameters, boolean isUnique) {
+        boolean hasCall = false;
+        List<Call> availableCall = getCalls(elementType, name, parameters);
+        if (availableCall != null && (!isUnique || availableCall.size() == 1)) {
+            hasCall = true;
+        }
+        return hasCall;
+    }
+    
+    /**
+     * Checks whether a(n unique) {@link Call} of the given {@link ElementType} with the given name,
+     * {@link ParameterType} denoting the return type, and {@link ParameterType}s denoting the parameters is 
      * available.<br>
      * <br>
      * This method initially treats the given name as simple name. If no {@link Call}s match that simple name, this
      * method retries detecting available {@link Call}s treating the given name as fully-qualified name. If in any of
-     * these case one or more {@link Call}s are detected, their {@link ElementType} is compared against 
-     * {@link ElementType#OPERATION}. This results in the following return value:
+     * these case one or more {@link Call}s are detected, their {@link ElementType}, name, return type and parameters
+     * are compared against the given ones. This results in the following return value:
      * <ul>
      * <li><code>true</code>, if <code>isUnique</code> is <code>true</code> and exactly one {@link Call} matches
-     *     the {@link ElementType#OPERATION} and the given name</li>
+     *     the given {@link ElementType}, the given name, the given return type, and the given parameters</li>
      * <li><code>true</code>, if <code>isUnique</code> is <code>false</code> and at least one {@link Call} matches
-     *     the {@link ElementType#OPERATION} and the given name</li>
+     *     the given {@link ElementType} and the given name, the given return type, and the given parameters</li>
      * <li><code>false</code>, in all other cases</li>
      * </ul>
      * 
-     * @param name the name of the (unique) {@link Call} of the type {@link ElementType#OPERATION} to search for
-     * @param isUnique must be <code>true</code> to further check whether a {@link Call} matching the given name is
-     *        unique; <code>false</code> otherwise 
-     * @return <code>true</code>, if a(n unique) {@link Call} of the type {@link ElementType#OPERATION} with the given
-     *         name is available; <code>false</code> otherwise
+     * @param elementType the {@link ElementType} of the (unique) {@link Call} to search for; should never be
+     *        <code>null</code>
+     * @param name the name of the (unique) {@link Call} to search for; should never be <code>null</code>
+     * @param returnType the {@link ParameterType} denoting the return type of the {@link Call}s to search for; should
+     *        never be <code>null</code>
+     * @param parameters the array of {@link ParameterType}s denoting the parameters of the {@link Call}s to search for;
+     *        <code>null</code> or an <i>empty</i> array indicates that the {@link Calls} should not have any parameters
+     * @param isUnique must be <code>true</code> to further check whether a {@link Call} matching the given
+     *        {@link ElementType} name is unique; <code>false</code> otherwise 
+     * @return <code>true</code>, if a(n unique) {@link Call} of the type given {@link ElementType} with the given
+     *         name and parameters is available; <code>false</code> otherwise
      */
-    public boolean hasOperation(String name, boolean isUnique) {
-        boolean hasOperation = false;
-        List<Call> availableCall = getCalls(ElementType.OPERATION, name);
-        if (availableCall != null && (isUnique && availableCall.size() == 1)) {
-            hasOperation = true;
+    public boolean hasCall(ElementType elementType, String name, ParameterType returnType, ParameterType[] parameters,
+            boolean isUnique) {
+        boolean hasCall = false;
+        List<Call> availableCall = getCalls(elementType, name, returnType, parameters);
+        if (availableCall != null && (!isUnique || availableCall.size() == 1)) {
+            hasCall = true;
         }
-        return hasOperation;
-    }
-    
-    public boolean hasOperation(String name, ParameterType returnType, boolean isUnique) {
-        boolean hasOperation = false;
-        List<Call> availableCall = getCalls(ElementType.OPERATION, name, returnType);
-        if (availableCall != null && (isUnique && availableCall.size() == 1)) {
-            hasOperation = true;
-        }
-        return hasOperation;
-    }
-    
-    public boolean hasOperation(String name, ParameterType[] parameters, boolean isUnique) {
-        boolean hasOperation = false;
-        List<Call> availableCall = getCalls(ElementType.OPERATION, name, parameters);
-        if (availableCall != null && (isUnique && availableCall.size() == 1)) {
-            hasOperation = true;
-        }
-        return hasOperation;
-    }
-    
-    public boolean hasOperation(String name, ParameterType returnType, ParameterType[] parameters, boolean isUnique) {
-        boolean hasOperation = false;
-        List<Call> availableCall = getCalls(ElementType.OPERATION, name, returnType, parameters);
-        if (availableCall != null && (isUnique && availableCall.size() == 1)) {
-            hasOperation = true;
-        }
-        return hasOperation;
+        return hasCall;
     }
     
     /**
-     * Checks whether a(n unique) {@link Call} of the type {@link ElementType#OPERATION} with the given name is
-     * available, which is a member operation (checked via {@link Call#isMemberOperation()}.<br>
+     * Returns the <b>unique</b> {@link ParameterType} of the given {@link ElementType} with the given name.<br>
      * <br>
-     * This method initially treats the given name as simple name. If no {@link Call}s match that simple name, this
-     * method retries detecting available {@link Call}s treating the given name as fully-qualified name. If in any of
-     * these case one or more {@link Call}s are detected, their {@link ElementType} is compared against 
-     * {@link ElementType#OPERATION}. Further, each {@link Call} of the type {@link ElementType#OPERATION} is checked
-     * for being a member operation. This results in the following return value:
-     * <ul>
-     * <li><code>true</code>, if <code>isUnique</code> is <code>true</code> and exactly one {@link Call} matches
-     *     the {@link ElementType#OPERATION}, the given name, and is a member operation</li>
-     * <li><code>true</code>, if <code>isUnique</code> is <code>false</code> and at least one {@link Call} matches
-     *     the {@link ElementType#OPERATION}, the given name, and is a member operation</li>
-     * <li><code>false</code>, in all other cases</li>
-     * </ul>
+     * This method initially treats the given name as simple name and returns that unique {@link ParameterType}, which
+     * matches that simple name and has the given {@link ElementType}. If this initial search results in multiple
+     * {@link ParameterType}s matching the simple name and having the given {@link ElementType}, the return value is
+     * <code>null</code> due to ambiguity. If the initial search does not result in any matches, this method retries its
+     * search treating the given name as fully-qualified name, which must result in either a single match
+     * (returns that {@link ParameterType}) or none (returns <code>null</code>).
      * 
-     * @param name the name of the (unique) {@link Call} of the type {@link ElementType#OPERATION} to search for
-     * @param isUnique must be <code>true</code> to further check whether a {@link Call} matching the given name is
-     *        unique; <code>false</code> otherwise 
-     * @return <code>true</code>, if a(n unique) {@link Call} of the type {@link ElementType#OPERATION} with the given
-     *         name is available, which is a member operation; <code>false</code> otherwise
+     * @param elementType the {@link ElementType} of the unique {@link ParameterType} to search for
+     * @param name the name of the unique {@link ParameterType} to search for 
+     * @return the unique {@link ParameterType} of the given {@link ElementType} with the given name or
+     *         <code>null</code>, if the search results in multiple matches (ambiguous results) or no such
+     *         {@link ParameterType} is available
      */
-    public boolean hasMemberOperation(String name, boolean isUnique) {
-        boolean hasMemberOperation = false;
-        List<Call> availableMemberOperations = getMemberOperations(name);
-        if (availableMemberOperations != null && (isUnique && availableMemberOperations.size() == 1)) {
-            hasMemberOperation = true;
-        }
-        return hasMemberOperation;
-    }
-    
-    
-    
-    /**
-     * Returns all available {@link Call}s of the type {@link ElementType#OPERATION} with the given name, which are a
-     * member operation (checked via {@link Call#isMemberOperation()}.<br>
-     * <br>
-     * This method first detects all available {@link Call}s with the given name by calling 
-     * {@link #getCalls(ElementType, String)}. Based on that return value, it filters those {@link Call}s, which are a
-     * member operation.
-     * 
-     * @param name the name of the {@link Call}s to search for; should never be <code>null</code>
-     * @return the {@link List} of available {@link Call}s of the type {@link ElementType#OPERATION} with the given
-     *         name, which are a member operation, or <code>null</code>, if no such {@link Call}s are available 
-     */
-    private List<Call> getMemberOperations(String name) {
-        List<Call> availableMemberOperations = null;
-        List<Call> potentialMemberOperations = getCalls(ElementType.OPERATION, name);
-        if (potentialMemberOperations != null) {
-            for (Call potentialMemberOperation : potentialMemberOperations) {
-                if (potentialMemberOperation.isMemberOperation()) {
-                    if (availableMemberOperations == null) {
-                        availableMemberOperations = new ArrayList<Call>();
+    public ParameterType getParameterType(ElementType elementType, String name) {
+        ParameterType parameterType = null;
+        // Initial search treating the give name as simple name
+        List<ParameterType> availableParameterTypes = parameterTypes.get(name);
+        if (availableParameterTypes != null) {
+            if (availableParameterTypes.size() == 1) {
+                // Initial search results in single match
+                if (availableParameterTypes.get(0).getElementType() == elementType) {
+                    // Found a single parameter type with the given element type and name
+                    parameterType = availableParameterTypes.get(0);
+                }
+            } else {
+                // Initial search results in multiple matches
+                boolean doBreak = false;
+                int availableParameterTypesCounter = 0;
+                while (!doBreak && availableParameterTypesCounter < availableParameterTypes.size()) {
+                    if (availableParameterTypes.get(availableParameterTypesCounter).getElementType() == elementType) {
+                        if (parameterType == null) {
+                            /*
+                             * Found first parameter type with the given element type and name, which must be
+                             * unique to be returned. Hence, continue search to ensure uniqueness.
+                             */
+                            parameterType = availableParameterTypes.get(availableParameterTypesCounter);
+                        } else {
+                            /*
+                             * Found second parameter type with the given element type and name, while demanding for
+                             * uniqueness. Hence, abort search at this point with a return value of null as it is
+                             * ambiguous which parameter type was meant.
+                             */
+                            parameterType = null;
+                            doBreak = true;
+                        }
                     }
-                    availableMemberOperations.add(potentialMemberOperation);
+                    availableParameterTypesCounter++;
+                }
+            }
+        } else {
+            // Initial search does not result in any matches: Retry search treating the give name as fully-qualified one
+            int indexOfLastDot = name.lastIndexOf(".");
+            if (indexOfLastDot != -1) {
+                String simpleName = name.substring(indexOfLastDot + 1);
+                availableParameterTypes = parameterTypes.get(simpleName);
+                if (availableParameterTypes != null) {
+                    int availableParameterTypesCounter = 0;
+                    while (parameterType == null && availableParameterTypesCounter < availableParameterTypes.size()) {
+                        if (availableParameterTypes.get(availableParameterTypesCounter).getElementType() == elementType
+                                && availableParameterTypes.get(availableParameterTypesCounter).getFullyQualifiedName()
+                                    .equals(name)) {
+                            /*
+                             * Found first parameter type with the given element type and fully-qualified name, which is
+                             * unique by definition. Hence, abort search at this point with that parameter type as
+                             * return value.
+                             */
+                            parameterType = availableParameterTypes.get(availableParameterTypesCounter);
+                        }
+                        availableParameterTypesCounter++;
+                    }
                 }
             }
         }
-        return availableMemberOperations;
-    }
-    
-    private List<Call> getCalls(ElementType elementType, String name, ParameterType returnType) {
-        List<Call> availableCalls = null;
-        
-        return availableCalls;
-    }
-    
-    private List<Call> getCalls(ElementType elementType, String name, ParameterType[] parameters) {
-        List<Call> availableCalls = null;
-        
-        return availableCalls;
-    }
-    
-    private List<Call> getCalls(ElementType elementType, String name, ParameterType returnType, 
-            ParameterType[] parameters) {
-        List<Call> availableCalls = null;
-        
-        return availableCalls;
+        return parameterType;
     }
     
     /**
-     * Returns all available {@link Call}s with the given {@link ElementType} and name.<br>
+     * Returns the {@link List} of <b>all</b> {@link ParameterType}s of the given {@link ElementType} with the given
+     * name.<br>
+     * <br>
+     * This method initially treats the given name as simple name and returns all {@link ParameterType}s, which match
+     * that simple name and have the given {@link ElementType}. If the initial search does not result in any matches,
+     * this method retries its search treating the given name as fully-qualified name, which must result in either a
+     * single match (returns that {@link ParameterType}) or none (returns <code>null</code>).
+     * 
+     * @param elementType the {@link ElementType} of the {@link ParameterType}s to search for
+     * @param name the name of the {@link ParameterType}s to search for 
+     * @return the {@link List} of all {@link ParameterType}s of the given {@link ElementType} with the given name or
+     *         <code>null</code>, if no such {@link ParameterType}s are available
+     */
+    public List<ParameterType> getParameterTypes(ElementType elementType, String name) {
+        List<ParameterType> parameterTypes = null;
+        // Initial search treating the give name as simple name
+        List<ParameterType> availableParameterTypes = this.parameterTypes.get(name);
+        if (availableParameterTypes != null) {
+            // Initial search results in one or multiple matches
+            for (ParameterType availableParameterType : availableParameterTypes) {
+                if (availableParameterType.getElementType() == elementType) {
+                    if (parameterTypes == null) {
+                        parameterTypes = new ArrayList<ParameterType>();
+                    }
+                    parameterTypes.add(availableParameterType);
+                }
+            }
+        } else {
+            // Initial search does not result in any matches: Retry search treating the give name as fully-qualified one
+            int indexOfLastDot = name.lastIndexOf(".");
+            if (indexOfLastDot != -1) {
+                String simpleName = name.substring(indexOfLastDot + 1);
+                availableParameterTypes = this.parameterTypes.get(simpleName);
+                if (availableParameterTypes != null) {
+                    for (ParameterType availableParameterType : availableParameterTypes) {
+                        if (availableParameterType.getElementType() == elementType
+                                && availableParameterType.getFullyQualifiedName().equals(name)) {
+// CHECKSTYLE:OFF
+                            if (parameterTypes == null) {
+                                parameterTypes = new ArrayList<ParameterType>();
+                            }
+// CHECKSTYLE:ON
+                            parameterTypes.add(availableParameterType);
+                        }
+                        
+                    }
+                }
+            }
+        }
+        return parameterTypes;
+    }
+    
+    /**
+     * Returns the <b>unique</b> {@link ChangeIdentifier} with the given name.<br>
+     * <br>
+     * This method initially treats the given name as simple name and returns that unique {@link ChangeIdentifier},
+     * which matches that simple name. If this initial search results in multiple {@link ChangeIdentifier}s matching the
+     * simple name, the return value is <code>null</code> due to ambiguity. If the initial search does not result in any
+     * matches, this method retries its search treating the given name as fully-qualified name, which must result in
+     * either a single match (returns that {@link ChangeIdentifier}) or none (returns <code>null</code>).
+     * 
+     * @param name the name of the unique {@link ChangeIdentifier} to search for 
+     * @return the unique {@link ChangeIdentifier} with the given name or <code>null</code>, if the search results in
+     *         multiple matches (ambiguous results) or no such {@link ChangeIdentifier} is available
+     */
+    public ChangeIdentifier getChangeIdentifier(String name) {
+        ChangeIdentifier changeIdentifier = null;
+        // Initial search treating the give name as simple name
+        List<ChangeIdentifier> availableChangeIdentifiers = changeIdentifiers.get(name);
+        if (availableChangeIdentifiers != null) {
+            if (availableChangeIdentifiers.size() == 1) {
+                // Found a single change identifier with the given name
+                changeIdentifier = availableChangeIdentifiers.get(0);
+            } else {
+                // Initial search results in multiple matches
+                boolean doBreak = false;
+                int availableChangeIdentifiersCounter = 0;
+                while (!doBreak && availableChangeIdentifiersCounter < availableChangeIdentifiers.size()) {
+                    if (changeIdentifier == null) {
+                        /*
+                         * Found first change identifier with the given name, which must be unique to be returned.
+                         * Hence, continue search to ensure uniqueness.
+                         */
+                        changeIdentifier = availableChangeIdentifiers.get(availableChangeIdentifiersCounter);
+                    } else {
+                        /*
+                         * Found second change identifier with the given name, while demanding for uniqueness. Hence,
+                         * abort search at this point with a return value of null as it is ambiguous which change
+                         * identifier was meant.
+                         */
+                        changeIdentifier = null;
+                        doBreak = true;
+                    }
+                    availableChangeIdentifiersCounter++;
+                }
+            }
+        } else {
+            // Initial search does not result in any matches: Retry search treating the give name as fully-qualified one
+            int indexOfLastDot = name.lastIndexOf(".");
+            if (indexOfLastDot != -1) {
+                String simpleName = name.substring(indexOfLastDot + 1);
+                availableChangeIdentifiers = changeIdentifiers.get(simpleName);
+                if (availableChangeIdentifiers != null) {
+                    int availableChangeIdentifiersCounter = 0;
+                    while (changeIdentifier == null 
+                            && availableChangeIdentifiersCounter < availableChangeIdentifiers.size()) {
+                        if (availableChangeIdentifiers.get(availableChangeIdentifiersCounter).getFullyQualifiedName()
+                                    .equals(name)) {
+                            /*
+                             * Found first change identifier with the given fully-qualified name, which is unique by
+                             * definition. Hence, abort search at this point with that change identifier as return
+                             * value.
+                             */
+                            changeIdentifier = availableChangeIdentifiers.get(availableChangeIdentifiersCounter);
+                        }
+                        availableChangeIdentifiersCounter++;
+                    }
+                }
+            }
+        }
+        return changeIdentifier;
+    }
+    
+    /**
+     * Returns the {@link List} of <b>all</b> {@link ChangeIdentifier}s with the given name.<br>
+     * <br>
+     * This method initially treats the given name as simple name and returns all {@link ChangeIdentifier}s, which match
+     * that simple name. If the initial search does not result in any matches, this method retries its search treating
+     * the given name as fully-qualified name, which must result in either a single match (returns that 
+     * {@link ChangeIdentifier}) or none (returns <code>null</code>).
+     * 
+     * @param name the name of the {@link ChangeIdentifier}s to search for 
+     * @return the {@link List} of all {@link ChangeIdentifier}s with the given name or <code>null</code>, if no such
+     *         {@link ChangeIdentifier}s are available
+     */
+    public List<ChangeIdentifier> getChangeIdentifiers(String name) {
+        // Initial search treating the give name as simple name
+        List<ChangeIdentifier> changeIdentifiers = this.changeIdentifiers.get(name);
+        if (changeIdentifiers == null) {
+            // Initial search does not result in any matches: Retry search treating the give name as fully-qualified one
+            int indexOfLastDot = name.lastIndexOf(".");
+            if (indexOfLastDot != -1) {
+                String simpleName = name.substring(indexOfLastDot + 1);
+                List<ChangeIdentifier> availableChangeIdentifiers = this.changeIdentifiers.get(simpleName);
+                if (availableChangeIdentifiers != null) {
+                    for (ChangeIdentifier availableChangeIdentifier : availableChangeIdentifiers) {
+                        if (availableChangeIdentifier.getFullyQualifiedName().equals(name)) {
+// CHECKSTYLE:OFF
+                            if (changeIdentifiers == null) {
+                                changeIdentifiers = new ArrayList<ChangeIdentifier>();
+                            }
+// CHECKSTYLE:ON
+                            changeIdentifiers.add(availableChangeIdentifier);
+                        }
+                        
+                    }
+                }
+            }
+        }
+        return changeIdentifiers;
+    }
+    
+    /**
+     * Returns the <b>unique</b> {@link Call} of the given {@link ElementType} with the given name.<br>
+     * <br>
+     * This method initially treats the given name as simple name and returns that unique {@link Call}, which
+     * matches that simple name and has the given {@link ElementType}. If this initial search results in multiple
+     * {@link Call}s matching the simple name and having the given {@link ElementType}, the return value is
+     * <code>null</code> due to ambiguity. If the initial search does not result in any matches, this method retries its
+     * search treating the given name as fully-qualified name, which must result in either a single match
+     * (returns that {@link Call}) or none (returns <code>null</code>).
+     * 
+     * @param elementType the {@link ElementType} of the unique {@link Call} to search for
+     * @param name the name of the unique {@link Call} to search for 
+     * @return the unique {@link Call} of the given {@link ElementType} with the given name or <code>null</code>, if the
+     *         search results in multiple matches (ambiguous results) or no such {@link Call} is available
+     */
+    public Call getCall(ElementType elementType, String name) {
+        Call call = null;
+        List<Call> availableCalls = getCalls(elementType, name);
+        if (availableCalls != null && availableCalls.size() == 1) {
+            call = availableCalls.get(0);
+        }
+        return call;
+    }
+    
+    /**
+     * Returns the <b>unique</b> {@link Call} of the given {@link ElementType} with the given name and 
+     * {@link ParameterType} denoting the return type.<br>
+     * <br>
+     * This method initially treats the given name as simple name and returns that unique {@link Call}, which
+     * matches that simple name, the given return type, and has the given {@link ElementType}. If this initial search
+     * results in multiple {@link Call}s matching the simple name, the given return type, and having the given
+     * {@link ElementType}, the return value is <code>null</code> due to ambiguity. If the initial search does not
+     * result in any matches, this method retries its search treating the given name as fully-qualified name, which must
+     * result in either a single match (returns that {@link Call}) or none (returns <code>null</code>).
+     * 
+     * @param elementType the {@link ElementType} of the unique {@link Call} to search for
+     * @param name the name of the unique {@link Call} to search for
+     * @param returnType the {@link ParameterType} denoting the return type of the unique {@link Call} to search for
+     * @return the unique {@link Call} of the given {@link ElementType} with the given name and return type or
+     *         <code>null</code>, if the search results in multiple matches (ambiguous results) or no such {@link Call}
+     *         is available
+     */
+    public Call getCall(ElementType elementType, String name, ParameterType returnType) {
+        Call call = null;
+        List<Call> availableCalls = getCalls(elementType, name, returnType);
+        if (availableCalls != null && availableCalls.size() == 1) {
+            call = availableCalls.get(0);
+        }
+        return call;
+    }
+    
+    /**
+     * Returns the <b>unique</b> {@link Call} of the given {@link ElementType} with the given name and 
+     * {@link ParameterType}s denoting the parameters.<br>
+     * <br>
+     * This method initially treats the given name as simple name and returns that unique {@link Call}, which
+     * matches that simple name, the given parameters, and has the given {@link ElementType}. If this initial search
+     * results in multiple {@link Call}s matching the simple name, the given parameters, and having the given
+     * {@link ElementType}, the return value is <code>null</code> due to ambiguity. If the initial search does not
+     * result in any matches, this method retries its search treating the given name as fully-qualified name, which must
+     * result in either a single match (returns that {@link Call}) or none (returns <code>null</code>).
+     * 
+     * @param elementType the {@link ElementType} of the unique {@link Call} to search for
+     * @param name the name of the unique {@link Call} to search for
+     * @param parameters the array of {@link ParameterType}s denoting the parameters of the unique {@link Call} to
+     *        search for
+     * @return the unique {@link Call} of the given {@link ElementType} with the given name and parameters or
+     *         <code>null</code>, if the search results in multiple matches (ambiguous results) or no such {@link Call}
+     *         is available
+     */
+    public Call getCall(ElementType elementType, String name, ParameterType[] parameters) {
+        Call call = null;
+        List<Call> availableCalls = getCalls(elementType, name, parameters);
+        if (availableCalls != null && availableCalls.size() == 1) {
+            call = availableCalls.get(0);
+        }
+        return call;
+    }
+    
+    /**
+     * Returns the <b>unique</b> {@link Call} of the given {@link ElementType} with the given name, 
+     * {@link ParameterType} denoting the return type, and {@link ParameterType}s denoting the parameters.<br>
+     * <br>
+     * This method initially treats the given name as simple name and returns that unique {@link Call}, which
+     * matches that simple name, the given return type, the given parameters, and has the given {@link ElementType}. If
+     * this initial search results in multiple {@link Call}s matching the simple name, the given return type, the given
+     * parameters, and having the given {@link ElementType}, the return value is <code>null</code> due to ambiguity. If
+     * the initial search does not result in any matches, this method retries its search treating the given name as
+     * fully-qualified name, which must result in either a single match (returns that {@link Call}) or none 
+     * (returns <code>null</code>).
+     * 
+     * @param elementType the {@link ElementType} of the unique {@link Call} to search for
+     * @param name the name of the unique {@link Call} to search for
+     * @param returnType the {@link ParameterType} denoting the return type of the unique {@link Call} to search for
+     * @param parameters the array of {@link ParameterType}s denoting the parameters of the unique {@link Call} to
+     *        search for
+     * @return the unique {@link Call} of the given {@link ElementType} with the given name, return type, and parameters
+     *         or <code>null</code>, if the search results in multiple matches (ambiguous results) or no such
+     *         {@link Call} is available
+     */
+    public Call getCall(ElementType elementType, String name, ParameterType returnType, ParameterType[] parameters) {
+        Call call = null;
+        List<Call> availableCalls = getCalls(elementType, name, returnType, parameters);
+        if (availableCalls != null && availableCalls.size() == 1) {
+            call = availableCalls.get(0);
+        }
+        return call;
+    }
+    
+    /**
+     * Returns the {@link List} of <b>all</b> {@link Call}s of the given {@link ElementType} with the given name.<br>
      * <br>
      * This method first detects all available {@link Call}s with the given name by calling {@link #getCalls(String)}.
      * Based on that return value, it filters those {@link Call}s matching the given {@link ElementType}.
      * 
      * @param elementType the {@link ElementType} of the {@link Call}s to search for; should never be <code>null</code>
      * @param name the name of the {@link Call}s to search for; should never be <code>null</code>
-     * @return the {@link List} of available {@link Call}s with the given {@link ElementType} and or <code>null</code>,
-     *         if no such {@link Call}s are available 
+     * @return the {@link List} of available {@link Call}s with the given {@link ElementType} and name or
+     *         <code>null</code>, if no such {@link Call}s are available 
      */
-    private List<Call> getCalls(ElementType elementType, String name) {
+    public List<Call> getCalls(ElementType elementType, String name) {
         List<Call> availableCalls = null;
         List<Call> potentialCalls = getCalls(name);
         if (potentialCalls != null) {
@@ -591,7 +850,106 @@ public class LanguageRegistry extends AbstractLanguageRegistry {
     }
     
     /**
-     * Returns all available {@link Call}s with the given name independent of their {@link ElementType}.<br>
+     * Returns the {@link List} of <b>all</b> {@link Call}s of the given {@link ElementType} with the given name and
+     * {@link ParameterType} denoting the return type.<br>
+     * <br>
+     * This method first detects all available {@link Call}s with the given {@link ElementType} and name by calling
+     * {@link #getCalls(ElementType, String)}. Based on that return value, it filters those {@link Call}s matching the
+     * given return type.
+     * 
+     * @param elementType the {@link ElementType} of the {@link Call}s to search for; should never be <code>null</code>
+     * @param name the name of the {@link Call}s to search for; should never be <code>null</code>
+     * @param returnType the {@link ParameterType} denoting the return type of the {@link Call}s to search for; should
+     *        never be <code>null</code>
+     * @return the {@link List} of available {@link Call}s with the given {@link ElementType}, name, and return type or
+     *         <code>null</code>, if no such {@link Call}s are available 
+     */
+    public List<Call> getCalls(ElementType elementType, String name, ParameterType returnType) {
+        List<Call> availableCalls = null;
+        List<Call> potentialCalls = getCalls(elementType, name);
+        if (potentialCalls != null) {
+            for (Call potentialCall : potentialCalls) {
+                if (potentialCall.getReturnType().equals(returnType)) {
+                    if (availableCalls == null) {
+                        availableCalls = new ArrayList<Call>();
+                    }
+                    availableCalls.add(potentialCall);
+                }
+            }
+        }
+        return availableCalls;
+    }
+    
+    /**
+     * Returns the {@link List} of <b>all</b> {@link Call}s of the given {@link ElementType} with the given name and
+     * {@link ParameterType}s denoting the parameters.<br>
+     * <br>
+     * This method first detects all available {@link Call}s with the given {@link ElementType} and name by calling
+     * {@link #getCalls(ElementType, String)}. Based on that return value, it filters those {@link Call}s matching the
+     * given parameters.
+     * 
+     * @param elementType the {@link ElementType} of the {@link Call}s to search for; should never be <code>null</code>
+     * @param name the name of the {@link Call}s to search for; should never be <code>null</code>
+     * @param parameters the array of {@link ParameterType}s denoting the parameters of the {@link Call}s to search for;
+     *        <code>null</code> or an <i>empty</i> array indicates that the {@link Calls} should not have any parameters
+     * @return the {@link List} of available {@link Call}s with the given {@link ElementType}, name, and parameters or
+     *         <code>null</code>, if no such {@link Call}s are available 
+     */
+    public List<Call> getCalls(ElementType elementType, String name, ParameterType[] parameters) {
+        List<Call> availableCalls = null;
+        List<Call> potentialCalls = getCalls(elementType, name);
+        if (potentialCalls != null) {
+            for (Call potentialCall : potentialCalls) {
+                if ((parameters == null && potentialCall.getParameters().length == 0) 
+                        || potentialCall.acceptsParameters(parameters)) {
+                    if (availableCalls == null) {
+                        availableCalls = new ArrayList<Call>();
+                    }
+                    availableCalls.add(potentialCall);
+                }
+            }
+        }
+        return availableCalls;
+    }
+    
+    /**
+     * Returns the {@link List} of <b>all</b> {@link Call}s of the given {@link ElementType} with the given name,
+     * {@link ParameterType} denoting the return type, and {@link ParameterType}s denoting the parameters.<br>
+     * <br>
+     * This method first detects all available {@link Call}s with the given {@link ElementType}, name, and return type
+     * by calling {@link #getCalls(ElementType, String, ParameterType)}. Based on that return value, it filters those
+     * {@link Call}s matching the given parameters.
+     * 
+     * @param elementType the {@link ElementType} of the {@link Call}s to search for; should never be <code>null</code>
+     * @param name the name of the {@link Call}s to search for; should never be <code>null</code>
+     * @param returnType the {@link ParameterType} denoting the return type of the {@link Call}s to search for; should
+     *        never be <code>null</code>
+     * @param parameters the array of {@link ParameterType}s denoting the parameters of the {@link Call}s to search for;
+     *        <code>null</code> or an <i>empty</i> array indicates that the {@link Calls} should not have any parameters
+     * @return the {@link List} of available {@link Call}s with the given {@link ElementType}, name, return type, and
+     *         parameters or <code>null</code>, if no such {@link Call}s are available 
+     */
+    public List<Call> getCalls(ElementType elementType, String name, ParameterType returnType, 
+            ParameterType[] parameters) {
+        List<Call> availableCalls = null;
+        List<Call> potentialCalls = getCalls(elementType, name, returnType);
+        if (potentialCalls != null) {
+            for (Call potentialCall : potentialCalls) {
+                if ((parameters == null && potentialCall.getParameters().length == 0) 
+                        || potentialCall.acceptsParameters(parameters)) {
+                    if (availableCalls == null) {
+                        availableCalls = new ArrayList<Call>();
+                    }
+                    availableCalls.add(potentialCall);
+                }
+            }
+        }
+        return availableCalls;
+    }
+    
+    /**
+     * Returns the {@link List} of <b>all</b> {@link Call}s with the given name independent of their 
+     * {@link ElementType}.<br>
      * <br>
      * This method initially treats the given name as simple name and returns all available {@link Call}s matching that
      * simple name. If this initial treatment does not detect any {@link Call}s, this method retries detecting available
@@ -621,422 +979,6 @@ public class LanguageRegistry extends AbstractLanguageRegistry {
             }
         }
         return availableCalls;
-    }
-    
-    
-//    /**
-//     * Checks whether a(n unique) {@link Call} of the given {@link ElementType} with the given name is available.<br>
-//     * <br>
-//     * This method initially treats the given name as simple name and returns <code>true</code>, if a single
-//     * {@link Call} of the given {@link ElementType} matches that simple name independent of the value of
-//     * <code>isUnique</code>. If this initial check does not result in an unique match, this method proceeds depending
-//     * on the result as follows:
-//     * <ul>
-//     * <li>The <b>initial check does not result in any matches</b>: this method retries its check treating the given
-//     *     name as fully-qualified name, which must result in a single match (returns <code>true</code>) or none 
-//     *     (returns <code>false</code>) independent of the value of <code>isUnique</code>.</li>
-//     * <li>The <b>initial check results in multiple matches</b>:</li>
-//     *     <ul>
-//     *     <li>The value of <code>isUnique</code> is <code>true</code>: this method returns <code>false</code></li>
-//     *     <li>The value of <code>isUnique</code> is <code>false</code>: this method returns <code>true</code></li>
-//     *     </ul>
-//     * </ul>
-//     * 
-//     * @param elementType the {@link ElementType} of the (unique) {@link Call} to search for
-//     * @param name the name of the (unique) {@link Call} to search for
-//     * @param isUnique must be <code>true</code> to further check whether a {@link Call} matching the given element
-//     *        type and name is unique; <code>false</code> otherwise 
-//     * @return <code>true</code>, if a(n unique) {@link Call} of the given {@link ElementType} with the given name is
-//     *         available; <code>false</code> otherwise
-//     */
-//    private boolean hasCall(ElementType elementType, String name, boolean isUnique) {
-//        boolean hasCall = false;
-//        // Initial check treating the give name as simple name
-//        List<Call> availableCalls = calls.get(name);
-//        if (availableCalls != null) {
-//            if (availableCalls.size() == 1) {
-//                // Initial check results in single match
-//                if (availableCalls.get(0).getElementType() == elementType) {
-//                    // Found a single call with the given element type and name
-//                    hasCall = true;
-//                }
-//            } else {
-//                // Initial check results in multiple matches
-//                boolean doBreak = false;
-//                int availableCallsCounter = 0;
-//                while (!doBreak && availableCallsCounter < availableCalls.size()) {
-//                    if (availableCalls.get(availableCallsCounter).getElementType() == elementType) {
-//                        if (!isUnique) {
-//                            /*
-//                             * Found first call with the given element type and name, which must not be unique. Hence,
-//                             * abort search at this point with positive return value.
-//                             */
-//                            hasCall = true;
-//                            doBreak = true;
-//                        } else {
-//                            if (!hasCall) {
-//                                /*
-//                                 * Found first call with the given element type and name, which must be unique. Hence,
-//                                 * continue search to ensure uniqueness.
-//                                 */
-//                                hasCall = true;
-//                            } else {
-//                                /*
-//                                 * Found second call with the given element type and name, while demanding for
-//                                 * uniqueness. Hence, abort search at this point with negative return value.
-//                                 */
-//                                hasCall = false;
-//                                doBreak = true;
-//                            }
-//                        }
-//                    }
-//                    availableCallsCounter++;
-//                }
-//            }
-//        } else {
-//            // Initial check does not result in any matches: Retry check treating the give name as fully-qualifiedname
-//            int indexOfLastDot = name.lastIndexOf(".");
-//            if (indexOfLastDot != -1) {
-//                String simpleName = name.substring(indexOfLastDot + 1);
-//                availableCalls = calls.get(simpleName);
-//                if (availableCalls != null) {
-//                    int availableCallsCounter = 0;
-//                    while (!hasCall && availableCallsCounter < availableCalls.size()) {
-//                        if (availableCalls.get(availableCallsCounter).getElementType() == elementType
-//                                && availableCalls.get(availableCallsCounter).getFullyQualifiedName()
-//                                    .equals(name)) {
-//                            /*
-//                             * Found first call with the given element type and fully-qualified name, which isuniqueby
-//                             * definition. Hence, abort search at this point with positive return value.
-//                             */
-//                            hasCall = true;
-//                        }
-//                        availableCallsCounter++;
-//                    }
-//                }
-//            }
-//        }
-//        return hasCall;
-//    }
-
-    
-//    
-//    
-//    /**
-//     * Checks whether at least one {@link ChangeIdentifier} with the given name is available.
-//     *  
-//     * @param name the name of the {@link ChangeIdentifier} to search for
-//     * @return <code>true</code>, if at least one {@link ChangeIdentifier} with the given name is available;
-//     *         <code>false</code> otherwise
-//     */
-//    public boolean hasChangeIdentifier(String name) {
-//        return changeIdentifiers.containsKey(name);
-//    }
-    
-//    /**
-//     * Checks whether a {@link ChangeIdentifier} is available, which has the given name and is assignable to the given
-//     * elements.
-//     * 
-//     * @param name the name of the {@link ChangeIdentifier} to search for
-//     * @param assignableElements the array of elements to which the {@link ChangeIdentifier} should be assignable to
-//     * @return <code>true</code>, if a {@link ChangeIdentifier} is available, which has the given name andisassignable
-//     *         to the given elements; <code>false</code> otherwise
-//     */
-//    public boolean hasChangeIdentifier(String name, String[] assignableElements) {
-//        boolean hasChangeIdentifer = false;
-//        List<ChangeIdentifier> availableChangeIdentifiers = changeIdentifiers.get(name);
-//        if (availableChangeIdentifiers != null) {
-//            ParameterType[] correspondingParameterTypes = new ParameterType[assignableElements.length];
-//            boolean correspondingParameterTypesAvailable = true;
-//            int elementsCounter = 0;
-//            ParameterType correspondingParameterType;
-//            while (correspondingParameterTypesAvailable && elementsCounter < assignableElements.length) {
-//                correspondingParameterType = getParameterType(assignableElements[elementsCounter]);
-//                if (correspondingParameterType != null) {
-//                    correspondingParameterTypes[elementsCounter] = correspondingParameterType;
-//                } else {
-//                    correspondingParameterTypesAvailable = false;
-//                }
-//                elementsCounter++;
-//            }
-//            if (correspondingParameterTypesAvailable) {                
-//                elementsCounter = 0;
-//                while (!hasChangeIdentifer && elementsCounter < availableChangeIdentifiers.size()) {
-//                    hasChangeIdentifer = availableChangeIdentifiers.get(elementsCounter)
-//                            .assignableTo(correspondingParameterTypes);
-//                    elementsCounter++;
-//                }
-//            }
-//        }
-//        return hasChangeIdentifer;
-//    }
-    
-//    /**
-//     * Checks whether at least one {@link ParameterType} of the type {@link ElementType#ARTIFACT_PARAMETER_TYPE} with
-//     * the given name is available.
-//     *  
-//     * @param name the name of the {@link ParameterType} of the type {@link ElementType#ARTIFACT_PARAMETER_TYPE} to
-//     *        search for
-//     * @return <code>true</code>, if at least one {@link ParameterType} of the type
-//     *         {@link ElementType#ARTIFACT_PARAMETER_TYPE} with the given name is available; <code>false</code>
-//     *         otherwise
-//     */
-//    public boolean hasArtifactParameterType(String name) {
-//        return artifactParameterTypes.containsKey(name);
-//    }
-//    
-//    /**
-//     * Checks whether at least one {@link ParameterType} of the type {@link ElementType#FRAGMENT_PARAMETER_TYPE} with
-//     * the given name is available.
-//     *  
-//     * @param name the name of the {@link ParameterType} of the type {@link ElementType#FRAGMENT_PARAMETER_TYPE} to
-//     *        search for
-//     * @return <code>true</code>, if at least one {@link ParameterType} of the type
-//     *         {@link ElementType#FRAGMENT_PARAMETER_TYPE} with the given name is available; <code>false</code>
-//     *         otherwise
-//     */
-//    public boolean hasFragmentParameterType(String name) {
-//        return fragmentParameterTypes.containsKey(name);
-//    }
-//    
-//    /**
-//     * Checks whether at least one {@link ParameterType} of the type {@link ElementType#RESULT_PARAMETER_TYPE} with
-//     * the given name is available.
-//     *  
-//     * @param name the name of the {@link ParameterType} of the type {@link ElementType#RESULT_PARAMETER_TYPE} to
-//     *        search for
-//     * @return <code>true</code>, if at least one {@link ParameterType} of the type
-//     *         {@link ElementType#RESULT_PARAMETER_TYPE} with the given name is available; <code>false</code>
-//     *         otherwise
-//     */
-//    public boolean hasResultParameterType(String name) {
-//        return resultParameterTypes.containsKey(name);
-//    }
-    
-//    /**
-//     * TODO.
-//     * @param name .
-//     * @return .
-//     */
-//    public List<String> getParameterTypeFullyQualifiedNames(String name) {
-//        List<String> parameterTypefullyQualifiedNames = null;
-//        String searchName = name;
-//        if (searchName != null && !searchName.isBlank()) {
-//            parameterTypefullyQualifiedNames = new ArrayList<String>();
-//            List<ParameterType> availableParameterTypes = parameterTypes.get(searchName);
-//            if (availableParameterTypes != null) {
-//                // The given name is a simple one
-//                for (ParameterType availableParameterType : availableParameterTypes) {
-//                    parameterTypefullyQualifiedNames.add(availableParameterType.getFullyQualifiedName());
-//                }
-//            } else {
-//                // Retry search treating the given name as a fully-qualified one
-//                int indexOfLastDot = name.lastIndexOf(".");
-//                if (indexOfLastDot != -1) {                    
-//                    searchName = name.substring(indexOfLastDot + 1);
-//                    availableParameterTypes = parameterTypes.get(searchName);
-//                    if (availableParameterTypes != null) {
-//                        for (ParameterType availableParameterType : availableParameterTypes) {
-//                            if (availableParameterType.getFullyQualifiedName().equals(name)) {
-//                                parameterTypefullyQualifiedNames.add(name);
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//        return parameterTypefullyQualifiedNames;
-//    }
-    
-    
-//    /**
-//     * Returns the {@link ParameterType}, which has the given fully-qualified name. 
-//     * 
-//     * @param name the (simple) name of the {@link ParameterType} to search for, which is used to preselect to correct
-//     *        entry in the {@link HashMap} of available {@link ParameterType}s
-//     * @param fullyQualifiedName the fully-qualified name of the {@link ParameterType} to search for
-//     * @return the {@link ParameterType} with the given fully-qualified name or <code>null</code>, if no 
-//     *         {@link ParameterType} with that fully-qualified name exists 
-//     */
-//    public ParameterType getParameterType(String name, String fullyQualifiedName) {
-//        ParameterType parameterType = null;
-//        List<ParameterType> availableParameterTypes = parameterTypes.get(name);
-//        if (availableParameterTypes != null) {
-//            int availableParameterTypesCounter = 0;
-//            ParameterType availableParameterType;
-//            while (parameterType == null && availableParameterTypesCounter < availableParameterTypes.size()) {
-//                availableParameterType = availableParameterTypes.get(availableParameterTypesCounter);
-//                if (availableParameterType.getFullyQualifiedName().equals(fullyQualifiedName)) {
-//                    parameterType = availableParameterType;
-//                }
-//                availableParameterTypesCounter++;
-//            }
-//        }
-//        return parameterType;
-//    }
-    
-    /**
-     * Returns a {@link List} of all {@link ParameterType}s of the type {@link ElementType#ARTIFACT_PARAMETER_TYPE},
-     * which have the given name.
-     *  
-     * @param name the name of the artifact parameter type(s), which should be returned
-     * @return the {@link List} of all {@link ParameterType}s of the type {@link ElementType#ARTIFACT_PARAMETER_TYPE}
-     *         with the given name or <code>null</code>, if no such elements are registered
-     */
-    public List<ParameterType> getArtifactParameterTypes(String name) {
-        return artifactParameterTypes.get(name);
-    }
-    
-    /**
-     * Returns a {@link List} of all {@link ParameterType}s of the type {@link ElementType#FRAGMENT_PARAMETER_TYPE},
-     * which have the given name.
-     *  
-     * @param name the name of the fragment parameter type(s), which should be returned
-     * @return the {@link List} of all {@link ParameterType}s of the type {@link ElementType#FRAGMENT_PARAMETER_TYPE}
-     *         with the given name or <code>null</code>, if no such elements are registered
-     */
-    public List<ParameterType> getFragmentParameterTypes(String name) {
-        return fragmentParameterTypes.get(name);
-    }
-    
-    /**
-     * Returns a {@link List} of all {@link ParameterType}s of the type {@link ElementType#RESULT_PARAMETER_TYPE},
-     * which have the given name.
-     *  
-     * @param name the name of the result parameter type(s), which should be returned
-     * @return the {@link List} of all {@link ParameterType}s of the type {@link ElementType#RESULT_PARAMETER_TYPE}
-     *         with the given name or <code>null</code>, if no such elements are registered
-     */
-    public List<ParameterType> getResultParameterTypes(String name) {
-        return resultParameterTypes.get(name);
-    }
-    
-    /**
-     * Returns a {@link List} of all {@link ChangeIdentifier}s, which have the given name.
-     *  
-     * @param name the name of the change identifier(s), which should be returned
-     * @return the {@link List} of all {@link ChangeIdentifier}s with the given name or <code>null</code>, if no such
-     *         elements are registered
-     */
-    public List<ChangeIdentifier> getChangeIdentifiers(String name) {
-        return changeIdentifiers.get(name);
-    }
-    
-    /**
-     * Returns a {@link List} of all {@link Call}s of the type {@link ElementType#OPERATION}, which have the given name.
-     *  
-     * @param name the name of the operation(s), which should be returned
-     * @return the {@link List} of all {@link Call}s of the type {@link ElementType#OPERATION} with the given name or
-     *         <code>null</code>, if no such elements are registered
-     */
-    public List<Call> getOperations(String name) {
-        return operations.get(name);
-    }
-    
-    /**
-     * Returns a {@link List} of all {@link Call}s of the type {@link ElementType#OPERATION}, which represent member
-     * operations for the {@link ParameterType} identified by the given name.
-     *  
-     * @param name the name of the {@link ParameterType} for which all member operations should be returned
-     * @return the {@link List} of all {@link Call}s of the type {@link ElementType#OPERATION}, which represent member
-     *         operations for the {@link ParameterType} identified by the given name or <code>null</code>, if no such
-     *         elements are registered
-     */
-    public List<Call> getMemberOperations2(String name) {
-        return memberOperations.get(name);
-    }
-    
-    /**
-     * Returns a {@link List} of all {@link Call}s of the type {@link ElementType#EXTRACTOR_CALL}, which have the given
-     * name.
-     *  
-     * @param name the name of the extractor call(s), which should be returned
-     * @return the {@link List} of all {@link Call}s of the type {@link ElementType#EXTRACTOR_CALL} with the given name
-     *         or <code>null</code>, if no such elements are registered
-     */
-    public List<Call> getExtractorCalls(String name) {
-        return extractorCalls.get(name);
-    }
-    
-    /**
-     * Returns a {@link List} of all {@link Call}s of the type {@link ElementType#ANALYSIS_CALL}, which have the given
-     * name.
-     *  
-     * @param name the name of the analysis call(s), which should be returned
-     * @return the {@link List} of all {@link Call}s of the type {@link ElementType#ANALYSIS_CALL} with the given name
-     *         or <code>null</code>, if no such elements are registered
-     */
-    public List<Call> getAnalysisCall(String name) {
-        return analysisCalls.get(name);
-    }
-    
-    /**
-     * Returns the return type of the {@link Call} identified by the given name and parameter types. This method
-     * searches in {@link AbstractLanguageRegistry#extractorCalls}, {@link AbstractLanguageRegistry#analysisCalls}, and
-     * {@link AbstractLanguageRegistry#operations} in that order and returns the return type of the first matching call.
-     * 
-     * @param name the name of the {@link Call} for which the return type shall be returned; should never be 
-     *        <code>null</code> nor <i>blank</i>
-     * @param parameterTypes the optional array of parameters the {@link Call} should accept in the given order; can be
-     *        <code>null</code> to indicate that the desired {@link Call} does not accept any parameters
-     * @return the return type of the {@link Call} identified by the given name and parameter types or
-     *         <code>null</code>, if no such {@link Call} is available
-     * @see #getCallReturnType(HashMap, String, String[])
-     */
-    public String getCallReturnType(String name, String[] parameterTypes) {
-        String callReturnType = getCallReturnType(extractorCalls, name, parameterTypes);
-        if (callReturnType == null) {
-            callReturnType = getCallReturnType(analysisCalls, name, parameterTypes);
-        }
-        if (callReturnType == null) {
-            callReturnType = getCallReturnType(operations, name, parameterTypes);
-        }
-        return callReturnType;
-    }
-    
-    /**
-     * Searches in the given {@link HashMap} for a {@link Call} with the given name and parameter types and returns its
-     * return type.
-     * 
-     * @param map the {@link HashMap} in which to search for a {@link Call} with the given attributes
-     * @param name the name of the {@link Call} for which the return type shall be returned; should never be 
-     *        <code>null</code> nor <i>blank</i>
-     * @param parameterTypes the optional array of parameters the {@link Call} should accept in the given order; can be
-     *        <code>null</code> to indicate that the desired {@link Call} does not accept any parameters
-     * @return the return type of the {@link Call} identified by the given name and parameter types or
-     *         <code>null</code>, if no such {@link Call} is available in the given map
-     */
-    private String getCallReturnType(HashMap<String, List<Call>> map, String name, String[] parameterTypes) {
-        String callReturnType = null;
-        List<Call> availableCalls = map.get(name);
-        if (availableCalls != null) {
-            // Name already equal, hence, we only need to check for equal parameters
-            int availableCallsCounter = 0;
-            int numberOfParameterTypes = 0;
-            if (parameterTypes != null) {
-                numberOfParameterTypes = parameterTypes.length;
-            }
-            Call availableCall;
-            boolean parametersEqual;
-            int parametersCounter;
-            while (callReturnType == null && availableCallsCounter < availableCalls.size()) {
-                availableCall = availableCalls.get(availableCallsCounter);
-                if (availableCall.getParameters().length == numberOfParameterTypes) {
-                    parametersEqual = true;
-                    parametersCounter = 0;
-                    while (parametersEqual && parametersCounter < parameterTypes.length) {
-                        parametersEqual = parameterTypes[parametersCounter]
-                                .equals(availableCall.getParameters()[parametersCounter].getName());
-                        parametersCounter++;
-                    }
-                    if (parametersEqual) {
-                        callReturnType = availableCall.getReturnType().getName();
-                    }
-                }
-                availableCallsCounter++;
-            }
-        }
-        return callReturnType;
     }
     
 }
