@@ -49,6 +49,63 @@ public class LanguageRegistry extends AbstractLanguageRegistry {
     }
     
     /**
+     * Checks whether a(n unique) {@link ParameterType} with the given name is available.<br>
+     * <br>
+     * This method initially treats the given name as simple name and returns <code>true</code>, if a single
+     * {@link ParameterType} matches that simple name independent of the value of <code>isUnique</code>. If this initial
+     * check does not result in an unique match, this method proceeds depending on the result as follows:
+     * <ul>
+     * <li>The <b>initial check does not result in any matches</b>: this method retries its check treating the given
+     *     name as fully-qualified name, which must result in a single match (returns <code>true</code>) or none 
+     *     (returns <code>false</code>) independent of the value of <code>isUnique</code>.</li>
+     * <li>The <b>initial check results in multiple matches</b>:</li>
+     *     <ul>
+     *     <li>The value of <code>isUnique</code> is <code>true</code>: this method returns <code>false</code></li>
+     *     <li>The value of <code>isUnique</code> is <code>false</code>: this method returns <code>true</code></li>
+     *     </ul>
+     * </ul>
+     * 
+     * @param name the name of the (unique) {@link ParameterType} to search for
+     * @param isUnique must be <code>true</code> to further check whether a {@link ParameterType} matching the given
+     *        name is unique; <code>false</code> otherwise 
+     * @return <code>true</code>, if a(n unique) {@link ParameterType} with the given name is available;
+     *         <code>false</code> otherwise
+     */
+    public boolean hasParameterType(String name, boolean isUnique) {
+        boolean hasParameterType = false;
+        // Initial check treating the give name as simple name
+        List<ParameterType> availableParameterTypes = parameterTypes.get(name);
+        if (availableParameterTypes != null) {
+            if (!isUnique || availableParameterTypes.size() == 1) {
+                // Found a (single) parameter type with the given name
+                hasParameterType = true;
+            }
+        } else {
+            // Initial check does not result in any matches: Retry check treating the give name as fully-qualified name
+            int indexOfLastDot = name.lastIndexOf(".");
+            if (indexOfLastDot != -1) {
+                String simpleName = name.substring(indexOfLastDot + 1);
+                availableParameterTypes = parameterTypes.get(simpleName);
+                if (availableParameterTypes != null) {
+                    int availableParameterTypesCounter = 0;
+                    while (!hasParameterType && availableParameterTypesCounter < availableParameterTypes.size()) {
+                        if (availableParameterTypes.get(availableParameterTypesCounter).getFullyQualifiedName()
+                                .equals(name)) {
+                            /*
+                             * Found first parameter type with the given fully-qualified name, which is unique by
+                             * definition. Hence, abort search at this point with positive return value.
+                             */
+                            hasParameterType = true;
+                        }
+                        availableParameterTypesCounter++;
+                    }
+                }
+            }
+        }
+        return hasParameterType;
+    }
+    
+    /**
      * Checks whether a(n unique) {@link ParameterType} of the given {@link ElementType} with the given name is
      * available.<br>
      * <br>
@@ -469,6 +526,53 @@ public class LanguageRegistry extends AbstractLanguageRegistry {
             hasCall = true;
         }
         return hasCall;
+    }
+    
+    /**
+     * Returns the <b>unique</b> {@link ParameterType} with the given name.<br>
+     * <br>
+     * This method initially treats the given name as simple name and returns that unique {@link ParameterType}, which
+     * matches that simple name. If this initial search results in multiple {@link ParameterType}s matching the simple
+     * name, the return value is <code>null</code> due to ambiguity. If the initial search does not result in any
+     * matches, this method retries its search treating the given name as fully-qualified name, which must result in
+     * either a single match (returns that {@link ParameterType}) or none (returns <code>null</code>).
+     * 
+     * @param name the name of the unique {@link ParameterType} to search for 
+     * @return the unique {@link ParameterType} with the given name or <code>null</code>, if the search results in
+     *         multiple matches (ambiguous results) or no such {@link ParameterType} is available
+     */
+    public ParameterType getParameterType(String name) {
+        ParameterType parameterType = null;
+        // Initial search treating the give name as simple name
+        List<ParameterType> availableParameterTypes = parameterTypes.get(name);
+        if (availableParameterTypes != null) {
+            if (availableParameterTypes.size() == 1) {
+                // Found a single parameter type with the given name
+                parameterType = availableParameterTypes.get(0);
+            }
+        } else {
+            // Initial search does not result in any matches: Retry search treating the give name as fully-qualified one
+            int indexOfLastDot = name.lastIndexOf(".");
+            if (indexOfLastDot != -1) {
+                String simpleName = name.substring(indexOfLastDot + 1);
+                availableParameterTypes = parameterTypes.get(simpleName);
+                if (availableParameterTypes != null) {
+                    int availableParameterTypesCounter = 0;
+                    while (parameterType == null && availableParameterTypesCounter < availableParameterTypes.size()) {
+                        if (availableParameterTypes.get(availableParameterTypesCounter).getFullyQualifiedName()
+                                    .equals(name)) {
+                            /*
+                             * Found first parameter type with the given fully-qualified name, which is unique by
+                             * definition. Hence, abort search at this point with that parameter type as return value.
+                             */
+                            parameterType = availableParameterTypes.get(availableParameterTypesCounter);
+                        }
+                        availableParameterTypesCounter++;
+                    }
+                }
+            }
+        }
+        return parameterType;
     }
     
     /**

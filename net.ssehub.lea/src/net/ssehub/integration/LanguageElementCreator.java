@@ -428,8 +428,7 @@ public class LanguageElementCreator {
         } else {
             callParameters = new String[methodParameters.length];
             for (int i = 0; i < methodParameters.length; i++) {
-                callParameters[i] = 
-                        createLanguageElementName(methodParameters[i].getParameterizedType().getTypeName(),
+                callParameters[i] = createLanguageElementName(methodParameters[i].getParameterizedType().getTypeName(),
                         "");
             }
         }
