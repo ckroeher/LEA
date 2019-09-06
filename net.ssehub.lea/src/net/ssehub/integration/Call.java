@@ -165,11 +165,13 @@ public class Call extends LanguageElement implements IFinalizable {
      * {@link #parameters} are available and, hence, {@link #isFinal()} returns <code>true</code>.
      */
     private void constructFullyQualifiedName() {
+        // TODO this is not finished yet!
         if (isFinal()) {
             String sourceMethodGenericString = sourceMethod.toGenericString();
             int indexOfLastWhitespace = sourceMethodGenericString.lastIndexOf(' ');
             fullyQualifiedName = sourceMethodGenericString.substring(indexOfLastWhitespace + 1)
                     .replaceAll("\\$|\\#", ".");
+            System.out.println("Call: " + fullyQualifiedName);
         }
     }
     
@@ -323,6 +325,26 @@ public class Call extends LanguageElement implements IFinalizable {
             hasEqualCallAttributes = false;
         }
         return hasEqualCallAttributes;
+    }
+    
+    /**
+     * Compares the given parameters with the defined {@link #parameters} of this {@link Call} in exactly their order
+     * in the array for equality. This is the case, if for each given parameter at a specific index an equal parameter
+     * at the same index in {@link #parameters} exists. 
+     *   
+     * @param parameters the parameters to compare to the {@link #assignableElements} of this {@link Call}; should never
+     *        be <code>null</code> nor <i>empty</i>
+     * @return <code>true</code>, if for each given parameter at a specific index an equal parameter at the same index
+     *         in {@link #parameters} exists; <code>false</code> otherwise
+     */
+    public boolean acceptsParameters(ParameterType[] parameters) {
+        boolean acceptsParameters = true;
+        int parametersCounter = 0;
+        while (acceptsParameters && parametersCounter < parameters.length) {
+            acceptsParameters = parameters[parametersCounter].equals(this.parameters[parametersCounter]);
+            parametersCounter++;
+        }
+        return acceptsParameters;
     }
 
     /**
