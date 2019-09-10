@@ -90,7 +90,7 @@ public class LanguageRegistry extends AbstractLanguageRegistry {
                     /*
                      * Remember that fully-qualified names of parameter types are not unique on their own, but only in
                      * combination with the element type of the parameter type. For example, the same fully-qualified
-                     * name may denote a an artifact and a result parameter type, of that parameter type should be
+                     * name may denote an artifact and a result parameter type, of that parameter type should be
                      * available for the definitions of artifacts and results.
                      */
                     boolean doBreak = false;
@@ -252,6 +252,7 @@ public class LanguageRegistry extends AbstractLanguageRegistry {
      * @return <code>true</code>, if a(n unique) {@link ChangeIdentifier} with the given name is available;
      *         <code>false</code> otherwise
      */
+// CHECKSTYLE:OFF
     public boolean hasChangeIdentifier(String name, boolean isUnique) {
         boolean hasChangeIdentifier = false;
         // Initial check treating the give name as simple name
@@ -298,23 +299,51 @@ public class LanguageRegistry extends AbstractLanguageRegistry {
                 String simpleName = name.substring(indexOfLastDot + 1);
                 availableChangeIdentifiers = changeIdentifiers.get(simpleName);
                 if (availableChangeIdentifiers != null) {
-                    int availableParameterTypesCounter = 0;
-                    while (!hasChangeIdentifier && availableParameterTypesCounter < availableChangeIdentifiers.size()) {
-                        if (availableChangeIdentifiers.get(availableParameterTypesCounter).getFullyQualifiedName()
+                    /*
+                     * Remember that fully-qualified names of change identifiers are not unique on their own, but only
+                     * in combination with the assignable elements of the change identifier. For example, the same
+                     * fully-qualified name may denote a change identifier that is assignable to a specific artifact
+                     * parameter type only and the same name is assignable to a specific result parameter type only,
+                     * which may occur, if the same class is annotated twice.
+                     */
+                    boolean doBreak = false;
+                    int availableChangeIdentifiersCounter = 0;
+                    while (!doBreak && availableChangeIdentifiersCounter < availableChangeIdentifiers.size()) {
+                        if (availableChangeIdentifiers.get(availableChangeIdentifiersCounter).getFullyQualifiedName()
                                 .equals(name)) {
-                            /*
-                             * Found first change identifier with the given fully-qualified name, which is unique by
-                             * definition. Hence, abort search at this point with positive return value.
-                             */
-                            hasChangeIdentifier = true;
+                            if (!isUnique) {
+                                /*
+                                 * Found first change identifier with the given fully-qualified name, which must not be
+                                 * unique. Hence, abort search at this point with positive return value.
+                                 */
+                                hasChangeIdentifier = true;
+                                doBreak = true;
+                            } else {
+                                if (!hasChangeIdentifier) {
+                                    /*
+                                     * Found first change identifier with the given fully-qualified name, which must be
+                                     * unique. Hence, continue search to ensure uniqueness.
+                                     */
+                                    hasChangeIdentifier = true;
+                                } else {
+                                    /*
+                                     * Found second change identifier with the given fully-qualified name, while
+                                     * demanding for uniqueness. Hence, abort search at this point with negative return
+                                     * value.
+                                     */
+                                    hasChangeIdentifier = false;
+                                    doBreak = true;
+                                }
+                            }
                         }
-                        availableParameterTypesCounter++;
+                        availableChangeIdentifiersCounter++;
                     }
                 }
             }
         }
         return hasChangeIdentifier;
     }
+// CHECKSTYLE:ON
     
     /**
      * Checks whether a(n unique) {@link ChangeIdentifier} with the given name is available, which is assignable to the
