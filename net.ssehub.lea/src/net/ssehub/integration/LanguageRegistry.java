@@ -56,8 +56,8 @@ public class LanguageRegistry extends AbstractLanguageRegistry {
      * check does not result in an unique match, this method proceeds depending on the result as follows:
      * <ul>
      * <li>The <b>initial check does not result in any matches</b>: this method retries its check treating the given
-     *     name as fully-qualified name, which must result in a single match (returns <code>true</code>) or none 
-     *     (returns <code>false</code>) independent of the value of <code>isUnique</code>.</li>
+     *     name as fully-qualified name, which may result in a single match (returns <code>true</code> immediately),
+     *     multiple matches (see next bullet), or none (returns <code>false</code> immediately).</li>
      * <li>The <b>initial check results in multiple matches</b>:</li>
      *     <ul>
      *     <li>The value of <code>isUnique</code> is <code>true</code>: this method returns <code>false</code></li>
@@ -87,15 +87,42 @@ public class LanguageRegistry extends AbstractLanguageRegistry {
                 String simpleName = name.substring(indexOfLastDot + 1);
                 availableParameterTypes = parameterTypes.get(simpleName);
                 if (availableParameterTypes != null) {
+                    /*
+                     * Remember that fully-qualified names of parameter types are not unique on their own, but only in
+                     * combination with the element type of the parameter type. For example, the same fully-qualified
+                     * name may denote a an artifact and a result parameter type, of that parameter type should be
+                     * available for the definitions of artifacts and results.
+                     */
+                    boolean doBreak = false;
                     int availableParameterTypesCounter = 0;
-                    while (!hasParameterType && availableParameterTypesCounter < availableParameterTypes.size()) {
+                    while (!doBreak && availableParameterTypesCounter < availableParameterTypes.size()) {
                         if (availableParameterTypes.get(availableParameterTypesCounter).getFullyQualifiedName()
                                 .equals(name)) {
-                            /*
-                             * Found first parameter type with the given fully-qualified name, which is unique by
-                             * definition. Hence, abort search at this point with positive return value.
-                             */
-                            hasParameterType = true;
+// CHECKSTYLE:OFF
+                            if (!isUnique) {
+                                /*
+                                 * Found first parameter type with the given fully-qualified name, which must not be
+                                 * unique. Hence, abort search at this point with positive return value.
+                                 */
+                                hasParameterType = true;
+                                doBreak = true;
+                            } else {
+                                if (!hasParameterType) {
+                                    /*
+                                     * Found first parameter type with the given fully-qualified name, which must be
+                                     * unique. Hence, continue search to ensure uniqueness.
+                                     */
+                                    hasParameterType = true;
+                                } else {
+                                    /*
+                                     * Found second parameter type with the given fully-qualified name, while demanding
+                                     * for uniqueness. Hence, abort search at this point with negative return value.
+                                     */
+                                    hasParameterType = false;
+                                    doBreak = true;
+                                }
+                            }
+// CHECKSTYLE:ON
                         }
                         availableParameterTypesCounter++;
                     }
@@ -188,8 +215,9 @@ public class LanguageRegistry extends AbstractLanguageRegistry {
                                 && availableParameterTypes.get(availableParameterTypesCounter).getFullyQualifiedName()
                                     .equals(name)) {
                             /*
-                             * Found first parameter type with the given element type and fully-qualified name, which is
-                             * unique by definition. Hence, abort search at this point with positive return value.
+                             * Found first parameter type with the given element type and fully-qualified name, which in
+                             * combination is unique by definition. Hence, abort search at this point with positive
+                             * return value.
                              */
                             hasParameterType = true;
                         }
