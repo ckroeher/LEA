@@ -237,8 +237,8 @@ public class LanguageRegistry extends AbstractLanguageRegistry {
      * initial check does not result in an unique match, this method proceeds depending on the result as follows:
      * <ul>
      * <li>The <b>initial check does not result in any matches</b>: this method retries its check treating the given
-     *     name as fully-qualified name, which must result in a single match (returns <code>true</code>) or none 
-     *     (returns <code>false</code>) independent of the value of <code>isUnique</code>.</li>
+     *     name as fully-qualified name, which may result in a single match (returns <code>true</code> immediately),
+     *     multiple matches (see next bullet), or none (returns <code>false</code> immediately).</li>
      * <li>The <b>initial check results in multiple matches</b>:</li>
      *     <ul>
      *     <li>The value of <code>isUnique</code> is <code>true</code>: this method returns <code>false</code></li>
