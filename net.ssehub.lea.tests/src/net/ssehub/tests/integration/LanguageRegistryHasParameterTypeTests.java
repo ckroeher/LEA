@@ -258,7 +258,7 @@ public class LanguageRegistryHasParameterTypeTests extends AbstractLanguageRegis
     private static Object[][] initializeExpectedResults() {
         Object[][] expectedResults = null;
         try {
-            expectedResults = new Object[5][4];
+            expectedResults = new Object[5][18];
             expectedResults[0] = new Object[] {new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "FileArtifact",
                     LanguageRegistryHasParameterTypeTests.class, SOURCE_PLUGIN),
                 true,
