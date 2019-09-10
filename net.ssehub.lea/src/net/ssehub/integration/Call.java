@@ -250,7 +250,7 @@ public class Call extends LanguageElement implements IFinalizable {
     /**
      * {@inheritDoc}
      * 
-     * In addition, two {@link Call}s are equal, if they have the same:
+     * In addition, two {@link Call}s are equal, if their construction is completed and they have the same:
      * <ul>
      * <li>Return type</li>
      * <li>Source {@link Method}</li>
@@ -260,9 +260,15 @@ public class Call extends LanguageElement implements IFinalizable {
      */
     @Override
     public boolean equals(LanguageElement comparable) {
-        boolean isEqual = super.equals(comparable);
-        if (isEqual) {
-            isEqual = hasEqualCallAttributes(comparable);
+        boolean isEqual = false;
+        if (isFinal() && comparable instanceof Call) {
+            Call comparableCall = (Call) comparable;
+            if (comparableCall.isFinal()) {                
+                isEqual = super.equals(comparableCall);
+                if (isEqual) {
+                    isEqual = hasEqualCallAttributes(comparableCall);
+                }
+            }
         }
         return isEqual;
     }
@@ -279,25 +285,29 @@ public class Call extends LanguageElement implements IFinalizable {
     @Override
     public boolean equalsIgnoreType(LanguageElement comparable) {
         boolean isEqual = super.equalsIgnoreType(comparable);
-        if (isEqual) {
-            isEqual = hasEqualCallAttributes(comparable);
+        if (isFinal() && comparable instanceof Call) {
+            Call comparableCall = (Call) comparable;
+            if (comparableCall.isFinal()) {
+                isEqual = super.equals(comparableCall);
+                if (isEqual) {
+                    isEqual = hasEqualCallAttributes(comparableCall);
+                }
+            }
         }
         return isEqual;
     }
     
     /**
      * Checks whether the {@link #returnType}, the {@link #parameters}, the {@link #sourceMethod}, and the 
-     * {@link #parentParameterType} of this {@link Call} and the given {@link LanguageElement} are equal. Hence, this
-     * method will cast the given element into a {@link Call} object without further checks.
+     * {@link #parentParameterType} of this {@link Call} and the given {@link Call} are equal.
      * 
-     * @param comparable the {@link LanguageElement} of runtime class {@link Call} to compare to this {@link Call};
+     * @param comparableCall the {@link Call} to compare to this {@link Call};
      *        should never be <code>null</code>
-     * @return <code>true</code>, if the given {@link LanguageElement} is a {@link Call} and its call-specific
-     *         attributes are equal to the attributes of this {@link Call}; <code>false</code> otherwise
+     * @return <code>true</code>, if the call-specific attributes of the given {@link Call} are equal to the attributes
+     *         of this {@link Call}; <code>false</code> otherwise
      */
-    private boolean hasEqualCallAttributes(LanguageElement comparable) {
+    private boolean hasEqualCallAttributes(Call comparableCall) {
         boolean hasEqualCallAttributes = true;
-        Call comparableCall = (Call) comparable; // Callers ensure equality of this and the given elements runtime class
         if (this.returnType.equals(comparableCall.getReturnType()) 
                 && this.sourceMethod.toGenericString().equals(comparableCall.getSourceMethod().toGenericString())) {
 //CHECKSTYLE:OFF
