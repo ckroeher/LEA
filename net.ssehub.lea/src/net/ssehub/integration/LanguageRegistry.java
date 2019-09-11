@@ -910,33 +910,33 @@ public class LanguageRegistry extends AbstractLanguageRegistry {
         return call;
     }
     
-    /**
-     * Returns the <b>unique</b> {@link Call} of the given {@link ElementType} with the given name and 
-     * {@link ParameterType} denoting the return type.<br>
-     * <br>
-     * This method initially treats the given name as simple name and returns that unique {@link Call}, which
-     * matches that simple name, the given return type, and has the given {@link ElementType}. If this initial search
-     * results in multiple {@link Call}s matching the simple name, the given return type, and having the given
-     * {@link ElementType}, the return value is <code>null</code> due to ambiguity. If the initial search does not
-     * result in any matches, this method retries its search treating the given name as fully-qualified name, which must
-     * result in either a single match (returns that {@link Call}) or none (returns <code>null</code>).
-     * 
-     * @param elementType the {@link ElementType} of the unique {@link Call} to search for
-     * @param name the name of the unique {@link Call} to search for
-     * @param returnType the {@link ParameterType} denoting the return type of the unique {@link Call} to search for
-     * @return the unique {@link Call} of the given {@link ElementType} with the given name and return type or
-     *         <code>null</code>, if the search results in multiple matches (ambiguous results) or no such {@link Call}
-     *         is available
-     */
-    public Call getCall(ElementType elementType, String name, ParameterType returnType) {
-        Call call = null;
-        List<Call> availableCalls = getCalls(elementType, name, returnType);
-        if (availableCalls != null && availableCalls.size() == 1) {
-            call = availableCalls.get(0);
-        }
-        return call;
-    }
-    
+//    /**
+//     * Returns the <b>unique</b> {@link Call} of the given {@link ElementType} with the given name and 
+//     * {@link ParameterType} denoting the return type.<br>
+//     * <br>
+//     * This method initially treats the given name as simple name and returns that unique {@link Call}, which
+//     * matches that simple name, the given return type, and has the given {@link ElementType}. If this initial search
+//     * results in multiple {@link Call}s matching the simple name, the given return type, and having the given
+//     * {@link ElementType}, the return value is <code>null</code> due to ambiguity. If the initial search does not
+//     * result in any matches, this method retries its search treating the given name as fully-qualified name, which
+//     * must result in either a single match (returns that {@link Call}) or none (returns <code>null</code>).
+//     * 
+//     * @param elementType the {@link ElementType} of the unique {@link Call} to search for
+//     * @param name the name of the unique {@link Call} to search for
+//     * @param returnType the {@link ParameterType} denoting the return type of the unique {@link Call} to search for
+//     * @return the unique {@link Call} of the given {@link ElementType} with the given name and return type or
+//     *         <code>null</code>, if the search results in multiple matches (ambiguous results) or no such
+//     *         {@link Call} is available
+//     */
+//    public Call getCall(ElementType elementType, String name, ParameterType returnType) {
+//        Call call = null;
+//        List<Call> availableCalls = getCalls(elementType, name, returnType);
+//        if (availableCalls != null && availableCalls.size() == 1) {
+//            call = availableCalls.get(0);
+//        }
+//        return call;
+//    }
+//    
     /**
      * Returns the <b>unique</b> {@link Call} of the given {@link ElementType} with the given name and 
      * {@link ParameterType}s denoting the parameters.<br>
@@ -945,16 +945,16 @@ public class LanguageRegistry extends AbstractLanguageRegistry {
      * matches that simple name, the given parameters, and has the given {@link ElementType}. If this initial search
      * results in multiple {@link Call}s matching the simple name, the given parameters, and having the given
      * {@link ElementType}, the return value is <code>null</code> due to ambiguity. If the initial search does not
-     * result in any matches, this method retries its search treating the given name as fully-qualified name, which must
-     * result in either a single match (returns that {@link Call}) or none (returns <code>null</code>).
+     * result in any matches, this method retries its search treating the given name as fully-qualified name, which
+     * must result in either a single match (returns that {@link Call}) or none (returns <code>null</code>).
      * 
      * @param elementType the {@link ElementType} of the unique {@link Call} to search for
      * @param name the name of the unique {@link Call} to search for
      * @param parameters the array of {@link ParameterType}s denoting the parameters of the unique {@link Call} to
      *        search for
      * @return the unique {@link Call} of the given {@link ElementType} with the given name and parameters or
-     *         <code>null</code>, if the search results in multiple matches (ambiguous results) or no such {@link Call}
-     *         is available
+     *         <code>null</code>, if the search results in multiple matches (ambiguous results) or no such
+     *         {@link Call} is available
      */
     public Call getCall(ElementType elementType, String name, ParameterType[] parameters) {
         Call call = null;
@@ -965,35 +965,35 @@ public class LanguageRegistry extends AbstractLanguageRegistry {
         return call;
     }
     
-    /**
-     * Returns the <b>unique</b> {@link Call} of the given {@link ElementType} with the given name, 
-     * {@link ParameterType} denoting the return type, and {@link ParameterType}s denoting the parameters.<br>
-     * <br>
-     * This method initially treats the given name as simple name and returns that unique {@link Call}, which
-     * matches that simple name, the given return type, the given parameters, and has the given {@link ElementType}. If
-     * this initial search results in multiple {@link Call}s matching the simple name, the given return type, the given
-     * parameters, and having the given {@link ElementType}, the return value is <code>null</code> due to ambiguity. If
-     * the initial search does not result in any matches, this method retries its search treating the given name as
-     * fully-qualified name, which must result in either a single match (returns that {@link Call}) or none 
-     * (returns <code>null</code>).
-     * 
-     * @param elementType the {@link ElementType} of the unique {@link Call} to search for
-     * @param name the name of the unique {@link Call} to search for
-     * @param returnType the {@link ParameterType} denoting the return type of the unique {@link Call} to search for
-     * @param parameters the array of {@link ParameterType}s denoting the parameters of the unique {@link Call} to
-     *        search for
-     * @return the unique {@link Call} of the given {@link ElementType} with the given name, return type, and parameters
-     *         or <code>null</code>, if the search results in multiple matches (ambiguous results) or no such
-     *         {@link Call} is available
-     */
-    public Call getCall(ElementType elementType, String name, ParameterType returnType, ParameterType[] parameters) {
-        Call call = null;
-        List<Call> availableCalls = getCalls(elementType, name, returnType, parameters);
-        if (availableCalls != null && availableCalls.size() == 1) {
-            call = availableCalls.get(0);
-        }
-        return call;
-    }
+//    /**
+//     * Returns the <b>unique</b> {@link Call} of the given {@link ElementType} with the given name, 
+//     * {@link ParameterType} denoting the return type, and {@link ParameterType}s denoting the parameters.<br>
+//     * <br>
+//     * This method initially treats the given name as simple name and returns that unique {@link Call}, which
+//     * matches that simple name, the given return type, the given parameters, and has the given {@link ElementType}.
+//     * If this initial search results in multiple {@link Call}s matching the simple name, the given return type, the
+//     * given parameters, and having the given {@link ElementType}, the return value is <code>null</code> due to 
+//     * ambiguity. If the initial search does not result in any matches, this method retries its search treating the
+//     * given name as fully-qualified name, which must result in either a single match (returns that {@link Call}) or 
+//     * none (returns <code>null</code>).
+//     * 
+//     * @param elementType the {@link ElementType} of the unique {@link Call} to search for
+//     * @param name the name of the unique {@link Call} to search for
+//     * @param returnType the {@link ParameterType} denoting the return type of the unique {@link Call} to search for
+//     * @param parameters the array of {@link ParameterType}s denoting the parameters of the unique {@link Call} to
+//     *        search for
+//     * @return the unique {@link Call} of the given {@link ElementType} with the given name, return type, and 
+//     *         parameters or <code>null</code>, if the search results in multiple matches (ambiguous results) or no
+//     *         such {@link Call} is available
+//     */
+//    public Call getCall(ElementType elementType, String name, ParameterType returnType, ParameterType[] parameters) {
+//        Call call = null;
+//        List<Call> availableCalls = getCalls(elementType, name, returnType, parameters);
+//        if (availableCalls != null && availableCalls.size() == 1) {
+//            call = availableCalls.get(0);
+//        }
+//        return call;
+//    }
     
     /**
      * Returns the {@link List} of <b>all</b> {@link Call}s of the given {@link ElementType} with the given name.<br>
@@ -1022,36 +1022,36 @@ public class LanguageRegistry extends AbstractLanguageRegistry {
         return availableCalls;
     }
     
-    /**
-     * Returns the {@link List} of <b>all</b> {@link Call}s of the given {@link ElementType} with the given name and
-     * {@link ParameterType} denoting the return type.<br>
-     * <br>
-     * This method first detects all available {@link Call}s with the given {@link ElementType} and name by calling
-     * {@link #getCalls(ElementType, String)}. Based on that return value, it filters those {@link Call}s matching the
-     * given return type.
-     * 
-     * @param elementType the {@link ElementType} of the {@link Call}s to search for; should never be <code>null</code>
-     * @param name the name of the {@link Call}s to search for; should never be <code>null</code>
-     * @param returnType the {@link ParameterType} denoting the return type of the {@link Call}s to search for; should
-     *        never be <code>null</code>
-     * @return the {@link List} of available {@link Call}s with the given {@link ElementType}, name, and return type or
-     *         <code>null</code>, if no such {@link Call}s are available 
-     */
-    public List<Call> getCalls(ElementType elementType, String name, ParameterType returnType) {
-        List<Call> availableCalls = null;
-        List<Call> potentialCalls = getCalls(elementType, name);
-        if (potentialCalls != null) {
-            for (Call potentialCall : potentialCalls) {
-                if (potentialCall.getReturnType().equals(returnType)) {
-                    if (availableCalls == null) {
-                        availableCalls = new ArrayList<Call>();
-                    }
-                    availableCalls.add(potentialCall);
-                }
-            }
-        }
-        return availableCalls;
-    }
+//    /**
+//     * Returns the {@link List} of <b>all</b> {@link Call}s of the given {@link ElementType} with the given name and
+//     * {@link ParameterType} denoting the return type.<br>
+//     * <br>
+//     * This method first detects all available {@link Call}s with the given {@link ElementType} and name by calling
+//     * {@link #getCalls(ElementType, String)}. Based on that return value, it filters those {@link Call}s matching the
+//     * given return type.
+//     * 
+//     * @param elementType the {@link ElementType} of the {@link Call}s to search for; should never be<code>null</code>
+//     * @param name the name of the {@link Call}s to search for; should never be <code>null</code>
+//     * @param returnType the {@link ParameterType} denoting the return type of the {@link Call}s to search for; should
+//     *        never be <code>null</code>
+//     * @return the {@link List} of available {@link Call}s with the given {@link ElementType}, name, and return typeor
+//     *         <code>null</code>, if no such {@link Call}s are available 
+//     */
+//    public List<Call> getCalls(ElementType elementType, String name, ParameterType returnType) {
+//        List<Call> availableCalls = null;
+//        List<Call> potentialCalls = getCalls(elementType, name);
+//        if (potentialCalls != null) {
+//            for (Call potentialCall : potentialCalls) {
+//                if (potentialCall.getReturnType().equals(returnType)) {
+//                    if (availableCalls == null) {
+//                        availableCalls = new ArrayList<Call>();
+//                    }
+//                    availableCalls.add(potentialCall);
+//                }
+//            }
+//        }
+//        return availableCalls;
+//    }
     
     /**
      * Returns the {@link List} of <b>all</b> {@link Call}s of the given {@link ElementType} with the given name and
@@ -1085,40 +1085,41 @@ public class LanguageRegistry extends AbstractLanguageRegistry {
         return availableCalls;
     }
     
-    /**
-     * Returns the {@link List} of <b>all</b> {@link Call}s of the given {@link ElementType} with the given name,
-     * {@link ParameterType} denoting the return type, and {@link ParameterType}s denoting the parameters.<br>
-     * <br>
-     * This method first detects all available {@link Call}s with the given {@link ElementType}, name, and return type
-     * by calling {@link #getCalls(ElementType, String, ParameterType)}. Based on that return value, it filters those
-     * {@link Call}s matching the given parameters.
-     * 
-     * @param elementType the {@link ElementType} of the {@link Call}s to search for; should never be <code>null</code>
-     * @param name the name of the {@link Call}s to search for; should never be <code>null</code>
-     * @param returnType the {@link ParameterType} denoting the return type of the {@link Call}s to search for; should
-     *        never be <code>null</code>
-     * @param parameters the array of {@link ParameterType}s denoting the parameters of the {@link Call}s to search for;
-     *        <code>null</code> or an <i>empty</i> array indicates that the {@link Calls} should not have any parameters
-     * @return the {@link List} of available {@link Call}s with the given {@link ElementType}, name, return type, and
-     *         parameters or <code>null</code>, if no such {@link Call}s are available 
-     */
-    public List<Call> getCalls(ElementType elementType, String name, ParameterType returnType, 
-            ParameterType[] parameters) {
-        List<Call> availableCalls = null;
-        List<Call> potentialCalls = getCalls(elementType, name, returnType);
-        if (potentialCalls != null) {
-            for (Call potentialCall : potentialCalls) {
-                if ((parameters == null && potentialCall.getParameters().length == 0) 
-                        || potentialCall.acceptsParameters(parameters)) {
-                    if (availableCalls == null) {
-                        availableCalls = new ArrayList<Call>();
-                    }
-                    availableCalls.add(potentialCall);
-                }
-            }
-        }
-        return availableCalls;
-    }
+//    /**
+//     * Returns the {@link List} of <b>all</b> {@link Call}s of the given {@link ElementType} with the given name,
+//     * {@link ParameterType} denoting the return type, and {@link ParameterType}s denoting the parameters.<br>
+//     * <br>
+//     * This method first detects all available {@link Call}s with the given {@link ElementType}, name, and return type
+//     * by calling {@link #getCalls(ElementType, String, ParameterType)}. Based on that return value, it filters those
+//     * {@link Call}s matching the given parameters.
+//     * 
+//     * @param elementType the {@link ElementType} of the {@link Call}s to search for; should never be<code>null</code>
+//     * @param name the name of the {@link Call}s to search for; should never be <code>null</code>
+//     * @param returnType the {@link ParameterType} denoting the return type of the {@link Call}s to search for; should
+//     *        never be <code>null</code>
+//     * @param parameters the array of {@link ParameterType}s denoting the parameters of the {@link Call}s to search
+//     *        for; <code>null</code> or an <i>empty</i> array indicates that the {@link Calls} should not have any
+//     *        parameters
+//     * @return the {@link List} of available {@link Call}s with the given {@link ElementType}, name, return type, and
+//     *         parameters or <code>null</code>, if no such {@link Call}s are available 
+//     */
+//    public List<Call> getCalls(ElementType elementType, String name, ParameterType returnType, 
+//            ParameterType[] parameters) {
+//        List<Call> availableCalls = null;
+//        List<Call> potentialCalls = getCalls(elementType, name, returnType);
+//        if (potentialCalls != null) {
+//            for (Call potentialCall : potentialCalls) {
+//                if ((parameters == null && potentialCall.getParameters().length == 0) 
+//                        || potentialCall.acceptsParameters(parameters)) {
+//                    if (availableCalls == null) {
+//                        availableCalls = new ArrayList<Call>();
+//                    }
+//                    availableCalls.add(potentialCall);
+//                }
+//            }
+//        }
+//        return availableCalls;
+//    }
     
     /**
      * Returns the {@link List} of <b>all</b> {@link Call}s with the given name independent of their 
