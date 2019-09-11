@@ -108,7 +108,7 @@ public class LanguageRegistryGetParamterTypeTests extends AbstractLanguageRegist
     private boolean expectedHasResultParameterTypeByFullyQualifiedName;
     
     /**
-     * Creates a new {@link LanguageRegistryHasParameterTypeTests} instance.
+     * Creates a new {@link LanguageRegistryGetParamterTypeTests} instance.
      * 
      * @param testElement the {@link LanguageElement} for testing
      * @param expectedAdditionOfLanguageElement the expectation of whether the given {@link LanguageElement} is
