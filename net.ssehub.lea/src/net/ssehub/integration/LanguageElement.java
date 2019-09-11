@@ -127,13 +127,13 @@ public abstract class LanguageElement {
      * <li>Source {@link Class}</li>
      * <li>Source plug-in (the same absolute path of the {@link File})</li>
      * </ul>
-     * @param comparable the {@link LanguageElement} to compare to this element; should never be <code>null</code>
+     * @param comparable the {@link LanguageElement} to compare to this element
      * @return <code>true</code>, if this {@link LanguageElement} is equal to the given {@link LanguageElement};
      *         <code>false</code> otherwise
      */
     public boolean equals(LanguageElement comparable) {
         boolean isEqual = false;
-        if (this.elementType == comparable.getElementType()) {
+        if (comparable != null && this.elementType == comparable.getElementType()) {
             isEqual = equalsIgnoreType(comparable);
         }
         return isEqual;
@@ -143,18 +143,19 @@ public abstract class LanguageElement {
      * Performs the same equality check as {@link #equals(LanguageElement)}, but without consideration of the 
      * {@link ElementType} of this and the given {@link LanguageElement}.
      * 
-     * @param comparable the {@link LanguageElement} to compare to this element, while ignoring the {@link ElementType};
-     *        should never be <code>null</code>
+     * @param comparable the {@link LanguageElement} to compare to this element, while ignoring the {@link ElementType}
      * @return <code>true</code>, if all attributes except for the {@link ElementType} of this {@link LanguageElement}
      *         are equal to the attributes of the given {@link LanguageElement}; <code>false</code> otherwise
      */
     public boolean equalsIgnoreType(LanguageElement comparable) {
         boolean isEqual = false;
-        if (this.getClass() == comparable.getClass()
-                && this.getFullyQualifiedName().equals(comparable.getFullyQualifiedName())
-                && this.sourceClass == comparable.getSourceClass()
-                && this.sourcePlugin.getAbsolutePath().equals(comparable.getSourcePlugin().getAbsolutePath())) {
-            isEqual = true;
+        if (comparable != null) {            
+            if (this.getClass() == comparable.getClass()
+                    && this.getFullyQualifiedName().equals(comparable.getFullyQualifiedName())
+                    && this.sourceClass == comparable.getSourceClass()
+                    && this.sourcePlugin.getAbsolutePath().equals(comparable.getSourcePlugin().getAbsolutePath())) {
+                isEqual = true;
+            }
         }
         return isEqual;
     }
