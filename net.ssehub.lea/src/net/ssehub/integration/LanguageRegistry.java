@@ -771,8 +771,8 @@ public class LanguageRegistry extends AbstractLanguageRegistry {
      * This method initially treats the given name as simple name and returns that unique {@link ChangeIdentifier},
      * which matches that simple name. If this initial search results in multiple {@link ChangeIdentifier}s matching the
      * simple name, the return value is <code>null</code> due to ambiguity. If the initial search does not result in any
-     * matches, this method retries its search treating the given name as fully-qualified name, which must result in
-     * either a single match (returns that {@link ChangeIdentifier}) or none (returns <code>null</code>).
+     * matches, this method retries its search treating the given name as fully-qualified name, which may result in a 
+     * single match (returns that {@link ChangeIdentifier}), multiple matches or none (returns <code>null</code>).
      * 
      * @param name the name of the unique {@link ChangeIdentifier} to search for 
      * @return the unique {@link ChangeIdentifier} with the given name or <code>null</code>, if the search results in
@@ -816,17 +816,28 @@ public class LanguageRegistry extends AbstractLanguageRegistry {
                 String simpleName = name.substring(indexOfLastDot + 1);
                 availableChangeIdentifiers = changeIdentifiers.get(simpleName);
                 if (availableChangeIdentifiers != null) {
+                    boolean doBreak = false;
                     int availableChangeIdentifiersCounter = 0;
-                    while (changeIdentifier == null 
-                            && availableChangeIdentifiersCounter < availableChangeIdentifiers.size()) {
+                    while (!doBreak && availableChangeIdentifiersCounter < availableChangeIdentifiers.size()) {
                         if (availableChangeIdentifiers.get(availableChangeIdentifiersCounter).getFullyQualifiedName()
-                                    .equals(name)) {
-                            /*
-                             * Found first change identifier with the given fully-qualified name, which is unique by
-                             * definition. Hence, abort search at this point with that change identifier as return
-                             * value.
-                             */
-                            changeIdentifier = availableChangeIdentifiers.get(availableChangeIdentifiersCounter);
+                                .equals(name)) {
+// CHECKSTYLE:OFF
+                            if (changeIdentifier == null) {
+                                /*
+                                 * Found first change identifier with the given name, which must be unique to be
+                                 * returned. Hence, continue search to ensure uniqueness.
+                                 */
+                                changeIdentifier = availableChangeIdentifiers.get(availableChangeIdentifiersCounter);
+                            } else {
+                                /*
+                                 * Found second change identifier with the given name, while demanding for uniqueness.
+                                 * Hence, abort search at this point with a return value of null as it is ambiguous
+                                 * which change identifier was meant.
+                                 */
+                                changeIdentifier = null;
+                                doBreak = true;
+                            }
+// CHECKSTYLE:ON
                         }
                         availableChangeIdentifiersCounter++;
                     }
