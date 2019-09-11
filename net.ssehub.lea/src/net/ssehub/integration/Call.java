@@ -82,10 +82,15 @@ public class Call extends LanguageElement implements IFinalizable {
             throw new LanguageElementException("The source method for the new language element is null");
         }
         this.sourceMethod = sourceMethod;
-        fullyQualifiedName = null;
         returnType = null;
         parameters = null;
         parentParameterType = null;
+        // Construct the fully-qualified name of this element
+        String sourceMethodGenericString = sourceMethod.toGenericString().replace("\\$|\\#", ".");
+        int substringStartIndex = sourceMethodGenericString.lastIndexOf(' ') + 1;
+        int substringEndIndex = sourceMethodGenericString.lastIndexOf('.') + 1;        
+        fullyQualifiedName = sourceMethodGenericString.substring(substringStartIndex, substringEndIndex) 
+                + getName();
     }
     
     /**
@@ -108,8 +113,6 @@ public class Call extends LanguageElement implements IFinalizable {
             throw new LanguageElementException("Extractor and analysis calls must have a non-void return type");
         }
         this.returnType = returnType;
-        // Try to construct the fully-qualified name of this element, if also the parameters are available
-        constructFullyQualifiedName();
     }
     
     /**
@@ -132,8 +135,6 @@ public class Call extends LanguageElement implements IFinalizable {
             }
         }
         this.parameters = parameters;
-        // Try to construct the fully-qualified name of this element, if also the return type is available
-        constructFullyQualifiedName();
     }
     
     /**
@@ -158,21 +159,6 @@ public class Call extends LanguageElement implements IFinalizable {
             throw new LanguageElementException("The parent parameter type for this call is null");
         }
         this.parentParameterType = parentParameterType;
-    }
-    
-    /**
-     * Constructs the {@link #fullyQualifiedName} of this call, if and only if the {@link #returnType} and the 
-     * {@link #parameters} are available and, hence, {@link #isFinal()} returns <code>true</code>.
-     */
-    private void constructFullyQualifiedName() {
-        // TODO this is not finished yet!
-        if (isFinal()) {
-            String sourceMethodGenericString = sourceMethod.toGenericString();
-            int indexOfLastWhitespace = sourceMethodGenericString.lastIndexOf(' ');
-            fullyQualifiedName = sourceMethodGenericString.substring(indexOfLastWhitespace + 1)
-                    .replaceAll("\\$|\\#", ".");
-            System.out.println("Call: " + fullyQualifiedName);
-        }
     }
     
     /**
