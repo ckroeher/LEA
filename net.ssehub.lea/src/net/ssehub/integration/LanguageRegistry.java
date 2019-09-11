@@ -1129,13 +1129,17 @@ public class LanguageRegistry extends AbstractLanguageRegistry {
             if (indexOfLastDot != -1) {
                 String simpleName = name.substring(indexOfLastDot + 1);
                 List<Call> potentialCalls = calls.get(simpleName);
-                int potentialCallsCounter = 0;
-                while (availableCalls == null && potentialCallsCounter < potentialCalls.size()) {
-                    if (potentialCalls.get(potentialCallsCounter).getFullyQualifiedName().equals(name)) {
-                        availableCalls = new ArrayList<Call>();
-                        availableCalls.add(potentialCalls.get(potentialCallsCounter));
+                if (potentialCalls != null) {                    
+                    for (Call potentialCall : potentialCalls) {
+                        if (potentialCall.getFullyQualifiedName().equals(name)) {
+// CHECKSTYLE:OFF
+                            if (availableCalls == null) {
+                                availableCalls = new ArrayList<Call>();
+                            }
+// CHECKSTYLE:ON
+                            availableCalls.add(potentialCall);
+                        }
                     }
-                    potentialCallsCounter++;
                 }
             }
         }
