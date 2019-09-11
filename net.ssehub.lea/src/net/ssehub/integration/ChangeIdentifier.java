@@ -109,35 +109,29 @@ public class ChangeIdentifier extends LanguageElement implements IFinalizable {
     /**
      * {@inheritDoc}
      * 
-     * In addition, two {@link ChangeIdentifier}s are equal, if their construction if completed, the numbers of
-     * assignable elements are equal and each assignable element at a particular index in this {@link ChangeIdentifier}
-     * is equal to the assignable element at the same index in the given {@link ChangeIdentifier}. 
+     * In addition, two {@link ChangeIdentifier}s are equal, if their construction is completed ({@link #isFinal()} 
+     * returns <code>true</code>), the numbers of assignable elements are equal and each assignable element at a
+     * particular index of this {@link ChangeIdentifier} is equal to the assignable element at the same index of the
+     * given {@link ChangeIdentifier}. 
      */
     @Override
     public boolean equals(LanguageElement comparable) {
         boolean isEqual = false;
-        if (isFinal()) {
-            isEqual = super.equals(comparable);
-            if (isEqual) {
-                ChangeIdentifier comparableChangeIdentifier = (ChangeIdentifier) comparable;
-                if (comparableChangeIdentifier.isFinal()) {                    
-                    ParameterType[] comparableAssignableElements = comparableChangeIdentifier.getAssignableElements();
-                    if (this.assignableElements.length == comparableAssignableElements.length) {
-                        int assignableElementsCounter = 0;
-                        while (isEqual && assignableElementsCounter < this.assignableElements.length) {
-// CHECKSTYLE:OFF
-                            if (!this.assignableElements[assignableElementsCounter].equals(
-                                    comparableAssignableElements[assignableElementsCounter])) {
-                                isEqual = false;
-                            }
-// CHECKSTYLE:ON
-                            assignableElementsCounter++;
+        if (comparable instanceof ChangeIdentifier) {
+            ChangeIdentifier comparableChangeIdentifier = (ChangeIdentifier) comparable;
+            if (this.isFinal() && comparableChangeIdentifier.isFinal() && super.equals(comparable)) {
+                ParameterType[] comparableAssignableElements = comparableChangeIdentifier.getAssignableElements();
+                if (this.assignableElements.length == comparableAssignableElements.length) {
+                    boolean haveEqualAssignableElements = true;
+                    int assignableElementsCounter = 0;
+                    while (haveEqualAssignableElements && assignableElementsCounter < this.assignableElements.length) {
+                        if (!this.assignableElements[assignableElementsCounter].equals(
+                                comparableAssignableElements[assignableElementsCounter])) {
+                            haveEqualAssignableElements = false;
                         }
-                    } else {
-                        isEqual = false;
+                        assignableElementsCounter++;
                     }
-                } else {
-                    isEqual = false;
+                    isEqual = haveEqualAssignableElements;
                 }
             }
         }

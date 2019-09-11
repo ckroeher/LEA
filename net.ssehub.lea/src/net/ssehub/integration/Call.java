@@ -250,24 +250,22 @@ public class Call extends LanguageElement implements IFinalizable {
     /**
      * {@inheritDoc}
      * 
-     * In addition, two {@link Call}s are equal, if their construction is completed and they have the same:
+     * In addition, two {@link Call}s are equal, if their construction is completed ({@link #isFinal()} returns 
+     * <code>true</code>) and they have the same:
      * <ul>
      * <li>Return type</li>
      * <li>Source {@link Method}</li>
-     * <li>Number of parameters, where each parameter at a particular index in this {@link Call} is equal to the
-     *     parameter at the same index in the given {@link Call}</li>
+     * <li>Number of parameters, where each parameter at a particular index of this {@link Call} is equal to the
+     *     parameter at the same index of the given {@link Call}</li>
      * </ul>
      */
     @Override
     public boolean equals(LanguageElement comparable) {
         boolean isEqual = false;
-        if (isFinal() && comparable instanceof Call) {
+        if (comparable instanceof Call) {
             Call comparableCall = (Call) comparable;
-            if (comparableCall.isFinal()) {                
-                isEqual = super.equals(comparableCall);
-                if (isEqual) {
-                    isEqual = hasEqualCallAttributes(comparableCall);
-                }
+            if (this.isFinal() && comparableCall.isFinal() && super.equals(comparableCall)) {
+                isEqual = hasEqualCallAttributes(comparableCall);
             }
         }
         return isEqual;
@@ -284,14 +282,11 @@ public class Call extends LanguageElement implements IFinalizable {
      */
     @Override
     public boolean equalsIgnoreType(LanguageElement comparable) {
-        boolean isEqual = super.equalsIgnoreType(comparable);
-        if (isFinal() && comparable instanceof Call) {
+        boolean isEqual = false;
+        if (comparable instanceof Call) {
             Call comparableCall = (Call) comparable;
-            if (comparableCall.isFinal()) {
-                isEqual = super.equals(comparableCall);
-                if (isEqual) {
-                    isEqual = hasEqualCallAttributes(comparableCall);
-                }
+            if (this.isFinal() && comparableCall.isFinal() && super.equalsIgnoreType(comparableCall)) {
+                isEqual = hasEqualCallAttributes(comparableCall);
             }
         }
         return isEqual;
@@ -301,38 +296,32 @@ public class Call extends LanguageElement implements IFinalizable {
      * Checks whether the {@link #returnType}, the {@link #parameters}, the {@link #sourceMethod}, and the 
      * {@link #parentParameterType} of this {@link Call} and the given {@link Call} are equal.
      * 
-     * @param comparableCall the {@link Call} to compare to this {@link Call};
-     *        should never be <code>null</code>
+     * @param comparableCall the {@link Call} to compare to this {@link Call}; should never be <code>null</code>
      * @return <code>true</code>, if the call-specific attributes of the given {@link Call} are equal to the attributes
      *         of this {@link Call}; <code>false</code> otherwise
      */
     private boolean hasEqualCallAttributes(Call comparableCall) {
-        boolean hasEqualCallAttributes = true;
-        if (this.returnType.equals(comparableCall.getReturnType()) 
-                && this.sourceMethod.toGenericString().equals(comparableCall.getSourceMethod().toGenericString())) {
+        boolean hasEqualCallAttributes = false;
+        if (this.sourceMethod.toGenericString().equals(comparableCall.getSourceMethod().toGenericString()) 
+                && this.returnType.equals(comparableCall.getReturnType())) {
 //CHECKSTYLE:OFF
             if ((this.parentParameterType == null && comparableCall.getParentParameterType() == null)
                     || (this.parentParameterType != null && comparableCall.getParentParameterType() != null
-                        && this.parentParameterType.equals(comparableCall.getParentParameterType()))) {
+                    && this.parentParameterType.equals(comparableCall.getParentParameterType()))) {
 //CHECKSTYLE:ON
                 ParameterType[] comparableParameters = comparableCall.getParameters();
                 if (this.parameters.length == comparableParameters.length) {
+                    boolean haveEqualParameters = true;
                     int parametersCounter = 0;
-                    while (hasEqualCallAttributes && parametersCounter < this.parameters.length) {
-                        if (!this.parameters[parametersCounter].equals(
-                                comparableParameters[parametersCounter])) {
-                            hasEqualCallAttributes = false;
+                    while (haveEqualParameters && parametersCounter < this.parameters.length) {
+                        if (!this.parameters[parametersCounter].equals(comparableParameters[parametersCounter])) {
+                            haveEqualParameters = false;
                         }
                         parametersCounter++;
                     }
-                } else {
-                    hasEqualCallAttributes = false;
+                    hasEqualCallAttributes = haveEqualParameters;
                 }
-            } else {
-                hasEqualCallAttributes = false;
             }
-        } else {
-            hasEqualCallAttributes = false;
         }
         return hasEqualCallAttributes;
     }

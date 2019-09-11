@@ -133,9 +133,8 @@ public abstract class LanguageElement {
      */
     public boolean equals(LanguageElement comparable) {
         boolean isEqual = false;
-        if (this.elementType == comparable.getElementType()
-                && equalsIgnoreType(comparable)) {
-            isEqual = true;
+        if (this.elementType == comparable.getElementType()) {
+            isEqual = equalsIgnoreType(comparable);
         }
         return isEqual;
     }
