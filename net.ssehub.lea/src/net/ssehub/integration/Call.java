@@ -329,11 +329,12 @@ public class Call extends LanguageElement implements IFinalizable {
 //CHECKSTYLE:OFF
             if ((this.parentParameterType == null && comparableCall.getParentParameterType() == null)
                     || (this.parentParameterType != null && comparableCall.getParentParameterType() != null
-                    && this.parentParameterType.equals(comparableCall.getParentParameterType()))) {
-//CHECKSTYLE:ON
+                        && this.parentParameterType.equals(comparableCall.getParentParameterType()))) {
                 ParameterType[] comparableParameters = comparableCall.getParameters();
                 if ((this.parameters == null && comparableParameters == null)
-                        || this.parameters.length == comparableParameters.length) {
+                        || (this.parameters != null && comparableParameters != null 
+                            && this.parameters.length == comparableParameters.length)) {
+//CHECKSTYLE:ON
                     boolean haveEqualParameters = true;
                     int parametersCounter = 0;
                     while (haveEqualParameters && parametersCounter < this.parameters.length) {
