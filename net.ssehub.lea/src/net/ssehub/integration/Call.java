@@ -95,7 +95,7 @@ public class Call extends LanguageElement implements IFinalizable {
         parentParameterType = null;
         finalized = false;
         // Construct the fully-qualified name of this element
-        String sourceMethodGenericString = sourceMethod.toGenericString().replace("\\$|\\#", ".");
+        String sourceMethodGenericString = sourceMethod.toGenericString().replaceAll("(\\$|\\#)", ".");
         int substringStartIndex = sourceMethodGenericString.lastIndexOf(' ') + 1;
         int substringEndIndex = sourceMethodGenericString.lastIndexOf('.') + 1;        
         fullyQualifiedName = sourceMethodGenericString.substring(substringStartIndex, substringEndIndex) 
