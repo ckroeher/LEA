@@ -181,10 +181,11 @@ public class Call extends LanguageElement implements IFinalizable {
      *  
      * @param parentParameterType the {@link ParameterType} to be set as the parent parameter type of this call; may be 
      *        <code>null</code> for calls, which are not a member operation
-     * @throws LanguageElementException if the element type of this call is not {@link ElementType#OPERATION}
+     * @throws LanguageElementException if the given {@link ParameterType} is not <code>null</code>, while the element
+     *         type of this call is not {@link ElementType#OPERATION}
      */
     private void setParentParameterType(ParameterType parentParameterType) throws LanguageElementException {
-        if (getElementType() != ElementType.OPERATION) {
+        if (parentParameterType != null && getElementType() != ElementType.OPERATION) {
             throw new LanguageElementException("The parent parameter type can only be set for operations");
         }
         this.parentParameterType = parentParameterType;
