@@ -164,42 +164,44 @@ public class ArtifactParameterTypeCreationTests extends AbstractLanguageElementC
     private static final Object[][] EXPECTED_RESULTS = new Object[][] {
         {SimpleArtifactParameterType.class, null, true, ParameterType.class, ElementType.ARTIFACT_PARAMETER_TYPE, 
             SimpleArtifactParameterType.class.getSimpleName(), SimpleArtifactParameterType.class.getCanonicalName(), 
-            SimpleArtifactParameterType.class, sourcePlugin},
+            SimpleArtifactParameterType.class, SOURCE_PLUGIN},
         
         {SimpleArtifactParameterTypeWithSymbolicName.class, null, true, ParameterType.class, 
-            ElementType.ARTIFACT_PARAMETER_TYPE, "File", 
-            SimpleArtifactParameterTypeWithSymbolicName.class.getCanonicalName(),
-            SimpleArtifactParameterTypeWithSymbolicName.class, sourcePlugin},
+            ElementType.ARTIFACT_PARAMETER_TYPE, "File",
+            "net.ssehub.tests.integration.ArtifactParameterTypeCreationTests.File",
+            SimpleArtifactParameterTypeWithSymbolicName.class, SOURCE_PLUGIN},
         
         {SimpleArtifactParameterTypeWithSymbolicParameterName.class, null, true, ParameterType.class,
             ElementType.ARTIFACT_PARAMETER_TYPE,
             SimpleArtifactParameterTypeWithSymbolicParameterName.class.getSimpleName(),
             SimpleArtifactParameterTypeWithSymbolicParameterName.class.getCanonicalName(),
-            SimpleArtifactParameterTypeWithSymbolicParameterName.class, sourcePlugin},
+            SimpleArtifactParameterTypeWithSymbolicParameterName.class, SOURCE_PLUGIN},
             
         {SimpleArtifactParameterTypeWithSymbolicNameAndParameterName.class, null, true, ParameterType.class,
-            ElementType.ARTIFACT_PARAMETER_TYPE, 
-            "File", SimpleArtifactParameterTypeWithSymbolicNameAndParameterName.class.getCanonicalName(),
-            SimpleArtifactParameterTypeWithSymbolicNameAndParameterName.class, sourcePlugin},
+            ElementType.ARTIFACT_PARAMETER_TYPE, "File",
+            "net.ssehub.tests.integration.ArtifactParameterTypeCreationTests.File",
+            SimpleArtifactParameterTypeWithSymbolicNameAndParameterName.class, SOURCE_PLUGIN},
         
         {GenericArtifactParameterType.class, null, true, ParameterType.class, ElementType.ARTIFACT_PARAMETER_TYPE, 
-            "GenericArtifactParameterType<File>", GenericArtifactParameterType.class.getCanonicalName(), 
-            GenericArtifactParameterType.class, sourcePlugin},
+            "GenericArtifactParameterType<File>",
+            "net.ssehub.tests.integration.ArtifactParameterTypeCreationTests.GenericArtifactParameterType<File>", 
+            GenericArtifactParameterType.class, SOURCE_PLUGIN},
         
         {GenericArtifactParameterTypeWithSymbolicName.class, null, true, ParameterType.class,
             ElementType.ARTIFACT_PARAMETER_TYPE, "File<File>", 
-            GenericArtifactParameterTypeWithSymbolicName.class.getCanonicalName(),
-            GenericArtifactParameterTypeWithSymbolicName.class, sourcePlugin},
+            "net.ssehub.tests.integration.ArtifactParameterTypeCreationTests.File<File>",
+            GenericArtifactParameterTypeWithSymbolicName.class, SOURCE_PLUGIN},
         
         {GenericArtifactParameterTypeWithSymbolicParameterName.class, null, true, ParameterType.class,
             ElementType.ARTIFACT_PARAMETER_TYPE, "GenericArtifactParameterTypeWithSymbolicParameterName<MyFile>",
-            GenericArtifactParameterTypeWithSymbolicParameterName.class.getCanonicalName(),
-            GenericArtifactParameterTypeWithSymbolicParameterName.class, sourcePlugin},
+            "net.ssehub.tests.integration.ArtifactParameterTypeCreationTests."
+                    + "GenericArtifactParameterTypeWithSymbolicParameterName<MyFile>",
+            GenericArtifactParameterTypeWithSymbolicParameterName.class, SOURCE_PLUGIN},
         
         {GenericArtifactParameterTypeWithSymbolicNameAndParameterName.class, null, true, ParameterType.class,
             ElementType.ARTIFACT_PARAMETER_TYPE, "File<MyFile>",
-            GenericArtifactParameterTypeWithSymbolicNameAndParameterName.class.getCanonicalName(),
-            GenericArtifactParameterTypeWithSymbolicNameAndParameterName.class, sourcePlugin}
+            "net.ssehub.tests.integration.ArtifactParameterTypeCreationTests.File<MyFile>",
+            GenericArtifactParameterTypeWithSymbolicNameAndParameterName.class, SOURCE_PLUGIN}
     };
     
     /**
@@ -242,4 +244,9 @@ public class ArtifactParameterTypeCreationTests extends AbstractLanguageElementC
         return Arrays.asList(EXPECTED_RESULTS);
     }
 
+    @Override
+    protected void prepare() {
+        // No preparation needed for theses tests.
+    }
+    
 }

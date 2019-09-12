@@ -27,6 +27,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import net.ssehub.integration.Call;
+import net.ssehub.integration.ElementType;
 import net.ssehub.integration.ExternalElementException;
 import net.ssehub.integration.LanguageElement;
 import net.ssehub.integration.LanguageElementProvider;
@@ -77,7 +78,7 @@ public class BasicLanguageElementProviderTests {
     /*
      * TODO The following two tests are currently obsolete as the LanguageElementProvider does not throw any exception
      * anymore, if a given search path does not denote a valid directory, but simply skips that path. If we have proper
-     * error messages to be retrieved somewhere, we can reestablish this test. 
+     * error messages to be retrieved somewhere, we can reestablish these tests properly. 
      */
     
     /**
@@ -124,10 +125,9 @@ public class BasicLanguageElementProviderTests {
         File pluginDirectory = new File(TESTDATA_DIRECTORY, "emptyDirectory");
         List<String> searchPaths = new ArrayList<String>();
         searchPaths.add(pluginDirectory.getAbsolutePath());
-        int expectedLanguageElementSize = LanguageRegistry.INSTANCE.size();
         try {
             elementProvider.detectLanguageElements(searchPaths);
-            assertEquals(expectedLanguageElementSize, LanguageRegistry.INSTANCE.size(), 
+            assertEquals(0, LanguageRegistry.INSTANCE.size(), 
                     "An empty plug-in directory should not change the number of elements in the language directory");
         } catch (ExternalElementException e) {
             assertNull(e, "Exception thrown");
@@ -211,7 +211,8 @@ public class BasicLanguageElementProviderTests {
                     + "language directory by 1");
             // Check if it is the expected element
             List<ParameterType> registerdArtifactParameterTypes = 
-                    LanguageRegistry.INSTANCE.getArtifactParameterTypes(expectedRegisteredElementName);
+                    LanguageRegistry.INSTANCE.getParameterTypes(ElementType.ARTIFACT_PARAMETER_TYPE,
+                            expectedRegisteredElementName);
             try {
                 assertEquals(expectedRegisteredElementName, registerdArtifactParameterTypes.get(0).getName(),
                         "Wrong language element");
@@ -246,10 +247,10 @@ public class BasicLanguageElementProviderTests {
              *    3. getPath() for artifact parameter type FileWithMemberOperation
              */
             try {
-                ParameterType newFile = LanguageRegistry.INSTANCE.getArtifactParameterTypes("NewFile").get(0);
+                ParameterType newFile = LanguageRegistry.INSTANCE.getParameterType(ElementType.ARTIFACT_PARAMETER_TYPE,
+                        "NewFile");
                 // 1. getAbsolutePath() for artifact parameter type NewFile
-                Call getAbsolutePathForNewFile = 
-                        LanguageRegistry.INSTANCE.getMemberOperations(newFile.getName()).get(0);
+                Call getAbsolutePathForNewFile = getMemberOperation(newFile, "getAbsolutePath");
                 assertTrue(getAbsolutePathForNewFile.isMemberOperation(), "Call \"" 
                         + getAbsolutePathForNewFile.getFullyQualifiedName() + "\" should be a member operation"); 
                 assertTrue(getAbsolutePathForNewFile.isMemberOperationOf(newFile.getName()), "Call \"" 
@@ -260,10 +261,11 @@ public class BasicLanguageElementProviderTests {
                         + newFile.getFullyQualifiedName() + "\" as parent parameter type");
                 
                 ParameterType fileWithMemberOperation = 
-                        LanguageRegistry.INSTANCE.getArtifactParameterTypes("FileWithMemberOperation").get(0);
+                        LanguageRegistry.INSTANCE.getParameterType(ElementType.ARTIFACT_PARAMETER_TYPE,
+                                "FileWithMemberOperation");
                 // 2. getAbsolutePath() for artifact parameter type FileWithMemberOperation
-                Call getAbsolutePathForFileWithMemberOperation = 
-                        LanguageRegistry.INSTANCE.getMemberOperations(fileWithMemberOperation.getName()).get(0);
+                Call getAbsolutePathForFileWithMemberOperation = getMemberOperation(fileWithMemberOperation,
+                        "getAbsolutePath");
                 assertTrue(getAbsolutePathForFileWithMemberOperation.isMemberOperation(), "Call \"" 
                         + getAbsolutePathForFileWithMemberOperation.getFullyQualifiedName() 
                         + "\" should be a member operation"); 
@@ -278,8 +280,7 @@ public class BasicLanguageElementProviderTests {
                                 + "\" should have \"" + fileWithMemberOperation.getFullyQualifiedName() 
                                 + "\" as parent parameter type");
                 // 3. getPath() for artifact parameter type FileWithMemberOperation
-                Call getPathForFileWithMemberOperation = 
-                        LanguageRegistry.INSTANCE.getMemberOperations(fileWithMemberOperation.getName()).get(1);
+                Call getPathForFileWithMemberOperation = getMemberOperation(fileWithMemberOperation, "getPath");
                 assertTrue(getPathForFileWithMemberOperation.isMemberOperation(), "Call \"" 
                         + getPathForFileWithMemberOperation.getFullyQualifiedName() 
                         + "\" should be a member operation"); 
@@ -297,5 +298,27 @@ public class BasicLanguageElementProviderTests {
         } catch (ExternalElementException e) {
             assertNull(e, "Exception thrown");
         }
+    }
+    
+    /**
+     * Return the {@link Call} with the given name, which is a member operation of the given {@link ParameterType}.
+     * 
+     * @param target the {@link ParameterType} for which the member operation with the given name should be returned
+     * @param name the {@link String} denoting the name of the member operation, which should be returned
+     * @return the {@link Call} with the given name, which is a member operation of the given {@link ParameterType}, or
+     *         <code>null</code>, if no such {@link Call} is available
+     */
+    private Call getMemberOperation(ParameterType target, String name) {
+        Call memberOperation = null;
+        List<Call> potentialOperations = LanguageRegistry.INSTANCE.getCalls(ElementType.OPERATION, name);
+        int potentialOperationsCounter = 0;
+        while (memberOperation == null && potentialOperationsCounter < potentialOperations.size()) {
+            if (potentialOperations.get(potentialOperationsCounter).isMemberOperationOf(
+                    target.getFullyQualifiedName())) {
+                memberOperation = potentialOperations.get(potentialOperationsCounter);
+            }
+            potentialOperationsCounter++;
+        }
+        return memberOperation;
     }
 }

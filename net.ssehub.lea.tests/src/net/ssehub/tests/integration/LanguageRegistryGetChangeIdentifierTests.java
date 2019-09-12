@@ -108,13 +108,13 @@ public class LanguageRegistryGetChangeIdentifierTests extends AbstractLanguageRe
                             + assignableElements1[i].getFullyQualifiedName() + "\" failed");
                 }
             }
-            completeChangeIdentifier1.setAssignableElements(assignableElements1);
+            completeChangeIdentifier1.finalize(assignableElements1);
             expectedResults[1] = new Object[] {completeChangeIdentifier1,
                 true, completeChangeIdentifier1, completeChangeIdentifier1};
             
             ChangeIdentifier completeChangeIdentifier2 = new ChangeIdentifier("ChangeIdentifier", String.class,
                     SOURCE_PLUGIN);
-            completeChangeIdentifier2.setAssignableElements(assignableElements1);
+            completeChangeIdentifier2.finalize(assignableElements1);
             expectedResults[2] = new Object[] {completeChangeIdentifier2,
                 true, null, completeChangeIdentifier2};
             
@@ -128,7 +128,7 @@ public class LanguageRegistryGetChangeIdentifierTests extends AbstractLanguageRe
                             + assignableElements2[i].getFullyQualifiedName() + "\" failed");
                 }
             }
-            completeChangeIdentifier3.setAssignableElements(assignableElements2);
+            completeChangeIdentifier3.finalize(assignableElements2);
             expectedResults[3] = new Object[] {completeChangeIdentifier3,
                 true, null, null};
             

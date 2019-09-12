@@ -77,7 +77,7 @@ public class LanguageRegistryGetChangeIdentifiersTests {
                     LanguageRegistryGetChangeIdentifiersTests.class, SOURCE_PLUGIN);
             assertTrue(LanguageRegistry.INSTANCE.addParameterType(assignableElement),
                     "Assignable element should be added");
-            changeIdentifier.setAssignableElements(new ParameterType[] {assignableElement});
+            changeIdentifier.finalize(new ParameterType[] {assignableElement});
             assertTrue(LanguageRegistry.INSTANCE.addChangeIdentifier(changeIdentifier),
                     "Change identifier should be added");
             
@@ -111,13 +111,13 @@ public class LanguageRegistryGetChangeIdentifiersTests {
                     LanguageRegistryGetChangeIdentifiersTests.class, SOURCE_PLUGIN);
             assertTrue(LanguageRegistry.INSTANCE.addParameterType(assignableElement),
                     "Assignable element should be added");
-            changeIdentifier1.setAssignableElements(new ParameterType[] {assignableElement});
+            changeIdentifier1.finalize(new ParameterType[] {assignableElement});
             assertTrue(LanguageRegistry.INSTANCE.addChangeIdentifier(changeIdentifier1),
                     "Change identifier should be added");
             
             ChangeIdentifier changeIdentifier2 = new ChangeIdentifier("ChangeIdentifier1",
                     String.class, SOURCE_PLUGIN);
-            changeIdentifier2.setAssignableElements(new ParameterType[] {assignableElement});
+            changeIdentifier2.finalize(new ParameterType[] {assignableElement});
             assertTrue(LanguageRegistry.INSTANCE.addChangeIdentifier(changeIdentifier2),
                     "Change identifier should be added");
             

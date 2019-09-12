@@ -165,35 +165,35 @@ public class LanguageRegistryGetParamterTypeTests extends AbstractLanguageRegist
         Object[][] expectedResults = null;
         try {
             expectedResults = new Object[5][9];
-            expectedResults[0] = new Object[] {new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "FileArtifact",
+            expectedResults[0] = new Object[] {new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "FA",
                     LanguageRegistryGetParamterTypeTests.class, SOURCE_PLUGIN),
                 true,
                 true, true,
                 true, true,
                 false, false,
                 false, false};
-            expectedResults[1] = new Object[] {new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "FileArtifact",
+            expectedResults[1] = new Object[] {new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "FA",
                     String.class, SOURCE_PLUGIN),
                 true,
                 false, true,
                 false, true,
                 false, false,
                 false, false};
-            expectedResults[2] = new Object[] {new ParameterType(ElementType.FRAGMENT_PARAMETER_TYPE, "BlockFragment",
+            expectedResults[2] = new Object[] {new ParameterType(ElementType.FRAGMENT_PARAMETER_TYPE, "BF",
                     LanguageRegistryGetParamterTypeTests.class, SOURCE_PLUGIN),
                 true,
                 true, true,
                 false, false,
                 true, true,
                 false, false};
-            expectedResults[3] = new Object[] {new ParameterType(ElementType.RESULT_PARAMETER_TYPE, "AnalysisResult",
+            expectedResults[3] = new Object[] {new ParameterType(ElementType.RESULT_PARAMETER_TYPE, "AR",
                     LanguageRegistryGetParamterTypeTests.class, SOURCE_PLUGIN),
                 true,
                 true, true,
                 false, false,
                 false, false,
                 true, true};
-            expectedResults[4] = new Object[] {new ParameterType(ElementType.RESULT_PARAMETER_TYPE, "FileArtifact",
+            expectedResults[4] = new Object[] {new ParameterType(ElementType.RESULT_PARAMETER_TYPE, "FA",
                     LanguageRegistryGetParamterTypeTests.class, SOURCE_PLUGIN),
                 true,
                 false, false,

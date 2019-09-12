@@ -45,13 +45,20 @@ public class BasicLanguageElementCreatorTests extends AbstractCreationTest {
     private class SimpleArtifactParameterType { }
     
     /**
+     * Constructs a new {@link BasicLanguageElementCreatorTests} instance.
+     */
+    public BasicLanguageElementCreatorTests() {
+        super();
+    }
+    
+    /**
      * Tests the correct throw of a {@link NullPointerException}, if the passed class for creating
      * {@link LanguageElement}s is <code>null</code>.
      */
     @Test
     public void testNullAsPluginClass() {
         try {
-            elementCreator.createLanguageElements(null, sourcePlugin);
+            elementCreator.createLanguageElements(null, SOURCE_PLUGIN);
             fail("Passing null as plug-in class should throw a null pointer exception");
         } catch (ExternalElementException | NullPointerException e) {
             assertEquals(e.getClass(), NullPointerException.class, "Wrong exception thrown");

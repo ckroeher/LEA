@@ -18,16 +18,22 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import net.ssehub.integration.Call;
+import net.ssehub.integration.ChangeIdentifier;
 import net.ssehub.integration.ElementType;
 import net.ssehub.integration.ExternalElementException;
 import net.ssehub.integration.LanguageElement;
 import net.ssehub.integration.LanguageElementCreator;
+import net.ssehub.integration.LanguageElementException;
+import net.ssehub.integration.LanguageRegistry;
+import net.ssehub.integration.ParameterType;
 
 /**
  * This abstract class contains common attributes and unit tests for the creation of language elements by the 
@@ -145,6 +151,25 @@ public abstract class AbstractLanguageElementCreationTest extends AbstractCreati
     private File expectedElementSourcePlugin;
     
     /**
+     * Creates a {@link ParameterType} of the given {@link ElementType} and with the given name.
+     * 
+     * @param elementType the {@link ElementType} of the {@link ParameterType} to create
+     * @param name the {@link String} defining the name of the {@link ParameterType} to create
+     * @return the created {@link ParameterType} or <code>null</code>, if creating it failed
+     */
+    protected static ParameterType createParameterType(ElementType elementType, String name) {
+        ParameterType createdParameterType = null;
+        try {
+            createdParameterType = new ParameterType(elementType, name, ChangeIdentifierCreationTests.class,
+                    SOURCE_PLUGIN);
+        } catch (LanguageElementException e) {
+            System.err.println("Creating required language elements failed");
+            e.printStackTrace();
+        }
+        return createdParameterType;
+    }
+    
+    /**
      * Constructs a new {@link AbstractLanguageElementCreationTest} instance.
      * 
      * @param testInputClass the {@link Class} used as an input to the {@link LanguageElementCreator} for creating a
@@ -168,6 +193,7 @@ public abstract class AbstractLanguageElementCreationTest extends AbstractCreati
             boolean expectedElementsExistence, Class<?> expectedElementClass, ElementType expectedElementType,
             String expectedElementName, String expectedElementFullyQualifiedName, Class<?> expectedElementSourceClass,
             File expectedElementSourcePlugin) {
+        super();
         // Set the expected values
         this.expectedException = expectedException;
         this.expectedElementsExistence = expectedElementsExistence;
@@ -177,9 +203,26 @@ public abstract class AbstractLanguageElementCreationTest extends AbstractCreati
         this.expectedElementFullyQualifiedName = expectedElementFullyQualifiedName;
         this.expectedElementSourceClass = expectedElementSourceClass;
         this.expectedElementSourcePlugin = expectedElementSourcePlugin;
-        // Create the language element from the given test input class and set the actual values
+        createActualValues(testInputClass, expectedElementType, expectedElementFullyQualifiedName);
+    }
+//CHECKSTYLE:ON
+    
+    /**
+     * Creates the {@link LanguageElement} based on the given {@link Class} and sets the actual test values by
+     * retrieving the created element from the {@link LanguageRegistry} via the given {@link ElementType} and fully-
+     * qualified name.
+     * 
+     * @param testInputClass the {@link Class} from which the {@link LanguageElement} should be created
+     * @param expectedElementType the expected {@link ElementType} of the created {@link LanguageElement} 
+     * @param expectedElementFullyQualifiedName the expected fully-qualified name of the created {@link LanguageElement}
+     */
+    private void createActualValues(Class<?> testInputClass, ElementType expectedElementType,
+            String expectedElementFullyQualifiedName) {
+        LanguageRegistry.INSTANCE.clear();
+        prepare();
         try {
-            List<LanguageElement> createdElements = elementCreator.createLanguageElements(testInputClass, sourcePlugin);
+            List<LanguageElement> createdElements = createLanguageElement(testInputClass, expectedElementType,
+                    expectedElementFullyQualifiedName);
             actualNumberOfCreatedElements = createdElements.size();
             actualElementsExistence = (createdElements != null && !createdElements.isEmpty());
             int createdElementsCounter = 0;
@@ -207,7 +250,63 @@ public abstract class AbstractLanguageElementCreationTest extends AbstractCreati
             actualException = e;
         }
     }
-//CHECKSTYLE:ON 
+    
+    /**
+     * Creates the {@link LanguageElement} based on the given {@link Class} and retrieves it from the
+     * {@link LanguageRegistry} via the given {@link ElementType} and fully-qualified name.
+     * 
+     * @param testInputClass the {@link Class} from which the {@link LanguageElement} should be created
+     * @param expectedElementType the expected {@link ElementType} of the created {@link LanguageElement} 
+     * @param expectedElementFullyQualifiedName the expected fully-qualified name of the created {@link LanguageElement}
+     * @return the {@link List} of created {@link LanguageElement}s or <code>null</code>, if no elements can be found
+     * @throws ExternalElementException if creating a language element failed; it is not thrown, if the given class does
+     *         not introduce any language elements
+     */
+    private List<LanguageElement> createLanguageElement(Class<?> testInputClass, ElementType expectedElementType,
+            String expectedElementFullyQualifiedName) throws ExternalElementException {
+        List<LanguageElement> createdElements = null;
+        elementCreator.createLanguageElements(testInputClass, SOURCE_PLUGIN);
+        elementCreator.finalizeCreations();
+        if (expectedElementType == ElementType.ARTIFACT_PARAMETER_TYPE 
+                || expectedElementType == ElementType.FRAGMENT_PARAMETER_TYPE 
+                || expectedElementType == ElementType.RESULT_PARAMETER_TYPE) {
+            List<ParameterType> availableParameterTypes = 
+                    LanguageRegistry.INSTANCE.getParameterTypes(expectedElementType, expectedElementFullyQualifiedName);
+            if (availableParameterTypes != null) {
+                createdElements = new ArrayList<LanguageElement>();
+                for (ParameterType availableParameterType : availableParameterTypes) {
+                    createdElements.add(availableParameterType);
+                }
+            }
+        } else if (expectedElementType == ElementType.CHANGE_IDENTIFIER) {
+            List<ChangeIdentifier> availableChangeIdentifiers = 
+                    LanguageRegistry.INSTANCE.getChangeIdentifiers(expectedElementFullyQualifiedName);
+            if (availableChangeIdentifiers != null) {
+                createdElements = new ArrayList<LanguageElement>();
+                for (ChangeIdentifier availableChangeIdentifier : availableChangeIdentifiers) {
+                    createdElements.add(availableChangeIdentifier);
+                }
+            }
+        } else if (expectedElementType == ElementType.OPERATION 
+                || expectedElementType == ElementType.EXTRACTOR_CALL 
+                || expectedElementType == ElementType.ANALYSIS_CALL) {
+            List<Call> availableCalls = LanguageRegistry.INSTANCE.getCalls(expectedElementType,
+                    expectedElementFullyQualifiedName);
+            if (availableCalls != null) {
+                createdElements = new ArrayList<LanguageElement>();
+                for (Call availableCall : availableCalls) {
+                    createdElements.add(availableCall);
+                }
+            }
+        }
+        return createdElements;
+    }
+    
+    /**
+     * Prepares the required elements for testing. This method is called after {@link LanguageRegistry#clear()} and
+     * before any new {@link LanguageElement} is created.
+     */
+    protected abstract void prepare();
     
     /**
      * Tests whether the creation of the current language element was successful. In that case the 

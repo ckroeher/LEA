@@ -29,6 +29,7 @@ import net.ssehub.integration.ElementType;
 import net.ssehub.integration.ExternalElementException;
 import net.ssehub.integration.LanguageElement;
 import net.ssehub.integration.LanguageElementCreator;
+import net.ssehub.integration.LanguageRegistry;
 import net.ssehub.integration.ParameterType;
 import net.ssehub.integration.annotations.Operation;
 
@@ -88,44 +89,57 @@ public class MemberOperationCreationTests extends AbstractCallCreationTest {
     }
     
     /**
+     * The "File" {@link ParameterType} required to create the {@link Call}s for testing.
+     */
+    private static ParameterType file = createParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "File");
+    
+    /**
+     * The "Path" {@link ParameterType} required to create the {@link Call}s for testing.
+     */
+    private static ParameterType path = createParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "Path");
+    
+    /**
      * The expected results for each input {@link Class} defined as inner class of this class. Each entry has the
      * following elements:
      * <ul>
      * <li>The {@link Class} used as an input to the {@link LanguageElementCreator} for creating a 
-     * {@link LanguageElement} based on the information of that class
+     *     {@link LanguageElement} based on the information of that class
      * </li>
      * <li>The {@link ExternalElementException} expected to be thrown during the creation of a {@link LanguageElement};
-     * a value of <code>null</code> indicates that throwing an exception was not expected
+     *     a value of <code>null</code> indicates that throwing an exception was not expected
      * </li>
      * <li>The declaration of whether it is expected that the created {@link LanguageElement} is not <code>null</code>
-     * (<code>true</code>) or should be <code>null</code> (<code>false</code>)
+     *     (<code>true</code>) or should be <code>null</code> (<code>false</code>)
      * </li>
      * <li>The expected {@link Class} of the created {@link LanguageElement}</li>
      * <li>The expected {@link ElementType} of the created {@link LanguageElement}</li>
      * <li>The expected name of the created {@link LanguageElement}</li>
+     * <li>The expected fully-qualified name of the created {@link LanguageElement}</li>
      * <li>The expected {@link Class} from which the {@link LanguageElement} was created</li>
      * <li>The expected {@link File} denoting the source plug-in of the {@link Class} from which a 
-     * {@link LanguageElement} was created
+     *     {@link LanguageElement} was created
      * </li>
-     * <li>The expected name of the type of element(s) the created call will return</li>
-     * <li>The expected fully-qualified name of the created {@link LanguageElement}</li>
-     * <li>The expected array of names, which denote the elements the created call accepts as parameters</li>
+     * <li>The expected {@link ParameterType} the created {@link Call} will return</li>
+     * <li>The expected array of {@link ParameterType}s, which denote the elements the created {@link Call} accepts as
+     *     parameters</li>
      * <li>The expected source {@link Method} from which the {@link LanguageElement} was created</li>
      * <li>The declaration of whether it is expected that the created {@link Call} is a member operation
-     * (<code>true</code>) or not (<code>false</code>)</li>
+     *     (<code>true</code>) or not (<code>false</code>)</li>
      * <li>The declaration of whether it is expected that the created {@link Call} is a member operation of the declared
-     * parent parameter type (<code>true</code>) or not (<code>false</code>)</li>
-     * <li>The expected name of the {@link ParameterType} for which the created {@link Call} is a member operation</li>
+     *     parent parameter type (<code>true</code>) or not (<code>false</code>)</li>
+     * <li>The expected {@link ParameterType} for which the created {@link Call} is a member operation</li>
      * </ul>
      */
     private static final Object[][] EXPECTED_RESULTS = new Object[][] {
         {ClassIntroducingSimpleMemberOperation.class, null, true, Call.class, ElementType.OPERATION, 
-            "getFile", ClassIntroducingSimpleMemberOperation.class.getMethods()[0].toGenericString(),
-            ClassIntroducingSimpleMemberOperation.class, sourcePlugin, "File", new String[] {},
-            ClassIntroducingSimpleMemberOperation.class.getMethods()[0], true, true, "Path"},
+            "getFile", "net.ssehub.tests.integration.MemberOperationCreationTests."
+                    + "ClassIntroducingSimpleMemberOperation.getFile",
+            ClassIntroducingSimpleMemberOperation.class, SOURCE_PLUGIN, file, null,
+            ClassIntroducingSimpleMemberOperation.class.getMethods()[0], true, true, path},
         {ClassIntroducingNoMemberOperation.class, null, true, Call.class, ElementType.OPERATION, 
-            "getFile", ClassIntroducingNoMemberOperation.class.getMethods()[0].toGenericString(),
-            ClassIntroducingNoMemberOperation.class, sourcePlugin, "File", new String[] {},
+            "getFile", "net.ssehub.tests.integration.MemberOperationCreationTests."
+                    + "ClassIntroducingNoMemberOperation.getFile",
+            ClassIntroducingNoMemberOperation.class, SOURCE_PLUGIN, file, null,
             ClassIntroducingNoMemberOperation.class.getMethods()[0], false, false, null}
     };
     
@@ -142,9 +156,9 @@ public class MemberOperationCreationTests extends AbstractCallCreationTest {
     private boolean expectedMemberOperationOf;
     
     /**
-     * The expected name of the {@link ParameterType} for which the created {@link Call} is a member operation.
+     * The expected {@link ParameterType} for which the created {@link Call} is a member operation.
      */
-    private String expectedParentParameterType;
+    private ParameterType expectedParentParameterType;
     
     /**
      * The definition of whether the created {@link Call} is actually a member operation (<code>true</code>) or not 
@@ -159,9 +173,9 @@ public class MemberOperationCreationTests extends AbstractCallCreationTest {
     private boolean actualMemberOperationOf;
     
     /**
-     * The actual name of the {@link ParameterType} for which the created {@link Call} is a member operation.
+     * The actual {@link ParameterType} for which the created {@link Call} is a member operation.
      */
-    private String actualParentParameterType;
+    private ParameterType actualParentParameterType;
     
     /**
      * Constructs a new {@link MemberOperationCreationTests} instance.
@@ -181,24 +195,24 @@ public class MemberOperationCreationTests extends AbstractCallCreationTest {
      * @param expectedElementSourceClass the expected {@link Class} from which the {@link LanguageElement} was created
      * @param expectedElementSourcePlugin the expected {@link File} denoting the source plug-in of the {@link Class}
      *        from which a {@link LanguageElement} was created
-     * @param expectedReturnType the expected name of the type of element(s) the created operation will return
-     * @param expectedParameters the expected array of names, which denote the elements the created operation accepts as
-     *        parameters
+     * @param expectedReturnType the expected {@link ParameterType} the created {@link Call} will return
+     * @param expectedParameters the expected array of {@link ParameterType}s, which denote the elements the created
+     *        {@link Call} accepts as parameters
      * @param expectedSourceMethod the expected {@link Method} from where this call was created
      * @param expectedMemberOperation the declaration of whether it is expected that the created {@link Call} is a
      *        member operation (<code>true</code>) or not (<code>false</code>)
      * @param expectedMemberOperationOf the definition of whether it is expected that the created {@link Call} is a
      *        member operation of the declared parent parameter type (<code>true</code>) or not (<code>false</code>)
-     * @param expectedParentParameterType the expected name of the {@link ParameterType} for which the created 
-     *        {@link Call} is a member operation
+     * @param expectedParentParameterType the expected {@link ParameterType} for which the created {@link Call} is a
+     *        member operation
      */
 //CHECKSTYLE:OFF
     public MemberOperationCreationTests(Class<?> testInputClass, ExternalElementException expectedException,
             boolean expectedElementsExistence, Class<?> expectedElementClass, ElementType expectedElementType,
             String expectedElementName, String expectedElementFullyQualifiedName, Class<?> expectedElementSourceClass,
-            File expectedElementSourcePlugin, String expectedReturnType, String[] expectedParameters, 
+            File expectedElementSourcePlugin, ParameterType expectedReturnType, ParameterType[] expectedParameters, 
             Method expectedSourceMethod, boolean expectedMemberOperation, boolean expectedMemberOperationOf,
-            String expectedParentParameterType) {
+            ParameterType expectedParentParameterType) {
         super(testInputClass, expectedException, expectedElementsExistence, expectedElementClass, expectedElementType,
                 expectedElementName, expectedElementFullyQualifiedName, expectedElementSourceClass, 
                 expectedElementSourcePlugin, expectedReturnType, expectedParameters, expectedSourceMethod);
@@ -211,7 +225,8 @@ public class MemberOperationCreationTests extends AbstractCallCreationTest {
         if (expectedParentParameterType == null) {
             this.actualParentParameterType = null;
         } else {            
-            this.actualMemberOperationOf = createdCall.isMemberOperationOf(expectedParentParameterType);
+            this.actualMemberOperationOf = createdCall.isMemberOperationOf(
+                    expectedParentParameterType.getFullyQualifiedName());
         }
         this.actualParentParameterType = createdCall.getParentParameterType();
     }
@@ -225,6 +240,14 @@ public class MemberOperationCreationTests extends AbstractCallCreationTest {
     @Parameters
     public static List<Object[]> getTestData() {
         return Arrays.asList(EXPECTED_RESULTS);
+    }
+    
+    @Override
+    protected void prepare() {
+        if (!LanguageRegistry.INSTANCE.addParameterType(file)
+                || !LanguageRegistry.INSTANCE.addParameterType(path)) {
+            System.err.println("Preparation failed");
+        }
     }
 
     /**

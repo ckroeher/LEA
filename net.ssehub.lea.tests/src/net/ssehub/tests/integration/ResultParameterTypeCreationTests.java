@@ -164,42 +164,44 @@ public class ResultParameterTypeCreationTests extends AbstractLanguageElementCre
     private static final Object[][] EXPECTED_RESULTS = new Object[][] {
         {SimpleResultParameterType.class, null, true, ParameterType.class, ElementType.RESULT_PARAMETER_TYPE, 
             SimpleResultParameterType.class.getSimpleName(), SimpleResultParameterType.class.getCanonicalName(),
-            SimpleResultParameterType.class, sourcePlugin},
+            SimpleResultParameterType.class, SOURCE_PLUGIN},
         
         {SimpleResultParameterTypeWithSymbolicName.class, null, true, ParameterType.class,
-            ElementType.RESULT_PARAMETER_TYPE, "DeadBlock", 
-            SimpleResultParameterTypeWithSymbolicName.class.getCanonicalName(),
-            SimpleResultParameterTypeWithSymbolicName.class, sourcePlugin},
+            ElementType.RESULT_PARAMETER_TYPE, "DeadBlock",
+            "net.ssehub.tests.integration.ResultParameterTypeCreationTests.DeadBlock",
+            SimpleResultParameterTypeWithSymbolicName.class, SOURCE_PLUGIN},
         
         {SimpleResultParameterTypeWithSymbolicParameterName.class, null, true, ParameterType.class,
             ElementType.RESULT_PARAMETER_TYPE, 
             SimpleResultParameterTypeWithSymbolicParameterName.class.getSimpleName(),
             SimpleResultParameterTypeWithSymbolicParameterName.class.getCanonicalName(),
-            SimpleResultParameterTypeWithSymbolicParameterName.class, sourcePlugin},
+            SimpleResultParameterTypeWithSymbolicParameterName.class, SOURCE_PLUGIN},
         
         {SimpleResultParameterTypeWithSymbolicNameAndParameterName.class, null, true, ParameterType.class,
-            ElementType.RESULT_PARAMETER_TYPE, "DeadBlock", 
-            SimpleResultParameterTypeWithSymbolicNameAndParameterName.class.getCanonicalName(),
-            SimpleResultParameterTypeWithSymbolicNameAndParameterName.class, sourcePlugin},
+            ElementType.RESULT_PARAMETER_TYPE, "DeadBlock",
+            "net.ssehub.tests.integration.ResultParameterTypeCreationTests.DeadBlock",
+            SimpleResultParameterTypeWithSymbolicNameAndParameterName.class, SOURCE_PLUGIN},
         
         {GenericResultParameterType.class, null, true, ParameterType.class, ElementType.RESULT_PARAMETER_TYPE, 
-            "GenericResultParameterType<File>", GenericResultParameterType.class.getCanonicalName(), 
-            GenericResultParameterType.class, sourcePlugin},
+            "GenericResultParameterType<File>",
+            "net.ssehub.tests.integration.ResultParameterTypeCreationTests.GenericResultParameterType<File>", 
+            GenericResultParameterType.class, SOURCE_PLUGIN},
         
         {GenericResultParameterTypeWithSymbolicName.class, null, true, ParameterType.class,
             ElementType.RESULT_PARAMETER_TYPE, "DeadBlock<File>", 
-            GenericResultParameterTypeWithSymbolicName.class.getCanonicalName(), 
-            GenericResultParameterTypeWithSymbolicName.class, sourcePlugin},
+            "net.ssehub.tests.integration.ResultParameterTypeCreationTests.DeadBlock<File>", 
+            GenericResultParameterTypeWithSymbolicName.class, SOURCE_PLUGIN},
         
         {GenericResultParameterTypeWithSymbolicParameterName.class, null, true, ParameterType.class,
             ElementType.RESULT_PARAMETER_TYPE, "GenericResultParameterTypeWithSymbolicParameterName<Code>",
-            GenericResultParameterTypeWithSymbolicParameterName.class.getCanonicalName(), 
-            GenericResultParameterTypeWithSymbolicParameterName.class, sourcePlugin},
+            "net.ssehub.tests.integration.ResultParameterTypeCreationTests."
+                    + "GenericResultParameterTypeWithSymbolicParameterName<Code>", 
+            GenericResultParameterTypeWithSymbolicParameterName.class, SOURCE_PLUGIN},
         
         {GenericResultParameterTypeWithSymbolicNameAndParameterName.class, null, true, ParameterType.class,
             ElementType.RESULT_PARAMETER_TYPE, "DeadBlock<Code>",
-            GenericResultParameterTypeWithSymbolicNameAndParameterName.class.getCanonicalName(),
-            GenericResultParameterTypeWithSymbolicNameAndParameterName.class, sourcePlugin}
+            "net.ssehub.tests.integration.ResultParameterTypeCreationTests.DeadBlock<Code>",
+            GenericResultParameterTypeWithSymbolicNameAndParameterName.class, SOURCE_PLUGIN}
     };
     
     /**
@@ -242,4 +244,9 @@ public class ResultParameterTypeCreationTests extends AbstractLanguageElementCre
         return Arrays.asList(EXPECTED_RESULTS);
     }
 
+    @Override
+    protected void prepare() {
+        // No preparation needed for theses tests.
+    }
+    
 }

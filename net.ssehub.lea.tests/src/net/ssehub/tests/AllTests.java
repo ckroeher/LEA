@@ -22,21 +22,24 @@ import net.ssehub.tests.integration.AnalysisCallCreationTests;
 import net.ssehub.tests.integration.ArtifactParameterTypeCreationTests;
 import net.ssehub.tests.integration.BasicLanguageElementCreatorTests;
 import net.ssehub.tests.integration.BasicLanguageElementProviderTests;
-import net.ssehub.tests.integration.BasicLanguageRegistryTests;
 import net.ssehub.tests.integration.ChangeIdentifierCreationTests;
 import net.ssehub.tests.integration.ExtractorCallCreationTests;
 import net.ssehub.tests.integration.FragmentParameterTypeCreationTests;
 import net.ssehub.tests.integration.LanguageElementEqualityTests;
 import net.ssehub.tests.integration.LanguageElementPartialEqualityTests;
 import net.ssehub.tests.integration.LanguageRegistryDuplicateDetectionTests;
-import net.ssehub.tests.integration.LanguageRegistryValidationTests;
+import net.ssehub.tests.integration.LanguageRegistryGetCallTests;
+import net.ssehub.tests.integration.LanguageRegistryGetCallsTests;
+import net.ssehub.tests.integration.LanguageRegistryGetChangeIdentifierTests;
+import net.ssehub.tests.integration.LanguageRegistryGetChangeIdentifiersTests;
+import net.ssehub.tests.integration.LanguageRegistryGetParameterTypesTests;
+import net.ssehub.tests.integration.LanguageRegistryGetParamterTypeTests;
+import net.ssehub.tests.integration.LanguageRegistryHasCallTests;
+import net.ssehub.tests.integration.LanguageRegistryHasChangeIdentifierTests;
+import net.ssehub.tests.integration.LanguageRegistryHasParameterTypeTests;
 import net.ssehub.tests.integration.MemberOperationCreationTests;
 import net.ssehub.tests.integration.OperationCreationTests;
 import net.ssehub.tests.integration.ResultParameterTypeCreationTests;
-import net.ssehub.tests.parsing.AdvancedElementDeclarationParsingTests;
-import net.ssehub.tests.parsing.BasicAnalysisDefinitionParsingTests;
-import net.ssehub.tests.parsing.BasicChangeIdentifierAssignmentParsingTests;
-import net.ssehub.tests.parsing.BasicElementDeclarationParsingTests;
 
 /**
  * This class summarizes all unit test classes into a single test suite.
@@ -47,9 +50,10 @@ import net.ssehub.tests.parsing.BasicElementDeclarationParsingTests;
 @RunWith(Suite.class)
 @SuiteClasses({
     // Parsing tests
-    BasicAnalysisDefinitionParsingTests.class,
-    BasicElementDeclarationParsingTests.class,
-    BasicChangeIdentifierAssignmentParsingTests.class,
+//    BasicAnalysisDefinitionParsingTests.class,
+//    BasicElementDeclarationParsingTests.class,
+//    BasicChangeIdentifierAssignmentParsingTests.class,
+//    AdvancedElementDeclarationParsingTests.class,
     // Integration tests
     BasicLanguageElementCreatorTests.class,
     ArtifactParameterTypeCreationTests.class,
@@ -59,14 +63,25 @@ import net.ssehub.tests.parsing.BasicElementDeclarationParsingTests;
     OperationCreationTests.class,
     ExtractorCallCreationTests.class,
     AnalysisCallCreationTests.class,
+    MemberOperationCreationTests.class,
+    
     LanguageElementEqualityTests.class,
     LanguageElementPartialEqualityTests.class,
+    
     BasicLanguageElementProviderTests.class,
-    BasicLanguageRegistryTests.class,
+    
     LanguageRegistryDuplicateDetectionTests.class,
-    LanguageRegistryValidationTests.class,
-    AdvancedElementDeclarationParsingTests.class,
-    MemberOperationCreationTests.class
+    
+    LanguageRegistryHasParameterTypeTests.class,
+    LanguageRegistryHasChangeIdentifierTests.class,
+    LanguageRegistryHasCallTests.class,
+    
+    LanguageRegistryGetParamterTypeTests.class,
+    LanguageRegistryGetParameterTypesTests.class,
+    LanguageRegistryGetChangeIdentifierTests.class,
+    LanguageRegistryGetChangeIdentifiersTests.class,
+    LanguageRegistryGetCallTests.class,
+    LanguageRegistryGetCallsTests.class,
     })
 public class AllTests {
 

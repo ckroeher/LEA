@@ -14,12 +14,11 @@
  */
 package net.ssehub.tests.integration;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.junit.Test;
 
@@ -68,41 +67,14 @@ public class LanguageRegistryDuplicateDetectionTests {
     public void testCorrectRejectionOfSameParameterTypeInstances() {
         try {
             ParameterType parameterType = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "File",
-                    LanguageRegistryDuplicateDetectionTests.class, SOURCE_PLUGIN);
-            List<LanguageElement> newElements = new ArrayList<LanguageElement>();
-            newElements.add(parameterType);
-            newElements.add(parameterType);
-            List<LanguageElement> rejectedElements = LanguageRegistry.INSTANCE.addLanguageElements(newElements);
-            
-            assertEquals(1, rejectedElements.size(), "Wrong number of rejected new language elements");
-            assertEquals(newElements.get(1), rejectedElements.get(0), "Wrong rejected new language element");
+                    LanguageRegistryDuplicateDetectionTests.class, SOURCE_PLUGIN);            
+            assertTrue("First parameter should be added", LanguageRegistry.INSTANCE.addParameterType(parameterType));
+            assertFalse("Second parameter should be rejected", 
+                    LanguageRegistry.INSTANCE.addParameterType(parameterType));
         } catch (LanguageElementException e) {
             assertNull("Unexpected exception thrown", e);
         }
     }
-    
-//    /**
-//     * Test whether the {@link LanguageRegistry} rejects the addition of two equal {@link ParameterType}s. This test
-//     * uses two distinct {@link ParameterType} instances.
-//     */
-//    @Test
-//    public void testCorrectRejectionOfEqualParameterTypes() {
-//        try {
-//            ParameterType artifactParameterType = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "DB",
-//                    LanguageRegistryDuplicateDetectionTests.class, SOURCE_PLUGIN);
-//            ParameterType fragmentParameterType = new ParameterType(ElementType.FRAGMENT_PARAMETER_TYPE, "DB",
-//                    LanguageRegistryDuplicateDetectionTests.class, SOURCE_PLUGIN);
-//            List<LanguageElement> newElements = new ArrayList<LanguageElement>();
-//            newElements.add(artifactParameterType);
-//            newElements.add(fragmentParameterType);
-//            List<LanguageElement> rejectedElements = LanguageRegistry.INSTANCE.addLanguageElements(newElements);
-//            
-//            assertEquals(1, rejectedElements.size(), "Wrong number of rejected new language elements");
-//            assertEquals(newElements.get(1), rejectedElements.get(0), "Wrong rejected new language element");
-//        } catch (LanguageElementException e) {
-//            assertNull("Unexpected exception thrown", e);
-//        }
-//    }
     
     /**
      * Test whether the {@link LanguageRegistry} rejects the addition of two equal {@link ChangeIdentifier}s. This test
@@ -111,47 +83,21 @@ public class LanguageRegistryDuplicateDetectionTests {
     @Test
     public void testCorrectRejectionOfSameChangeIdentifierInstances() {
         try {
-            // A parameter type required to not cache the first identifier due to unavailable assignable element type
-            ParameterType requiredType = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "CIAE",
+            ParameterType parameterType = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "CIAE",
                     LanguageRegistryDuplicateDetectionTests.class, SOURCE_PLUGIN);
             
-            ChangeIdentifier changeIdentifier = new ChangeIdentifier("CI", new String[] {"CIAE"},
+            ChangeIdentifier changeIdentifier = new ChangeIdentifier("CI",
                     LanguageRegistryDuplicateDetectionTests.class, SOURCE_PLUGIN);
-            List<LanguageElement> newElements = new ArrayList<LanguageElement>();
-            newElements.add(requiredType);
-            newElements.add(changeIdentifier);
-            newElements.add(changeIdentifier);
-            List<LanguageElement> rejectedElements = LanguageRegistry.INSTANCE.addLanguageElements(newElements);
+            changeIdentifier.finalize(new ParameterType[] {parameterType});
             
-            assertEquals(1, rejectedElements.size(), "Wrong number of rejected new language elements");
-            assertEquals(newElements.get(2), rejectedElements.get(0), "Wrong rejected new language element");
+            assertTrue("First change identifier should be added", 
+                    LanguageRegistry.INSTANCE.addChangeIdentifier(changeIdentifier));
+            assertFalse("Second change identifier should be rejected", 
+                    LanguageRegistry.INSTANCE.addChangeIdentifier(changeIdentifier));
         } catch (LanguageElementException e) {
             assertNull("Unexpected exception thrown", e);
         }
     }
-    
-//    /**
-//     * Test whether the {@link LanguageRegistry} rejects the addition of two equal {@link ChangeIdentifier}s. This
-//     * test uses two distinct {@link ChangeIdentifier} instances.
-//     */
-//    @Test
-//    public void testCorrectRejectionOfEqualChangeIdentifiers() {
-//        try {
-//            ChangeIdentifier changeIdentifier1 = new ChangeIdentifier("ChId", new String[] {"File"},
-//                    LanguageRegistryDuplicateDetectionTests.class, SOURCE_PLUGIN);
-//            ChangeIdentifier changeIdentifier2 = new ChangeIdentifier("ChId2", new String[] {"File"},
-//                    LanguageRegistryDuplicateDetectionTests.class, SOURCE_PLUGIN);
-//            List<LanguageElement> newElements = new ArrayList<LanguageElement>();
-//            newElements.add(changeIdentifier1);
-//            newElements.add(changeIdentifier2);
-//            List<LanguageElement> rejectedElements = LanguageRegistry.INSTANCE.addLanguageElements(newElements);
-//            
-//            assertEquals(1, rejectedElements.size(), "Wrong number of rejected new language elements");
-//            assertEquals(newElements.get(1), rejectedElements.get(0), "Wrong rejected new language element");
-//        } catch (LanguageElementException e) {
-//            assertNull("Unexpected exception thrown", e);
-//        }
-//    }
     
     /**
      * Test whether the {@link LanguageRegistry} rejects the addition of two equal {@link Call}s. This test uses the
@@ -167,18 +113,13 @@ public class LanguageRegistryDuplicateDetectionTests {
             ParameterType requiredParameterType = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "CPT",
                     LanguageRegistryDuplicateDetectionTests.class, SOURCE_PLUGIN);
             
-            Call call = new Call(ElementType.OPERATION, "someStupidCallName", "CRT", new String[] {"CPT"}, 
+            Call call = new Call(ElementType.OPERATION, "someStupidCallName",
                     LanguageRegistryDuplicateDetectionTests.class.getMethods()[0],
                     LanguageRegistryDuplicateDetectionTests.class, SOURCE_PLUGIN);
-            List<LanguageElement> newElements = new ArrayList<LanguageElement>();
-            newElements.add(requiredReturnType);
-            newElements.add(requiredParameterType);
-            newElements.add(call);
-            newElements.add(call);
-            List<LanguageElement> rejectedElements = LanguageRegistry.INSTANCE.addLanguageElements(newElements);
+            call.finalize(requiredReturnType, new ParameterType[] {requiredParameterType}, null);
             
-            assertEquals(1, rejectedElements.size(), "Wrong number of rejected new language elements");
-            assertEquals(newElements.get(3), rejectedElements.get(0), "Wrong rejected new language element");
+            assertTrue("First call should be added", LanguageRegistry.INSTANCE.addCall(call));
+            assertFalse("Second call should be rejected", LanguageRegistry.INSTANCE.addCall(call));
         } catch (LanguageElementException e) {
             assertNull("Unexpected exception thrown", e);
         }
@@ -191,28 +132,22 @@ public class LanguageRegistryDuplicateDetectionTests {
     @Test
     public void testCorrectRejectionOfEqualCalls() {
         try {
-            // A parameter type required to not cache the first call due to unavailable return type
             ParameterType requiredReturnType = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "CRT2",
                     LanguageRegistryDuplicateDetectionTests.class, SOURCE_PLUGIN);
-            // A parameter type required to not cache the first call due to unavailable parameter type
             ParameterType requiredParameterType = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "CPT2",
                     LanguageRegistryDuplicateDetectionTests.class, SOURCE_PLUGIN);
             
-            Call operation = new Call(ElementType.OPERATION, "someStupidCallName", "CRT2", new String[] {"CPT2"}, 
+            Call operation = new Call(ElementType.OPERATION, "someStupidCallName", 
                     LanguageRegistryDuplicateDetectionTests.class.getMethods()[0],
                     LanguageRegistryDuplicateDetectionTests.class, SOURCE_PLUGIN);
-            Call extractorCall = new Call(ElementType.EXTRACTOR_CALL, "someStupidCallName", "CRT2", 
-                    new String[] {"CPT2"}, LanguageRegistryDuplicateDetectionTests.class.getMethods()[0],
+            operation.finalize(requiredReturnType, new ParameterType[] {requiredParameterType}, null);
+            Call extractorCall = new Call(ElementType.EXTRACTOR_CALL, "someStupidCallName",
+                    LanguageRegistryDuplicateDetectionTests.class.getMethods()[0],
                     LanguageRegistryDuplicateDetectionTests.class, SOURCE_PLUGIN);
-            List<LanguageElement> newElements = new ArrayList<LanguageElement>();
-            newElements.add(requiredReturnType);
-            newElements.add(requiredParameterType);
-            newElements.add(operation);
-            newElements.add(extractorCall);
-            List<LanguageElement> rejectedElements = LanguageRegistry.INSTANCE.addLanguageElements(newElements);
+            extractorCall.finalize(requiredReturnType, new ParameterType[] {requiredParameterType}, null);
             
-            assertEquals(1, rejectedElements.size(), "Wrong number of rejected new language elements");
-            assertEquals(newElements.get(3), rejectedElements.get(0), "Wrong rejected new language element");
+            assertTrue("First call should be added", LanguageRegistry.INSTANCE.addCall(operation));
+            assertFalse("Second call should be rejected", LanguageRegistry.INSTANCE.addCall(extractorCall));
         } catch (LanguageElementException e) {
             assertNull("Unexpected exception thrown", e);
         }
@@ -225,29 +160,21 @@ public class LanguageRegistryDuplicateDetectionTests {
     @Test
     public void testCorrectRejectionOfSameMemberOperationInstances() {
         try {
-            // A parameter type required to not cache the first call due to unavailable return type
             ParameterType requiredReturnType = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "CRT3",
                     LanguageRegistryDuplicateDetectionTests.class, SOURCE_PLUGIN);
-            // A parameter type required to not cache the first call due to unavailable parameter type
             ParameterType requiredParameterType = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "CPT3",
                     LanguageRegistryDuplicateDetectionTests.class, SOURCE_PLUGIN);
-            // A parameter type required to not cache the first call due to unavailable parent parameter type
             ParameterType requiredParentParameterType = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "MOPPT",
                     LanguageRegistryDuplicateDetectionTests.class, SOURCE_PLUGIN);
             
-            Call memberOperation = new Call("someStupidMemberOperationName", "CRT3", new String[] {"CPT3"}, "MOPPT",
+            Call memberOperation = new Call(ElementType.OPERATION, "someStupidMemberOperationName",
                     LanguageRegistryDuplicateDetectionTests.class.getMethods()[0],
                     LanguageRegistryDuplicateDetectionTests.class, SOURCE_PLUGIN);
-            List<LanguageElement> newElements = new ArrayList<LanguageElement>();
-            newElements.add(requiredReturnType);
-            newElements.add(requiredParameterType);
-            newElements.add(requiredParentParameterType);
-            newElements.add(memberOperation);
-            newElements.add(memberOperation);
-            List<LanguageElement> rejectedElements = LanguageRegistry.INSTANCE.addLanguageElements(newElements);
+            memberOperation.finalize(requiredReturnType, new ParameterType[] {requiredParameterType},
+                    requiredParentParameterType);
             
-            assertEquals(1, rejectedElements.size(), "Wrong number of rejected new language elements");
-            assertEquals(newElements.get(4), rejectedElements.get(0), "Wrong rejected new language element");
+            assertTrue("First call should be added", LanguageRegistry.INSTANCE.addCall(memberOperation));
+            assertFalse("Second call should be rejected", LanguageRegistry.INSTANCE.addCall(memberOperation));
         } catch (LanguageElementException e) {
             assertNull("Unexpected exception thrown", e);
         }
@@ -260,32 +187,26 @@ public class LanguageRegistryDuplicateDetectionTests {
     @Test
     public void testCorrectRejectionOfEqualMemberOperations() {
         try {
-            // A parameter type required to not cache the first call due to unavailable return type
             ParameterType requiredReturnType = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "CRT4",
                     LanguageRegistryDuplicateDetectionTests.class, SOURCE_PLUGIN);
-            // A parameter type required to not cache the first call due to unavailable parameter type
             ParameterType requiredParameterType = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "CPT4",
                     LanguageRegistryDuplicateDetectionTests.class, SOURCE_PLUGIN);
-            // A parameter type required to not cache the first call due to unavailable parent parameter type
             ParameterType requiredParentParameterType = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "MOPPT2",
                     LanguageRegistryDuplicateDetectionTests.class, SOURCE_PLUGIN);
             
-            Call memberOperation1 = new Call("someStupidMemberOperationName", "CRT4", new String[] {"CPT4"}, "MOPPT2",
+            Call memberOperation1 = new Call(ElementType.OPERATION, "someStupidMemberOperationName",
                     LanguageRegistryDuplicateDetectionTests.class.getMethods()[0],
                     LanguageRegistryDuplicateDetectionTests.class, SOURCE_PLUGIN);
-            Call memberOperation2 = new Call("someStupidMemberOperationName", "CRT4", new String[] {"CPT4"}, "MOPPT2",
+            memberOperation1.finalize(requiredReturnType, new ParameterType[] {requiredParameterType},
+                    requiredParentParameterType);
+            Call memberOperation2 = new Call(ElementType.OPERATION, "someStupidMemberOperationName",
                     LanguageRegistryDuplicateDetectionTests.class.getMethods()[0],
                     LanguageRegistryDuplicateDetectionTests.class, SOURCE_PLUGIN);
-            List<LanguageElement> newElements = new ArrayList<LanguageElement>();
-            newElements.add(requiredReturnType);
-            newElements.add(requiredParameterType);
-            newElements.add(requiredParentParameterType);
-            newElements.add(memberOperation1);
-            newElements.add(memberOperation2);
-            List<LanguageElement> rejectedElements = LanguageRegistry.INSTANCE.addLanguageElements(newElements);
+            memberOperation2.finalize(requiredReturnType, new ParameterType[] {requiredParameterType},
+                    requiredParentParameterType);
             
-            assertEquals(1, rejectedElements.size(), "Wrong number of rejected new language elements");
-            assertEquals(newElements.get(4), rejectedElements.get(0), "Wrong rejected new language element");
+            assertTrue("First call should be added", LanguageRegistry.INSTANCE.addCall(memberOperation1));
+            assertFalse("Second call should be rejected", LanguageRegistry.INSTANCE.addCall(memberOperation2));
         } catch (LanguageElementException e) {
             assertNull("Unexpected exception thrown", e);
         }

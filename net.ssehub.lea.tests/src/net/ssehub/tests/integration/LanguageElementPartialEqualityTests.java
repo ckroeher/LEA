@@ -59,8 +59,9 @@ public class LanguageElementPartialEqualityTests {
         try {
             ParameterType parameterType = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "File",
                     LanguageElementPartialEqualityTests.class, SOURCE_PLUGIN);
-            ChangeIdentifier changeIdentifier = new ChangeIdentifier("CI", new String[] {"File"},
-                    LanguageElementPartialEqualityTests.class, SOURCE_PLUGIN);
+            ChangeIdentifier changeIdentifier = new ChangeIdentifier("CI", LanguageElementPartialEqualityTests.class,
+                    SOURCE_PLUGIN);
+            changeIdentifier.finalize(new ParameterType[] {parameterType});
             
             assertFalse(parameterType.equalsIgnoreType(changeIdentifier),
                     "Parameter type and change identifier should be partially unequal");
@@ -78,8 +79,9 @@ public class LanguageElementPartialEqualityTests {
         try {
             ParameterType parameterType = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "File",
                     LanguageElementPartialEqualityTests.class, SOURCE_PLUGIN);
-            ChangeIdentifier changeIdentifier = new ChangeIdentifier("File", new String[] {"File"},
-                    LanguageElementPartialEqualityTests.class, SOURCE_PLUGIN);
+            ChangeIdentifier changeIdentifier = new ChangeIdentifier("File", LanguageElementPartialEqualityTests.class,
+                    SOURCE_PLUGIN);
+            changeIdentifier.finalize(new ParameterType[] {parameterType});
             
             assertFalse(parameterType.equalsIgnoreType(changeIdentifier),
                     "Parameter type and change identifier should be partially unequal");
@@ -95,13 +97,16 @@ public class LanguageElementPartialEqualityTests {
     @Test
     public void testCorrectPartiallyUnequalParameterTypeAndCallWithDifferentNames() {
         try {
-            ParameterType parameterType = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "File",
+            ParameterType parameterType1 = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "File",
                     LanguageElementPartialEqualityTests.class, SOURCE_PLUGIN);
-            Call call = new Call(ElementType.OPERATION, "file", "File", new String[] {"String"},
+            ParameterType parameterType2 = new ParameterType(ElementType.FRAGMENT_PARAMETER_TYPE, "String",
+                    LanguageElementPartialEqualityTests.class, SOURCE_PLUGIN);
+            Call call = new Call(ElementType.OPERATION, "file",
                     LanguageElementPartialEqualityTests.class.getMethods()[0],
                     LanguageElementPartialEqualityTests.class, SOURCE_PLUGIN);
+            call.finalize(parameterType1, new ParameterType[] {parameterType2}, null);
             
-            assertFalse(parameterType.equalsIgnoreType(call), "Parameter type and call should be partially unequal");
+            assertFalse(parameterType1.equalsIgnoreType(call), "Parameter type and call should be partially unequal");
         } catch (LanguageElementException e) {
             assertNull("Unexpected exception thrown", e);
         }
@@ -114,13 +119,16 @@ public class LanguageElementPartialEqualityTests {
     @Test
     public void testCorrectPartiallyUnequalParameterTypeAndCallWithEqualNames() {
         try {
-            ParameterType parameterType = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "File",
+            ParameterType parameterType1 = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "File",
                     LanguageElementPartialEqualityTests.class, SOURCE_PLUGIN);
-            Call call = new Call(ElementType.OPERATION, "File", "File", new String[] {"String"},
+            ParameterType parameterType2 = new ParameterType(ElementType.FRAGMENT_PARAMETER_TYPE, "String",
+                    LanguageElementPartialEqualityTests.class, SOURCE_PLUGIN);
+            Call call = new Call(ElementType.OPERATION, "File",
                     LanguageElementPartialEqualityTests.class.getMethods()[0],
                     LanguageElementPartialEqualityTests.class, SOURCE_PLUGIN);
+            call.finalize(parameterType1, new ParameterType[] {parameterType2}, null);
             
-            assertFalse(parameterType.equalsIgnoreType(call), "Parameter type and call should be partially unequal");
+            assertFalse(parameterType1.equalsIgnoreType(call), "Parameter type and call should be partially unequal");
         } catch (LanguageElementException e) {
             assertNull("Unexpected exception thrown", e);
         }
@@ -133,10 +141,11 @@ public class LanguageElementPartialEqualityTests {
     @Test
     public void testCorrectPartiallyUnequalChangeIdentifierAndParameterTypeWithDifferentNames() {
         try {
-            ChangeIdentifier changeIdentifier = new ChangeIdentifier("CI", new String[] {"File"},
-                    LanguageElementPartialEqualityTests.class, SOURCE_PLUGIN);
             ParameterType parameterType = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "File",
                     LanguageElementPartialEqualityTests.class, SOURCE_PLUGIN);
+            ChangeIdentifier changeIdentifier = new ChangeIdentifier("CI", LanguageElementPartialEqualityTests.class,
+                    SOURCE_PLUGIN);
+            changeIdentifier.finalize(new ParameterType[] {parameterType});
             
             assertFalse(changeIdentifier.equalsIgnoreType(parameterType),
                     "Change identifier and parameter type should be partially unequal");
@@ -152,10 +161,11 @@ public class LanguageElementPartialEqualityTests {
     @Test
     public void testCorrectPartiallyUnequalChangeIdentifierAndParameterTypeWithEqualNames() {
         try {
-            ChangeIdentifier changeIdentifier = new ChangeIdentifier("File", new String[] {"File"},
-                    LanguageElementPartialEqualityTests.class, SOURCE_PLUGIN);
             ParameterType parameterType = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "File",
                     LanguageElementPartialEqualityTests.class, SOURCE_PLUGIN);
+            ChangeIdentifier changeIdentifier = new ChangeIdentifier("File", LanguageElementPartialEqualityTests.class,
+                    SOURCE_PLUGIN);
+            changeIdentifier.finalize(new ParameterType[] {parameterType});
             
             assertFalse(changeIdentifier.equalsIgnoreType(parameterType),
                     "Change identifier and parameter type should be partially unequal");
@@ -171,11 +181,17 @@ public class LanguageElementPartialEqualityTests {
     @Test
     public void testCorrectPartiallyUnequalChangeIdentifierAndCallWithDifferentNames() {
         try {
-            ChangeIdentifier changeIdentifier = new ChangeIdentifier("File", new String[] {"File"},
+            ParameterType parameterType1 = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "File",
                     LanguageElementPartialEqualityTests.class, SOURCE_PLUGIN);
-            Call call = new Call(ElementType.OPERATION, "file", "File", new String[] {"String"},
+            ParameterType parameterType2 = new ParameterType(ElementType.FRAGMENT_PARAMETER_TYPE, "String",
+                    LanguageElementPartialEqualityTests.class, SOURCE_PLUGIN);
+            ChangeIdentifier changeIdentifier = new ChangeIdentifier("File", LanguageElementPartialEqualityTests.class,
+                    SOURCE_PLUGIN);
+            changeIdentifier.finalize(new ParameterType[] {parameterType1});
+            Call call = new Call(ElementType.OPERATION, "file",
                     LanguageElementPartialEqualityTests.class.getMethods()[0],
                     LanguageElementPartialEqualityTests.class, SOURCE_PLUGIN);
+            call.finalize(parameterType1, new ParameterType[] {parameterType2}, null);
             
             assertFalse(changeIdentifier.equalsIgnoreType(call),
                     "Change identifier and call should be partially unequal");
@@ -191,11 +207,17 @@ public class LanguageElementPartialEqualityTests {
     @Test
     public void testCorrectPartiallyUnequalChangeIdentifierAndCallWithEqualNames() {
         try {
-            ChangeIdentifier changeIdentifier = new ChangeIdentifier("File", new String[] {"File"},
+            ParameterType parameterType1 = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "File",
                     LanguageElementPartialEqualityTests.class, SOURCE_PLUGIN);
-            Call call = new Call(ElementType.OPERATION, "File", "File", new String[] {"String"},
+            ParameterType parameterType2 = new ParameterType(ElementType.FRAGMENT_PARAMETER_TYPE, "String",
+                    LanguageElementPartialEqualityTests.class, SOURCE_PLUGIN);
+            ChangeIdentifier changeIdentifier = new ChangeIdentifier("File", LanguageElementPartialEqualityTests.class,
+                    SOURCE_PLUGIN);
+            changeIdentifier.finalize(new ParameterType[] {parameterType1});
+            Call call = new Call(ElementType.OPERATION, "File",
                     LanguageElementPartialEqualityTests.class.getMethods()[0],
                     LanguageElementPartialEqualityTests.class, SOURCE_PLUGIN);
+            call.finalize(parameterType1, new ParameterType[] {parameterType2}, null);
             
             assertFalse(changeIdentifier.equalsIgnoreType(call),
                     "Change identifier and call should be partially unequal");
@@ -211,12 +233,18 @@ public class LanguageElementPartialEqualityTests {
     @Test
     public void testCorrectPartiallyEqualExtractorAndAnalysisCalls() {
         try {
-            Call extractorCall = new Call(ElementType.EXTRACTOR_CALL, "do", "File", new String[] {"String"},
+            ParameterType parameterType1 = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "File",
+                    LanguageElementPartialEqualityTests.class, SOURCE_PLUGIN);
+            ParameterType parameterType2 = new ParameterType(ElementType.FRAGMENT_PARAMETER_TYPE, "String",
+                    LanguageElementPartialEqualityTests.class, SOURCE_PLUGIN);
+            Call extractorCall = new Call(ElementType.EXTRACTOR_CALL, "do",
                     LanguageElementPartialEqualityTests.class.getMethods()[0],
                     LanguageElementPartialEqualityTests.class, SOURCE_PLUGIN);
-            Call analysisCall = new Call(ElementType.ANALYSIS_CALL, "do", "File", new String[] {"String"},
+            extractorCall.finalize(parameterType1, new ParameterType[] {parameterType2}, null);
+            Call analysisCall = new Call(ElementType.ANALYSIS_CALL, "do",
                     LanguageElementPartialEqualityTests.class.getMethods()[0],
                     LanguageElementPartialEqualityTests.class, SOURCE_PLUGIN);
+            analysisCall.finalize(parameterType1, new ParameterType[] {parameterType2}, null);
                         
             assertTrue(extractorCall.equalsIgnoreType(analysisCall),
                     "Extractor and analysis call should be partially equal");
@@ -232,13 +260,16 @@ public class LanguageElementPartialEqualityTests {
     @Test
     public void testCorrectPartiallyUnequalCallAndParameterTypeWithDifferentNames() {
         try {
-            Call call = new Call(ElementType.OPERATION, "file", "File", new String[] {"String"},
+            ParameterType parameterType1 = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "File",
+                    LanguageElementPartialEqualityTests.class, SOURCE_PLUGIN);
+            ParameterType parameterType2 = new ParameterType(ElementType.FRAGMENT_PARAMETER_TYPE, "String",
+                    LanguageElementPartialEqualityTests.class, SOURCE_PLUGIN);
+            Call call = new Call(ElementType.OPERATION, "file",
                     LanguageElementPartialEqualityTests.class.getMethods()[0],
                     LanguageElementPartialEqualityTests.class, SOURCE_PLUGIN);
-            ParameterType parameterType = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "File",
-                    LanguageElementPartialEqualityTests.class, SOURCE_PLUGIN);
+            call.finalize(parameterType1, new ParameterType[] {parameterType2}, null);
             
-            assertFalse(call.equalsIgnoreType(parameterType), "Call and parameter type should be partially unequal");
+            assertFalse(call.equalsIgnoreType(parameterType1), "Call and parameter type should be partially unequal");
         } catch (LanguageElementException e) {
             assertNull("Unexpected exception thrown", e);
         }
@@ -251,13 +282,16 @@ public class LanguageElementPartialEqualityTests {
     @Test
     public void testCorrectPartiallyUnequalCallAndParameterTypeWithEqualNames() {
         try {
-            Call call = new Call(ElementType.OPERATION, "File", "File", new String[] {"String"},
+            ParameterType parameterType1 = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "File",
+                    LanguageElementPartialEqualityTests.class, SOURCE_PLUGIN);
+            ParameterType parameterType2 = new ParameterType(ElementType.FRAGMENT_PARAMETER_TYPE, "String",
+                    LanguageElementPartialEqualityTests.class, SOURCE_PLUGIN);
+            Call call = new Call(ElementType.OPERATION, "File",
                     LanguageElementPartialEqualityTests.class.getMethods()[0],
                     LanguageElementPartialEqualityTests.class, SOURCE_PLUGIN);
-            ParameterType parameterType = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "File",
-                    LanguageElementPartialEqualityTests.class, SOURCE_PLUGIN);
+            call.finalize(parameterType1, new ParameterType[] {parameterType2}, null);
             
-            assertFalse(call.equalsIgnoreType(parameterType), "Call and parameter type should be partially unequal");
+            assertFalse(call.equalsIgnoreType(parameterType1), "Call and parameter type should be partially unequal");
         } catch (LanguageElementException e) {
             assertNull("Unexpected exception thrown", e);
         }
@@ -270,11 +304,17 @@ public class LanguageElementPartialEqualityTests {
     @Test
     public void testCorrectPartiallyUnequalCallAndChangeIdentifierWithDifferentNames() {
         try {
-            Call call = new Call(ElementType.OPERATION, "file", "File", new String[] {"String"},
+            ParameterType parameterType1 = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "File",
+                    LanguageElementPartialEqualityTests.class, SOURCE_PLUGIN);
+            ParameterType parameterType2 = new ParameterType(ElementType.FRAGMENT_PARAMETER_TYPE, "String",
+                    LanguageElementPartialEqualityTests.class, SOURCE_PLUGIN);
+            Call call = new Call(ElementType.OPERATION, "file",
                     LanguageElementPartialEqualityTests.class.getMethods()[0],
                     LanguageElementPartialEqualityTests.class, SOURCE_PLUGIN);
-            ChangeIdentifier changeIdentifier = new ChangeIdentifier("File", new String[] {"File"},
-                    LanguageElementPartialEqualityTests.class, SOURCE_PLUGIN);
+            call.finalize(parameterType1, new ParameterType[] {parameterType2}, null);
+            ChangeIdentifier changeIdentifier = new ChangeIdentifier("File", LanguageElementPartialEqualityTests.class,
+                    SOURCE_PLUGIN);
+            changeIdentifier.finalize(new ParameterType[] {parameterType1});
             
             assertFalse(call.equalsIgnoreType(changeIdentifier),
                     "Call and change identifier should be partially unequal");
@@ -290,11 +330,17 @@ public class LanguageElementPartialEqualityTests {
     @Test
     public void testCorrectPartiallyUnequalCallAndChangeIdentifierWithEqualNames() {
         try {
-            Call call = new Call(ElementType.OPERATION, "File", "File", new String[] {"String"},
+            ParameterType parameterType1 = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "File",
+                    LanguageElementPartialEqualityTests.class, SOURCE_PLUGIN);
+            ParameterType parameterType2 = new ParameterType(ElementType.FRAGMENT_PARAMETER_TYPE, "String",
+                    LanguageElementPartialEqualityTests.class, SOURCE_PLUGIN);
+            Call call = new Call(ElementType.OPERATION, "File",
                     LanguageElementPartialEqualityTests.class.getMethods()[0],
                     LanguageElementPartialEqualityTests.class, SOURCE_PLUGIN);
-            ChangeIdentifier changeIdentifier = new ChangeIdentifier("File", new String[] {"File"},
-                    LanguageElementPartialEqualityTests.class, SOURCE_PLUGIN);
+            call.finalize(parameterType1, new ParameterType[] {parameterType2}, null);
+            ChangeIdentifier changeIdentifier = new ChangeIdentifier("File", LanguageElementPartialEqualityTests.class,
+                    SOURCE_PLUGIN);
+            changeIdentifier.finalize(new ParameterType[] {parameterType1});
             
             assertFalse(call.equalsIgnoreType(changeIdentifier),
                     "Call and change identifier should be partially unequal");

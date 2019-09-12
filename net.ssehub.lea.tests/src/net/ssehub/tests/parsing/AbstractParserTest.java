@@ -20,7 +20,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.xtext.testing.util.ParseHelper;
@@ -153,50 +152,53 @@ public abstract class AbstractParserTest {
         validationTestHelper = injector.getInstance(ValidationTestHelper.class);
         
         // Add those language elements to the language registry, which are defined in the test models
-        List<LanguageElement> requiredLanguageElements = new ArrayList<LanguageElement>();
         try {
-            ParameterType artifactParameterType = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "File",
-                    AbstractParserTest.class, SOURCE_PLUGIN);
-            requiredLanguageElements.add(artifactParameterType);
-            ParameterType fragmentParameterType = new ParameterType(ElementType.FRAGMENT_PARAMETER_TYPE, "CodeBlock",
-                    AbstractParserTest.class, SOURCE_PLUGIN);
-            requiredLanguageElements.add(fragmentParameterType);
-            ParameterType resultParameterType = new ParameterType(ElementType.RESULT_PARAMETER_TYPE, "DeadBlock",
-                    AbstractParserTest.class, SOURCE_PLUGIN);
-            requiredLanguageElements.add(resultParameterType);
-            ChangeIdentifier fileChangeIdentifier = new ChangeIdentifier("FileChangeIdentifier", new String[] {"File"},
-                    AbstractParserTest.class, SOURCE_PLUGIN);
-            requiredLanguageElements.add(fileChangeIdentifier);
-            ChangeIdentifier blockChangeIdentifier = new ChangeIdentifier("BlockChangeIdentifier",
-                    new String[] {"CodeBlock"}, AbstractParserTest.class, SOURCE_PLUGIN);
-            requiredLanguageElements.add(blockChangeIdentifier);
-            
-            Call singleFileCall = new Call(ElementType.OPERATION, "file", "File", new String[] {"String"}, 
-                    AbstractParserTest.class.getMethods()[0], AbstractParserTest.class, SOURCE_PLUGIN);
-            requiredLanguageElements.add(singleFileCall);
-            Call allFilesCall = new Call(ElementType.OPERATION, "files", "File", new String[] {"String"}, 
-                    AbstractParserTest.class.getMethods()[0], AbstractParserTest.class, SOURCE_PLUGIN);
-            requiredLanguageElements.add(allFilesCall); // TODO how to know that this returns a set?
-            
-            Call codeExtractorCallWithtoutParameters = new Call(ElementType.EXTRACTOR_CALL, "codeExtractor",
-                    "CodeBlock", new String[] {}, AbstractParserTest.class.getMethods()[0], AbstractParserTest.class,
-                    SOURCE_PLUGIN);
-            requiredLanguageElements.add(codeExtractorCallWithtoutParameters);
-            
-            Call codeExtractorCallWithParameters = new Call(ElementType.EXTRACTOR_CALL, "codeExtractor", "CodeBlock", 
-                    new String[] {"File"}, AbstractParserTest.class.getMethods()[0], AbstractParserTest.class,
-                    SOURCE_PLUGIN);
-            requiredLanguageElements.add(codeExtractorCallWithParameters);
-            
-            Call deadCodeAnaylsisCall = new Call(ElementType.ANALYSIS_CALL, "deadCodeAnalysis", "DeadBlock",
-                    new String[] {}, AbstractParserTest.class.getMethods()[0], AbstractParserTest.class, SOURCE_PLUGIN);
-            requiredLanguageElements.add(deadCodeAnaylsisCall);
-            
             ParameterType stringParameterType = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "String",
                     AbstractParserTest.class, SOURCE_PLUGIN); // TODO type not specific to artifacts -> build-in types?
-            requiredLanguageElements.add(stringParameterType);
+            LanguageRegistry.INSTANCE.addParameterType(stringParameterType);
+            ParameterType artifactParameterType = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "File",
+                    AbstractParserTest.class, SOURCE_PLUGIN);
+            LanguageRegistry.INSTANCE.addParameterType(artifactParameterType);
+            ParameterType fragmentParameterType = new ParameterType(ElementType.FRAGMENT_PARAMETER_TYPE, "CodeBlock",
+                    AbstractParserTest.class, SOURCE_PLUGIN);
+            LanguageRegistry.INSTANCE.addParameterType(fragmentParameterType);
+            ParameterType resultParameterType = new ParameterType(ElementType.RESULT_PARAMETER_TYPE, "DeadBlock",
+                    AbstractParserTest.class, SOURCE_PLUGIN);
+            LanguageRegistry.INSTANCE.addParameterType(resultParameterType);
             
-            LanguageRegistry.INSTANCE.addLanguageElements(requiredLanguageElements);
+            ChangeIdentifier fileChangeIdentifier = new ChangeIdentifier("FileChangeIdentifier",
+                    AbstractParserTest.class, SOURCE_PLUGIN);
+            fileChangeIdentifier.finalize(new ParameterType[] {artifactParameterType});
+            LanguageRegistry.INSTANCE.addChangeIdentifier(fileChangeIdentifier);
+            ChangeIdentifier blockChangeIdentifier = new ChangeIdentifier("BlockChangeIdentifier",
+                    AbstractParserTest.class, SOURCE_PLUGIN);
+            blockChangeIdentifier.finalize(new ParameterType[] {fragmentParameterType});
+            LanguageRegistry.INSTANCE.addChangeIdentifier(blockChangeIdentifier);
+            
+            Call singleFileCall = new Call(ElementType.OPERATION, "file", AbstractParserTest.class.getMethods()[0],
+                    AbstractParserTest.class, SOURCE_PLUGIN);
+            singleFileCall.finalize(artifactParameterType, new ParameterType[] {stringParameterType}, null);
+            LanguageRegistry.INSTANCE.addCall(singleFileCall);
+            Call allFilesCall = new Call(ElementType.OPERATION, "files", AbstractParserTest.class.getMethods()[0],
+                    AbstractParserTest.class, SOURCE_PLUGIN); // TODO how to know that this returns a set?
+            allFilesCall.finalize(artifactParameterType, new ParameterType[] {stringParameterType}, null);
+            LanguageRegistry.INSTANCE.addCall(allFilesCall);
+            
+            Call codeExtractorCallWithtoutParameters = new Call(ElementType.EXTRACTOR_CALL, "codeExtractor",
+                    AbstractParserTest.class.getMethods()[0], AbstractParserTest.class, SOURCE_PLUGIN);
+            codeExtractorCallWithtoutParameters.finalize(fragmentParameterType, null, null);
+            LanguageRegistry.INSTANCE.addCall(codeExtractorCallWithtoutParameters);
+            Call codeExtractorCallWithParameters = new Call(ElementType.EXTRACTOR_CALL, "codeExtractor",
+                    AbstractParserTest.class.getMethods()[0], AbstractParserTest.class, SOURCE_PLUGIN);
+            codeExtractorCallWithParameters.finalize(fragmentParameterType, new ParameterType[] {artifactParameterType},
+                    null);
+            LanguageRegistry.INSTANCE.addCall(codeExtractorCallWithParameters);
+            
+            Call deadCodeAnaylsisCall = new Call(ElementType.ANALYSIS_CALL, "deadCodeAnalysis",
+                    AbstractParserTest.class.getMethods()[0], AbstractParserTest.class, SOURCE_PLUGIN);
+            deadCodeAnaylsisCall.finalize(resultParameterType, null, null);
+            LanguageRegistry.INSTANCE.addCall(deadCodeAnaylsisCall);
+
         } catch (LanguageElementException e) {
             System.out.println("Creating required language elements during setup failed");
             e.printStackTrace();

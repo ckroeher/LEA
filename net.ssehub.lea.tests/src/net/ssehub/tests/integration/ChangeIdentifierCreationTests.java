@@ -29,6 +29,8 @@ import net.ssehub.integration.ElementType;
 import net.ssehub.integration.ExternalElementException;
 import net.ssehub.integration.LanguageElement;
 import net.ssehub.integration.LanguageElementCreator;
+import net.ssehub.integration.LanguageRegistry;
+import net.ssehub.integration.ParameterType;
 
 /**
  * This class contains unit tests for the correct creation of {@link ChangeIdentifier}s by the
@@ -86,6 +88,21 @@ public class ChangeIdentifierCreationTests extends AbstractLanguageElementCreati
     private class ChangeIdentifierWithSingleAssignableElementAndSymbolicName { }
     
     /**
+     * The "File" {@link ParameterType} required to create the {@link ChangeIdentifier}s for testing.
+     */
+    private static ParameterType file = createParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "File");
+    
+    /**
+     * The "Database" {@link ParameterType} required to create the {@link ChangeIdentifier}s for testing.
+     */
+    private static ParameterType database = createParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "Database");
+    
+    /**
+     * The "Stream" {@link ParameterType} required to create the {@link ChangeIdentifier}s for testing.
+     */
+    private static ParameterType stream = createParameterType(ElementType.FRAGMENT_PARAMETER_TYPE, "Stream");
+    
+    /**
      * The expected results for each input {@link Class} defined as inner class of this class. Each entry has the
      * following elements:
      * <ul>
@@ -117,29 +134,40 @@ public class ChangeIdentifierCreationTests extends AbstractLanguageElementCreati
         {ChangeIdentifierWithSingleAssignableElement.class, null, true, ChangeIdentifier.class,
             ElementType.CHANGE_IDENTIFIER, ChangeIdentifierWithSingleAssignableElement.class.getSimpleName(),
             ChangeIdentifierWithSingleAssignableElement.class.getCanonicalName(),
-            ChangeIdentifierWithSingleAssignableElement.class, sourcePlugin, new String[]{"File"}},
+            ChangeIdentifierWithSingleAssignableElement.class, SOURCE_PLUGIN, new ParameterType[]{file}},
         
         {ChangeIdentifierWithMultipleAssignableElements.class, null, true, ChangeIdentifier.class,
             ElementType.CHANGE_IDENTIFIER, ChangeIdentifierWithMultipleAssignableElements.class.getSimpleName(),
             ChangeIdentifierWithMultipleAssignableElements.class.getCanonicalName(),
-            ChangeIdentifierWithMultipleAssignableElements.class, sourcePlugin,
-            new String[]{"File", "Database", "Stream"}},
+            ChangeIdentifierWithMultipleAssignableElements.class, SOURCE_PLUGIN,
+            new ParameterType[]{file, database, stream}},
         
         {ChangeIdentifierWithSingleAssignableElementAndSymbolicName.class, null, true, ChangeIdentifier.class,
-            ElementType.CHANGE_IDENTIFIER, "ChangeIdentifier", 
-            ChangeIdentifierWithSingleAssignableElementAndSymbolicName.class.getCanonicalName(),
-            ChangeIdentifierWithSingleAssignableElementAndSymbolicName.class, sourcePlugin, new String[]{"File"}}
+            ElementType.CHANGE_IDENTIFIER, "ChangeIdentifier",
+            "net.ssehub.tests.integration.ChangeIdentifierCreationTests.ChangeIdentifier",
+            ChangeIdentifierWithSingleAssignableElementAndSymbolicName.class, SOURCE_PLUGIN, new ParameterType[]{file}}
     };
     
     /**
-     * The array containing the expected names of the elements to which a {@link ChangeIdentifier} is assignable to.
+     * The array of {@link ParameterType}s representing the expected elements to which a {@link ChangeIdentifier} is
+     * assignable to.
      */
-    private String[] expectedAssignableElements;
+    private ParameterType[] expectedAssignableElements;
     
     /**
-     * The array containing the actual names of the elements to which a {@link ChangeIdentifier} is assignable to.
+     * The array of {@link ParameterType}s representing the actual elements to which a {@link ChangeIdentifier} is
+     * assignable to.
      */
-    private String[] actualAssignableElements;
+    private ParameterType[] actualAssignableElements;
+    
+    @Override
+    protected void prepare() {
+        if (!LanguageRegistry.INSTANCE.addParameterType(file)
+                || !LanguageRegistry.INSTANCE.addParameterType(database)
+                || !LanguageRegistry.INSTANCE.addParameterType(stream)) {
+            System.err.println("Preparation failed");
+        }
+    }
     
     /**
      * Constructs a new {@link ChangeIdentifierCreationTests} instance.
@@ -159,14 +187,14 @@ public class ChangeIdentifierCreationTests extends AbstractLanguageElementCreati
      * @param expectedElementSourceClass the expected {@link Class} from which the {@link LanguageElement} was created
      * @param expectedElementSourcePlugin the expected {@link File} denoting the source plug-in of the {@link Class}
      *        from which a {@link LanguageElement} was created
-     * @param expectedAssignableElements the array containing the expected names of the elements to which a
-     *        {@link ChangeIdentifier} is assignable to
+     * @param expectedAssignableElements the array of {@link ParameterType}s representing the expected elements to which
+     *        a {@link ChangeIdentifier} is assignable to
      */
 //CHECKSTYLE:OFF
     public ChangeIdentifierCreationTests(Class<?> testInputClass, ExternalElementException expectedException,
             boolean expectedElementsExistence, Class<?> expectedElementClass, ElementType expectedElementType,
             String expectedElementName, String expectedElementFullyQualifiedName, Class<?> expectedElementSourceClass, 
-            File expectedElementSourcePlugin, String[] expectedAssignableElements) {
+            File expectedElementSourcePlugin, ParameterType[] expectedAssignableElements) {
         super(testInputClass, expectedException, expectedElementsExistence, expectedElementClass, expectedElementType,
                 expectedElementName, expectedElementFullyQualifiedName, expectedElementSourceClass,
                 expectedElementSourcePlugin);

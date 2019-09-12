@@ -164,42 +164,44 @@ public class FragmentParameterTypeCreationTests extends AbstractLanguageElementC
     private static final Object[][] EXPECTED_RESULTS = new Object[][] {
         {SimpleFragmentParameterType.class, null, true, ParameterType.class, ElementType.FRAGMENT_PARAMETER_TYPE, 
             SimpleFragmentParameterType.class.getSimpleName(), SimpleFragmentParameterType.class.getCanonicalName(),
-            SimpleFragmentParameterType.class, sourcePlugin},
+            SimpleFragmentParameterType.class, SOURCE_PLUGIN},
         
         {SimpleFragmentParameterTypeWithSymbolicName.class, null, true, ParameterType.class,
-            ElementType.FRAGMENT_PARAMETER_TYPE, "Block", 
-            SimpleFragmentParameterTypeWithSymbolicName.class.getCanonicalName(),
-            SimpleFragmentParameterTypeWithSymbolicName.class, sourcePlugin},
+            ElementType.FRAGMENT_PARAMETER_TYPE, "Block",
+            "net.ssehub.tests.integration.FragmentParameterTypeCreationTests.Block",
+            SimpleFragmentParameterTypeWithSymbolicName.class, SOURCE_PLUGIN},
         
         {SimpleFragmentParameterTypeWithSymbolicParameterName.class, null, true, ParameterType.class, 
             ElementType.FRAGMENT_PARAMETER_TYPE,
             SimpleFragmentParameterTypeWithSymbolicParameterName.class.getSimpleName(),
             SimpleFragmentParameterTypeWithSymbolicParameterName.class.getCanonicalName(),
-            SimpleFragmentParameterTypeWithSymbolicParameterName.class, sourcePlugin},
+            SimpleFragmentParameterTypeWithSymbolicParameterName.class, SOURCE_PLUGIN},
         
         {SimpleFragmentParameterTypeWithSymbolicNameAndParameterName.class, null, true, ParameterType.class,
-            ElementType.FRAGMENT_PARAMETER_TYPE, "Block", 
-            SimpleFragmentParameterTypeWithSymbolicNameAndParameterName.class.getCanonicalName(),
-            SimpleFragmentParameterTypeWithSymbolicNameAndParameterName.class, sourcePlugin},
+            ElementType.FRAGMENT_PARAMETER_TYPE, "Block",
+            "net.ssehub.tests.integration.FragmentParameterTypeCreationTests.Block",
+            SimpleFragmentParameterTypeWithSymbolicNameAndParameterName.class, SOURCE_PLUGIN},
 
         {GenericFragmentParameterType.class, null, true, ParameterType.class, ElementType.FRAGMENT_PARAMETER_TYPE, 
-            "GenericFragmentParameterType<File>", GenericFragmentParameterType.class.getCanonicalName(),
-            GenericFragmentParameterType.class, sourcePlugin},
+            "GenericFragmentParameterType<File>",
+            "net.ssehub.tests.integration.FragmentParameterTypeCreationTests.GenericFragmentParameterType<File>",
+            GenericFragmentParameterType.class, SOURCE_PLUGIN},
         
         {GenericFragmentParameterTypeWithSymbolicName.class, null, true, ParameterType.class,
-            ElementType.FRAGMENT_PARAMETER_TYPE, "Block<File>", 
-            GenericFragmentParameterTypeWithSymbolicName.class.getCanonicalName(),
-            GenericFragmentParameterTypeWithSymbolicName.class, sourcePlugin},
+            ElementType.FRAGMENT_PARAMETER_TYPE, "Block<File>",
+            "net.ssehub.tests.integration.FragmentParameterTypeCreationTests.Block<File>",
+            GenericFragmentParameterTypeWithSymbolicName.class, SOURCE_PLUGIN},
         
         {GenericFragmentParameterTypeWithSymbolicParameterName.class, null, true, ParameterType.class,
             ElementType.FRAGMENT_PARAMETER_TYPE, "GenericFragmentParameterTypeWithSymbolicParameterName<Code>",
-            GenericFragmentParameterTypeWithSymbolicParameterName.class.getCanonicalName(),
-            GenericFragmentParameterTypeWithSymbolicParameterName.class, sourcePlugin},
+            "net.ssehub.tests.integration.FragmentParameterTypeCreationTests."
+                    + "GenericFragmentParameterTypeWithSymbolicParameterName<Code>",
+            GenericFragmentParameterTypeWithSymbolicParameterName.class, SOURCE_PLUGIN},
         
         {GenericFragmentParameterTypeWithSymbolicNameAndParameterName.class, null, true, ParameterType.class,
             ElementType.FRAGMENT_PARAMETER_TYPE, "Block<Code>",
-            GenericFragmentParameterTypeWithSymbolicNameAndParameterName.class.getCanonicalName(),
-            GenericFragmentParameterTypeWithSymbolicNameAndParameterName.class, sourcePlugin}
+            "net.ssehub.tests.integration.FragmentParameterTypeCreationTests.Block<Code>",
+            GenericFragmentParameterTypeWithSymbolicNameAndParameterName.class, SOURCE_PLUGIN}
     };
     
     /**
@@ -240,6 +242,11 @@ public class FragmentParameterTypeCreationTests extends AbstractLanguageElementC
     @Parameters
     public static List<Object[]> getTestData() {
         return Arrays.asList(EXPECTED_RESULTS);
+    }
+    
+    @Override
+    protected void prepare() {
+        // No preparation needed for theses tests.
     }
     
 }

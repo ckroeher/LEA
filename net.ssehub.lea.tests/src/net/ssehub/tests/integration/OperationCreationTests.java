@@ -26,6 +26,8 @@ import net.ssehub.integration.ElementType;
 import net.ssehub.integration.ExternalElementException;
 import net.ssehub.integration.LanguageElement;
 import net.ssehub.integration.LanguageElementCreator;
+import net.ssehub.integration.LanguageRegistry;
+import net.ssehub.integration.ParameterType;
 import net.ssehub.integration.annotations.Operation;
 
 /**
@@ -423,17 +425,57 @@ public class OperationCreationTests extends AbstractCallCreationTest {
     }
     
     /**
+     * The "void" {@link ParameterType} required to create the {@link Call}s for testing.
+     */
+    private static ParameterType voidElement = createParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "void");
+    
+    /**
+     * The "File" {@link ParameterType} required to create the {@link Call}s for testing.
+     */
+    private static ParameterType file = createParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "File");
+    
+    /**
+     * The "String" {@link ParameterType} required to create the {@link Call}s for testing.
+     */
+    private static ParameterType string = createParameterType(ElementType.FRAGMENT_PARAMETER_TYPE, "String");
+    
+    /**
+     * The "File[]" {@link ParameterType} required to create the {@link Call}s for testing.
+     */
+    private static ParameterType fileArray = createParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "File[]");
+    
+    /**
+     * The "List<File>" {@link ParameterType} required to create the {@link Call}s for testing.
+     */
+    private static ParameterType fileList = createParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "List<File>");
+    
+    /**
+     * The "String[]" {@link ParameterType} required to create the {@link Call}s for testing.
+     */
+    private static ParameterType stringArray = createParameterType(ElementType.FRAGMENT_PARAMETER_TYPE, "String[]");
+    
+    /**
+     * The "FileObject" {@link ParameterType} required to create the {@link Call}s for testing.
+     */
+    private static ParameterType fileObject = createParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "FileObject");
+    
+    /**
+     * The "Prefix" {@link ParameterType} required to create the {@link Call}s for testing.
+     */
+    private static ParameterType prefix = createParameterType(ElementType.FRAGMENT_PARAMETER_TYPE, "Prefix");
+    
+    /**
      * The expected results for each input {@link Class} defined as inner class of this class. Each entry has the
      * following elements:
      * <ul>
      * <li>The {@link Class} used as an input to the {@link LanguageElementCreator} for creating a 
-     * {@link LanguageElement} based on the information of that class
+     *     {@link LanguageElement} based on the information of that class
      * </li>
      * <li>The {@link ExternalElementException} expected to be thrown during the creation of a {@link LanguageElement};
-     * a value of <code>null</code> indicates that throwing an exception was not expected
+     *     a value of <code>null</code> indicates that throwing an exception was not expected
      * </li>
      * <li>The declaration of whether it is expected that the created {@link LanguageElement} is not <code>null</code>
-     * (<code>true</code>) or should be <code>null</code> (<code>false</code>)
+     *     (<code>true</code>) or should be <code>null</code> (<code>false</code>)
      * </li>
      * <li>The expected {@link Class} of the created {@link LanguageElement}</li>
      * <li>The expected {@link ElementType} of the created {@link LanguageElement}</li>
@@ -441,100 +483,119 @@ public class OperationCreationTests extends AbstractCallCreationTest {
      * <li>The expected fully-qualified name of the created {@link LanguageElement}</li>
      * <li>The expected {@link Class} from which the {@link LanguageElement} was created</li>
      * <li>The expected {@link File} denoting the source plug-in of the {@link Class} from which a 
-     * {@link LanguageElement} was created
+     *     {@link LanguageElement} was created
      * </li>
-     * <li>The expected name of the type of element(s) the created call will return</li>
-     * <li>The expected array of names, which denote the elements the created call accepts as parameters</li>
+     * <li>The expected {@link ParameterType} the created {@link Call} will return</li>
+     * <li>The expected array of {@link ParameterType}s, which denote the elements the created {@link Call} accepts as
+     *     parameters</li>
      * </ul>
      */
     private static final Object[][] EXPECTED_RESULTS = new Object[][] {
         {ClassIntroducingVoidReturnOperation.class, null, true, Call.class, ElementType.OPERATION, 
-            "noReturn", ClassIntroducingVoidReturnOperation.class.getMethods()[0].toGenericString(), 
-            ClassIntroducingVoidReturnOperation.class, sourcePlugin, "void", new String[] {},
+            "noReturn",
+            "net.ssehub.tests.integration.OperationCreationTests.ClassIntroducingVoidReturnOperation.noReturn", 
+            ClassIntroducingVoidReturnOperation.class, SOURCE_PLUGIN, voidElement, null,
             ClassIntroducingVoidReturnOperation.class.getMethods()[0]},
         
         {ClassIntroducingFileReturnOperation.class, null, true, Call.class, ElementType.OPERATION, 
-            "getFile", ClassIntroducingFileReturnOperation.class.getMethods()[0].toGenericString(),
-            ClassIntroducingFileReturnOperation.class, sourcePlugin, "File", new String[] {},
+            "getFile", 
+            "net.ssehub.tests.integration.OperationCreationTests.ClassIntroducingFileReturnOperation.getFile",
+            ClassIntroducingFileReturnOperation.class, SOURCE_PLUGIN, file, null,
             ClassIntroducingFileReturnOperation.class.getMethods()[0]},
         
         {ClassIntroducingFileReturnAndSingleSimpleParameterOperation.class, null, true, Call.class,
-            ElementType.OPERATION, "getFile", 
-            ClassIntroducingFileReturnAndSingleSimpleParameterOperation.class.getMethods()[0].toGenericString(), 
-            ClassIntroducingFileReturnAndSingleSimpleParameterOperation.class, sourcePlugin, "File",
-            new String[] {"File"}, ClassIntroducingFileReturnAndSingleSimpleParameterOperation.class.getMethods()[0]},
+            ElementType.OPERATION, "getFile",
+            "net.ssehub.tests.integration.OperationCreationTests."
+                    + "ClassIntroducingFileReturnAndSingleSimpleParameterOperation.getFile", 
+            ClassIntroducingFileReturnAndSingleSimpleParameterOperation.class, SOURCE_PLUGIN, file,
+            new ParameterType[] {file},
+            ClassIntroducingFileReturnAndSingleSimpleParameterOperation.class.getMethods()[0]},
         
         {ClassIntroducingFileReturnAndMultipleSimpleParametersOperation.class, null, true, Call.class,
-            ElementType.OPERATION, "getFile", 
-            ClassIntroducingFileReturnAndMultipleSimpleParametersOperation.class.getMethods()[0].toGenericString(),
-            ClassIntroducingFileReturnAndMultipleSimpleParametersOperation.class, sourcePlugin, "File", 
-            new String[] {"File", "String"},
+            ElementType.OPERATION, "getFile",
+            "net.ssehub.tests.integration.OperationCreationTests."
+                    + "ClassIntroducingFileReturnAndMultipleSimpleParametersOperation.getFile",
+            ClassIntroducingFileReturnAndMultipleSimpleParametersOperation.class, SOURCE_PLUGIN, file, 
+            new ParameterType[] {file, string},
             ClassIntroducingFileReturnAndMultipleSimpleParametersOperation.class.getMethods()[0]},
         
         {ClassIntroducingFileReturnAndSingleArrayParameterOperation.class, null, true, Call.class,
             ElementType.OPERATION, "getFile",
-            ClassIntroducingFileReturnAndSingleArrayParameterOperation.class.getMethods()[0].toGenericString(),
-            ClassIntroducingFileReturnAndSingleArrayParameterOperation.class, sourcePlugin, "File", 
-            new String[] {"File[]"}, ClassIntroducingFileReturnAndSingleArrayParameterOperation.class.getMethods()[0]},
+            "net.ssehub.tests.integration.OperationCreationTests."
+                    + "ClassIntroducingFileReturnAndSingleArrayParameterOperation.getFile",
+            ClassIntroducingFileReturnAndSingleArrayParameterOperation.class, SOURCE_PLUGIN, file, 
+            new ParameterType[] {fileArray},
+            ClassIntroducingFileReturnAndSingleArrayParameterOperation.class.getMethods()[0]},
         
         {ClassIntroducingFileReturnAndSingleListParameterOperation.class, null, true, Call.class,
-            ElementType.OPERATION, "getFile", 
-            ClassIntroducingFileReturnAndSingleListParameterOperation.class.getMethods()[0].toGenericString(),
-            ClassIntroducingFileReturnAndSingleListParameterOperation.class, sourcePlugin, "File",
-            new String[] {"List<File>"},
+            ElementType.OPERATION, "getFile",
+            "net.ssehub.tests.integration.OperationCreationTests."
+                    + "ClassIntroducingFileReturnAndSingleListParameterOperation.getFile",
+            ClassIntroducingFileReturnAndSingleListParameterOperation.class, SOURCE_PLUGIN, file,
+            new ParameterType[] {fileList},
             ClassIntroducingFileReturnAndSingleListParameterOperation.class.getMethods()[0]},
         
         {ClassIntroducingFileReturnAndMultipleComplexParameterOperation.class, null, true, Call.class,
-            ElementType.OPERATION, "getFile", 
-            ClassIntroducingFileReturnAndMultipleComplexParameterOperation.class.getMethods()[0].toGenericString(),
-            ClassIntroducingFileReturnAndMultipleComplexParameterOperation.class, sourcePlugin, "File", 
-            new String[] {"List<File>", "String[]"},
+            ElementType.OPERATION, "getFile",
+            "net.ssehub.tests.integration.OperationCreationTests."
+                    + "ClassIntroducingFileReturnAndMultipleComplexParameterOperation.getFile",
+            ClassIntroducingFileReturnAndMultipleComplexParameterOperation.class, SOURCE_PLUGIN, file, 
+            new ParameterType[] {fileList, stringArray},
             ClassIntroducingFileReturnAndMultipleComplexParameterOperation.class.getMethods()[0]},
 
         {ClassIntroducingFileArrayReturnOperation.class, null, true, Call.class, ElementType.OPERATION, 
-            "getFile", ClassIntroducingFileArrayReturnOperation.class.getMethods()[0].toGenericString(), 
-            ClassIntroducingFileArrayReturnOperation.class, sourcePlugin, "File[]", new String[] {},
+            "getFile",
+            "net.ssehub.tests.integration.OperationCreationTests.ClassIntroducingFileArrayReturnOperation.getFile", 
+            ClassIntroducingFileArrayReturnOperation.class, SOURCE_PLUGIN, fileArray, null,
             ClassIntroducingFileArrayReturnOperation.class.getMethods()[0]},
         
         {ClassIntroducingFileListReturnOperation.class, null, true, Call.class, ElementType.OPERATION, 
-            "getFile", ClassIntroducingFileListReturnOperation.class.getMethods()[0].toGenericString(),
-            ClassIntroducingFileListReturnOperation.class, sourcePlugin, "List<File>", new String[] {},
+            "getFile", 
+            "net.ssehub.tests.integration.OperationCreationTests.ClassIntroducingFileListReturnOperation.getFile",
+            ClassIntroducingFileListReturnOperation.class, SOURCE_PLUGIN, fileList, null,
             ClassIntroducingFileListReturnOperation.class.getMethods()[0]},
         
         {ClassIntroducingFileReturnWithCustomNameOperation.class, null, true, Call.class, ElementType.OPERATION, 
-            "parseFile", ClassIntroducingFileReturnWithCustomNameOperation.class.getMethods()[0].toGenericString(),
-            ClassIntroducingFileReturnWithCustomNameOperation.class, sourcePlugin, "File", new String[] {}, 
+            "parseFile", 
+            "net.ssehub.tests.integration.OperationCreationTests.ClassIntroducingFileReturnWithCustomNameOperation."
+                    + "parseFile",
+            ClassIntroducingFileReturnWithCustomNameOperation.class, SOURCE_PLUGIN, file, null, 
             ClassIntroducingFileReturnWithCustomNameOperation.class.getMethods()[0]},
         
         {ClassIntroducingFileReturnWithCustomReturnTypeOperation.class, null, true, Call.class, ElementType.OPERATION, 
-            "getFile", ClassIntroducingFileReturnWithCustomReturnTypeOperation.class.getMethods()[0].toGenericString(),
-            ClassIntroducingFileReturnWithCustomReturnTypeOperation.class, sourcePlugin, "FileObject",
-            new String[] {}, ClassIntroducingFileReturnWithCustomReturnTypeOperation.class.getMethods()[0]},
+            "getFile", 
+            "net.ssehub.tests.integration.OperationCreationTests."
+                    + "ClassIntroducingFileReturnWithCustomReturnTypeOperation.getFile",
+            ClassIntroducingFileReturnWithCustomReturnTypeOperation.class, SOURCE_PLUGIN, fileObject, null,
+            ClassIntroducingFileReturnWithCustomReturnTypeOperation.class.getMethods()[0]},
         
         {ClassIntroducingFileReturnWithCustomNameAndReturnTypeOperation.class, null, true, Call.class,
             ElementType.OPERATION, "getFileObject",
-            ClassIntroducingFileReturnWithCustomNameAndReturnTypeOperation.class.getMethods()[0].toGenericString(),
-            ClassIntroducingFileReturnWithCustomNameAndReturnTypeOperation.class, sourcePlugin, "FileObject",
-            new String[] {}, ClassIntroducingFileReturnWithCustomNameAndReturnTypeOperation.class.getMethods()[0]},
+            "net.ssehub.tests.integration.OperationCreationTests."
+                    + "ClassIntroducingFileReturnWithCustomNameAndReturnTypeOperation.getFileObject",
+            ClassIntroducingFileReturnWithCustomNameAndReturnTypeOperation.class, SOURCE_PLUGIN, fileObject, null,
+            ClassIntroducingFileReturnWithCustomNameAndReturnTypeOperation.class.getMethods()[0]},
         
         {ClassIntroducingFileReturnWithIncorrectCustomParametersOperation.class, new ExternalElementException(""),
             false, null, null, null, null, null, null, null, null, null},
         
         {ClassIntroducingFileReturnWithSingleCustomParameterOperation.class, null, true, Call.class,
-            ElementType.OPERATION, "getFile", 
-            ClassIntroducingFileReturnWithSingleCustomParameterOperation.class.getMethods()[0].toGenericString(), 
-            ClassIntroducingFileReturnWithSingleCustomParameterOperation.class, sourcePlugin, "File", 
-            new String[] {"FileObject"},
+            ElementType.OPERATION, "getFile",
+            "net.ssehub.tests.integration.OperationCreationTests."
+                    + "ClassIntroducingFileReturnWithSingleCustomParameterOperation.getFile", 
+            ClassIntroducingFileReturnWithSingleCustomParameterOperation.class, SOURCE_PLUGIN, file, 
+            new ParameterType[] {fileObject},
             ClassIntroducingFileReturnWithSingleCustomParameterOperation.class.getMethods()[0]},
         
         {ClassIntroducingFileReturnWithTooManyCustomParametersOperation.class, new ExternalElementException(""),
             false, null, null, null, null, null, null, null, null, null},
         
         {ClassIntroducingFileReturnWithMultipleCustomParametersOperation.class, null, true, Call.class,
-            ElementType.OPERATION, "getFile", 
-            ClassIntroducingFileReturnWithMultipleCustomParametersOperation.class.getMethods()[0].toGenericString(), 
-            ClassIntroducingFileReturnWithMultipleCustomParametersOperation.class, sourcePlugin, "File", 
-            new String[] {"FileObject", "Prefix"},
+            ElementType.OPERATION, "getFile",
+            "net.ssehub.tests.integration.OperationCreationTests."
+                    + "ClassIntroducingFileReturnWithMultipleCustomParametersOperation.getFile", 
+            ClassIntroducingFileReturnWithMultipleCustomParametersOperation.class, SOURCE_PLUGIN, file, 
+            new ParameterType[] {fileObject, prefix},
             ClassIntroducingFileReturnWithMultipleCustomParametersOperation.class.getMethods()[0]},
         
         {ClassIntroducingFileReturnWithTooFewCustomParametersOperation.class, new ExternalElementException(""),
@@ -559,16 +620,16 @@ public class OperationCreationTests extends AbstractCallCreationTest {
      * @param expectedElementSourceClass the expected {@link Class} from which the {@link LanguageElement} was created
      * @param expectedElementSourcePlugin the expected {@link File} denoting the source plug-in of the {@link Class}
      *        from which a {@link LanguageElement} was created
-     * @param expectedReturnType the expected name of the type of element(s) the created operation will return
-     * @param expectedParameters the expected array of names, which denote the elements the created operation accepts as
-     *        parameters
+     * @param expectedReturnType the expected {@link ParameterType} the created {@link Call} will return
+     * @param expectedParameters the expected array of {@link ParameterType}s, which denote the elements the created
+     *        {@link Call} accepts as parameters
      * @param expectedSourceMethod the expected {@link Method} from where this call was created
      */
 //CHECKSTYLE:OFF
     public OperationCreationTests(Class<?> testInputClass, ExternalElementException expectedException,
             boolean expectedElementsExistence, Class<?> expectedElementClass, ElementType expectedElementType,
             String expectedElementName, String expectedElementFullyQualifiedName, Class<?> expectedElementSourceClass,
-            File expectedElementSourcePlugin, String expectedReturnType, String[] expectedParameters,
+            File expectedElementSourcePlugin, ParameterType expectedReturnType, ParameterType[] expectedParameters,
             Method expectedSourceMethod) {
         super(testInputClass, expectedException, expectedElementsExistence, expectedElementClass, expectedElementType,
                 expectedElementName, expectedElementFullyQualifiedName, expectedElementSourceClass,
@@ -586,4 +647,19 @@ public class OperationCreationTests extends AbstractCallCreationTest {
         return Arrays.asList(EXPECTED_RESULTS);
     }
 
+    @Override
+    protected void prepare() {
+// CHECKSTYLE:OFF
+        if (!LanguageRegistry.INSTANCE.addParameterType(voidElement)
+                || !LanguageRegistry.INSTANCE.addParameterType(file)
+                || !LanguageRegistry.INSTANCE.addParameterType(string)
+                || !LanguageRegistry.INSTANCE.addParameterType(fileArray)
+                || !LanguageRegistry.INSTANCE.addParameterType(fileList)
+                || !LanguageRegistry.INSTANCE.addParameterType(stringArray)
+                || !LanguageRegistry.INSTANCE.addParameterType(fileObject)
+                || !LanguageRegistry.INSTANCE.addParameterType(prefix)) {
+            System.err.println("Preparation failed");
+        }
+// CHECKSTYLE:OFF
+    }
 }

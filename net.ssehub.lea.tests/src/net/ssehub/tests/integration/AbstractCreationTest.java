@@ -16,8 +16,6 @@ package net.ssehub.tests.integration;
 
 import java.io.File;
 
-import org.junit.BeforeClass;
-
 import net.ssehub.integration.LanguageElement;
 import net.ssehub.integration.LanguageElementCreator;
 
@@ -31,22 +29,21 @@ import net.ssehub.integration.LanguageElementCreator;
 public abstract class AbstractCreationTest {
     
     /**
-     * The {@link LanguageElementCreator} for testing the correct creation of {@link LanguageElement}s.
-     */
-    protected static LanguageElementCreator elementCreator;
-    
-    /**
      * The {@link File} denoting the source plug-in of the {@link Class} from which a {@link LanguageElement} should be
      * created. This is just a dummy file as it has no impact on the actual creation, but is only used as a constructor
      * parameter.
      */
-    protected static File sourcePlugin = new File("./");
+    protected static final File SOURCE_PLUGIN = new File("./");
     
     /**
-     * Prepares the elements commonly used by all unit tests defined in the extending classes.
+     * The {@link LanguageElementCreator} for testing the correct creation of {@link LanguageElement}s.
      */
-    @BeforeClass
-    public static void prepare() {
+    protected LanguageElementCreator elementCreator;
+    
+    /**
+     * Construct a new {@link AbstractCreationTest} instance.
+     */
+    protected AbstractCreationTest() {
         elementCreator = new LanguageElementCreator();
     }
 

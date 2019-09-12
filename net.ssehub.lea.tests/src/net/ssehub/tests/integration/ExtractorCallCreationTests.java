@@ -26,6 +26,8 @@ import net.ssehub.integration.ElementType;
 import net.ssehub.integration.ExternalElementException;
 import net.ssehub.integration.LanguageElement;
 import net.ssehub.integration.LanguageElementCreator;
+import net.ssehub.integration.LanguageRegistry;
+import net.ssehub.integration.ParameterType;
 import net.ssehub.integration.annotations.ExtractorCall;
 
 /**
@@ -77,17 +79,23 @@ public class ExtractorCallCreationTests extends AbstractCallCreationTest {
     }
     
     /**
+     * The "HiddenElement" {@link ParameterType} required to create the {@link Call}s for testing.
+     */
+    private static ParameterType hiddenElement = createParameterType(ElementType.ARTIFACT_PARAMETER_TYPE,
+            "HiddenElement");
+    
+    /**
      * The expected results for each input {@link Class} defined as inner class of this class. Each entry has the
      * following elements:
      * <ul>
      * <li>The {@link Class} used as an input to the {@link LanguageElementCreator} for creating a 
-     * {@link LanguageElement} based on the information of that class
+     *     {@link LanguageElement} based on the information of that class
      * </li>
      * <li>The {@link ExternalElementException} expected to be thrown during the creation of a {@link LanguageElement};
-     * a value of <code>null</code> indicates that throwing an exception was not expected
+     *     a value of <code>null</code> indicates that throwing an exception was not expected
      * </li>
      * <li>The declaration of whether it is expected that the created {@link LanguageElement} is not <code>null</code>
-     * (<code>true</code>) or should be <code>null</code> (<code>false</code>)
+     *     (<code>true</code>) or should be <code>null</code> (<code>false</code>)
      * </li>
      * <li>The expected {@link Class} of the created {@link LanguageElement}</li>
      * <li>The expected {@link ElementType} of the created {@link LanguageElement}</li>
@@ -95,10 +103,11 @@ public class ExtractorCallCreationTests extends AbstractCallCreationTest {
      * <li>The expected fully-qualified name of the created {@link LanguageElement}</li>
      * <li>The expected {@link Class} from which the {@link LanguageElement} was created</li>
      * <li>The expected {@link File} denoting the source plug-in of the {@link Class} from which a 
-     * {@link LanguageElement} was created
+     *     {@link LanguageElement} was created
      * </li>
-     * <li>The expected name of the type of element(s) the created call will return</li>
-     * <li>The expected array of names, which denote the elements the created call accepts as parameters</li>
+     * <li>The expected {@link ParameterType} the created {@link Call} will return</li>
+     * <li>The expected array of {@link ParameterType}s, which denote the elements the created {@link Call} accepts as
+     *     parameters</li>
      * </ul>
      */
     private static final Object[][] EXPECTED_RESULTS = new Object[][] {
@@ -107,9 +116,10 @@ public class ExtractorCallCreationTests extends AbstractCallCreationTest {
         
         {ClassIntroducingVoidReturnWithCustomReturnTypeExtractorCall.class, null, true, Call.class,
             ElementType.EXTRACTOR_CALL, "extractImplicit", 
-            ClassIntroducingVoidReturnWithCustomReturnTypeExtractorCall.class.getMethods()[0].toGenericString(),
-            ClassIntroducingVoidReturnWithCustomReturnTypeExtractorCall.class, sourcePlugin, "HiddenElement",
-            new String[] {}, ClassIntroducingVoidReturnWithCustomReturnTypeExtractorCall.class.getMethods()[0]}
+            "net.ssehub.tests.integration.ExtractorCallCreationTests."
+                    + "ClassIntroducingVoidReturnWithCustomReturnTypeExtractorCall.extractImplicit",
+            ClassIntroducingVoidReturnWithCustomReturnTypeExtractorCall.class, SOURCE_PLUGIN, hiddenElement, null,
+            ClassIntroducingVoidReturnWithCustomReturnTypeExtractorCall.class.getMethods()[0]}
     };
 
     /**
@@ -130,16 +140,16 @@ public class ExtractorCallCreationTests extends AbstractCallCreationTest {
      * @param expectedElementSourceClass the expected {@link Class} from which the {@link LanguageElement} was created
      * @param expectedElementSourcePlugin the expected {@link File} denoting the source plug-in of the {@link Class}
      *        from which a {@link LanguageElement} was created
-     * @param expectedReturnType the expected name of the type of element(s) the created operation will return
-     * @param expectedParameters the expected array of names, which denote the elements the created operation accepts as
-     *        parameters
+     * @param expectedReturnType the expected {@link ParameterType} the created {@link Call} will return
+     * @param expectedParameters the expected array of {@link ParameterType}s, which denote the elements the created
+     *        {@link Call} accepts as parameters
      * @param expectedSourceMethod the expected {@link Method} from where this call was created
      */
 //CHECKSTYLE:OFF
     public ExtractorCallCreationTests(Class<?> testInputClass, ExternalElementException expectedException,
             boolean expectedElementsExistence, Class<?> expectedElementClass, ElementType expectedElementType,
             String expectedElementName, String expectedElementFullyQualifiedName, Class<?> expectedElementSourceClass,
-            File expectedElementSourcePlugin, String expectedReturnType, String[] expectedParameters,
+            File expectedElementSourcePlugin, ParameterType expectedReturnType, ParameterType[] expectedParameters,
             Method expectedSourceMethod) {
         super(testInputClass, expectedException, expectedElementsExistence, expectedElementClass, expectedElementType,
                 expectedElementName, expectedElementFullyQualifiedName, expectedElementSourceClass,
@@ -156,4 +166,12 @@ public class ExtractorCallCreationTests extends AbstractCallCreationTest {
     public static List<Object[]> getTestData() {
         return Arrays.asList(EXPECTED_RESULTS);
     }
+    
+    @Override
+    protected void prepare() {
+        if (!LanguageRegistry.INSTANCE.addParameterType(hiddenElement)) {
+            System.err.println("Preparation failed");
+        }
+    }
+    
 }

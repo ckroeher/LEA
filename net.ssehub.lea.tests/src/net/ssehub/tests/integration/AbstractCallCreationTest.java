@@ -27,6 +27,7 @@ import net.ssehub.integration.ElementType;
 import net.ssehub.integration.ExternalElementException;
 import net.ssehub.integration.LanguageElement;
 import net.ssehub.integration.LanguageElementCreator;
+import net.ssehub.integration.ParameterType;
 
 /**
  * This abstract class contains common attributes and unit tests for the creation of {@link Call}s by the 
@@ -40,14 +41,15 @@ import net.ssehub.integration.LanguageElementCreator;
 public abstract class AbstractCallCreationTest extends AbstractLanguageElementCreationTest {
     
     /**
-     * The expected name of the type of element(s) the created {@link Call} will return.
+     * The expected {@link ParameterType} the created {@link Call} will return.
      */
-    private String expectedReturnType;
+    private ParameterType expectedReturnType;
     
     /**
-     * The expected array of names, which denote the elements the created {@link Call} accepts as parameters.
+     * The expected array of {@link ParameterType}s, which denote the elements the created {@link Call} accepts as
+     * parameters.
      */
-    private String[] expectedParameters;
+    private ParameterType[] expectedParameters;
     
     /**
      * The expected {@link Method} from where this call was created.
@@ -55,14 +57,15 @@ public abstract class AbstractCallCreationTest extends AbstractLanguageElementCr
     private Method expectedSourceMethod;
     
     /**
-     * The actual name of the type of element(s) the created {@link Call} will return.
+     * The actual {@link ParameterType} the created {@link Call} will return.
      */
-    private String actualReturnType;
+    private ParameterType actualReturnType;
     
     /**
-     * The actual array of names, which denote the elements the created {@link Call} accepts as parameters.
+     * The actual array of {@link ParameterType}s, which denote the elements the created {@link Call} accepts as
+     * parameters.
      */
-    private String[] actualParameters;
+    private ParameterType[] actualParameters;
     
     /**
      * The actual {@link Method} from where this call was created.
@@ -87,16 +90,16 @@ public abstract class AbstractCallCreationTest extends AbstractLanguageElementCr
      * @param expectedElementSourceClass the expected {@link Class} from which the {@link LanguageElement} was created
      * @param expectedElementSourcePlugin the expected {@link File} denoting the source plug-in of the {@link Class}
      *        from which a {@link LanguageElement} was created
-     * @param expectedReturnType the expected name of the type of element(s) the created {@link Call} will return
-     * @param expectedParameters the expected array of names, which denote the elements the created {@link Call} accepts
-     *        as parameters
+     * @param expectedReturnType the expected {@link ParameterType} the created {@link Call} will return.
+     * @param expectedParameters the expected array of {@link ParameterType}s, which denote the elements the created
+     *        {@link Call} accepts as parameters
      * @param expectedSourceMethod the expected {@link Method} from where this call was created
      */
 //CHECKSTYLE:OFF
     public AbstractCallCreationTest(Class<?> testInputClass, ExternalElementException expectedException,
             boolean expectedElementsExistence, Class<?> expectedElementClass, ElementType expectedElementType,
             String expectedElementName, String expectedElementFullyQualifiedName, Class<?> expectedElementSourceClass,
-            File expectedElementSourcePlugin, String expectedReturnType, String[] expectedParameters,
+            File expectedElementSourcePlugin, ParameterType expectedReturnType, ParameterType[] expectedParameters,
             Method expectedSourceMethod) {
         super(testInputClass, expectedException, expectedElementsExistence, expectedElementClass, expectedElementType,
                 expectedElementName, expectedElementFullyQualifiedName, expectedElementSourceClass, 
@@ -165,4 +168,5 @@ public abstract class AbstractCallCreationTest extends AbstractLanguageElementCr
             assertNull(actualSourceMethod, "Source method should be null");
         }
     }
+    
 }
