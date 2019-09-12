@@ -212,7 +212,7 @@ public class Call extends LanguageElement implements IFinalizable {
     /**
      * Returns the array of {@link ParameterType}s, which denote the elements this call accepts as parameters.
      * 
-     * @return the array of {@link ParameterType}, which denote the elements this call accepts as parameters, or 
+     * @return the array of {@link ParameterType}s, which denote the elements this call accepts as parameters, or 
      *         <code>null</code>, if the construction of this call is not completed yet or this call does not accept any
      *         parameters
      * @see #isFinal()
@@ -260,8 +260,9 @@ public class Call extends LanguageElement implements IFinalizable {
      *         <code>false</code> otherwise
      */
     public boolean isMemberOperationOf(String parameterTypeName) {
-        return parentParameterType.getName().equals(parameterTypeName)
-                || parentParameterType.getFullyQualifiedName().equals(parameterTypeName);
+        return isMemberOperation() 
+                && (parentParameterType.getName().equals(parameterTypeName) 
+                        || parentParameterType.getFullyQualifiedName().equals(parameterTypeName));
     }
     
     /**
@@ -327,7 +328,8 @@ public class Call extends LanguageElement implements IFinalizable {
                     && this.parentParameterType.equals(comparableCall.getParentParameterType()))) {
 //CHECKSTYLE:ON
                 ParameterType[] comparableParameters = comparableCall.getParameters();
-                if (this.parameters.length == comparableParameters.length) {
+                if ((this.parameters == null && comparableParameters == null)
+                        || this.parameters.length == comparableParameters.length) {
                     boolean haveEqualParameters = true;
                     int parametersCounter = 0;
                     while (haveEqualParameters && parametersCounter < this.parameters.length) {
@@ -345,20 +347,26 @@ public class Call extends LanguageElement implements IFinalizable {
     
     /**
      * Compares the given parameters with the defined {@link #parameters} of this {@link Call} in exactly their order
-     * in the array for equality. This is the case, if for each given parameter at a specific index an equal parameter
+     * in the arrays for equality. This is the case, if for each given parameter at a specific index an equal parameter
      * at the same index in {@link #parameters} exists. 
      *   
-     * @param parameters the parameters to compare to the {@link #assignableElements} of this {@link Call}; should never
-     *        be <code>null</code> nor <i>empty</i>
-     * @return <code>true</code>, if for each given parameter at a specific index an equal parameter at the same index
+     * @param parameters the parameters to compare to the {@link #parameters} of this {@link Call}
+     * @return <code>true</code>, if either the given parameters and the {@link #parameters} of this {@link Call} are
+     *         <code>null</code>, or for each given parameter at a specific index an equal parameter at the same index
      *         in {@link #parameters} exists; <code>false</code> otherwise
      */
     public boolean acceptsParameters(ParameterType[] parameters) {
-        boolean acceptsParameters = true;
-        int parametersCounter = 0;
-        while (acceptsParameters && parametersCounter < parameters.length) {
-            acceptsParameters = parameters[parametersCounter].equals(this.parameters[parametersCounter]);
-            parametersCounter++;
+        boolean acceptsParameters = false;
+        if (this.parameters == null && parameters == null) {
+            acceptsParameters = true;
+        } else if (this.parameters != null && parameters != null && this.parameters.length == parameters.length) {
+            int parametersCounter = 0;
+            boolean parametersEqual = true;
+            while (parametersEqual && parametersCounter < parameters.length) {
+                parametersEqual = parameters[parametersCounter].equals(this.parameters[parametersCounter]);
+                parametersCounter++;
+            }
+            acceptsParameters = parametersEqual;
         }
         return acceptsParameters;
     }
