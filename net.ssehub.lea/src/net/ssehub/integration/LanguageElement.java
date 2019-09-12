@@ -94,8 +94,7 @@ public abstract class LanguageElement {
     /**
      * Returns the fully-qualified name of this element.
      * 
-     * @return the fully-qualified name of this element or <code>null</code>, if this element is {@link Call} for which
-     *         {@link Call#isFinal()} returns <code>false</code>
+     * @return the fully-qualified name of this element
      */
     public abstract String getFullyQualifiedName();
     

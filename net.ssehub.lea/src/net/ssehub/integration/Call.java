@@ -54,11 +54,19 @@ public class Call extends LanguageElement implements IFinalizable {
     private Method sourceMethod;
     
     /**
-     * Constructs a new <b>premature</b> {@link Call} with the given attributes omitting the required 
-     * definition of return type and parameters as well as the optional parent parameter type. These elements must be
-     * added using {@link Call#setReturnType(ParameterType)}, {@link Call#setParameters(ParameterType[])}, and 
-     * (optionally) {@link Call#setParentParameterType(ParameterType)} in order to {@link Call#isFinal()} returning 
-     * <code>true</code> and, hence, enabling the addition of this call to the {@link LanguageRegistry}.
+     * The definition of whether the construction of this call is completed (<code>true</code>) or not
+     * (<code>false</code>).
+     * 
+     * @see #finalize()
+     */
+    private boolean finalized;
+    
+    /**
+     * Constructs a new <b>incomplete</b> {@link Call} instance with the given attributes omitting the required 
+     * definition of return type as well as (optional) parameters and parent parameter type. These elements must be
+     * added using {@link Call#finalize(ParameterType, ParameterType[])} in order to complete this construction. This
+     * enables {@link Call#isFinal()} returning <code>true</code> and, hence, the addition of this instance to the
+     * {@link LanguageRegistry}.
      * 
      * @param elementType the {@link ElementType} of this new element, which must be {@link ElementType#OPERATION},
      *        {@link ElementType#EXTRACTOR_CALL}, or {@link ElementType#ANALYSIS_CALL}; any other type leads to a 
@@ -85,6 +93,7 @@ public class Call extends LanguageElement implements IFinalizable {
         returnType = null;
         parameters = null;
         parentParameterType = null;
+        finalized = false;
         // Construct the fully-qualified name of this element
         String sourceMethodGenericString = sourceMethod.toGenericString().replace("\\$|\\#", ".");
         int substringStartIndex = sourceMethodGenericString.lastIndexOf(' ') + 1;
@@ -94,17 +103,47 @@ public class Call extends LanguageElement implements IFinalizable {
     }
     
     /**
+     * Completes the construction of this {@link Call} instance by setting the first given {@link ParameterType} as the
+     * return type and (optionally) the given array of {@link ParameterType}s as the parameters and the second given
+     * {@link ParameterType} as the parent parameter type of this instance.
+     * 
+     * @param returnType the {@link ParameterType} to be set as the return type of this call
+     * @param parameters the array of {@link ParameterType}s to be set as the parameters of this call; may be 
+     *        <code>null</code> for calls, which do not require parameters
+     * @param parentParameterType the {@link ParameterType} to be set as the parent parameter type of this call; may be 
+     *        <code>null</code> for calls, which are not a member operation
+     * @throws LanguageElementException if
+     *         <ul>
+     *         <li>the construction of this instance is already completed (this method was called without exception once
+     *             before)</li>
+     *         <li>the given {@link ParameterType} for the <b>return type</b> is <code>null</code> or represents
+     *             <code>void</code>, while this call represents an extractor or an analysis call</li>
+     *         <li>the given array of {@link ParameterType}s for the <b>parameters</b> contains elements, which are
+     *             <code>null</code></li>
+     *         <li>the given {@link ParameterType} for the <b>parent parameter type</b> is not <code>null</code>, while
+     *             this call represents an extractor or an analysis call</li>
+     *         </ul>
+     */
+    public void finalize(ParameterType returnType, ParameterType[] parameters, ParameterType parentParameterType)
+            throws LanguageElementException {
+        if (!isFinal()) {            
+            setReturnType(returnType);
+            setParameters(parameters);
+            setParentParameterType(parentParameterType);
+            finalized = true;
+        } else {
+            throw new LanguageElementException("The construction of this call is already completed");
+        }
+    }
+    
+    /**
      * Sets the given {@link ParameterType} as the return type of this call.
      * 
      * @param returnType the {@link ParameterType} to be set as the return type of this call
-     * @throws LanguageElementException if the return type of this call is already defined, the given
-     *         {@link ParameterType} is <code>null</code>, or represents <code>void</code> while this call represents an
-     *         extractor or an analysis call
+     * @throws LanguageElementException if the given {@link ParameterType} is <code>null</code>, or represents
+     *         <code>void</code>, while this call represents an extractor or an analysis call
      */
-    public void setReturnType(ParameterType returnType) throws LanguageElementException {
-        if (this.returnType != null) {
-            throw new LanguageElementException("The return type for this call is already defined");
-        }
+    private void setReturnType(ParameterType returnType) throws LanguageElementException {
         if (returnType == null) {
             throw new LanguageElementException("The return type for this call is null");
         }
@@ -116,25 +155,22 @@ public class Call extends LanguageElement implements IFinalizable {
     }
     
     /**
-     * Sets the given {@link ParameterType}s as the parameters of this call.
+     * Sets the given array of {@link ParameterType}s as the parameters of this call.
      * 
-     * @param parameters the array of {@link ParameterType}s to be set as the parameters of this call
-     * @throws LanguageElementException if the parameters for this call are already defined, the given array is 
-     *         <code>null</code>, or one of the elements of that array is actually <code>null</code>
+     * @param parameters the array of {@link ParameterType}s to be set as the parameters of this call; may be 
+     *        <code>null</code> for calls, which do not require parameters
+     * @throws LanguageElementException if the given array of {@link ParameterType}s contains elements, which are 
+     *         <code>null</code>
      */
-    public void setParameters(ParameterType[] parameters) throws LanguageElementException {
-        if (this.parameters != null) {
-            throw new LanguageElementException("The parameters for this call are already defined");
-        }
-        if (parameters == null) {
-            throw new LanguageElementException("Missing parameters for this call");
-        }
-        for (int i = 0; i < parameters.length; i++) {
-            if (parameters[i] == null) {
-                throw new LanguageElementException("Null element as call parameter");
+    private void setParameters(ParameterType[] parameters) throws LanguageElementException {
+        if (parameters != null && parameters.length > 0) {            
+            for (int i = 0; i < parameters.length; i++) {
+                if (parameters[i] == null) {
+                    throw new LanguageElementException("A parameter is null");
+                }
             }
+            this.parameters = parameters;
         }
-        this.parameters = parameters;
     }
     
     /**
@@ -143,20 +179,13 @@ public class Call extends LanguageElement implements IFinalizable {
      * Further, setting this value declares this call to represent a member operation that can only be called via an
      * instance of that parent parameter type.
      *  
-     * @param parentParameterType the {@link ParameterType} to be set as the parent parameter type of this call
-     * @throws LanguageElementException if the element type of this call is not {@link ElementType#OPERATION}, the 
-     *         parent parameter type of this call is already defined, or the given {@link ParameterType} is
-     *         <code>null</code>
+     * @param parentParameterType the {@link ParameterType} to be set as the parent parameter type of this call; may be 
+     *        <code>null</code> for calls, which are not a member operation
+     * @throws LanguageElementException if the element type of this call is not {@link ElementType#OPERATION}
      */
-    public void setParentParameterType(ParameterType parentParameterType) throws LanguageElementException {
-        if (getElementType() == ElementType.EXTRACTOR_CALL || getElementType() == ElementType.ANALYSIS_CALL) {
-            throw new LanguageElementException("The parent parameter type can only be set for operation calls");
-        }
-        if (this.parentParameterType != null) {
-            throw new LanguageElementException("The parent parameter type for this call is already defined");
-        }
-        if (parentParameterType == null) {
-            throw new LanguageElementException("The parent parameter type for this call is null");
+    private void setParentParameterType(ParameterType parentParameterType) throws LanguageElementException {
+        if (getElementType() != ElementType.OPERATION) {
+            throw new LanguageElementException("The parent parameter type can only be set for operations");
         }
         this.parentParameterType = parentParameterType;
     }
@@ -184,7 +213,8 @@ public class Call extends LanguageElement implements IFinalizable {
      * Returns the array of {@link ParameterType}s, which denote the elements this call accepts as parameters.
      * 
      * @return the array of {@link ParameterType}, which denote the elements this call accepts as parameters, or 
-     *         <code>null</code>, if the construction of this call is not completed yet
+     *         <code>null</code>, if the construction of this call is not completed yet or this call does not accept any
+     *         parameters
      * @see #isFinal()
      */
     public ParameterType[] getParameters() {
@@ -195,7 +225,7 @@ public class Call extends LanguageElement implements IFinalizable {
      * Returns the parent {@link ParameterType} for which this call represents a member operation.
      * 
      * @return the parent {@link ParameterType} for which this call represents a member operation or <code>null</code>,
-     *         if this call is not a member operation TODO make this special call an own class!
+     *         if the construction of this call is not completed yet or this call is not a member operation
      */
     public ParameterType getParentParameterType() {
         return parentParameterType;
@@ -230,7 +260,8 @@ public class Call extends LanguageElement implements IFinalizable {
      *         <code>false</code> otherwise
      */
     public boolean isMemberOperationOf(String parameterTypeName) {
-        return parentParameterType.getName().equals(parameterTypeName);
+        return parentParameterType.getName().equals(parameterTypeName)
+                || parentParameterType.getFullyQualifiedName().equals(parameterTypeName);
     }
     
     /**
@@ -335,11 +366,13 @@ public class Call extends LanguageElement implements IFinalizable {
     /**
      * {@inheritDoc}<br>
      * <br>
-     * For {@link Calls}s, the construction is completed, if the {@link #returnType} and the {@link #parameters} are
-     * available.
+     * For {@link Calls}s, the construction is completed, if the {@link #returnType} and (optionally) the
+     * {@link #parameters} and the {@link #parentParameterType} are available.
+     * 
+     * @see #finalize(ParameterType, ParameterType[], ParameterType)
      */
     @Override
     public boolean isFinal() {
-        return (returnType != null && parameters != null);
+        return finalized;
     }
 }

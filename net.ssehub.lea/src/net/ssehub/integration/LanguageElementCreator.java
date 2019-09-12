@@ -254,72 +254,63 @@ public class LanguageElementCreator {
                 .getAnnotation(ChangeIdentifier.class);
         String[] assignableElements = changeIdentifierAnnotation.assignableTo();
         ParameterType[] assignebleParameterTypes = new ParameterType[assignableElements.length];
+        for (int i = 0; i < assignableElements.length; i++) {
+            assignebleParameterTypes[i] = languageRegistry.getParameterType(assignableElements[i]);
+        }
         try {
-            for (int i = 0; i < assignableElements.length; i++) {
-                assignebleParameterTypes[i] = languageRegistry.getParameterType(assignableElements[i]);
-            }
-            changeIdentifier.setAssignableElements(assignebleParameterTypes);
+            changeIdentifier.finalize(assignebleParameterTypes);
             if (!languageRegistry.addChangeIdentifier(changeIdentifier)) {
                 throw new ExternalElementException("Adding change identifier \"" + changeIdentifier.getName() 
                         + "\" to language registry failed");
             }
         } catch (LanguageElementException e) {
-            throw new ExternalElementException("Setting assignable elements for change identifier \"" 
+            throw new ExternalElementException("Completing the construction of change identifier \"" 
                     + changeIdentifier.getFullyQualifiedName() + "\" failed", e);
         }
     }
     
     /**
      * Completes the construction of the given {@link Call} by setting the {@link ParameterType}s, which represent the
-     * return type, parameters, and (optionally) the parent parameter type of the given {@link Call}, if these types are
-     * available in the {@link LanguageRegistry}. The completely constructed {@link Call} is then added to the
+     * return type and (optionally) parameters and the parent parameter type of the given {@link Call}, if these types
+     * are available in the {@link LanguageRegistry}. The completely constructed {@link Call} is then added to the
      * {@link LanguageRegistry}.
      * 
      * @param call the {@link Call} for which the construction shall be be completed; should never be <code>null</code>
      * @param returnType the {@link String} representing the fully-qualified name of the return type of the given
      *        {@link Call}; should never be <code>null</code>
      * @param parameters the array of {@link String}s representing the fully-qualified names of the parameters of the
-     *        given {@link Call}; should never be <code>null</code> but may be <i>empty</i>
+     *        given {@link Call}; may be <code>null</code> or <i>empty</i>, if the given {@link Call} does not require
+     *        any parameters
      * @param parentParameterType the {@link String} representing the optional parent parameter type of the given
      *        {@link Call}; may be <code>null</code> to indicate that the given {@link Call} does not have a parent
      *        parameter type
-     * @throws ExternalElementException if completing the construction of the given {@link Call} failed
+     * @throws ExternalElementException if completing the construction of the given {@link Call} or its addition to the
+     *         {@link LanguageRegistry} failed
+     * @see LanguageRegistry#addCall(Call)
      */
     private void finalizeCall(Call call, String returnType, String[] parameters, String parentParameterType) 
             throws ExternalElementException {
-        // Set the return type
-        ParameterType callParameterType = languageRegistry.getParameterType(returnType);
-        try {            
-            call.setReturnType(callParameterType);
-        } catch (LanguageElementException e) {
-            throw new ExternalElementException("Setting return type for call \"" + call.getFullyQualifiedName() 
-                    + "\" failed", e);
-        }
-        // Set the parameters
-        ParameterType[] parameterParameterTypes = new ParameterType[parameters.length];
-        for (int i = 0; i < parameters.length; i++) {
-            parameterParameterTypes[i] = languageRegistry.getParameterType(parameters[i]);
-        }
-        try {            
-            call.setParameters(parameterParameterTypes);
-        } catch (LanguageElementException e) {
-            throw new ExternalElementException("Setting parameters for call \"" + call.getFullyQualifiedName() 
-            + "\" failed", e);
-        }
-        // Set the parent parameter type, if available
-        if (parentParameterType != null) {
-            callParameterType = languageRegistry.getParameterType(parentParameterType);
-            try {            
-                call.setParentParameterType(callParameterType);
-            } catch (LanguageElementException e) {
-                throw new ExternalElementException("Setting parent parameter type for call \"" 
-                        + call.getFullyQualifiedName() + "\" failed", e);
+        ParameterType callReturnType = languageRegistry.getParameterType(returnType);
+        ParameterType[] callParameters = null;
+        if (parameters != null) {            
+            callParameters = new ParameterType[parameters.length];
+            for (int i = 0; i < parameters.length; i++) {
+                callParameters[i] = languageRegistry.getParameterType(parameters[i]);
             }
         }
-        // Finally, add the call to the language registry
-        if (!languageRegistry.addCall(call)) {
-            throw new ExternalElementException("Adding " + call.getElementType() + " \"" + call.getFullyQualifiedName() 
-                    + "\" to language registry failed");
+        ParameterType callParentParameterType = null;
+        if (parentParameterType != null) {
+            callParentParameterType = languageRegistry.getParameterType(parentParameterType);
+        }
+        try {            
+            call.finalize(callReturnType, callParameters, callParentParameterType);
+            if (!languageRegistry.addCall(call)) {
+                throw new ExternalElementException("Adding " + call.getElementType() + " \"" 
+                        + call.getFullyQualifiedName() + "\" to language registry failed");
+            }
+        } catch (LanguageElementException e) {
+            throw new ExternalElementException("Completing the construction of call \"" + call.getFullyQualifiedName() 
+                    + "\" failed", e);
         }
     }
     

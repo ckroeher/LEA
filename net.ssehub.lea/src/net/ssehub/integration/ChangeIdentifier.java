@@ -41,10 +41,18 @@ public class ChangeIdentifier extends LanguageElement implements IFinalizable {
     private ParameterType[] assignableElements;
     
     /**
-     * Constructs a new <b>premature</b> {@link ChangeIdentifier} with the given attributes omitting the required 
-     * definition of elements to which the new change identifier is assignable to. These elements must be added using
-     * {@link ChangeIdentifier#setAssignableElements(ParameterType[])} in order to {@link ChangeIdentifier#isFinal()}
-     * returning <code>true</code> and, hence, enabling the addition of this change identifier to the 
+     * The definition of whether the construction of this change identifier is completed (<code>true</code>) or not
+     * (<code>false</code>).
+     * 
+     * @see #finalize()
+     */
+    private boolean finalized;
+    
+    /**
+     * Constructs a new <b>incomplete</b> {@link ChangeIdentifier} instance with the given attributes omitting the
+     * required definition of elements to which the new change identifier is assignable to. These elements must be added
+     * using {@link ChangeIdentifier#finalize(ParameterType[])} in order to complete this construction. This enables
+     * {@link ChangeIdentifier#isFinal()} returning <code>true</code> and, hence, the addition of this instance to the 
      * {@link LanguageRegistry}. Further, this constructor sets the element type for the new change identifier to
      * {@link ElementType#CHANGE_IDENTIFIER} automatically.
      * 
@@ -56,6 +64,7 @@ public class ChangeIdentifier extends LanguageElement implements IFinalizable {
     public ChangeIdentifier(String name, Class<?> sourceClass, File sourcePlugin) throws LanguageElementException {
         super(ELEMENT_TYPE, name, sourceClass, sourcePlugin);
         assignableElements = null;
+        finalized = false;
         // Construct the fully-qualified name of this element
         String sourceClassCanonicalName = sourceClass.getCanonicalName();
         int substringEndIndex = sourceClassCanonicalName.lastIndexOf('.') + 1;
@@ -63,15 +72,16 @@ public class ChangeIdentifier extends LanguageElement implements IFinalizable {
     }
     
     /**
-     * Sets the given {@link ParameterType}s as elements to which this change identifier is assignable to.
+     * Completes the construction of this {@link ChangeIdentifier} instance by setting the given {@link ParameterType}s
+     * as elements to which this instance is assignable to.
      * 
-     * @param assignableElements the array of {@link ParameterType}s to be set as elements to which this change
-     *        identifier is assignable to
-     * @throws LanguageElementException if the elements to which this change identifier is assignable to are already 
-     *         defined, the given array is <code>null</code>, is <i>empty</i>, or one of the elements of that array is
-     *         actually <code>null</code>
+     * @param assignableElements the array of {@link ParameterType}s to be set as elements to which this instance is
+     *        assignable to
+     * @throws LanguageElementException if the elements to which this instance is assignable to are already defined, the
+     *         given array is <code>null</code>, is <i>empty</i>, or one of the elements of that array is
+     *         <code>null</code>
      */
-    public void setAssignableElements(ParameterType[] assignableElements) throws LanguageElementException {
+    public void finalize(ParameterType[] assignableElements) throws LanguageElementException {
         if (this.assignableElements != null) {
             throw new LanguageElementException("Elements to which this change identifier is assignable to already "
                     + "defined");
@@ -85,6 +95,7 @@ public class ChangeIdentifier extends LanguageElement implements IFinalizable {
             }
         }
         this.assignableElements = assignableElements;
+        finalized = true;
     }
     
     /**
@@ -172,9 +183,11 @@ public class ChangeIdentifier extends LanguageElement implements IFinalizable {
      * {@inheritDoc}<br>
      * <br>
      * For {@link ChangeIdentifier}s, the construction is completed, if the {@link #assignableElements} are available.
+     * 
+     * @see #finalize(ParameterType[])
      */
     @Override
     public boolean isFinal() {
-        return (assignableElements != null);
+        return finalized;
     }
 }
