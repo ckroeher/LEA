@@ -38,9 +38,25 @@ public class Call extends LanguageElement implements IFinalizable {
     private ParameterType returnType;
     
     /**
-     * The array of {@link ParameterType}s this call accepts as parameters.
+     * The definition of whether this call returns a set of its {@link #returnType} (<code>true</code>) or a single
+     * element of that type (<code>false</code>, which is the default).
+     */
+    private boolean returnTypeSetDefinition;
+    
+    /**
+     * The array of {@link ParameterType}s this call accepts as parameters. May be <code>null</code>, if this call does
+     * not require any parameters.
      */
     private ParameterType[] parameters;
+    
+    /**
+     * The definitions of whether a parameter of this call is a set of the respective {@link ParameterType}
+     * (<code>true</code>) or a single element of that type (<code>false</code>, which is the default). For each
+     * {@link ParameterType} in the array of {@link #parameters} of this call the <code>boolean</code> value at the
+     * same index in this array provides that definition. May be <code>null</code>, if this call does not require any
+     * parameters.
+     */
+    private boolean[] parametersSetDefinitions;
     
     /**
      * The {@link ParameterType} for which this call represents a member operation. May be <code>null</code>, if this
@@ -91,7 +107,9 @@ public class Call extends LanguageElement implements IFinalizable {
         }
         this.sourceMethod = sourceMethod;
         returnType = null;
+        returnTypeSetDefinition = false;
         parameters = null;
+        parametersSetDefinitions = null;
         parentParameterType = null;
         finalized = false;
         // Construct the fully-qualified name of this element
@@ -111,8 +129,15 @@ public class Call extends LanguageElement implements IFinalizable {
      * {@link ParameterType} as the parent parameter type of this instance.
      * 
      * @param returnType the {@link ParameterType} to be set as the return type of this call
+     * @param returnTypeSetDefinition the definition of whether this call returns a set of the given return type
+     *        (<code>true</code>) or a single element of that type (<code>false</code>, which is the default)
      * @param parameters the array of {@link ParameterType}s to be set as the parameters of this call; may be 
      *        <code>null</code> for calls, which do not require parameters
+     * @param parametersSetDefinitions the definitions of whether a given parameter of this call is a set of the
+     *        respective {@link ParameterType} (<code>true</code>) or a single element of that type (<code>false</code>,
+     *        which is the default). For each {@link ParameterType} in the given array of parameters of this call the
+     *        <code>boolean</code> value at the same index in this array provides that definition; may be
+     *        <code>null</code>, if this call does not require any parameters
      * @param parentParameterType the {@link ParameterType} to be set as the parent parameter type of this call; may be 
      *        <code>null</code> for calls, which are not a member operation
      * @throws LanguageElementException if
@@ -121,17 +146,21 @@ public class Call extends LanguageElement implements IFinalizable {
      *             before)</li>
      *         <li>the given {@link ParameterType} for the <b>return type</b> is <code>null</code> or represents
      *             <code>void</code>, while this call represents an extractor or an analysis call</li>
+     *         <li>the given <code>boolean</code> value defining the given return type as being a set or not is
+     *             <code>null</code></li>
      *         <li>the given array of {@link ParameterType}s for the <b>parameters</b> contains elements, which are
      *             <code>null</code></li>
+     *         <li>the given array of <code>boolean</code> values defining the given parameters as being a set or not is
+     *             <code>null</code>, while the given array of parameters is not</li>
      *         <li>the given {@link ParameterType} for the <b>parent parameter type</b> is not <code>null</code>, while
      *             this call represents an extractor or an analysis call</li>
      *         </ul>
      */
-    public void finalize(ParameterType returnType, ParameterType[] parameters, ParameterType parentParameterType)
-            throws LanguageElementException {
+    public void finalize(ParameterType returnType, boolean returnTypeSetDefinition, ParameterType[] parameters,
+            boolean[] parametersSetDefinitions, ParameterType parentParameterType) throws LanguageElementException {
         if (!isFinal()) {            
-            setReturnType(returnType);
-            setParameters(parameters);
+            setReturnType(returnType, returnTypeSetDefinition);
+            setParameters(parameters, parametersSetDefinitions);
             setParentParameterType(parentParameterType);
             finalized = true;
         } else {
@@ -143,10 +172,13 @@ public class Call extends LanguageElement implements IFinalizable {
      * Sets the given {@link ParameterType} as the return type of this call.
      * 
      * @param returnType the {@link ParameterType} to be set as the return type of this call
+     * @param returnTypeSetDefinition the definition of whether this call returns a set of the given return type
+     *        (<code>true</code>) or a single element of that type (<code>false</code>, which is the default)
      * @throws LanguageElementException if the given {@link ParameterType} is <code>null</code>, or represents
      *         <code>void</code>, while this call represents an extractor or an analysis call
      */
-    private void setReturnType(ParameterType returnType) throws LanguageElementException {
+    private void setReturnType(ParameterType returnType, boolean returnTypeSetDefinition)
+            throws LanguageElementException {
         if (returnType == null) {
             throw new LanguageElementException("The return type for this call is null");
         }
@@ -155,6 +187,7 @@ public class Call extends LanguageElement implements IFinalizable {
             throw new LanguageElementException("Extractor and analysis calls must have a non-void return type");
         }
         this.returnType = returnType;
+        this.returnTypeSetDefinition = returnTypeSetDefinition;
     }
     
     /**
@@ -162,17 +195,27 @@ public class Call extends LanguageElement implements IFinalizable {
      * 
      * @param parameters the array of {@link ParameterType}s to be set as the parameters of this call; may be 
      *        <code>null</code> for calls, which do not require parameters
+     * @param parametersSetDefinitions the definitions of whether a given parameter of this call is a set of the
+     *        respective {@link ParameterType} (<code>true</code>) or a single element of that type (<code>false</code>,
+     *        which is the default). For each {@link ParameterType} in the given array of parameters of this call the
+     *        <code>boolean</code> value at the same index in this array provides that definition; may be
+     *        <code>null</code>, if this call does not require any parameters
      * @throws LanguageElementException if the given array of {@link ParameterType}s contains elements, which are 
      *         <code>null</code>
      */
-    private void setParameters(ParameterType[] parameters) throws LanguageElementException {
-        if (parameters != null && parameters.length > 0) {            
+    private void setParameters(ParameterType[] parameters, boolean[] parametersSetDefinitions)
+            throws LanguageElementException {
+        if (parameters != null && parameters.length > 0) {
+            if (parametersSetDefinitions == null || parametersSetDefinitions.length != parameters.length) {
+                throw new LanguageElementException("Wrong parameter set definitions");
+            }
             for (int i = 0; i < parameters.length; i++) {
                 if (parameters[i] == null) {
                     throw new LanguageElementException("A parameter is null");
                 }
             }
             this.parameters = parameters;
+            this.parametersSetDefinitions = parametersSetDefinitions;
         }
     }
     
@@ -214,6 +257,16 @@ public class Call extends LanguageElement implements IFinalizable {
     }
     
     /**
+     * Returns the definition of whether this call returns a set of its {@link #returnType} (<code>true</code>) or a
+     * single element of that type (<code>false</code>, which is the default).
+     * 
+     * @return <code>true</code>, if this call returns a set of its {@link #returnType}; <code>false</code> otherwise
+     */
+    public boolean returnTypeIsSet() {
+        return returnTypeSetDefinition;
+    }
+    
+    /**
      * Returns the array of {@link ParameterType}s, which denote the elements this call accepts as parameters.
      * 
      * @return the array of {@link ParameterType}s, which denote the elements this call accepts as parameters, or 
@@ -223,6 +276,25 @@ public class Call extends LanguageElement implements IFinalizable {
      */
     public ParameterType[] getParameters() {
         return parameters;
+    }
+    
+    /**
+     * Returns the definition of whether the parameter of this call at the given index is a set of the respective
+     * {@link ParameterType} (<code>true</code>) or a single element of that type (<code>false</code>, which is the
+     * default). 
+     * 
+     * @param index the non-negative integer defining the index of the parameter for which the set definition should be
+     *        returned
+     * @return <code>true</code>, if the parameter at the given index is a set or <code>false</code>, if the
+     *         construction of this call is not completed yet or the parameter is not a set
+     * @see #isFinal()
+     */
+    public boolean parameterIsSet(int index) {
+        boolean parameterIsSet = false;
+        if (isFinal()) {
+            parameterIsSet = parametersSetDefinitions[index];
+        }
+        return parameterIsSet;
     }
     
     /**

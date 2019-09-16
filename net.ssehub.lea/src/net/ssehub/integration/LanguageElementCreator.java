@@ -38,6 +38,12 @@ import net.ssehub.integration.annotations.ResultParameterType;
  *
  */
 public class LanguageElementCreator {
+    
+    /**
+     * The constant array of Java container type prefixes.
+     */
+    private static final String[] JAVA_CONTAINER_TYPE_PREFIXES = {"ArrayList<", "HashSet<", "LinkedList<", "List<",
+        "Set<", "Vector<"};
   
     /**
      * The {@link LanguageRegistry} to which created {@link LanguageElement}s will be added and which provides already
@@ -290,12 +296,18 @@ public class LanguageElementCreator {
      */
     private void finalizeCall(Call call, String returnType, String[] parameters, String parentParameterType) 
             throws ExternalElementException {
-        ParameterType callReturnType = languageRegistry.getParameterType(returnType);
+        String coreType = getCoreType(returnType);
+        ParameterType callReturnType = languageRegistry.getParameterType(coreType);
+        boolean returnTypeIsSet = !returnType.equals(coreType);
         ParameterType[] callParameters = null;
+        boolean[] parametersAreSet = null;
         if (parameters != null) {            
             callParameters = new ParameterType[parameters.length];
+            parametersAreSet = new boolean[parameters.length];
             for (int i = 0; i < parameters.length; i++) {
-                callParameters[i] = languageRegistry.getParameterType(parameters[i]);
+                coreType = getCoreType(parameters[i]);
+                callParameters[i] = languageRegistry.getParameterType(coreType);
+                parametersAreSet[i] = !parameters[i].equals(coreType);
             }
         }
         ParameterType callParentParameterType = null;
@@ -303,7 +315,7 @@ public class LanguageElementCreator {
             callParentParameterType = languageRegistry.getParameterType(parentParameterType);
         }
         try {            
-            call.finalize(callReturnType, callParameters, callParentParameterType);
+            call.finalize(callReturnType, returnTypeIsSet, callParameters, parametersAreSet, callParentParameterType);
             if (!languageRegistry.addCall(call)) {
                 throw new ExternalElementException("Adding " + call.getElementType() + " \"" 
                         + call.getFullyQualifiedName() + "\" to language registry failed");
@@ -388,6 +400,31 @@ public class LanguageElementCreator {
             }
         }
         return parentParameterType;
+    }
+    
+    /**
+     * Returns the core (non-array and non-container) type of the given type. 
+     * 
+     * @param type the type for which the core type should be returned
+     * @return the core (non-set and non-container) type of the given type or the given type, if it does not denote an
+     *         array or a container type
+     */
+    private String getCoreType(String type) {
+        String coreType = type;
+        if (type.charAt(type.length() - 1) == ']') {
+            coreType = type.substring(0, type.length() - 2);
+        } else {
+            boolean containerTypeFound = false;
+            int containerTypeCounter = 0;
+            while (!containerTypeFound && containerTypeCounter < JAVA_CONTAINER_TYPE_PREFIXES.length) {
+                if (type.startsWith(JAVA_CONTAINER_TYPE_PREFIXES[containerTypeCounter])) {
+                    containerTypeFound = true;
+                    coreType = type.substring(type.indexOf('<') + 1, type.lastIndexOf('>'));
+                }
+                containerTypeCounter++;
+            }
+        }
+        return coreType;
     }
     
     /**
