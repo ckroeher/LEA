@@ -262,7 +262,7 @@ public class Call extends LanguageElement implements IFinalizable {
      * 
      * @return <code>true</code>, if this call returns a set of its {@link #returnType}; <code>false</code> otherwise
      */
-    public boolean returnTypeIsSet() {
+    public boolean isReturnTypeSet() {
         return returnTypeSetDefinition;
     }
     
@@ -289,7 +289,7 @@ public class Call extends LanguageElement implements IFinalizable {
      *         construction of this call is not completed yet or the parameter is not a set
      * @see #isFinal()
      */
-    public boolean parameterIsSet(int index) {
+    public boolean isParameterSet(int index) {
         boolean parameterIsSet = false;
         if (isFinal()) {
             parameterIsSet = parametersSetDefinitions[index];
@@ -387,39 +387,81 @@ public class Call extends LanguageElement implements IFinalizable {
     }
     
     /**
-     * Checks whether the {@link #returnType}, the {@link #parameters}, the {@link #sourceMethod}, and the 
-     * {@link #parentParameterType} of this {@link Call} and the given {@link Call} are equal.
+     * Checks whether {@link Call}-specific attributes of this {@link Call} and the given {@link Call} are equal. These
+     * attributes are:
+     * <ul>
+     * <li>The {@link #sourceMethod}</li>
+     * <li>The {@link #returnType} and its {@link #returnTypeSetDefinition}</li>
+     * <li>The {@link #parentParameterType}</li>
+     * <li>The {@link #parameters} and their {@link #parametersSetDefinitions}</li>
+     * </ul>
      * 
      * @param comparableCall the {@link Call} to compare to this {@link Call}; should never be <code>null</code>
      * @return <code>true</code>, if the call-specific attributes of the given {@link Call} are equal to the attributes
      *         of this {@link Call}; <code>false</code> otherwise
      */
     private boolean hasEqualCallAttributes(Call comparableCall) {
-        boolean hasEqualCallAttributes = false;
-        if (this.sourceMethod.toGenericString().equals(comparableCall.getSourceMethod().toGenericString()) 
-                && this.returnType.equals(comparableCall.getReturnType())) {
-//CHECKSTYLE:OFF
-            if ((this.parentParameterType == null && comparableCall.getParentParameterType() == null)
-                    || (this.parentParameterType != null && comparableCall.getParentParameterType() != null
-                        && this.parentParameterType.equals(comparableCall.getParentParameterType()))) {
-                ParameterType[] comparableParameters = comparableCall.getParameters();
-                if ((this.parameters == null && comparableParameters == null)
-                        || (this.parameters != null && comparableParameters != null 
-                            && this.parameters.length == comparableParameters.length)) {
-//CHECKSTYLE:ON
-                    boolean haveEqualParameters = true;
-                    int parametersCounter = 0;
-                    while (haveEqualParameters && parametersCounter < this.parameters.length) {
-                        if (!this.parameters[parametersCounter].equals(comparableParameters[parametersCounter])) {
-                            haveEqualParameters = false;
-                        }
-                        parametersCounter++;
-                    }
-                    hasEqualCallAttributes = haveEqualParameters;
-                }
-            }
+        return sourceMethod.toGenericString().equals(comparableCall.getSourceMethod().toGenericString())
+                && hasEqualReturnType(comparableCall)
+                && hasEqualParentParameterType(comparableCall)
+                && hasEqualParameters(comparableCall);
+    }
+    
+    /**
+     * Checks whether the return types of this {@link Call} and the given {@link Call} are equal.
+     * 
+     * @param comparableCall the {@link Call} to compare to this {@link Call}; should never be <code>null</code>
+     * @return <code>true</code>, if the return type of the given {@link Call} is equal to the return type of this
+     *         {@link Call}; <code>false</code> otherwise
+     */
+    private boolean hasEqualReturnType(Call comparableCall) {
+        return returnType.equals(comparableCall.getReturnType()) 
+                && returnTypeSetDefinition == comparableCall.isReturnTypeSet();
+    }
+    
+    /**
+     * Checks whether the parent parameter types of this {@link Call} and the given {@link Call} are equal.
+     * 
+     * @param comparableCall the {@link Call} to compare to this {@link Call}; should never be <code>null</code>
+     * @return <code>true</code>, if the parent parameter type of the given {@link Call} is equal to the parent
+     *         parameter type of this {@link Call}; <code>false</code> otherwise
+     */
+    private boolean hasEqualParentParameterType(Call comparableCall) {
+        boolean hasEqualParentParameterType = false;
+        if (parentParameterType == null && comparableCall.getParentParameterType() == null) {
+            hasEqualParentParameterType = true;
+        } else if (parentParameterType != null && comparableCall.getParentParameterType() != null
+                && parentParameterType.equals(comparableCall.getParentParameterType())) {
+            hasEqualParentParameterType = true;
         }
-        return hasEqualCallAttributes;
+        return hasEqualParentParameterType;
+    }
+    
+    /**
+     * Checks whether the parameters of this {@link Call} and the given {@link Call} are equal.
+     * 
+     * @param comparableCall the {@link Call} to compare to this {@link Call}; should never be <code>null</code>
+     * @return <code>true</code>, if the parameters of the given {@link Call} are equal to the parameters of this
+     *         {@link Call}; <code>false</code> otherwise
+     */
+    private boolean hasEqualParameters(Call comparableCall) {
+        boolean hasEqualParameters = false;
+        ParameterType[] comparableParameters = comparableCall.getParameters();
+        if (parameters == null && comparableCall.getParameters() == null) {
+            hasEqualParameters = true;
+        } else if (parameters != null && comparableParameters != null 
+                && parameters.length == comparableParameters.length) {
+            boolean parametersEqual = true;
+            int parametersCounter = 0;
+            while (parametersEqual && parametersCounter < parameters.length) {
+                parametersEqual = parameters[parametersCounter].equals(comparableParameters[parametersCounter]) 
+                        && parametersSetDefinitions[parametersCounter]
+                                == comparableCall.isParameterSet(parametersCounter);
+                parametersCounter++;
+            }
+            hasEqualParameters = parametersEqual;
+        }
+        return hasEqualParameters;
     }
     
     /**
