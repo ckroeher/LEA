@@ -116,7 +116,8 @@ public class LanguageRegistryDuplicateDetectionTests {
             Call call = new Call(ElementType.OPERATION, "someStupidCallName",
                     LanguageRegistryDuplicateDetectionTests.class.getMethods()[0],
                     LanguageRegistryDuplicateDetectionTests.class, SOURCE_PLUGIN);
-            call.finalize(requiredReturnType, new ParameterType[] {requiredParameterType}, null);
+            call.finalize(requiredReturnType, false, new ParameterType[] {requiredParameterType}, new boolean[] {false},
+                    null);
             
             assertTrue("First call should be added", LanguageRegistry.INSTANCE.addCall(call));
             assertFalse("Second call should be rejected", LanguageRegistry.INSTANCE.addCall(call));
@@ -140,11 +141,13 @@ public class LanguageRegistryDuplicateDetectionTests {
             Call operation = new Call(ElementType.OPERATION, "someStupidCallName", 
                     LanguageRegistryDuplicateDetectionTests.class.getMethods()[0],
                     LanguageRegistryDuplicateDetectionTests.class, SOURCE_PLUGIN);
-            operation.finalize(requiredReturnType, new ParameterType[] {requiredParameterType}, null);
+            operation.finalize(requiredReturnType, false, new ParameterType[] {requiredParameterType},
+                    new boolean[] {false}, null);
             Call extractorCall = new Call(ElementType.EXTRACTOR_CALL, "someStupidCallName",
                     LanguageRegistryDuplicateDetectionTests.class.getMethods()[0],
                     LanguageRegistryDuplicateDetectionTests.class, SOURCE_PLUGIN);
-            extractorCall.finalize(requiredReturnType, new ParameterType[] {requiredParameterType}, null);
+            extractorCall.finalize(requiredReturnType, false, new ParameterType[] {requiredParameterType},
+                    new boolean[] {false}, null);
             
             assertTrue("First call should be added", LanguageRegistry.INSTANCE.addCall(operation));
             assertFalse("Second call should be rejected", LanguageRegistry.INSTANCE.addCall(extractorCall));
@@ -170,8 +173,8 @@ public class LanguageRegistryDuplicateDetectionTests {
             Call memberOperation = new Call(ElementType.OPERATION, "someStupidMemberOperationName",
                     LanguageRegistryDuplicateDetectionTests.class.getMethods()[0],
                     LanguageRegistryDuplicateDetectionTests.class, SOURCE_PLUGIN);
-            memberOperation.finalize(requiredReturnType, new ParameterType[] {requiredParameterType},
-                    requiredParentParameterType);
+            memberOperation.finalize(requiredReturnType, false, new ParameterType[] {requiredParameterType},
+                    new boolean[] {false}, requiredParentParameterType);
             
             assertTrue("First call should be added", LanguageRegistry.INSTANCE.addCall(memberOperation));
             assertFalse("Second call should be rejected", LanguageRegistry.INSTANCE.addCall(memberOperation));
@@ -197,13 +200,13 @@ public class LanguageRegistryDuplicateDetectionTests {
             Call memberOperation1 = new Call(ElementType.OPERATION, "someStupidMemberOperationName",
                     LanguageRegistryDuplicateDetectionTests.class.getMethods()[0],
                     LanguageRegistryDuplicateDetectionTests.class, SOURCE_PLUGIN);
-            memberOperation1.finalize(requiredReturnType, new ParameterType[] {requiredParameterType},
-                    requiredParentParameterType);
+            memberOperation1.finalize(requiredReturnType, false, new ParameterType[] {requiredParameterType},
+                    new boolean[] {false}, requiredParentParameterType);
             Call memberOperation2 = new Call(ElementType.OPERATION, "someStupidMemberOperationName",
                     LanguageRegistryDuplicateDetectionTests.class.getMethods()[0],
                     LanguageRegistryDuplicateDetectionTests.class, SOURCE_PLUGIN);
-            memberOperation2.finalize(requiredReturnType, new ParameterType[] {requiredParameterType},
-                    requiredParentParameterType);
+            memberOperation2.finalize(requiredReturnType, false, new ParameterType[] {requiredParameterType},
+                    new boolean[] {false}, requiredParentParameterType);
             
             assertTrue("First call should be added", LanguageRegistry.INSTANCE.addCall(memberOperation1));
             assertFalse("Second call should be rejected", LanguageRegistry.INSTANCE.addCall(memberOperation2));

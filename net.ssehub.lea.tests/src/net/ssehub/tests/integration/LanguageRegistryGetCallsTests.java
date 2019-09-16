@@ -80,7 +80,7 @@ public class LanguageRegistryGetCallsTests {
             ParameterType parameter = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "File",
                     LanguageRegistryGetCallsTests.class, SOURCE_PLUGIN);
             assertTrue(LanguageRegistry.INSTANCE.addParameterType(parameter), "Parameter should be added");
-            operation.finalize(parameter, new ParameterType[] {parameter}, null);
+            operation.finalize(parameter, false, new ParameterType[] {parameter}, new boolean[] {false}, null);
             assertTrue(LanguageRegistry.INSTANCE.addCall(operation), "Operation should be added");
             
             // Test with simple name
@@ -124,7 +124,7 @@ public class LanguageRegistryGetCallsTests {
             ParameterType parameter = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "Directory",
                     LanguageRegistryGetCallsTests.class, SOURCE_PLUGIN);
             assertTrue(LanguageRegistry.INSTANCE.addParameterType(parameter), "Parameter should be added");
-            operation.finalize(parameter, new ParameterType[] {parameter}, null);
+            operation.finalize(parameter, false, new ParameterType[] {parameter}, new boolean[] {false}, null);
             assertTrue(LanguageRegistry.INSTANCE.addCall(operation), "Operation should be added");
             
             // Test with simple name
@@ -172,9 +172,9 @@ public class LanguageRegistryGetCallsTests {
             ParameterType parameter = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "Folder",
                     LanguageRegistryGetCallsTests.class, SOURCE_PLUGIN);
             assertTrue(LanguageRegistry.INSTANCE.addParameterType(parameter), "Parameter should be added");
-            operation1.finalize(parameter, new ParameterType[] {parameter}, null);
+            operation1.finalize(parameter, false, new ParameterType[] {parameter}, new boolean[] {false}, null);
             assertTrue(LanguageRegistry.INSTANCE.addCall(operation1), "Operation should be added");
-            operation2.finalize(parameter, new ParameterType[] {parameter}, null);
+            operation2.finalize(parameter, false, new ParameterType[] {parameter}, new boolean[] {false}, null);
             assertTrue(LanguageRegistry.INSTANCE.addCall(operation2), "Operation should be added");
             
             // Test with simple name
@@ -213,9 +213,9 @@ public class LanguageRegistryGetCallsTests {
             ParameterType parameter = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "Map",
                     LanguageRegistryGetCallsTests.class, SOURCE_PLUGIN);
             assertTrue(LanguageRegistry.INSTANCE.addParameterType(parameter), "Parameter should be added");
-            operation1.finalize(parameter, new ParameterType[] {parameter}, null);
+            operation1.finalize(parameter, false, new ParameterType[] {parameter}, new boolean[] {false}, null);
             assertTrue(LanguageRegistry.INSTANCE.addCall(operation1), "Operation should be added");
-            operation2.finalize(parameter, null, null);
+            operation2.finalize(parameter, false, null, null, null);
             assertTrue(LanguageRegistry.INSTANCE.addCall(operation2), "Operation should be added");
             
             // Test with simple name

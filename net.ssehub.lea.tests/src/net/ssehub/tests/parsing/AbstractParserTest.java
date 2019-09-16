@@ -177,26 +177,28 @@ public abstract class AbstractParserTest {
             
             Call singleFileCall = new Call(ElementType.OPERATION, "file", AbstractParserTest.class.getMethods()[0],
                     AbstractParserTest.class, SOURCE_PLUGIN);
-            singleFileCall.finalize(artifactParameterType, new ParameterType[] {stringParameterType}, null);
+            singleFileCall.finalize(artifactParameterType, false, new ParameterType[] {stringParameterType},
+                    new boolean[] {false}, null);
             LanguageRegistry.INSTANCE.addCall(singleFileCall);
             Call allFilesCall = new Call(ElementType.OPERATION, "files", AbstractParserTest.class.getMethods()[0],
-                    AbstractParserTest.class, SOURCE_PLUGIN); // TODO how to know that this returns a set?
-            allFilesCall.finalize(artifactParameterType, new ParameterType[] {stringParameterType}, null);
+                    AbstractParserTest.class, SOURCE_PLUGIN);
+            allFilesCall.finalize(artifactParameterType, true, new ParameterType[] {stringParameterType},
+                    new boolean[] {false}, null);
             LanguageRegistry.INSTANCE.addCall(allFilesCall);
             
-            Call codeExtractorCallWithtoutParameters = new Call(ElementType.EXTRACTOR_CALL, "codeExtractor",
+            Call codeExtractorCallWithoutParameters = new Call(ElementType.EXTRACTOR_CALL, "codeExtractor",
                     AbstractParserTest.class.getMethods()[0], AbstractParserTest.class, SOURCE_PLUGIN);
-            codeExtractorCallWithtoutParameters.finalize(fragmentParameterType, null, null);
-            LanguageRegistry.INSTANCE.addCall(codeExtractorCallWithtoutParameters);
+            codeExtractorCallWithoutParameters.finalize(fragmentParameterType, true, null, null, null);
+            LanguageRegistry.INSTANCE.addCall(codeExtractorCallWithoutParameters);
             Call codeExtractorCallWithParameters = new Call(ElementType.EXTRACTOR_CALL, "codeExtractor",
                     AbstractParserTest.class.getMethods()[0], AbstractParserTest.class, SOURCE_PLUGIN);
-            codeExtractorCallWithParameters.finalize(fragmentParameterType, new ParameterType[] {artifactParameterType},
-                    null);
+            codeExtractorCallWithParameters.finalize(fragmentParameterType, true, 
+                    new ParameterType[] {artifactParameterType}, new boolean[] {true}, null);
             LanguageRegistry.INSTANCE.addCall(codeExtractorCallWithParameters);
             
             Call deadCodeAnaylsisCall = new Call(ElementType.ANALYSIS_CALL, "deadCodeAnalysis",
                     AbstractParserTest.class.getMethods()[0], AbstractParserTest.class, SOURCE_PLUGIN);
-            deadCodeAnaylsisCall.finalize(resultParameterType, null, null);
+            deadCodeAnaylsisCall.finalize(resultParameterType, true, null, null, null);
             LanguageRegistry.INSTANCE.addCall(deadCodeAnaylsisCall);
 
         } catch (LanguageElementException e) {

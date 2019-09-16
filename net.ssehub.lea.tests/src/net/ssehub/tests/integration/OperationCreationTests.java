@@ -440,21 +440,6 @@ public class OperationCreationTests extends AbstractCallCreationTest {
     private static ParameterType string = createParameterType(ElementType.FRAGMENT_PARAMETER_TYPE, "String");
     
     /**
-     * The "File[]" {@link ParameterType} required to create the {@link Call}s for testing.
-     */
-    private static ParameterType fileArray = createParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "File[]");
-    
-    /**
-     * The "List<File>" {@link ParameterType} required to create the {@link Call}s for testing.
-     */
-    private static ParameterType fileList = createParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "List<File>");
-    
-    /**
-     * The "String[]" {@link ParameterType} required to create the {@link Call}s for testing.
-     */
-    private static ParameterType stringArray = createParameterType(ElementType.FRAGMENT_PARAMETER_TYPE, "String[]");
-    
-    /**
      * The "FileObject" {@link ParameterType} required to create the {@link Call}s for testing.
      */
     private static ParameterType fileObject = createParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "FileObject");
@@ -524,7 +509,7 @@ public class OperationCreationTests extends AbstractCallCreationTest {
             "net.ssehub.tests.integration.OperationCreationTests."
                     + "ClassIntroducingFileReturnAndSingleArrayParameterOperation.getFile",
             ClassIntroducingFileReturnAndSingleArrayParameterOperation.class, SOURCE_PLUGIN, file, 
-            new ParameterType[] {fileArray},
+            new ParameterType[] {file},
             ClassIntroducingFileReturnAndSingleArrayParameterOperation.class.getMethods()[0]},
         
         {ClassIntroducingFileReturnAndSingleListParameterOperation.class, null, true, Call.class,
@@ -532,7 +517,7 @@ public class OperationCreationTests extends AbstractCallCreationTest {
             "net.ssehub.tests.integration.OperationCreationTests."
                     + "ClassIntroducingFileReturnAndSingleListParameterOperation.getFile",
             ClassIntroducingFileReturnAndSingleListParameterOperation.class, SOURCE_PLUGIN, file,
-            new ParameterType[] {fileList},
+            new ParameterType[] {file},
             ClassIntroducingFileReturnAndSingleListParameterOperation.class.getMethods()[0]},
         
         {ClassIntroducingFileReturnAndMultipleComplexParameterOperation.class, null, true, Call.class,
@@ -540,19 +525,19 @@ public class OperationCreationTests extends AbstractCallCreationTest {
             "net.ssehub.tests.integration.OperationCreationTests."
                     + "ClassIntroducingFileReturnAndMultipleComplexParameterOperation.getFile",
             ClassIntroducingFileReturnAndMultipleComplexParameterOperation.class, SOURCE_PLUGIN, file, 
-            new ParameterType[] {fileList, stringArray},
+            new ParameterType[] {file, string},
             ClassIntroducingFileReturnAndMultipleComplexParameterOperation.class.getMethods()[0]},
 
         {ClassIntroducingFileArrayReturnOperation.class, null, true, Call.class, ElementType.OPERATION, 
             "getFile",
             "net.ssehub.tests.integration.OperationCreationTests.ClassIntroducingFileArrayReturnOperation.getFile", 
-            ClassIntroducingFileArrayReturnOperation.class, SOURCE_PLUGIN, fileArray, null,
+            ClassIntroducingFileArrayReturnOperation.class, SOURCE_PLUGIN, file, null,
             ClassIntroducingFileArrayReturnOperation.class.getMethods()[0]},
         
         {ClassIntroducingFileListReturnOperation.class, null, true, Call.class, ElementType.OPERATION, 
             "getFile", 
             "net.ssehub.tests.integration.OperationCreationTests.ClassIntroducingFileListReturnOperation.getFile",
-            ClassIntroducingFileListReturnOperation.class, SOURCE_PLUGIN, fileList, null,
+            ClassIntroducingFileListReturnOperation.class, SOURCE_PLUGIN, file, null,
             ClassIntroducingFileListReturnOperation.class.getMethods()[0]},
         
         {ClassIntroducingFileReturnWithCustomNameOperation.class, null, true, Call.class, ElementType.OPERATION, 
@@ -653,9 +638,6 @@ public class OperationCreationTests extends AbstractCallCreationTest {
         if (!LanguageRegistry.INSTANCE.addParameterType(voidElement)
                 || !LanguageRegistry.INSTANCE.addParameterType(file)
                 || !LanguageRegistry.INSTANCE.addParameterType(string)
-                || !LanguageRegistry.INSTANCE.addParameterType(fileArray)
-                || !LanguageRegistry.INSTANCE.addParameterType(fileList)
-                || !LanguageRegistry.INSTANCE.addParameterType(stringArray)
                 || !LanguageRegistry.INSTANCE.addParameterType(fileObject)
                 || !LanguageRegistry.INSTANCE.addParameterType(prefix)) {
             System.err.println("Preparation failed");
