@@ -33,36 +33,36 @@ public class Call extends LanguageElement {
     private String fullyQualifiedName;
     
     /**
-     * The {@link ParameterType} this call will return.
+     * The {@link ParameterTypeInstance} this call will return.
      */
-    private ParameterType returnType;
+    private ParameterTypeInstance returnType;
+    
+//    /**
+//     * The definition of whether this call returns a set of its {@link #returnType} (<code>true</code>) or a single
+//     * element of that type (<code>false</code>, which is the default).
+//     */
+//    private boolean returnTypeSetDefinition;
     
     /**
-     * The definition of whether this call returns a set of its {@link #returnType} (<code>true</code>) or a single
-     * element of that type (<code>false</code>, which is the default).
+     * The array of {@link ParameterTypeInstance}s this call accepts as parameters. May be <code>null</code>, if this
+     * call does not require any parameters.
      */
-    private boolean returnTypeSetDefinition;
+    private ParameterTypeInstance[] parameters;
+    
+//    /**
+//     * The definitions of whether a parameter of this call is a set of the respective {@link ParameterType}
+//     * (<code>true</code>) or a single element of that type (<code>false</code>, which is the default). For each
+//     * {@link ParameterType} in the array of {@link #parameters} of this call the <code>boolean</code> value at the
+//     * same index in this array provides that definition. May be <code>null</code>, if this call does not require any
+//     * parameters.
+//     */
+//    private boolean[] parametersSetDefinitions;
     
     /**
-     * The array of {@link ParameterType}s this call accepts as parameters. May be <code>null</code>, if this call does
-     * not require any parameters.
+     * The {@link ParameterTypeInstance} for which this call represents a member operation. May be <code>null</code>,
+     * if this call does not represent a member operation.
      */
-    private ParameterType[] parameters;
-    
-    /**
-     * The definitions of whether a parameter of this call is a set of the respective {@link ParameterType}
-     * (<code>true</code>) or a single element of that type (<code>false</code>, which is the default). For each
-     * {@link ParameterType} in the array of {@link #parameters} of this call the <code>boolean</code> value at the
-     * same index in this array provides that definition. May be <code>null</code>, if this call does not require any
-     * parameters.
-     */
-    private boolean[] parametersSetDefinitions;
-    
-    /**
-     * The {@link ParameterType} for which this call represents a member operation. May be <code>null</code>, if this
-     * call does not represent a member operation.
-     */
-    private ParameterType parentParameterType;
+    private ParameterTypeInstance parentParameterType;
     
     /**
      * The {@link Method} from where this call was created.
@@ -107,9 +107,9 @@ public class Call extends LanguageElement {
         }
         this.sourceMethod = sourceMethod;
         returnType = null;
-        returnTypeSetDefinition = false;
+//        returnTypeSetDefinition = false;
         parameters = null;
-        parametersSetDefinitions = null;
+//        parametersSetDefinitions = null;
         parentParameterType = null;
         finalized = false;
         // Construct the fully-qualified name of this element
@@ -124,43 +124,32 @@ public class Call extends LanguageElement {
     }
     
     /**
-     * Completes the construction of this {@link Call} instance by setting the first given {@link ParameterType} as the
-     * return type and (optionally) the given array of {@link ParameterType}s as the parameters and the second given
-     * {@link ParameterType} as the parent parameter type of this instance.
+     * Completes the construction of this {@link Call} instance by setting the first given {@link ParameterTypeInstance}
+     * as the return type and (optionally) the given array of {@link ParameterTypeInstance}s as the parameters and the
+     * second given {@link ParameterTypeInstance} as the parent parameter type of this instance.
      * 
-     * @param returnType the {@link ParameterType} to be set as the return type of this call
-     * @param returnTypeSetDefinition the definition of whether this call returns a set of the given return type
-     *        (<code>true</code>) or a single element of that type (<code>false</code>, which is the default)
-     * @param parameters the array of {@link ParameterType}s to be set as the parameters of this call; may be 
+     * @param returnType the {@link ParameterTypeInstance} to be set as the return type of this call
+     * @param parameters the array of {@link ParameterTypeInstance}s to be set as the parameters of this call; may be 
      *        <code>null</code> for calls, which do not require parameters
-     * @param parametersSetDefinitions the definitions of whether a given parameter of this call is a set of the
-     *        respective {@link ParameterType} (<code>true</code>) or a single element of that type (<code>false</code>,
-     *        which is the default). For each {@link ParameterType} in the given array of parameters of this call the
-     *        <code>boolean</code> value at the same index in this array provides that definition; may be
-     *        <code>null</code>, if this call does not require any parameters
-     * @param parentParameterType the {@link ParameterType} to be set as the parent parameter type of this call; may be 
-     *        <code>null</code> for calls, which are not a member operation
+     * @param parentParameterType the {@link ParameterTypeInstance} to be set as the parent parameter type of this call;
+     *        may be <code>null</code> for calls, which are not a member operation
      * @throws LanguageElementException if
      *         <ul>
      *         <li>the construction of this instance is already completed (this method was called without exception once
      *             before)</li>
-     *         <li>the given {@link ParameterType} for the <b>return type</b> is <code>null</code> or represents
+     *         <li>the given {@link ParameterTypeInstance} for the <b>return type</b> is <code>null</code> or represents
      *             <code>void</code>, while this call represents an extractor or an analysis call</li>
-     *         <li>the given <code>boolean</code> value defining the given return type as being a set or not is
-     *             <code>null</code></li>
-     *         <li>the given array of {@link ParameterType}s for the <b>parameters</b> contains elements, which are
-     *             <code>null</code></li>
-     *         <li>the given array of <code>boolean</code> values defining the given parameters as being a set or not is
-     *             <code>null</code>, while the given array of parameters is not</li>
-     *         <li>the given {@link ParameterType} for the <b>parent parameter type</b> is not <code>null</code>, while
-     *             this call represents an extractor or an analysis call</li>
+     *         <li>the given array of {@link ParameterTypeInstance}s for the <b>parameters</b> contains elements, which
+     *             are <code>null</code></li>
+     *         <li>the given {@link ParameterTypeInstance} for the <b>parent parameter type</b> is not 
+     *             <code>null</code>, while this call represents an extractor or an analysis call</li>
      *         </ul>
      */
-    public void finalize(ParameterType returnType, boolean returnTypeSetDefinition, ParameterType[] parameters,
-            boolean[] parametersSetDefinitions, ParameterType parentParameterType) throws LanguageElementException {
+    public void finalize(ParameterTypeInstance returnType, ParameterTypeInstance[] parameters,
+            ParameterTypeInstance parentParameterType) throws LanguageElementException {
         if (!isFinal()) {            
-            setReturnType(returnType, returnTypeSetDefinition);
-            setParameters(parameters, parametersSetDefinitions);
+            setReturnType(returnType);
+            setParameters(parameters);
             setParentParameterType(parentParameterType);
             finalized = true;
         } else {
@@ -181,68 +170,54 @@ public class Call extends LanguageElement {
     }
     
     /**
-     * Sets the given {@link ParameterType} as the return type of this call.
+     * Sets the given {@link ParameterTypeInstance} as the return type of this call.
      * 
-     * @param returnType the {@link ParameterType} to be set as the return type of this call
-     * @param returnTypeSetDefinition the definition of whether this call returns a set of the given return type
-     *        (<code>true</code>) or a single element of that type (<code>false</code>, which is the default)
-     * @throws LanguageElementException if the given {@link ParameterType} is <code>null</code>, or represents
+     * @param returnType the {@link ParameterTypeInstance} to be set as the return type of this call
+     * @throws LanguageElementException if the given {@link ParameterTypeInstance} is <code>null</code>, or represents
      *         <code>void</code>, while this call represents an extractor or an analysis call
      */
-    private void setReturnType(ParameterType returnType, boolean returnTypeSetDefinition)
-            throws LanguageElementException {
+    private void setReturnType(ParameterTypeInstance returnType) throws LanguageElementException {
         if (returnType == null) {
             throw new LanguageElementException("The return type for this call is null");
         }
-        if (returnType.getName().equals("void") 
+        if (returnType.getParameterType().getName().equals("void") 
                 && (getElementType() == ElementType.EXTRACTOR_CALL || getElementType() == ElementType.ANALYSIS_CALL)) {
             throw new LanguageElementException("Extractor and analysis calls must have a non-void return type");
         }
         this.returnType = returnType;
-        this.returnTypeSetDefinition = returnTypeSetDefinition;
     }
     
     /**
-     * Sets the given array of {@link ParameterType}s as the parameters of this call.
+     * Sets the given array of {@link ParameterTypeInstance}s as the parameters of this call.
      * 
-     * @param parameters the array of {@link ParameterType}s to be set as the parameters of this call; may be 
+     * @param parameters the array of {@link ParameterTypeInstance}s to be set as the parameters of this call; may be 
      *        <code>null</code> for calls, which do not require parameters
-     * @param parametersSetDefinitions the definitions of whether a given parameter of this call is a set of the
-     *        respective {@link ParameterType} (<code>true</code>) or a single element of that type (<code>false</code>,
-     *        which is the default). For each {@link ParameterType} in the given array of parameters of this call the
-     *        <code>boolean</code> value at the same index in this array provides that definition; may be
-     *        <code>null</code>, if this call does not require any parameters
-     * @throws LanguageElementException if the given array of {@link ParameterType}s contains elements, which are 
-     *         <code>null</code>
+     * @throws LanguageElementException if the given array of {@link ParameterTypeInstance}s contains elements, which
+     *         are <code>null</code>
      */
-    private void setParameters(ParameterType[] parameters, boolean[] parametersSetDefinitions)
-            throws LanguageElementException {
+    private void setParameters(ParameterTypeInstance[] parameters) throws LanguageElementException {
         if (parameters != null && parameters.length > 0) {
-            if (parametersSetDefinitions == null || parametersSetDefinitions.length != parameters.length) {
-                throw new LanguageElementException("Wrong parameter set definitions");
-            }
             for (int i = 0; i < parameters.length; i++) {
                 if (parameters[i] == null) {
                     throw new LanguageElementException("A parameter is null");
                 }
             }
             this.parameters = parameters;
-            this.parametersSetDefinitions = parametersSetDefinitions;
         }
     }
     
     /**
-     * Sets the given {@link ParameterType} as the parent parameter type of this call, if this call's element type is
-     * {@link ElementType#OPERATION}. For all other call element types, calling this method results in an exception.
-     * Further, setting this value declares this call to represent a member operation that can only be called via an
-     * instance of that parent parameter type.
+     * Sets the given {@link ParameterTypeInstance} as the parent parameter type of this call, if this call's element
+     * type is {@link ElementType#OPERATION}. For all other call element types, calling this method results in an
+     * exception. Further, setting this value declares this call to represent a member operation that can only be called
+     * via an that {@link ParameterTypeInstance}.
      *  
-     * @param parentParameterType the {@link ParameterType} to be set as the parent parameter type of this call; may be 
-     *        <code>null</code> for calls, which are not a member operation
-     * @throws LanguageElementException if the given {@link ParameterType} is not <code>null</code>, while the element
-     *         type of this call is not {@link ElementType#OPERATION}
+     * @param parentParameterType the {@link ParameterTypeInstance} to be set as the parent parameter type of this call;
+     *        may be <code>null</code> for calls, which are not a member operation
+     * @throws LanguageElementException if the given {@link ParameterTypeInstance} is not <code>null</code>, while the
+     *         element type of this call is not {@link ElementType#OPERATION}
      */
-    private void setParentParameterType(ParameterType parentParameterType) throws LanguageElementException {
+    private void setParentParameterType(ParameterTypeInstance parentParameterType) throws LanguageElementException {
         if (parentParameterType != null && getElementType() != ElementType.OPERATION) {
             throw new LanguageElementException("The parent parameter type can only be set for operations");
         }
@@ -258,64 +233,36 @@ public class Call extends LanguageElement {
     }
     
     /**
-     * Returns {@link ParameterType} this call will return.
+     * Returns {@link ParameterTypeInstance} this call will return.
      * 
-     * @return the {@link ParameterType} this call will return or <code>null</code>, if the construction of this call is
-     *         not completed yet
+     * @return the {@link ParameterTypeInstance} this call will return or <code>null</code>, if the construction of this
+     *         call is not completed yet
      * @see #isFinal()
      */
-    public ParameterType getReturnType() {
+    public ParameterTypeInstance getReturnType() {
         return returnType;
     }
     
     /**
-     * Returns the definition of whether this call returns a set of its {@link #returnType} (<code>true</code>) or a
-     * single element of that type (<code>false</code>, which is the default).
+     * Returns the array of {@link ParameterTypeInstance}s, which denote the elements this call accepts as parameters.
      * 
-     * @return <code>true</code>, if this call returns a set of its {@link #returnType}; <code>false</code> otherwise
-     */
-    public boolean isReturnTypeSet() {
-        return returnTypeSetDefinition;
-    }
-    
-    /**
-     * Returns the array of {@link ParameterType}s, which denote the elements this call accepts as parameters.
-     * 
-     * @return the array of {@link ParameterType}s, which denote the elements this call accepts as parameters, or 
-     *         <code>null</code>, if the construction of this call is not completed yet or this call does not accept any
-     *         parameters
+     * @return the array of {@link ParameterTypeInstance}s, which denote the elements this call accepts as parameters,
+     *         or <code>null</code>, if the construction of this call is not completed yet or this call does not accept
+     *         any parameters
      * @see #isFinal()
      */
-    public ParameterType[] getParameters() {
+    public ParameterTypeInstance[] getParameters() {
         return parameters;
     }
     
     /**
-     * Returns the definition of whether the parameter of this call at the given index is a set of the respective
-     * {@link ParameterType} (<code>true</code>) or a single element of that type (<code>false</code>, which is the
-     * default). 
+     * Returns the parent {@link ParameterTypeInstance} for which this call represents a member operation.
      * 
-     * @param index the non-negative integer defining the index of the parameter for which the set definition should be
-     *        returned
-     * @return <code>true</code>, if the parameter at the given index is a set or <code>false</code>, if the
-     *         construction of this call is not completed yet or the parameter is not a set
-     * @see #isFinal()
+     * @return the parent {@link ParameterTypeInstance} for which this call represents a member operation or
+     *         <code>null</code>, if the construction of this call is not completed yet or this call is not a member
+     *         operation
      */
-    public boolean isParameterSet(int index) {
-        boolean parameterIsSet = false;
-        if (isFinal()) {
-            parameterIsSet = parametersSetDefinitions[index];
-        }
-        return parameterIsSet;
-    }
-    
-    /**
-     * Returns the parent {@link ParameterType} for which this call represents a member operation.
-     * 
-     * @return the parent {@link ParameterType} for which this call represents a member operation or <code>null</code>,
-     *         if the construction of this call is not completed yet or this call is not a member operation
-     */
-    public ParameterType getParentParameterType() {
+    public ParameterTypeInstance getParentParameterType() {
         return parentParameterType;
     }
     
@@ -339,18 +286,17 @@ public class Call extends LanguageElement {
     }
     
     /**
-     * Checks whether this call is a member operation of the parameter type identified by the given name
-     * (<code>true</code>) or not (<code>false</code>).
+     * Checks whether this call is a member operation of the given {@link ParameterTypeInstance} (<code>true</code>) or
+     * not (<code>false</code>).
      * 
-     * @param parameterTypeName the name of the parameter type to check whether this call is a member operation of it;
-     *        should never be <code>null</code>
-     * @return <code>true</code>, if this call is a member operation of the parameter type identified by the given name;
+     * @param parameterTypeInstance the {@link ParameterTypeInstance} to check whether this call is a member operation
+     *        of it
+     * @return <code>true</code>, if this call is a member operation of the given {@link ParameterTypeInstance};
      *         <code>false</code> otherwise
      */
-    public boolean isMemberOperationOf(String parameterTypeName) {
+    public boolean isMemberOperationOf(ParameterTypeInstance parameterTypeInstance) {
         return isMemberOperation() 
-                && (parentParameterType.getName().equals(parameterTypeName) 
-                        || parentParameterType.getFullyQualifiedName().equals(parameterTypeName));
+                && parentParameterType.equals(parameterTypeInstance);
     }
     
     /**
@@ -427,8 +373,7 @@ public class Call extends LanguageElement {
      *         {@link Call}; <code>false</code> otherwise
      */
     private boolean hasEqualReturnType(Call comparableCall) {
-        return returnType.equals(comparableCall.getReturnType()) 
-                && returnTypeSetDefinition == comparableCall.isReturnTypeSet();
+        return returnType.equals(comparableCall.getReturnType());
     }
     
     /**
@@ -458,7 +403,7 @@ public class Call extends LanguageElement {
      */
     private boolean hasEqualParameters(Call comparableCall) {
         boolean hasEqualParameters = false;
-        ParameterType[] comparableParameters = comparableCall.getParameters();
+        ParameterTypeInstance[] comparableParameters = comparableCall.getParameters();
         if (parameters == null && comparableCall.getParameters() == null) {
             hasEqualParameters = true;
         } else if (parameters != null && comparableParameters != null 
@@ -466,9 +411,7 @@ public class Call extends LanguageElement {
             boolean parametersEqual = true;
             int parametersCounter = 0;
             while (parametersEqual && parametersCounter < parameters.length) {
-                parametersEqual = parameters[parametersCounter].equals(comparableParameters[parametersCounter]) 
-                        && parametersSetDefinitions[parametersCounter]
-                                == comparableCall.isParameterSet(parametersCounter);
+                parametersEqual = parameters[parametersCounter].equals(comparableParameters[parametersCounter]);
                 parametersCounter++;
             }
             hasEqualParameters = parametersEqual;
@@ -477,16 +420,17 @@ public class Call extends LanguageElement {
     }
     
     /**
-     * Compares the given parameters with the defined {@link #parameters} of this {@link Call} in exactly their order
-     * in the arrays for equality. This is the case, if for each given parameter at a specific index an equal parameter
-     * at the same index in {@link #parameters} exists. 
+     * Compares the given array of {@link ParameterTypeInstance}s with the {@link #parameters} of this {@link Call} in
+     * exactly their order in the arrays for equality. This is the case, if for each given parameter at a specific index
+     * an equal parameter at the same index in {@link #parameters} exists. 
      *   
-     * @param parameters the parameters to compare to the {@link #parameters} of this {@link Call}
+     * @param parameters the array of {@link ParameterTypeInstance} to compare to the {@link #parameters} of this
+     *        {@link Call}
      * @return <code>true</code>, if either the given parameters and the {@link #parameters} of this {@link Call} are
      *         <code>null</code>, or for each given parameter at a specific index an equal parameter at the same index
      *         in {@link #parameters} exists; <code>false</code> otherwise
      */
-    public boolean acceptsParameters(ParameterType[] parameters) {
+    public boolean acceptsParameters(ParameterTypeInstance[] parameters) {
         boolean acceptsParameters = false;
         if (this.parameters == null && parameters == null) {
             acceptsParameters = true;

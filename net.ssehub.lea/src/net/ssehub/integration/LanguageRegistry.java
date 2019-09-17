@@ -513,7 +513,7 @@ public class LanguageRegistry extends AbstractLanguageRegistry {
     
     /**
      * Checks whether a(n unique) {@link Call} of the given {@link ElementType} with the given name and 
-     * {@link ParameterType}s denoting the parameters is available.<br>
+     * {@link ParameterTypeInstance}s denoting the parameters is available.<br>
      * <br>
      * This method initially treats the given name as simple name. If no {@link Call}s match that simple name, this
      * method retries detecting available {@link Call}s treating the given name as fully-qualified name. If in any of
@@ -530,14 +530,15 @@ public class LanguageRegistry extends AbstractLanguageRegistry {
      * @param elementType the {@link ElementType} of the (unique) {@link Call} to search for; should never be
      *        <code>null</code>
      * @param name the name of the (unique) {@link Call} to search for; should never be <code>null</code>
-     * @param parameters the array of {@link ParameterType}s denoting the parameters of the {@link Call}s to search for;
-     *        <code>null</code> or an <i>empty</i> array indicates that the {@link Calls} should not have any parameters
+     * @param parameters the array of {@link ParameterTypeInstance}s denoting the parameters of the {@link Call}s to
+     *        search for; <code>null</code> or an <i>empty</i> array indicates that the {@link Calls} should not have
+     *        any parameters
      * @param isUnique must be <code>true</code> to further check whether a {@link Call} matching the given
      *        {@link ElementType} name is unique; <code>false</code> otherwise 
      * @return <code>true</code>, if a(n unique) {@link Call} of the type given {@link ElementType} with the given
      *         name and parameters is available; <code>false</code> otherwise
      */
-    public boolean hasCall(ElementType elementType, String name, ParameterType[] parameters, boolean isUnique) {
+    public boolean hasCall(ElementType elementType, String name, ParameterTypeInstance[] parameters, boolean isUnique) {
         boolean hasCall = false;
         List<Call> availableCall = getCalls(elementType, name, parameters);
         if (availableCall != null && (!isUnique || availableCall.size() == 1)) {
@@ -939,7 +940,7 @@ public class LanguageRegistry extends AbstractLanguageRegistry {
 //    
     /**
      * Returns the <b>unique</b> {@link Call} of the given {@link ElementType} with the given name and 
-     * {@link ParameterType}s denoting the parameters.<br>
+     * {@link ParameterTypeInstance}s denoting the parameters.<br>
      * <br>
      * This method initially treats the given name as simple name and returns that unique {@link Call}, which
      * matches that simple name, the given parameters, and has the given {@link ElementType}. If this initial search
@@ -950,13 +951,14 @@ public class LanguageRegistry extends AbstractLanguageRegistry {
      * 
      * @param elementType the {@link ElementType} of the unique {@link Call} to search for
      * @param name the name of the unique {@link Call} to search for
-     * @param parameters the array of {@link ParameterType}s denoting the parameters of the unique {@link Call} to
-     *        search for
+     * @param parameters the array of {@link ParameterTypeInstance}s denoting the parameters of the unique {@link Call}
+     *        to search for; <code>null</code> or an <i>empty</i> array indicates that the {@link Call} should not have
+     *        any parameters
      * @return the unique {@link Call} of the given {@link ElementType} with the given name and parameters or
      *         <code>null</code>, if the search results in multiple matches (ambiguous results) or no such
      *         {@link Call} is available
      */
-    public Call getCall(ElementType elementType, String name, ParameterType[] parameters) {
+    public Call getCall(ElementType elementType, String name, ParameterTypeInstance[] parameters) {
         Call call = null;
         List<Call> availableCalls = getCalls(elementType, name, parameters);
         if (availableCalls != null && availableCalls.size() == 1) {
@@ -1055,7 +1057,7 @@ public class LanguageRegistry extends AbstractLanguageRegistry {
     
     /**
      * Returns the {@link List} of <b>all</b> {@link Call}s of the given {@link ElementType} with the given name and
-     * {@link ParameterType}s denoting the parameters.<br>
+     * {@link ParameterTypeInstance}s denoting the parameters.<br>
      * <br>
      * This method first detects all available {@link Call}s with the given {@link ElementType} and name by calling
      * {@link #getCalls(ElementType, String)}. Based on that return value, it filters those {@link Call}s matching the
@@ -1063,12 +1065,13 @@ public class LanguageRegistry extends AbstractLanguageRegistry {
      * 
      * @param elementType the {@link ElementType} of the {@link Call}s to search for; should never be <code>null</code>
      * @param name the name of the {@link Call}s to search for; should never be <code>null</code>
-     * @param parameters the array of {@link ParameterType}s denoting the parameters of the {@link Call}s to search for;
-     *        <code>null</code> or an <i>empty</i> array indicates that the {@link Calls} should not have any parameters
+     * @param parameters the array of {@link ParameterTypeInstance}s denoting the parameters of the {@link Call}s to
+     *        search for; <code>null</code> or an <i>empty</i> array indicates that the {@link Calls} should not have
+     *        any parameters
      * @return the {@link List} of available {@link Call}s with the given {@link ElementType}, name, and parameters or
      *         <code>null</code>, if no such {@link Call}s are available 
      */
-    public List<Call> getCalls(ElementType elementType, String name, ParameterType[] parameters) {
+    public List<Call> getCalls(ElementType elementType, String name, ParameterTypeInstance[] parameters) {
         List<Call> availableCalls = null;
         List<Call> potentialCalls = getCalls(elementType, name);
         if (potentialCalls != null) {

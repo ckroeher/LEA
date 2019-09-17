@@ -276,10 +276,10 @@ public class LanguageElementCreator {
     }
     
     /**
-     * Completes the construction of the given {@link Call} by setting the {@link ParameterType}s, which represent the
-     * return type and (optionally) parameters and the parent parameter type of the given {@link Call}, if these types
-     * are available in the {@link LanguageRegistry}. The completely constructed {@link Call} is then added to the
-     * {@link LanguageRegistry}.
+     * Completes the construction of the given {@link Call} by setting the {@link ParameterTypeInstance}s, which
+     * represent the return type and (optionally) parameters and the parent parameter type of the given {@link Call}, if
+     * the respective {@link ParameterType}s are available in the {@link LanguageRegistry}. The completely constructed
+     * {@link Call} is then added to the {@link LanguageRegistry}.
      * 
      * @param call the {@link Call} for which the construction shall be be completed; should never be <code>null</code>
      * @param returnType the {@link String} representing the fully-qualified name of the return type of the given
@@ -296,26 +296,24 @@ public class LanguageElementCreator {
      */
     private void finalizeCall(Call call, String returnType, String[] parameters, String parentParameterType) 
             throws ExternalElementException {
-        String coreType = getCoreType(returnType);
-        ParameterType callReturnType = languageRegistry.getParameterType(coreType);
-        boolean returnTypeIsSet = !returnType.equals(coreType);
-        ParameterType[] callParameters = null;
-        boolean[] parametersAreSet = null;
-        if (parameters != null) {            
-            callParameters = new ParameterType[parameters.length];
-            parametersAreSet = new boolean[parameters.length];
-            for (int i = 0; i < parameters.length; i++) {
-                coreType = getCoreType(parameters[i]);
-                callParameters[i] = languageRegistry.getParameterType(coreType);
-                parametersAreSet[i] = !parameters[i].equals(coreType);
+        try {
+            // Get the return type
+            ParameterTypeInstance callReturnType = createParameterTypeInstance(returnType);
+            // Get the parameters (optional)
+            ParameterTypeInstance[] callParameters = null;
+            if (parameters != null) {            
+                callParameters = new ParameterTypeInstance[parameters.length];
+                for (int i = 0; i < parameters.length; i++) {
+                    callParameters[i] = createParameterTypeInstance(parameters[i]);
+                }
             }
-        }
-        ParameterType callParentParameterType = null;
-        if (parentParameterType != null) {
-            callParentParameterType = languageRegistry.getParameterType(parentParameterType);
-        }
-        try {            
-            call.finalize(callReturnType, returnTypeIsSet, callParameters, parametersAreSet, callParentParameterType);
+            // Get the parent parameter type (optional)
+            ParameterTypeInstance callParentParameterType = null;
+            if (parentParameterType != null) {
+                callParentParameterType = createParameterTypeInstance(parentParameterType);
+            }
+            // Finalize call and add it to the registry
+            call.finalize(callReturnType, callParameters, callParentParameterType);
             if (!languageRegistry.addCall(call)) {
                 throw new ExternalElementException("Adding " + call.getElementType() + " \"" 
                         + call.getFullyQualifiedName() + "\" to language registry failed");
@@ -324,6 +322,28 @@ public class LanguageElementCreator {
             throw new ExternalElementException("Completing the construction of call \"" + call.getFullyQualifiedName() 
                     + "\" failed", e);
         }
+    }
+    
+    /**
+     * Creates the {@link ParameterTypeInstance} for {@link Call} elements based in the given {@link String} denoting a
+     * method return type or parameter type.
+     * 
+     * @param type the {@link String} denoting a method return type or parameter type for which the
+     *        {@link ParameterTypeInstance} should be created
+     * @return the {@link ParameterTypeInstance} or <code>null</code>, if the given {@link String} is <code>null</code>
+     *         or <i>blank</i>
+     * @throws LanguageElementException if the {@link LanguageRegistry} does not contain a {@link ParameterType} to
+     *         create an instance from
+     */
+    private ParameterTypeInstance createParameterTypeInstance(String type) throws LanguageElementException {
+        ParameterTypeInstance parameterTypeInstance = null;
+        if (type != null && !type.isBlank()) {            
+            String coreType = getCoreType(type);
+            boolean isSet = !type.equals(coreType);
+            ParameterType parameterType = languageRegistry.getParameterType(coreType);
+            parameterTypeInstance = new ParameterTypeInstance(parameterType, isSet);
+        }
+        return parameterTypeInstance;
     }
     
     /**
@@ -405,7 +425,8 @@ public class LanguageElementCreator {
     /**
      * Returns the core (non-array and non-container) type of the given type. 
      * 
-     * @param type the type for which the core type should be returned
+     * @param type the type for which the core type should be returned; should never be <code>null</code> nor
+     *        <i>blank</i>
      * @return the core (non-set and non-container) type of the given type or the given type, if it does not denote an
      *         array or a container type
      */
