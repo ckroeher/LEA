@@ -23,7 +23,7 @@ import java.io.File;
  * @author Christian Kroeher
  *
  */
-public class ChangeIdentifier extends LanguageElement implements IFinalizable {
+public class ChangeIdentifier extends LanguageElement {
     
     /**
      * The constant {@link ElementType} of all instances of this class: {@link ElementType#CHANGE_IDENTIFIER}.
@@ -96,6 +96,17 @@ public class ChangeIdentifier extends LanguageElement implements IFinalizable {
         }
         this.assignableElements = assignableElements;
         finalized = true;
+    }
+    
+    /**
+     * Checks whether the construction of this element is completed. For {@link ChangeIdentifier}s, the construction is
+     * completed, if the {@link #assignableElements} are available.
+     * 
+     * @return <code>true</code>, if the construction of this element is completed; <code>false</code> otherwise
+     * @see @see #finalize(ParameterType[])
+     */
+    public boolean isFinal() {
+        return finalized;
     }
     
     /**
@@ -179,15 +190,4 @@ public class ChangeIdentifier extends LanguageElement implements IFinalizable {
         return isAssignableTo;
     }
 
-    /**
-     * {@inheritDoc}<br>
-     * <br>
-     * For {@link ChangeIdentifier}s, the construction is completed, if the {@link #assignableElements} are available.
-     * 
-     * @see #finalize(ParameterType[])
-     */
-    @Override
-    public boolean isFinal() {
-        return finalized;
-    }
 }

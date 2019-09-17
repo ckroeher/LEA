@@ -25,7 +25,7 @@ import java.lang.reflect.Method;
  * @author Christian Kroeher
  *
  */
-public class Call extends LanguageElement implements IFinalizable {
+public class Call extends LanguageElement {
     
     /**
      * The fully-qualified name of this element.
@@ -166,6 +166,18 @@ public class Call extends LanguageElement implements IFinalizable {
         } else {
             throw new LanguageElementException("The construction of this call is already completed");
         }
+    }
+    
+    /**
+     * Checks whether the construction of this element is completed. For {@link Calls}s, the construction is completed,
+     * if the {@link #returnType} and (optionally) the {@link #parameters} and the {@link #parentParameterType} are
+     * available.
+     * 
+     * @return <code>true</code>, if the construction of this element is completed; <code>false</code> otherwise
+     * @see #finalize(ParameterType, ParameterType[], ParameterType)
+     */
+    public boolean isFinal() {
+        return finalized;
     }
     
     /**
@@ -490,16 +502,4 @@ public class Call extends LanguageElement implements IFinalizable {
         return acceptsParameters;
     }
 
-    /**
-     * {@inheritDoc}<br>
-     * <br>
-     * For {@link Calls}s, the construction is completed, if the {@link #returnType} and (optionally) the
-     * {@link #parameters} and the {@link #parentParameterType} are available.
-     * 
-     * @see #finalize(ParameterType, ParameterType[], ParameterType)
-     */
-    @Override
-    public boolean isFinal() {
-        return finalized;
-    }
 }
