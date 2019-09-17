@@ -34,6 +34,7 @@ import net.ssehub.integration.LanguageElementCreator;
 import net.ssehub.integration.LanguageElementException;
 import net.ssehub.integration.LanguageRegistry;
 import net.ssehub.integration.ParameterType;
+import net.ssehub.integration.ParameterTypeInstance;
 
 /**
  * This abstract class contains common attributes and unit tests for the creation of language elements by the 
@@ -163,10 +164,29 @@ public abstract class AbstractLanguageElementCreationTest extends AbstractCreati
             createdParameterType = new ParameterType(elementType, name, ChangeIdentifierCreationTests.class,
                     SOURCE_PLUGIN);
         } catch (LanguageElementException e) {
-            System.err.println("Creating required language elements failed");
+            System.err.println("Creating required parameter type failed");
             e.printStackTrace();
         }
         return createdParameterType;
+    }
+    
+    /**
+     * Creates a {@link ParameterTypeInstance} of the given {@link ParameterType} and its given set definition.
+     * 
+     * @param parameterType the {@link ParameterType} for which an instance should be created
+     * @param isSet the definition of whether the created {@link ParameterTypeInstance} should represent a set
+     *        (<code>true</code>) or not (<code>false</code>)
+     * @return the created {@link ParameterTypeInstance} or <code>null</code>, if creating it failed
+     */
+    protected static ParameterTypeInstance createParameterTypeInstance(ParameterType parameterType, boolean isSet) {
+        ParameterTypeInstance createdParameterTypeInstance = null;
+        try {
+            createdParameterTypeInstance = new ParameterTypeInstance(parameterType, isSet);
+        } catch (LanguageElementException e) {
+            System.err.println("Creating required parameter type instance failed");
+            e.printStackTrace();
+        }
+        return createdParameterTypeInstance;
     }
     
     /**

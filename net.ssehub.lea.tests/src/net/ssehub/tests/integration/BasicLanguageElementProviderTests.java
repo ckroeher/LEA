@@ -30,9 +30,11 @@ import net.ssehub.integration.Call;
 import net.ssehub.integration.ElementType;
 import net.ssehub.integration.ExternalElementException;
 import net.ssehub.integration.LanguageElement;
+import net.ssehub.integration.LanguageElementException;
 import net.ssehub.integration.LanguageElementProvider;
 import net.ssehub.integration.LanguageRegistry;
 import net.ssehub.integration.ParameterType;
+import net.ssehub.integration.ParameterTypeInstance;
 
 /**
  * This class contains some basic unit tests for the {@link LanguageElementProvider}.
@@ -229,6 +231,7 @@ public class BasicLanguageElementProviderTests {
      * Tests the correct scan of a plug-in, which contains Java classes that introduce new member operations. This 
      * should yield corresponding {@link LanguageElement}s in the {@link LanguageRegistry}.
      */
+// CHECKSTYLE:OFF
     @Test
     public void testPluginWithNewMemberOperations() {
         File pluginDirectory = new File(TESTDATA_DIRECTORY, "pluginWithNewMemberOperations");
@@ -241,7 +244,7 @@ public class BasicLanguageElementProviderTests {
                     "A plug-in with classes introducing new elements should increase the number of elements in the "
                     + "language directory by 6");
             /*
-             * There should be the following member operations:
+             * There should be 3 member operations:
              *    1. getAbsolutePath() for artifact parameter type NewFile
              *    2. getAbsolutePath() for artifact parameter type FileWithMemberOperation
              *    3. getPath() for artifact parameter type FileWithMemberOperation
@@ -249,72 +252,78 @@ public class BasicLanguageElementProviderTests {
             try {
                 ParameterType newFile = LanguageRegistry.INSTANCE.getParameterType(ElementType.ARTIFACT_PARAMETER_TYPE,
                         "NewFile");
+                ParameterTypeInstance newFileInstance = new ParameterTypeInstance(newFile, false);
                 // 1. getAbsolutePath() for artifact parameter type NewFile
-                Call getAbsolutePathForNewFile = getMemberOperation(newFile, "getAbsolutePath");
+                Call getAbsolutePathForNewFile = getMemberOperation(newFileInstance, "getAbsolutePath");
                 assertTrue(getAbsolutePathForNewFile.isMemberOperation(), "Call \"" 
                         + getAbsolutePathForNewFile.getFullyQualifiedName() + "\" should be a member operation"); 
-                assertTrue(getAbsolutePathForNewFile.isMemberOperationOf(newFile.getName()), "Call \"" 
+                assertTrue(getAbsolutePathForNewFile.isMemberOperationOf(newFileInstance), "Call \"" 
                         + getAbsolutePathForNewFile.getFullyQualifiedName() + "\" should be a member operation of \"" 
                         + newFile.getFullyQualifiedName() + "\"");
-                assertEquals(newFile.getName(), getAbsolutePathForNewFile.getParentParameterType().getName(), "Call \"" 
+                assertEquals(newFile.getName(),
+                        getAbsolutePathForNewFile.getParentParameterType().getParameterType().getName(), "Call \"" 
                         + getAbsolutePathForNewFile.getFullyQualifiedName() + "\" should have \"" 
                         + newFile.getFullyQualifiedName() + "\" as parent parameter type");
                 
                 ParameterType fileWithMemberOperation = 
                         LanguageRegistry.INSTANCE.getParameterType(ElementType.ARTIFACT_PARAMETER_TYPE,
                                 "FileWithMemberOperation");
+                ParameterTypeInstance fileWithMemberOperationInstance = 
+                        new ParameterTypeInstance(fileWithMemberOperation, false);
                 // 2. getAbsolutePath() for artifact parameter type FileWithMemberOperation
-                Call getAbsolutePathForFileWithMemberOperation = getMemberOperation(fileWithMemberOperation,
+                Call getAbsolutePathForFileWithMemberOperation = getMemberOperation(fileWithMemberOperationInstance,
                         "getAbsolutePath");
                 assertTrue(getAbsolutePathForFileWithMemberOperation.isMemberOperation(), "Call \"" 
                         + getAbsolutePathForFileWithMemberOperation.getFullyQualifiedName() 
                         + "\" should be a member operation"); 
                 assertTrue(getAbsolutePathForFileWithMemberOperation
-                        .isMemberOperationOf(fileWithMemberOperation.getName()), "Call \"" 
+                        .isMemberOperationOf(fileWithMemberOperationInstance), "Call \"" 
                         + getAbsolutePathForFileWithMemberOperation.getFullyQualifiedName() 
                         + "\" should be a member operation of \"" + fileWithMemberOperation.getFullyQualifiedName() 
                         + "\"");
                 assertEquals(fileWithMemberOperation.getName(), 
-                        getAbsolutePathForFileWithMemberOperation.getParentParameterType().getName(), "Call \"" 
-                                + getAbsolutePathForFileWithMemberOperation.getFullyQualifiedName() 
+                        getAbsolutePathForFileWithMemberOperation.getParentParameterType().getParameterType().getName(),
+                            "Call \"" + getAbsolutePathForFileWithMemberOperation.getFullyQualifiedName() 
                                 + "\" should have \"" + fileWithMemberOperation.getFullyQualifiedName() 
                                 + "\" as parent parameter type");
                 // 3. getPath() for artifact parameter type FileWithMemberOperation
-                Call getPathForFileWithMemberOperation = getMemberOperation(fileWithMemberOperation, "getPath");
+                Call getPathForFileWithMemberOperation = getMemberOperation(fileWithMemberOperationInstance, "getPath");
                 assertTrue(getPathForFileWithMemberOperation.isMemberOperation(), "Call \"" 
                         + getPathForFileWithMemberOperation.getFullyQualifiedName() 
                         + "\" should be a member operation"); 
-                assertTrue(getPathForFileWithMemberOperation.isMemberOperationOf(fileWithMemberOperation.getName()), 
+                assertTrue(getPathForFileWithMemberOperation.isMemberOperationOf(fileWithMemberOperationInstance), 
                         "Call \"" + getPathForFileWithMemberOperation.getFullyQualifiedName() 
                         + "\" should be a member operation of \"" + fileWithMemberOperation.getFullyQualifiedName() 
                         + "\"");
                 assertEquals(fileWithMemberOperation.getName(), 
-                        getPathForFileWithMemberOperation.getParentParameterType().getName(), "Call \"" 
-                                + getPathForFileWithMemberOperation.getFullyQualifiedName() + "\" should have \"" 
+                        getPathForFileWithMemberOperation.getParentParameterType().getParameterType().getName(),
+                            "Call \"" + getPathForFileWithMemberOperation.getFullyQualifiedName() + "\" should have \"" 
                                 + fileWithMemberOperation.getFullyQualifiedName() + "\" as parent parameter type");
             } catch (NullPointerException e) {
                 assertNull(e, "Language registry does not contain required elements");
             }
-        } catch (ExternalElementException e) {
+        } catch (ExternalElementException | LanguageElementException e) {
             assertNull(e, "Exception thrown");
         }
     }
+// CHECKSTYLE:ON
     
     /**
-     * Return the {@link Call} with the given name, which is a member operation of the given {@link ParameterType}.
+     * Return the {@link Call} with the given name, which is a member operation of the given
+     * {@link ParameterTypeInstance}.
      * 
-     * @param target the {@link ParameterType} for which the member operation with the given name should be returned
+     * @param target the {@link ParameterTypeInstance} for which the member operation with the given name should be
+     *        returned
      * @param name the {@link String} denoting the name of the member operation, which should be returned
-     * @return the {@link Call} with the given name, which is a member operation of the given {@link ParameterType}, or
-     *         <code>null</code>, if no such {@link Call} is available
+     * @return the {@link Call} with the given name, which is a member operation of the given
+     *         {@link ParameterTypeInstance}, or <code>null</code>, if no such {@link Call} is available
      */
-    private Call getMemberOperation(ParameterType target, String name) {
+    private Call getMemberOperation(ParameterTypeInstance target, String name) {
         Call memberOperation = null;
         List<Call> potentialOperations = LanguageRegistry.INSTANCE.getCalls(ElementType.OPERATION, name);
         int potentialOperationsCounter = 0;
         while (memberOperation == null && potentialOperationsCounter < potentialOperations.size()) {
-            if (potentialOperations.get(potentialOperationsCounter).isMemberOperationOf(
-                    target.getFullyQualifiedName())) {
+            if (potentialOperations.get(potentialOperationsCounter).isMemberOperationOf(target)) {
                 memberOperation = potentialOperations.get(potentialOperationsCounter);
             }
             potentialOperationsCounter++;

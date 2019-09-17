@@ -29,6 +29,7 @@ import net.ssehub.integration.LanguageElement;
 import net.ssehub.integration.LanguageElementException;
 import net.ssehub.integration.LanguageRegistry;
 import net.ssehub.integration.ParameterType;
+import net.ssehub.integration.ParameterTypeInstance;
 
 /**
  * This class contains unit tests for the {@link LanguageRegistry}, which check the correct rejection of 
@@ -113,10 +114,14 @@ public class LanguageRegistryDuplicateDetectionTests {
             ParameterType requiredParameterType = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "CPT",
                     LanguageRegistryDuplicateDetectionTests.class, SOURCE_PLUGIN);
             
+            ParameterTypeInstance requiredReturnTypeInstance = new ParameterTypeInstance(requiredReturnType, false);
+            ParameterTypeInstance requiredParameterTypeInstance = new ParameterTypeInstance(requiredParameterType,
+                    false);
+            
             Call call = new Call(ElementType.OPERATION, "someStupidCallName",
                     LanguageRegistryDuplicateDetectionTests.class.getMethods()[0],
                     LanguageRegistryDuplicateDetectionTests.class, SOURCE_PLUGIN);
-            call.finalize(requiredReturnType, false, new ParameterType[] {requiredParameterType}, new boolean[] {false},
+            call.finalize(requiredReturnTypeInstance, new ParameterTypeInstance[] {requiredParameterTypeInstance},
                     null);
             
             assertTrue("First call should be added", LanguageRegistry.INSTANCE.addCall(call));
@@ -138,16 +143,20 @@ public class LanguageRegistryDuplicateDetectionTests {
             ParameterType requiredParameterType = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "CPT2",
                     LanguageRegistryDuplicateDetectionTests.class, SOURCE_PLUGIN);
             
+            ParameterTypeInstance requiredReturnTypeInstance = new ParameterTypeInstance(requiredReturnType, false);
+            ParameterTypeInstance requiredParameterTypeInstance = new ParameterTypeInstance(requiredParameterType,
+                    false);
+            
             Call operation = new Call(ElementType.OPERATION, "someStupidCallName", 
                     LanguageRegistryDuplicateDetectionTests.class.getMethods()[0],
                     LanguageRegistryDuplicateDetectionTests.class, SOURCE_PLUGIN);
-            operation.finalize(requiredReturnType, false, new ParameterType[] {requiredParameterType},
-                    new boolean[] {false}, null);
+            operation.finalize(requiredReturnTypeInstance, new ParameterTypeInstance[] {requiredParameterTypeInstance},
+                    null);
             Call extractorCall = new Call(ElementType.EXTRACTOR_CALL, "someStupidCallName",
                     LanguageRegistryDuplicateDetectionTests.class.getMethods()[0],
                     LanguageRegistryDuplicateDetectionTests.class, SOURCE_PLUGIN);
-            extractorCall.finalize(requiredReturnType, false, new ParameterType[] {requiredParameterType},
-                    new boolean[] {false}, null);
+            extractorCall.finalize(requiredReturnTypeInstance,
+                    new ParameterTypeInstance[] {requiredParameterTypeInstance}, null);
             
             assertTrue("First call should be added", LanguageRegistry.INSTANCE.addCall(operation));
             assertFalse("Second call should be rejected", LanguageRegistry.INSTANCE.addCall(extractorCall));
@@ -170,11 +179,17 @@ public class LanguageRegistryDuplicateDetectionTests {
             ParameterType requiredParentParameterType = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "MOPPT",
                     LanguageRegistryDuplicateDetectionTests.class, SOURCE_PLUGIN);
             
+            ParameterTypeInstance requiredReturnTypeInstance = new ParameterTypeInstance(requiredReturnType, false);
+            ParameterTypeInstance requiredParameterTypeInstance = new ParameterTypeInstance(requiredParameterType,
+                    false);
+            ParameterTypeInstance requiredParentParameterTypeInstance =
+                    new ParameterTypeInstance(requiredParentParameterType, false);
+            
             Call memberOperation = new Call(ElementType.OPERATION, "someStupidMemberOperationName",
                     LanguageRegistryDuplicateDetectionTests.class.getMethods()[0],
                     LanguageRegistryDuplicateDetectionTests.class, SOURCE_PLUGIN);
-            memberOperation.finalize(requiredReturnType, false, new ParameterType[] {requiredParameterType},
-                    new boolean[] {false}, requiredParentParameterType);
+            memberOperation.finalize(requiredReturnTypeInstance,
+                    new ParameterTypeInstance[] {requiredParameterTypeInstance}, requiredParentParameterTypeInstance);
             
             assertTrue("First call should be added", LanguageRegistry.INSTANCE.addCall(memberOperation));
             assertFalse("Second call should be rejected", LanguageRegistry.INSTANCE.addCall(memberOperation));
@@ -197,16 +212,22 @@ public class LanguageRegistryDuplicateDetectionTests {
             ParameterType requiredParentParameterType = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "MOPPT2",
                     LanguageRegistryDuplicateDetectionTests.class, SOURCE_PLUGIN);
             
+            ParameterTypeInstance requiredReturnTypeInstance = new ParameterTypeInstance(requiredReturnType, false);
+            ParameterTypeInstance requiredParameterTypeInstance = new ParameterTypeInstance(requiredParameterType,
+                    false);
+            ParameterTypeInstance requiredParentParameterTypeInstance =
+                    new ParameterTypeInstance(requiredParentParameterType, false);
+            
             Call memberOperation1 = new Call(ElementType.OPERATION, "someStupidMemberOperationName",
                     LanguageRegistryDuplicateDetectionTests.class.getMethods()[0],
                     LanguageRegistryDuplicateDetectionTests.class, SOURCE_PLUGIN);
-            memberOperation1.finalize(requiredReturnType, false, new ParameterType[] {requiredParameterType},
-                    new boolean[] {false}, requiredParentParameterType);
+            memberOperation1.finalize(requiredReturnTypeInstance,
+                    new ParameterTypeInstance[] {requiredParameterTypeInstance}, requiredParentParameterTypeInstance);
             Call memberOperation2 = new Call(ElementType.OPERATION, "someStupidMemberOperationName",
                     LanguageRegistryDuplicateDetectionTests.class.getMethods()[0],
                     LanguageRegistryDuplicateDetectionTests.class, SOURCE_PLUGIN);
-            memberOperation2.finalize(requiredReturnType, false, new ParameterType[] {requiredParameterType},
-                    new boolean[] {false}, requiredParentParameterType);
+            memberOperation2.finalize(requiredReturnTypeInstance,
+                    new ParameterTypeInstance[] {requiredParameterTypeInstance}, requiredParentParameterTypeInstance);
             
             assertTrue("First call should be added", LanguageRegistry.INSTANCE.addCall(memberOperation1));
             assertFalse("Second call should be rejected", LanguageRegistry.INSTANCE.addCall(memberOperation2));

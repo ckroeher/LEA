@@ -31,6 +31,7 @@ import net.ssehub.integration.LanguageElement;
 import net.ssehub.integration.LanguageElementException;
 import net.ssehub.integration.LanguageRegistry;
 import net.ssehub.integration.ParameterType;
+import net.ssehub.integration.ParameterTypeInstance;
 
 /**
  * This class contains unit tests for the {@link LanguageRegistry#getCall(net.ssehub.integration.ElementType, String)}
@@ -251,27 +252,23 @@ public class LanguageRegistryGetCallTests extends AbstractLanguageRegistryTest {
             
             ParameterType returnType1 = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "ArtifactReturnType",
                     LanguageRegistryGetCallTests.class, SOURCE_PLUGIN);
+            ParameterTypeInstance returnTypeInstance1 = new ParameterTypeInstance(returnType1, false);
             if (!LanguageRegistry.INSTANCE.addParameterType(returnType1)) {
                 fail(ID + "Adding required return parameter type \"" + returnType1.getFullyQualifiedName() 
                         + "\" failed");
             }
             ParameterType returnType2 = new ParameterType(ElementType.FRAGMENT_PARAMETER_TYPE, "FragmentReturnType",
                     LanguageRegistryGetCallTests.class, SOURCE_PLUGIN);
+            ParameterTypeInstance returnTypeInstance2 = new ParameterTypeInstance(returnType2, false);
             if (!LanguageRegistry.INSTANCE.addParameterType(returnType2)) {
                 fail(ID + "Adding required return parameter type \"" + returnType2.getFullyQualifiedName() 
-                        + "\" failed");
-            }
-            ParameterType returnType3 = new ParameterType(ElementType.RESULT_PARAMETER_TYPE, "ResultReturnType",
-                    LanguageRegistryGetCallTests.class, SOURCE_PLUGIN);
-            if (!LanguageRegistry.INSTANCE.addParameterType(returnType3)) {
-                fail(ID + "Adding required return parameter type \"" + returnType3.getFullyQualifiedName() 
                         + "\" failed");
             }
             
             Call call1 = new Call(ElementType.OPERATION, "sort",
                     LanguageRegistryGetCallTests.class.getDeclaredMethods()[0], LanguageRegistryGetCallTests.class,
                     SOURCE_PLUGIN);
-            call1.finalize(returnType1, false, new ParameterType[] {returnType1}, new boolean[] {false}, null);
+            call1.finalize(returnTypeInstance1, new ParameterTypeInstance[] {returnTypeInstance1}, null);
             expectedResults[3] = new Object[] {call1,
                 true,
                 true, true,
@@ -284,7 +281,7 @@ public class LanguageRegistryGetCallTests extends AbstractLanguageRegistryTest {
             Call call2 = new Call(ElementType.OPERATION, "sort", 
                     AbstractLanguageRegistryTest.class.getDeclaredMethods()[0], AbstractLanguageRegistryTest.class,
                     SOURCE_PLUGIN);
-            call2.finalize(returnType1, false, new ParameterType[] {returnType1}, new boolean[] {false}, null);
+            call2.finalize(returnTypeInstance1, new ParameterTypeInstance[] {returnTypeInstance1}, null);
             expectedResults[4] = new Object[] {call2,
                 true,
                 false, true,
@@ -297,7 +294,7 @@ public class LanguageRegistryGetCallTests extends AbstractLanguageRegistryTest {
             Call call3 = new Call(ElementType.OPERATION, "sort", 
                     AbstractLanguageRegistryTest.class.getDeclaredMethods()[0], AbstractLanguageRegistryTest.class,
                     SOURCE_PLUGIN);
-            call3.finalize(returnType2, false, new ParameterType[] {returnType1}, new boolean[] {false}, null);
+            call3.finalize(returnTypeInstance2, new ParameterTypeInstance[] {returnTypeInstance1}, null);
             expectedResults[5] = new Object[] {call3,
                 true,
                 false, false,
@@ -310,7 +307,7 @@ public class LanguageRegistryGetCallTests extends AbstractLanguageRegistryTest {
             Call call4 = new Call(ElementType.OPERATION, "sort",
                     AbstractLanguageRegistryTest.class.getDeclaredMethods()[0], AbstractLanguageRegistryTest.class,
                     SOURCE_PLUGIN);
-            call4.finalize(returnType1, false, new ParameterType[] {returnType2}, new boolean[] {false}, null);
+            call4.finalize(returnTypeInstance1, new ParameterTypeInstance[] {returnTypeInstance2}, null);
             expectedResults[6] = new Object[] {call4,
                 true,
                 false, false,
@@ -323,7 +320,7 @@ public class LanguageRegistryGetCallTests extends AbstractLanguageRegistryTest {
             Call call5 = new Call(ElementType.EXTRACTOR_CALL, "extract1",
                     LanguageRegistryGetCallTests.class.getDeclaredMethods()[0], LanguageRegistryGetCallTests.class,
                     SOURCE_PLUGIN);
-            call5.finalize(returnType1, false, new ParameterType[] {returnType1}, new boolean[] {false}, null);
+            call5.finalize(returnTypeInstance1, new ParameterTypeInstance[] {returnTypeInstance1}, null);
             expectedResults[7] = new Object[] {call5,
                 true,
                 false, false,
@@ -336,7 +333,7 @@ public class LanguageRegistryGetCallTests extends AbstractLanguageRegistryTest {
             Call call6 = new Call(ElementType.EXTRACTOR_CALL, "extract1",
                     LanguageRegistryGetCallTests.class.getDeclaredMethods()[0], LanguageRegistryGetCallTests.class,
                     SOURCE_PLUGIN);
-            call6.finalize(returnType2, false, new ParameterType[] {returnType1}, new boolean[] {false}, null);
+            call6.finalize(returnTypeInstance2, new ParameterTypeInstance[] {returnTypeInstance1}, null);
             expectedResults[8] = new Object[] {call6,
                 true,
                 false, false,
@@ -349,7 +346,7 @@ public class LanguageRegistryGetCallTests extends AbstractLanguageRegistryTest {
             Call call7 = new Call(ElementType.ANALYSIS_CALL, "analyze1",
                     LanguageRegistryGetCallTests.class.getDeclaredMethods()[0], LanguageRegistryGetCallTests.class,
                     SOURCE_PLUGIN);
-            call7.finalize(returnType1, false, new ParameterType[] {returnType1}, new boolean[] {false}, null);
+            call7.finalize(returnTypeInstance1, new ParameterTypeInstance[] {returnTypeInstance1}, null);
             expectedResults[9] = new Object[] {call7,
                 true,
                 false, false,
@@ -362,7 +359,7 @@ public class LanguageRegistryGetCallTests extends AbstractLanguageRegistryTest {
             Call call8 = new Call(ElementType.ANALYSIS_CALL, "analyze1",
                     LanguageRegistryGetCallTests.class.getDeclaredMethods()[0], LanguageRegistryGetCallTests.class,
                     SOURCE_PLUGIN);
-            call8.finalize(returnType2, false, new ParameterType[] {returnType1}, new boolean[] {false}, null);
+            call8.finalize(returnTypeInstance2, new ParameterTypeInstance[] {returnTypeInstance1}, null);
             expectedResults[10] = new Object[] {call8,
                 true,
                 false, false,

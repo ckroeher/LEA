@@ -28,6 +28,7 @@ import net.ssehub.integration.LanguageElement;
 import net.ssehub.integration.LanguageElementCreator;
 import net.ssehub.integration.LanguageRegistry;
 import net.ssehub.integration.ParameterType;
+import net.ssehub.integration.ParameterTypeInstance;
 import net.ssehub.integration.annotations.ExtractorCall;
 
 /**
@@ -85,6 +86,11 @@ public class ExtractorCallCreationTests extends AbstractCallCreationTest {
             "HiddenElement");
     
     /**
+     * The "HiddenElement" {@link ParameterTypeInstance} required to create the {@link Call}s for testing.
+     */
+    private static ParameterTypeInstance hiddenElementInstance = createParameterTypeInstance(hiddenElement, false);
+    
+    /**
      * The expected results for each input {@link Class} defined as inner class of this class. Each entry has the
      * following elements:
      * <ul>
@@ -105,9 +111,9 @@ public class ExtractorCallCreationTests extends AbstractCallCreationTest {
      * <li>The expected {@link File} denoting the source plug-in of the {@link Class} from which a 
      *     {@link LanguageElement} was created
      * </li>
-     * <li>The expected {@link ParameterType} the created {@link Call} will return</li>
-     * <li>The expected array of {@link ParameterType}s, which denote the elements the created {@link Call} accepts as
-     *     parameters</li>
+     * <li>The expected {@link ParameterTypeInstance} the created {@link Call} will return</li>
+     * <li>The expected array of {@link ParameterTypeInstance}s, which denote the elements the created {@link Call}
+     *     accepts as parameters</li>
      * </ul>
      */
     private static final Object[][] EXPECTED_RESULTS = new Object[][] {
@@ -118,8 +124,8 @@ public class ExtractorCallCreationTests extends AbstractCallCreationTest {
             ElementType.EXTRACTOR_CALL, "extractImplicit", 
             "net.ssehub.tests.integration.ExtractorCallCreationTests."
                     + "ClassIntroducingVoidReturnWithCustomReturnTypeExtractorCall.extractImplicit",
-            ClassIntroducingVoidReturnWithCustomReturnTypeExtractorCall.class, SOURCE_PLUGIN, hiddenElement, null,
-            ClassIntroducingVoidReturnWithCustomReturnTypeExtractorCall.class.getMethods()[0]}
+            ClassIntroducingVoidReturnWithCustomReturnTypeExtractorCall.class, SOURCE_PLUGIN, hiddenElementInstance,
+            null, ClassIntroducingVoidReturnWithCustomReturnTypeExtractorCall.class.getMethods()[0]}
     };
 
     /**
@@ -140,17 +146,17 @@ public class ExtractorCallCreationTests extends AbstractCallCreationTest {
      * @param expectedElementSourceClass the expected {@link Class} from which the {@link LanguageElement} was created
      * @param expectedElementSourcePlugin the expected {@link File} denoting the source plug-in of the {@link Class}
      *        from which a {@link LanguageElement} was created
-     * @param expectedReturnType the expected {@link ParameterType} the created {@link Call} will return
-     * @param expectedParameters the expected array of {@link ParameterType}s, which denote the elements the created
-     *        {@link Call} accepts as parameters
+     * @param expectedReturnType the expected {@link ParameterTypeInstance} the created {@link Call} will return
+     * @param expectedParameters the expected array of {@link ParameterTypeInstance}s, which denote the elements the
+     *        created {@link Call} accepts as parameters
      * @param expectedSourceMethod the expected {@link Method} from where this call was created
      */
 //CHECKSTYLE:OFF
     public ExtractorCallCreationTests(Class<?> testInputClass, ExternalElementException expectedException,
             boolean expectedElementsExistence, Class<?> expectedElementClass, ElementType expectedElementType,
             String expectedElementName, String expectedElementFullyQualifiedName, Class<?> expectedElementSourceClass,
-            File expectedElementSourcePlugin, ParameterType expectedReturnType, ParameterType[] expectedParameters,
-            Method expectedSourceMethod) {
+            File expectedElementSourcePlugin, ParameterTypeInstance expectedReturnType,
+            ParameterTypeInstance[] expectedParameters, Method expectedSourceMethod) {
         super(testInputClass, expectedException, expectedElementsExistence, expectedElementClass, expectedElementType,
                 expectedElementName, expectedElementFullyQualifiedName, expectedElementSourceClass,
                 expectedElementSourcePlugin, expectedReturnType, expectedParameters, expectedSourceMethod);

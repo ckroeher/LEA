@@ -16,6 +16,7 @@ package net.ssehub.tests.integration;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -27,7 +28,7 @@ import net.ssehub.integration.ElementType;
 import net.ssehub.integration.ExternalElementException;
 import net.ssehub.integration.LanguageElement;
 import net.ssehub.integration.LanguageElementCreator;
-import net.ssehub.integration.ParameterType;
+import net.ssehub.integration.ParameterTypeInstance;
 
 /**
  * This abstract class contains common attributes and unit tests for the creation of {@link Call}s by the 
@@ -41,15 +42,15 @@ import net.ssehub.integration.ParameterType;
 public abstract class AbstractCallCreationTest extends AbstractLanguageElementCreationTest {
     
     /**
-     * The expected {@link ParameterType} the created {@link Call} will return.
+     * The expected {@link ParameterTypeInstance} the created {@link Call} will return.
      */
-    private ParameterType expectedReturnType;
+    private ParameterTypeInstance expectedReturnType;
     
     /**
-     * The expected array of {@link ParameterType}s, which denote the elements the created {@link Call} accepts as
-     * parameters.
+     * The expected array of {@link ParameterTypeInstance}s, which denote the elements the created {@link Call} accepts
+     * as parameters.
      */
-    private ParameterType[] expectedParameters;
+    private ParameterTypeInstance[] expectedParameters;
     
     /**
      * The expected {@link Method} from where this call was created.
@@ -57,15 +58,15 @@ public abstract class AbstractCallCreationTest extends AbstractLanguageElementCr
     private Method expectedSourceMethod;
     
     /**
-     * The actual {@link ParameterType} the created {@link Call} will return.
+     * The actual {@link ParameterTypeInstance} the created {@link Call} will return.
      */
-    private ParameterType actualReturnType;
+    private ParameterTypeInstance actualReturnType;
     
     /**
-     * The actual array of {@link ParameterType}s, which denote the elements the created {@link Call} accepts as
+     * The actual array of {@link ParameterTypeInstance}s, which denote the elements the created {@link Call} accepts as
      * parameters.
      */
-    private ParameterType[] actualParameters;
+    private ParameterTypeInstance[] actualParameters;
     
     /**
      * The actual {@link Method} from where this call was created.
@@ -90,17 +91,17 @@ public abstract class AbstractCallCreationTest extends AbstractLanguageElementCr
      * @param expectedElementSourceClass the expected {@link Class} from which the {@link LanguageElement} was created
      * @param expectedElementSourcePlugin the expected {@link File} denoting the source plug-in of the {@link Class}
      *        from which a {@link LanguageElement} was created
-     * @param expectedReturnType the expected {@link ParameterType} the created {@link Call} will return.
-     * @param expectedParameters the expected array of {@link ParameterType}s, which denote the elements the created
-     *        {@link Call} accepts as parameters
+     * @param expectedReturnType the expected {@link ParameterTypeInstance} the created {@link Call} will return.
+     * @param expectedParameters the expected array of {@link ParameterTypeInstance}s, which denote the elements the
+     *        created {@link Call} accepts as parameters
      * @param expectedSourceMethod the expected {@link Method} from where this call was created
      */
 //CHECKSTYLE:OFF
     public AbstractCallCreationTest(Class<?> testInputClass, ExternalElementException expectedException,
             boolean expectedElementsExistence, Class<?> expectedElementClass, ElementType expectedElementType,
             String expectedElementName, String expectedElementFullyQualifiedName, Class<?> expectedElementSourceClass,
-            File expectedElementSourcePlugin, ParameterType expectedReturnType, ParameterType[] expectedParameters,
-            Method expectedSourceMethod) {
+            File expectedElementSourcePlugin, ParameterTypeInstance expectedReturnType,
+            ParameterTypeInstance[] expectedParameters, Method expectedSourceMethod) {
         super(testInputClass, expectedException, expectedElementsExistence, expectedElementClass, expectedElementType,
                 expectedElementName, expectedElementFullyQualifiedName, expectedElementSourceClass, 
                 expectedElementSourcePlugin);
@@ -126,7 +127,13 @@ public abstract class AbstractCallCreationTest extends AbstractLanguageElementCr
      */
     @Test
     public void testCreatedCallReturnType() {
-        assertEquals(expectedReturnType, actualReturnType, "Wrong return type");
+        boolean expected = false;
+        if (expectedReturnType == null) {
+            expected = (actualReturnType == null);
+        } else {
+            expected = expectedReturnType.equals(actualReturnType);
+        }
+        assertTrue(expected, "Wrong return type");
     }
     
     /**
@@ -150,7 +157,7 @@ public abstract class AbstractCallCreationTest extends AbstractLanguageElementCr
     public void testCreatedCallParameters() {
         if (expectedParameters != null) {            
             for (int i = 0; i < expectedParameters.length; i++) {
-                assertEquals(expectedParameters[i], actualParameters[i], "Wrong parameter");
+                assertTrue(expectedParameters[i].equals(actualParameters[i]), "Wrong parameter");
             }
         } else {
             assertNull(actualParameters, "Parameters should be null");

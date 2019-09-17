@@ -29,6 +29,7 @@ import net.ssehub.integration.ElementType;
 import net.ssehub.integration.LanguageElement;
 import net.ssehub.integration.LanguageElementException;
 import net.ssehub.integration.ParameterType;
+import net.ssehub.integration.ParameterTypeInstance;
 
 /**
  * This class contains unit tests for equality checks of {@link LanguageElement}s. These tests check whether the 
@@ -176,9 +177,10 @@ public class LanguageElementEqualityTests {
         try {
             ParameterType parameterType = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "File",
                     LanguageElementEqualityTests.class, SOURCE_PLUGIN);
+            ParameterTypeInstance parameterTypeInstance = new ParameterTypeInstance(parameterType, false);
             Call call = new Call(ElementType.OPERATION, "file", LanguageElementEqualityTests.class.getMethods()[0],
                     LanguageElementEqualityTests.class, SOURCE_PLUGIN);
-            call.finalize(parameterType, false, new ParameterType[] {parameterType}, new boolean[] {false}, null);
+            call.finalize(parameterTypeInstance, new ParameterTypeInstance[] {parameterTypeInstance}, null);
             
             assertFalse(parameterType.equals(call), "Parameter type should be unequal to call");
         } catch (LanguageElementException e) {
@@ -383,15 +385,17 @@ public class LanguageElementEqualityTests {
         try {
             ParameterType parameterType1 = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "File",
                     LanguageElementEqualityTests.class, SOURCE_PLUGIN);
+            ParameterTypeInstance parameterTypeInstance1 = new ParameterTypeInstance(parameterType1, false);
             ChangeIdentifier changeIdentifier = new ChangeIdentifier("CI", LanguageElementEqualityTests.class,
                     SOURCE_PLUGIN);
             changeIdentifier.finalize(new ParameterType[] {parameterType1});
             
             ParameterType parameterType2 = new ParameterType(ElementType.FRAGMENT_PARAMETER_TYPE, "String",
                     LanguageElementEqualityTests.class, SOURCE_PLUGIN);
+            ParameterTypeInstance parameterTypeInstance2 = new ParameterTypeInstance(parameterType2, false);
             Call call = new Call(ElementType.OPERATION, "file", LanguageElementEqualityTests.class.getMethods()[0],
                     LanguageElementEqualityTests.class, SOURCE_PLUGIN);
-            call.finalize(parameterType1, false, new ParameterType[] {parameterType2}, new boolean[] {false}, null);
+            call.finalize(parameterTypeInstance1, new ParameterTypeInstance[] {parameterTypeInstance2}, null);
             
             assertFalse(changeIdentifier.equals(call), "Change identifier should be unequal to call");
         } catch (LanguageElementException e) {
@@ -407,11 +411,13 @@ public class LanguageElementEqualityTests {
         try {
             ParameterType parameterType1 = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "File",
                     LanguageElementEqualityTests.class, SOURCE_PLUGIN);
+            ParameterTypeInstance parameterTypeInstance1 = new ParameterTypeInstance(parameterType1, false);
             ParameterType parameterType2 = new ParameterType(ElementType.FRAGMENT_PARAMETER_TYPE, "String",
                     LanguageElementEqualityTests.class, SOURCE_PLUGIN);
+            ParameterTypeInstance parameterTypeInstance2 = new ParameterTypeInstance(parameterType2, false);
             Call call = new Call(ElementType.OPERATION, "file", LanguageElementEqualityTests.class.getMethods()[0],
                     LanguageElementEqualityTests.class, SOURCE_PLUGIN);
-            call.finalize(parameterType1, false, new ParameterType[] {parameterType2}, new boolean[] {false}, null);
+            call.finalize(parameterTypeInstance1, new ParameterTypeInstance[] {parameterTypeInstance2}, null);
             
             assertTrue(call.equals(call), "Calls should be equal");
         } catch (LanguageElementException e) {
@@ -427,15 +433,17 @@ public class LanguageElementEqualityTests {
         try {
             ParameterType parameterType1 = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "File",
                     LanguageElementEqualityTests.class, SOURCE_PLUGIN);
+            ParameterTypeInstance parameterTypeInstance1 = new ParameterTypeInstance(parameterType1, false);
             ParameterType parameterType2 = new ParameterType(ElementType.FRAGMENT_PARAMETER_TYPE, "String",
                     LanguageElementEqualityTests.class, SOURCE_PLUGIN);
+            ParameterTypeInstance parameterTypeInstance2 = new ParameterTypeInstance(parameterType2, false);
             Call call1 = new Call(ElementType.OPERATION, "file", LanguageElementEqualityTests.class.getMethods()[0],
                     LanguageElementEqualityTests.class, SOURCE_PLUGIN);
-            call1.finalize(parameterType1, false, new ParameterType[] {parameterType2}, new boolean[] {false}, null);
+            call1.finalize(parameterTypeInstance1, new ParameterTypeInstance[] {parameterTypeInstance2}, null);
             Call call2 = new Call(ElementType.OPERATION, "file", LanguageElementEqualityTests.class.getMethods()[0],
                     LanguageElementEqualityTests.class,
                     SOURCE_PLUGIN);
-            call2.finalize(parameterType1, false, new ParameterType[] {parameterType2}, new boolean[] {false}, null);
+            call2.finalize(parameterTypeInstance1, new ParameterTypeInstance[] {parameterTypeInstance2}, null);
             
             assertTrue(call1.equals(call2), "Calls should be equal");
         } catch (LanguageElementException e) {
@@ -452,15 +460,17 @@ public class LanguageElementEqualityTests {
         try {
             ParameterType parameterType1 = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "File",
                     LanguageElementEqualityTests.class, SOURCE_PLUGIN);
+            ParameterTypeInstance parameterTypeInstance1 = new ParameterTypeInstance(parameterType1, false);
             ParameterType parameterType2 = new ParameterType(ElementType.FRAGMENT_PARAMETER_TYPE, "String",
                     LanguageElementEqualityTests.class, SOURCE_PLUGIN);
+            ParameterTypeInstance parameterTypeInstance2 = new ParameterTypeInstance(parameterType2, false);
             Call call1 = new Call(ElementType.OPERATION, "file", LanguageElementEqualityTests.class.getMethods()[0],
                     LanguageElementEqualityTests.class, SOURCE_PLUGIN);
-            call1.finalize(parameterType1, false, new ParameterType[] {parameterType2}, new boolean[] {false}, null);
+            call1.finalize(parameterTypeInstance1, new ParameterTypeInstance[] {parameterTypeInstance2}, null);
             Call call2 = new Call(ElementType.EXTRACTOR_CALL, "file", 
                     LanguageElementEqualityTests.class.getMethods()[0], LanguageElementEqualityTests.class,
                     SOURCE_PLUGIN);
-            call2.finalize(parameterType1, false, new ParameterType[] {parameterType2}, new boolean[] {false}, null);
+            call2.finalize(parameterTypeInstance1, new ParameterTypeInstance[] {parameterTypeInstance2}, null);
             
             assertFalse(call1.equals(call2), "Calls should be unequal");
         } catch (LanguageElementException e) {
@@ -476,14 +486,16 @@ public class LanguageElementEqualityTests {
         try {
             ParameterType parameterType1 = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "File",
                     LanguageElementEqualityTests.class, SOURCE_PLUGIN);
+            ParameterTypeInstance parameterTypeInstance1 = new ParameterTypeInstance(parameterType1, false);
             ParameterType parameterType2 = new ParameterType(ElementType.FRAGMENT_PARAMETER_TYPE, "String",
                     LanguageElementEqualityTests.class, SOURCE_PLUGIN);
+            ParameterTypeInstance parameterTypeInstance2 = new ParameterTypeInstance(parameterType2, false);
             Call call1 = new Call(ElementType.OPERATION, "file", LanguageElementEqualityTests.class.getMethods()[0],
                     LanguageElementEqualityTests.class, SOURCE_PLUGIN);
-            call1.finalize(parameterType1, false, new ParameterType[] {parameterType2}, new boolean[] {false}, null);
+            call1.finalize(parameterTypeInstance1, new ParameterTypeInstance[] {parameterTypeInstance2}, null);
             Call call2 = new Call(ElementType.OPERATION, "getfile", LanguageElementEqualityTests.class.getMethods()[0], 
                     LanguageElementEqualityTests.class, SOURCE_PLUGIN);
-            call2.finalize(parameterType1, false, new ParameterType[] {parameterType2}, new boolean[] {false}, null);
+            call2.finalize(parameterTypeInstance1, new ParameterTypeInstance[] {parameterTypeInstance2}, null);
             
             assertFalse(call1.equals(call2), "Calls should be unequal");
         } catch (LanguageElementException e) {
@@ -499,16 +511,19 @@ public class LanguageElementEqualityTests {
         try {
             ParameterType parameterType1 = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "File",
                     LanguageElementEqualityTests.class, SOURCE_PLUGIN);
+            ParameterTypeInstance parameterTypeInstance1 = new ParameterTypeInstance(parameterType1, false);
             ParameterType parameterType2 = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "Datei",
                     LanguageElementEqualityTests.class, SOURCE_PLUGIN);
+            ParameterTypeInstance parameterTypeInstance2 = new ParameterTypeInstance(parameterType2, false);
             ParameterType parameterType3 = new ParameterType(ElementType.FRAGMENT_PARAMETER_TYPE, "String",
                     LanguageElementEqualityTests.class, SOURCE_PLUGIN);
+            ParameterTypeInstance parameterTypeInstance3 = new ParameterTypeInstance(parameterType3, false);
             Call call1 = new Call(ElementType.OPERATION, "file", LanguageElementEqualityTests.class.getMethods()[0],
                     LanguageElementEqualityTests.class, SOURCE_PLUGIN);
-            call1.finalize(parameterType1, false, new ParameterType[] {parameterType3}, new boolean[] {false}, null);
+            call1.finalize(parameterTypeInstance1, new ParameterTypeInstance[] {parameterTypeInstance3}, null);
             Call call2 = new Call(ElementType.OPERATION, "file", LanguageElementEqualityTests.class.getMethods()[0],
                     LanguageElementEqualityTests.class, SOURCE_PLUGIN);
-            call2.finalize(parameterType2, false, new ParameterType[] {parameterType3}, new boolean[] {false}, null);
+            call2.finalize(parameterTypeInstance2, new ParameterTypeInstance[] {parameterTypeInstance3}, null);
             
             assertFalse(call1.equals(call2), "Calls should be unequal");
         } catch (LanguageElementException e) {
@@ -525,16 +540,19 @@ public class LanguageElementEqualityTests {
         try {
             ParameterType parameterType1 = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "File",
                     LanguageElementEqualityTests.class, SOURCE_PLUGIN);
+            ParameterTypeInstance parameterTypeInstance1 = new ParameterTypeInstance(parameterType1, false);
             ParameterType parameterType2 = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "String",
                     LanguageElementEqualityTests.class, SOURCE_PLUGIN);
+            ParameterTypeInstance parameterTypeInstance2 = new ParameterTypeInstance(parameterType2, false);
             ParameterType parameterType3 = new ParameterType(ElementType.FRAGMENT_PARAMETER_TYPE, "Char[]",
                     LanguageElementEqualityTests.class, SOURCE_PLUGIN);
+            ParameterTypeInstance parameterTypeInstance3 = new ParameterTypeInstance(parameterType3, true);
             Call call1 = new Call(ElementType.OPERATION, "file", LanguageElementEqualityTests.class.getMethods()[0],
                     LanguageElementEqualityTests.class, SOURCE_PLUGIN);
-            call1.finalize(parameterType1, false, new ParameterType[] {parameterType2}, new boolean[] {false}, null);
+            call1.finalize(parameterTypeInstance1, new ParameterTypeInstance[] {parameterTypeInstance2}, null);
             Call call2 = new Call(ElementType.OPERATION, "file", LanguageElementEqualityTests.class.getMethods()[0], 
                     LanguageElementEqualityTests.class, SOURCE_PLUGIN);
-            call2.finalize(parameterType1, false, new ParameterType[] {parameterType3}, new boolean[] {false}, null);
+            call2.finalize(parameterTypeInstance1, new ParameterTypeInstance[] {parameterTypeInstance3}, null);
             
             assertFalse(call1.equals(call2), "Calls should be unequal");
         } catch (LanguageElementException e) {
@@ -551,15 +569,17 @@ public class LanguageElementEqualityTests {
         try {
             ParameterType parameterType1 = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "File",
                     LanguageElementEqualityTests.class, SOURCE_PLUGIN);
+            ParameterTypeInstance parameterTypeInstance1 = new ParameterTypeInstance(parameterType1, false);
             ParameterType parameterType2 = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "String",
                     LanguageElementEqualityTests.class, SOURCE_PLUGIN);
+            ParameterTypeInstance parameterTypeInstance2 = new ParameterTypeInstance(parameterType2, false);
             Call call1 = new Call(ElementType.OPERATION, "file", LanguageElementEqualityTests.class.getMethods()[0],
                     LanguageElementEqualityTests.class, SOURCE_PLUGIN);
-            call1.finalize(parameterType1, false, new ParameterType[] {parameterType2}, new boolean[] {false}, null);
+            call1.finalize(parameterTypeInstance1, new ParameterTypeInstance[] {parameterTypeInstance2}, null);
             Call call2 = new Call(ElementType.OPERATION, "file", LanguageElementEqualityTests.class.getMethods()[0],
                     LanguageElementEqualityTests.class, SOURCE_PLUGIN);
-            call2.finalize(parameterType1, false, new ParameterType[] {parameterType2, parameterType2}, 
-                    new boolean[] {false, false}, null);
+            call2.finalize(parameterTypeInstance1, new ParameterTypeInstance[] {parameterTypeInstance2,
+                parameterTypeInstance2}, null);
             
             assertFalse(call1.equals(call2), "Calls should be unequal");
         } catch (LanguageElementException e) {
@@ -576,14 +596,16 @@ public class LanguageElementEqualityTests {
         try {
             ParameterType parameterType1 = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "File",
                     LanguageElementEqualityTests.class, SOURCE_PLUGIN);
+            ParameterTypeInstance parameterTypeInstance1 = new ParameterTypeInstance(parameterType1, false);
             ParameterType parameterType2 = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "String",
                     LanguageElementEqualityTests.class, SOURCE_PLUGIN);
+            ParameterTypeInstance parameterTypeInstance2 = new ParameterTypeInstance(parameterType2, false);
             Call call1 = new Call(ElementType.OPERATION, "file", LanguageElementEqualityTests.class.getMethods()[0],
                     LanguageElementEqualityTests.class, SOURCE_PLUGIN);
-            call1.finalize(parameterType1, false, new ParameterType[] {parameterType2}, new boolean[] {false}, null);
+            call1.finalize(parameterTypeInstance1, new ParameterTypeInstance[] {parameterTypeInstance2}, null);
             Call call2 = new Call(ElementType.OPERATION, "file", LanguageElementEqualityTests.class.getMethods()[1],
                     LanguageElementEqualityTests.class, SOURCE_PLUGIN);
-            call2.finalize(parameterType1, false, new ParameterType[] {parameterType2}, new boolean[] {false}, null);
+            call2.finalize(parameterTypeInstance1, new ParameterTypeInstance[] {parameterTypeInstance2}, null);
             
             assertFalse(call1.equals(call2), "Calls should be unequal");
         } catch (LanguageElementException e) {
@@ -600,14 +622,16 @@ public class LanguageElementEqualityTests {
         try {
             ParameterType parameterType1 = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "File",
                     LanguageElementEqualityTests.class, SOURCE_PLUGIN);
+            ParameterTypeInstance parameterTypeInstance1 = new ParameterTypeInstance(parameterType1, false);
             ParameterType parameterType2 = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "String",
                     LanguageElementEqualityTests.class, SOURCE_PLUGIN);
+            ParameterTypeInstance parameterTypeInstance2 = new ParameterTypeInstance(parameterType2, false);
             Call call1 = new Call(ElementType.OPERATION, "file", LanguageElementEqualityTests.class.getMethods()[0],
                     LanguageElementEqualityTests.class, SOURCE_PLUGIN);
-            call1.finalize(parameterType1, false, new ParameterType[] {parameterType2}, new boolean[] {false}, null);
+            call1.finalize(parameterTypeInstance1, new ParameterTypeInstance[] {parameterTypeInstance2}, null);
             Call call2 = new Call(ElementType.OPERATION, "file", LanguageElementEqualityTests.class.getMethods()[0],
                     AbstractCreationTest.class, SOURCE_PLUGIN);
-            call2.finalize(parameterType1, false, new ParameterType[] {parameterType2}, new boolean[] {false}, null);
+            call2.finalize(parameterTypeInstance1, new ParameterTypeInstance[] {parameterTypeInstance2}, null);
             
             assertFalse(call1.equals(call2), "Calls should be unequal");
         } catch (LanguageElementException e) {
@@ -624,14 +648,16 @@ public class LanguageElementEqualityTests {
         try {
             ParameterType parameterType1 = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "File",
                     LanguageElementEqualityTests.class, SOURCE_PLUGIN);
+            ParameterTypeInstance parameterTypeInstance1 = new ParameterTypeInstance(parameterType1, false);
             ParameterType parameterType2 = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "String",
                     LanguageElementEqualityTests.class, SOURCE_PLUGIN);
+            ParameterTypeInstance parameterTypeInstance2 = new ParameterTypeInstance(parameterType2, false);
             Call call1 = new Call(ElementType.OPERATION, "file", LanguageElementEqualityTests.class.getMethods()[0],
                     LanguageElementEqualityTests.class, SOURCE_PLUGIN);
-            call1.finalize(parameterType1, false, new ParameterType[] {parameterType2}, new boolean[] {false}, null);
+            call1.finalize(parameterTypeInstance1, new ParameterTypeInstance[] {parameterTypeInstance2}, null);
             Call call2 = new Call(ElementType.OPERATION, "file", LanguageElementEqualityTests.class.getMethods()[0],
                     LanguageElementEqualityTests.class, new File(""));
-            call2.finalize(parameterType1, false, new ParameterType[] {parameterType2}, new boolean[] {false}, null);
+            call2.finalize(parameterTypeInstance1, new ParameterTypeInstance[] {parameterTypeInstance2}, null);
             
             assertFalse(call1.equals(call2), "Calls should be unequal");
         } catch (LanguageElementException e) {
@@ -647,11 +673,13 @@ public class LanguageElementEqualityTests {
         try {
             ParameterType parameterType1 = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "File",
                     LanguageElementEqualityTests.class, SOURCE_PLUGIN);
+            ParameterTypeInstance parameterTypeInstance1 = new ParameterTypeInstance(parameterType1, false);
             ParameterType parameterType2 = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "String",
                     LanguageElementEqualityTests.class, SOURCE_PLUGIN);
+            ParameterTypeInstance parameterTypeInstance2 = new ParameterTypeInstance(parameterType2, false);
             Call call = new Call(ElementType.OPERATION, "file", LanguageElementEqualityTests.class.getMethods()[0],
                     LanguageElementEqualityTests.class, SOURCE_PLUGIN);
-            call.finalize(parameterType1, false, new ParameterType[] {parameterType2}, new boolean[] {false}, null);
+            call.finalize(parameterTypeInstance1, new ParameterTypeInstance[] {parameterTypeInstance2}, null);
             
             assertFalse(call.equals(parameterType1), "Call should be unequal to parameter type");
         } catch (LanguageElementException e) {
@@ -667,11 +695,13 @@ public class LanguageElementEqualityTests {
         try {
             ParameterType parameterType1 = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "File",
                     LanguageElementEqualityTests.class, SOURCE_PLUGIN);
+            ParameterTypeInstance parameterTypeInstance1 = new ParameterTypeInstance(parameterType1, false);
             ParameterType parameterType2 = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "String",
                     LanguageElementEqualityTests.class, SOURCE_PLUGIN);
+            ParameterTypeInstance parameterTypeInstance2 = new ParameterTypeInstance(parameterType2, false);
             Call call = new Call(ElementType.OPERATION, "file", LanguageElementEqualityTests.class.getMethods()[0],
                     LanguageElementEqualityTests.class, SOURCE_PLUGIN);
-            call.finalize(parameterType1, false, new ParameterType[] {parameterType2}, new boolean[] {false}, null);
+            call.finalize(parameterTypeInstance1, new ParameterTypeInstance[] {parameterTypeInstance2}, null);
             ChangeIdentifier changeIdentifier = new ChangeIdentifier("CI", LanguageElementEqualityTests.class,
                     SOURCE_PLUGIN);
             changeIdentifier.finalize(new ParameterType[] {parameterType1});
