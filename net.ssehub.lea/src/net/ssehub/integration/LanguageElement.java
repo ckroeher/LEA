@@ -121,7 +121,7 @@ public abstract class LanguageElement {
      * both elements have the same:
      * <ul>
      * <li>{@link ElementType}</li>
-     * <li>Runtime {@link Class} (retrieved via {@link LanguageElement#getClass()})
+     * <li>Runtime {@link Class} (retrieved via {@link LanguageElement#getClass()})</li>
      * <li>Fully-qualified name</li>
      * <li>Source {@link Class}</li>
      * <li>Source plug-in (the same absolute path of the {@link File})</li>
