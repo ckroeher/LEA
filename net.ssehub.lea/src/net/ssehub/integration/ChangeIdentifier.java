@@ -173,19 +173,28 @@ public class ChangeIdentifier extends LanguageElement {
     public boolean assignableTo(ParameterType[] elements) {
         boolean isAssignableTo = true;
         int elementsCounter = 0;
-        ParameterType element;
-        int assignableElementsCounter;
-        boolean equalAssignableElementFound;
         while (isAssignableTo && elementsCounter < elements.length) {
-            element = elements[elementsCounter];
-            assignableElementsCounter = 0;
-            equalAssignableElementFound = false;
-            while (!equalAssignableElementFound && assignableElementsCounter < assignableElements.length) {
-                equalAssignableElementFound = element.equals(assignableElements[assignableElementsCounter]);
-                assignableElementsCounter++;
-            }
-            isAssignableTo = equalAssignableElementFound;
+            isAssignableTo = assignableTo(elements[elementsCounter]);
             elementsCounter++;
+        }
+        return isAssignableTo;
+    }
+    
+    /**
+     * Compares the given {@link ParameterType} with those of the {@link #assignableElements} of this
+     * {@link ChangeIdentifier} to check whether the given type is assignable to this change identifier.
+     *   
+     * @param element the {@link ParameterType} to compare to the {@link #assignableElements} of this
+     *        {@link ChangeIdentifier}; should never be <code>null</code>
+     * @return <code>true</code>, if the given {@link ParameterType} is assignable to this {@link ChangeIdentifier};
+     *         <code>false</code> otherwise
+     */
+    public boolean assignableTo(ParameterType element) {
+        boolean isAssignableTo = false;
+        int assignableElementsCounter = 0;
+        while (!isAssignableTo && assignableElementsCounter < assignableElements.length) {
+            isAssignableTo = element.equals(assignableElements[assignableElementsCounter]);
+            assignableElementsCounter++;
         }
         return isAssignableTo;
     }

@@ -16,6 +16,7 @@ package net.ssehub.integration;
 
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -531,7 +532,7 @@ public class LanguageRegistry extends AbstractLanguageRegistry {
      *        <code>null</code>
      * @param name the name of the (unique) {@link Call} to search for; should never be <code>null</code>
      * @param parameters the array of {@link ParameterTypeInstance}s denoting the parameters of the {@link Call}s to
-     *        search for; <code>null</code> or an <i>empty</i> array indicates that the {@link Calls} should not have
+     *        search for; <code>null</code> or an <i>empty</i> array indicates that the {@link Call}s should not have
      *        any parameters
      * @param isUnique must be <code>true</code> to further check whether a {@link Call} matching the given
      *        {@link ElementType} name is unique; <code>false</code> otherwise 
@@ -1066,7 +1067,7 @@ public class LanguageRegistry extends AbstractLanguageRegistry {
      * @param elementType the {@link ElementType} of the {@link Call}s to search for; should never be <code>null</code>
      * @param name the name of the {@link Call}s to search for; should never be <code>null</code>
      * @param parameters the array of {@link ParameterTypeInstance}s denoting the parameters of the {@link Call}s to
-     *        search for; <code>null</code> or an <i>empty</i> array indicates that the {@link Calls} should not have
+     *        search for; <code>null</code> or an <i>empty</i> array indicates that the {@link Call}s should not have
      *        any parameters
      * @return the {@link List} of available {@link Call}s with the given {@link ElementType}, name, and parameters or
      *         <code>null</code>, if no such {@link Call}s are available 
@@ -1125,6 +1126,58 @@ public class LanguageRegistry extends AbstractLanguageRegistry {
 //    }
     
     /**
+     * Returns the <b>unique</b> {@link Call} with the given name independent of its {@link ElementType}, which accepts
+     * the given array of {@link ParameterTypeInstance}s as parameters.
+     * 
+     * @param name the name of the {@link Call} to search for; should never be <code>null</code>
+     * @param parameters the array of {@link ParameterTypeInstance}s denoting the parameters of the {@link Call} to
+     *        search for; <code>null</code> or an <i>empty</i> array indicates that the {@link Call} should not have
+     *        any parameters
+     * @return the unique {@link Call} with the given name independent of its {@link ElementType}, which accepts
+     *         the given array of {@link ParameterTypeInstance}s as parameters, or <code>null</code>, if the search
+     *         results in multiple matches (ambiguous results) or no such {@link Call} is available
+     */
+    public Call getCall(String name, ParameterTypeInstance[] parameters) {
+        Call availableCall = null;
+        List<Call> availableCalls = getCalls(name, parameters);
+        if (availableCalls != null && availableCalls.size() == 1) {
+            availableCall = availableCalls.get(0);
+        }
+        return availableCall;
+    }
+    
+    
+    /**
+     * Returns the {@link List} of <b>all</b> {@link Call}s with the given name independent of their 
+     * {@link ElementType}, which accept the given array of {@link ParameterTypeInstance}s as parameters.
+     * 
+     * @param name the name of the {@link Call}s to search for; should never be <code>null</code>
+     * @param parameters the array of {@link ParameterTypeInstance}s denoting the parameters of the {@link Call}s to
+     *        search for; <code>null</code> or an <i>empty</i> array indicates that the {@link Call}s should not have
+     *        any parameters
+     * @return the {@link List} of available {@link Call}s with the given name independent of their {@link ElementType},
+     *         which accept the given array of {@link ParameterTypeInstance}s as parameters, or <code>null</code>, if no
+     *         such {@link Call}s are available
+     */
+    public List<Call> getCalls(String name, ParameterTypeInstance[] parameters) {
+        List<Call> availableCalls = getCalls(name);
+        if (availableCalls != null) {
+            Iterator<Call> availableCallsIterator = availableCalls.iterator();
+            Call availableCall;
+            while (availableCallsIterator.hasNext()) {
+                availableCall = availableCallsIterator.next();
+                if (!availableCall.acceptsParameters(parameters)) {
+                    availableCallsIterator.remove();
+                }
+            }
+            if (availableCalls.isEmpty()) {
+                availableCalls = null;
+            }
+        }
+        return availableCalls;
+    }
+    
+    /**
      * Returns the {@link List} of <b>all</b> {@link Call}s with the given name independent of their 
      * {@link ElementType}.<br>
      * <br>
@@ -1136,7 +1189,7 @@ public class LanguageRegistry extends AbstractLanguageRegistry {
      * @return the {@link List} of available {@link Call}s with the given name independent of their {@link ElementType}
      *         or <code>null</code>, if no such {@link Call}s are available 
      */
-    private List<Call> getCalls(String name) {
+    public List<Call> getCalls(String name) {
         // Get available calls treating the given name as simple name
         List<Call> availableCalls = calls.get(name);
         if (availableCalls == null) {
