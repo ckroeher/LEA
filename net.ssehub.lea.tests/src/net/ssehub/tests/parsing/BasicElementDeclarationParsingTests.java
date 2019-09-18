@@ -59,7 +59,7 @@ public class BasicElementDeclarationParsingTests extends AbstractParserTest {
         {"basic/ArtifactSetDeclaration.lea", true, 1, 0, "Artifact", "File", true, "name"},
         {"basic/ArtifactSetDeclarationWithElement.lea", true, 2, 0, "Artifact", "File", true, "name"},
         {"basic/ArtifactSetDeclarationWithOperation.lea", true, 1, 0, "Artifact", "File", true, "name"},
-        {"basic/ArtifactSetIterationDeclaration.lea", true, 1, 0, "Artifact", "File", true, "name"},
+        {"basic/ArtifactSetIterationDeclaration.lea", true, 2, 0, "Artifact", "File", true, "name"},
         // Fragment declarations
         {"basic/FragmentDeclaration.lea", true, 1, 0, "Fragment", "CodeBlock", false, "name"},
         {"basic/FragmentDeclarationWithElement.lea", false, 2, 0, "Fragment", "CodeBlock", false, "name"},
@@ -67,7 +67,7 @@ public class BasicElementDeclarationParsingTests extends AbstractParserTest {
         {"basic/FragmentSetDeclaration.lea", true, 1, 0, "Fragment", "CodeBlock", true, "name"},
         {"basic/FragmentSetDeclarationWithElement.lea", true, 2, 0, "Fragment", "CodeBlock", true, "name"},
         {"basic/FragmentSetDeclarationWithOperation.lea", true, 1, 0, "Fragment", "CodeBlock", true, "name"},
-        {"basic/FragmentSetIterationDeclaration.lea", true, 1, 0, "Fragment", "CodeBlock", true, "name"},
+        {"basic/FragmentSetIterationDeclaration.lea", true, 2, 0, "Fragment", "CodeBlock", true, "name"},
         // Result declarations
         {"basic/ResultDeclaration.lea", true, 1, 0, "Result", "DeadBlock", false, "name"},
         {"basic/ResultDeclarationWithElement.lea", false, 2, 0, "Result", "DeadBlock", false, "name"},
@@ -75,7 +75,7 @@ public class BasicElementDeclarationParsingTests extends AbstractParserTest {
         {"basic/ResultSetDeclaration.lea", true, 1, 0, "Result", "DeadBlock", true, "name"},
         {"basic/ResultSetDeclarationWithElement.lea", true, 2, 0, "Result", "DeadBlock", true, "name"},
         {"basic/ResultSetDeclarationWithOperation.lea", true, 1, 0, "Result", "DeadBlock", true, "name"},
-        {"basic/ResultSetIterationDeclaration.lea", true, 1, 0, "Result", "DeadBlock", true, "name"}
+        {"basic/ResultSetIterationDeclaration.lea", true, 2, 0, "Result", "DeadBlock", true, "name"}
     };
     
     /**

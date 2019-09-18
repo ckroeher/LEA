@@ -1,1 +1,2 @@
-Fragment<CodeBlock>[element : set] name;
+Artifact<File>[] files = files("*.c");
+Fragment<CodeBlock>[f : files] name;

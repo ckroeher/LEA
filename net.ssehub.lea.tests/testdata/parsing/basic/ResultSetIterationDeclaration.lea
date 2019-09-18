@@ -1,1 +1,2 @@
-Result<DeadBlock>[element : set] name;
+Fragment<CodeBlock>[] codeBlocks = codeExtractor();
+Result<DeadBlock>[cb : codeBlocks] name;

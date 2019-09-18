@@ -1,1 +1,2 @@
-Artifact<File>[element : set] name;
+Artifact<File>[] files = files("*.c");
+Artifact<File>[f : files] name;
