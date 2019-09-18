@@ -1,2 +1,2 @@
 Artifact<File> codeFile = file("main.c");
-Fragment<CodeBlock> blocks = codeExtractor(codeFile); 
+Fragment<CodeBlock>[] blocks = codeExtractor(codeFile); 

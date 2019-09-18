@@ -40,6 +40,10 @@ import net.ssehub.tests.integration.LanguageRegistryHasParameterTypeTests;
 import net.ssehub.tests.integration.MemberOperationCreationTests;
 import net.ssehub.tests.integration.OperationCreationTests;
 import net.ssehub.tests.integration.ResultParameterTypeCreationTests;
+import net.ssehub.tests.parsing.AdvancedElementDeclarationParsingTests;
+import net.ssehub.tests.parsing.BasicAnalysisDefinitionParsingTests;
+import net.ssehub.tests.parsing.BasicChangeIdentifierAssignmentParsingTests;
+import net.ssehub.tests.parsing.BasicElementDeclarationParsingTests;
 
 /**
  * This class summarizes all unit test classes into a single test suite.
@@ -50,10 +54,10 @@ import net.ssehub.tests.integration.ResultParameterTypeCreationTests;
 @RunWith(Suite.class)
 @SuiteClasses({
     // Parsing tests
-//    BasicAnalysisDefinitionParsingTests.class,
-//    BasicElementDeclarationParsingTests.class,
-//    BasicChangeIdentifierAssignmentParsingTests.class,
-//    AdvancedElementDeclarationParsingTests.class,
+    BasicAnalysisDefinitionParsingTests.class,
+    BasicElementDeclarationParsingTests.class,
+    BasicChangeIdentifierAssignmentParsingTests.class,
+    AdvancedElementDeclarationParsingTests.class,
     // Integration tests
     BasicLanguageElementCreatorTests.class,
     ArtifactParameterTypeCreationTests.class,

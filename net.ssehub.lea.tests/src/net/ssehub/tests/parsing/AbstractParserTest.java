@@ -41,6 +41,7 @@ import net.ssehub.integration.LanguageElement;
 import net.ssehub.integration.LanguageElementException;
 import net.ssehub.integration.LanguageRegistry;
 import net.ssehub.integration.ParameterType;
+import net.ssehub.integration.ParameterTypeInstance;
 import net.ssehub.lea.AnalysisDefinition;
 import net.ssehub.lea.ChangeIdentifierAssignment;
 import net.ssehub.lea.ElementDeclaration;
@@ -138,6 +139,7 @@ public abstract class AbstractParserTest {
     /**
      * Prepares the required elements for the unit tests.
      */
+// CHECKSTYLE:OFF
     @SuppressWarnings("unchecked")
     @BeforeClass
     public static void setup() {
@@ -155,15 +157,24 @@ public abstract class AbstractParserTest {
         try {
             ParameterType stringParameterType = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "String",
                     AbstractParserTest.class, SOURCE_PLUGIN); // TODO type not specific to artifacts -> build-in types?
+            ParameterTypeInstance stringParameterTypeInstance = new ParameterTypeInstance(stringParameterType, false);
             LanguageRegistry.INSTANCE.addParameterType(stringParameterType);
             ParameterType artifactParameterType = new ParameterType(ElementType.ARTIFACT_PARAMETER_TYPE, "File",
                     AbstractParserTest.class, SOURCE_PLUGIN);
+            ParameterTypeInstance artifactParameterTypeInstance = 
+                    new ParameterTypeInstance(artifactParameterType, false);
+            ParameterTypeInstance artifactParameterTypeSetInstance = 
+                    new ParameterTypeInstance(artifactParameterType, true);
             LanguageRegistry.INSTANCE.addParameterType(artifactParameterType);
             ParameterType fragmentParameterType = new ParameterType(ElementType.FRAGMENT_PARAMETER_TYPE, "CodeBlock",
                     AbstractParserTest.class, SOURCE_PLUGIN);
+            ParameterTypeInstance fragmentParameterTypeSetInstance = 
+                    new ParameterTypeInstance(fragmentParameterType, true);
             LanguageRegistry.INSTANCE.addParameterType(fragmentParameterType);
             ParameterType resultParameterType = new ParameterType(ElementType.RESULT_PARAMETER_TYPE, "DeadBlock",
                     AbstractParserTest.class, SOURCE_PLUGIN);
+            ParameterTypeInstance resultParameterTypeSetInstance = 
+                    new ParameterTypeInstance(resultParameterType, true);
             LanguageRegistry.INSTANCE.addParameterType(resultParameterType);
             
             ChangeIdentifier fileChangeIdentifier = new ChangeIdentifier("FileChangeIdentifier",
@@ -177,28 +188,38 @@ public abstract class AbstractParserTest {
             
             Call singleFileCall = new Call(ElementType.OPERATION, "file", AbstractParserTest.class.getMethods()[0],
                     AbstractParserTest.class, SOURCE_PLUGIN);
-            singleFileCall.finalize(artifactParameterType, false, new ParameterType[] {stringParameterType},
-                    new boolean[] {false}, null);
+            singleFileCall.finalize(artifactParameterTypeInstance,
+                    new ParameterTypeInstance[] {stringParameterTypeInstance}, null);
             LanguageRegistry.INSTANCE.addCall(singleFileCall);
             Call allFilesCall = new Call(ElementType.OPERATION, "files", AbstractParserTest.class.getMethods()[0],
                     AbstractParserTest.class, SOURCE_PLUGIN);
-            allFilesCall.finalize(artifactParameterType, true, new ParameterType[] {stringParameterType},
-                    new boolean[] {false}, null);
+            allFilesCall.finalize(artifactParameterTypeSetInstance,
+                    new ParameterTypeInstance[] {stringParameterTypeInstance}, null);
             LanguageRegistry.INSTANCE.addCall(allFilesCall);
             
             Call codeExtractorCallWithoutParameters = new Call(ElementType.EXTRACTOR_CALL, "codeExtractor",
                     AbstractParserTest.class.getMethods()[0], AbstractParserTest.class, SOURCE_PLUGIN);
-            codeExtractorCallWithoutParameters.finalize(fragmentParameterType, true, null, null, null);
+            codeExtractorCallWithoutParameters.finalize(fragmentParameterTypeSetInstance, null, null);
             LanguageRegistry.INSTANCE.addCall(codeExtractorCallWithoutParameters);
+            
+            Call codeExtractorCallWithParameter = new Call(ElementType.EXTRACTOR_CALL, "codeExtractor",
+                    AbstractParserTest.class.getMethods()[0], AbstractParserTest.class, SOURCE_PLUGIN);
+            codeExtractorCallWithParameter.finalize(fragmentParameterTypeSetInstance,
+                    new ParameterTypeInstance[] {artifactParameterTypeInstance}, null);
+            LanguageRegistry.INSTANCE.addCall(codeExtractorCallWithParameter);
+            
+            
+            
+            
             Call codeExtractorCallWithParameters = new Call(ElementType.EXTRACTOR_CALL, "codeExtractor",
                     AbstractParserTest.class.getMethods()[0], AbstractParserTest.class, SOURCE_PLUGIN);
-            codeExtractorCallWithParameters.finalize(fragmentParameterType, true, 
-                    new ParameterType[] {artifactParameterType}, new boolean[] {true}, null);
+            codeExtractorCallWithParameters.finalize(fragmentParameterTypeSetInstance,
+                    new ParameterTypeInstance[] {artifactParameterTypeSetInstance}, null);
             LanguageRegistry.INSTANCE.addCall(codeExtractorCallWithParameters);
             
             Call deadCodeAnaylsisCall = new Call(ElementType.ANALYSIS_CALL, "deadCodeAnalysis",
                     AbstractParserTest.class.getMethods()[0], AbstractParserTest.class, SOURCE_PLUGIN);
-            deadCodeAnaylsisCall.finalize(resultParameterType, true, null, null, null);
+            deadCodeAnaylsisCall.finalize(resultParameterTypeSetInstance, null, null);
             LanguageRegistry.INSTANCE.addCall(deadCodeAnaylsisCall);
 
         } catch (LanguageElementException e) {
@@ -206,6 +227,7 @@ public abstract class AbstractParserTest {
             e.printStackTrace();
         }        
     }
+// CHECKSTYLE:ON
     
     /**
      * Parses the content of the test data file denoted by the current {@link #relativeTestModelFilePath} and saves the
