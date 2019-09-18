@@ -34,6 +34,7 @@ import net.ssehub.lea.Assignment;
 import net.ssehub.lea.Call;
 import net.ssehub.lea.ChangeIdentifierAssignment;
 import net.ssehub.lea.ElementDeclaration;
+import net.ssehub.lea.Iteration;
 import net.ssehub.lea.LeaPackage;
 import net.ssehub.lea.Operation;
 import net.ssehub.lea.Parameter;
@@ -147,6 +148,23 @@ public class LeaValidator extends AbstractLeaValidator {
     }
     
     /**
+     * Checks the given {@link Iteration} for being valid and reports invalidity by throwing errors.
+     * 
+     * @param iteration the {@link Iteration} to validate
+     */
+    @Check
+    public void checkIteration(Iteration iteration) {
+        String iterable = iteration.getIterable();
+        ElementDeclaration iterableElementDeclaration = getElementDeclaration(iterable, iteration.eResource());
+        if (iterableElementDeclaration == null) {
+            error("Undefined element \"" + iterable + "\"", iteration, LeaPackage.Literals.ITERATION__ITERABLE);
+        } else if (iterableElementDeclaration.getSet() == null) {
+            error("Set definition mismatch: cannot iterate over non-set element \"" + iterable + "\"", iteration,
+                    LeaPackage.Literals.ITERATION__ITERABLE);
+        }
+    }
+    
+    /**
      * Checks the given {@link ChangeIdentifierAssignment} for being valid and reports invalidity by throwing errors.
      * 
      * @param changeIdentifierAssignment the {@link ChangeIdentifierAssignment} to validate
@@ -184,6 +202,92 @@ public class LeaValidator extends AbstractLeaValidator {
                                 LeaPackage.Literals.CHANGE_IDENTIFIER_ASSIGNMENT__ELEMENTS);
                     }
                 }
+            }
+        }
+    }
+    
+    /**
+     * Checks the given {@link Operation} for being valid and reports invalidity by throwing errors.
+     * 
+     * @param operation the {@link Operation} to validate
+     */
+    @Check
+    public void checkOperation(Operation operation) {
+        ParameterTypeInstance memberParameterTypeInstance = null;
+        String operationElement = operation.getElement();
+        if (operationElement != null) {
+            ElementDeclaration operationElementDeclaration = getElementDeclaration(operationElement,
+                    operation.eResource());
+            if (operationElementDeclaration == null) {
+                error("Undefined element \"" + operationElement + "\"", operation,
+                        LeaPackage.Literals.OPERATION__ELEMENT);
+            } else {
+                memberParameterTypeInstance = getParameterTypeInstance(operationElementDeclaration);
+            }
+        }
+        EList<Call> operationCalls = operation.getCall();
+        if (operationCalls != null && !operationCalls.isEmpty()) {
+            boolean callsValid = true;
+            Call operationCall;
+            net.ssehub.integration.Call languageCall;
+            int operationCallsCounter = 0;
+            do {
+                operationCall = operationCalls.get(operationCallsCounter);
+                languageCall = getCall(operationCall);
+                if (languageCall == null) {
+                    callsValid = false;
+                    error("Unknown call \"" + operationCall.getName() + "\"", operation, 
+                            LeaPackage.Literals.OPERATION__CALL);
+                } else if (memberParameterTypeInstance != null 
+                        && !languageCall.isMemberOperationOf(memberParameterTypeInstance)) {
+                    callsValid = false;
+                    error("Undefined call \"" + operationCall.getName() + "\" for element \"" 
+                        + memberParameterTypeInstance.getParameterType().getName() + "\"", operation, 
+                        LeaPackage.Literals.OPERATION__CALL);
+                } else {                    
+                    memberParameterTypeInstance = languageCall.getReturnType();
+                }
+                operationCallsCounter++;
+            } while (callsValid  && operationCallsCounter < operationCalls.size());
+        } else {
+            error("Incomplete operation", operation, LeaPackage.Literals.OPERATION__CALL);
+        }
+    }
+    
+    /**
+     * Checks the given {@link Call} for being valid and reports invalidity by throwing errors.
+     * 
+     * @param call the {@link Call} to validate
+     */
+    @Check
+    public void checkCall(Call call) {
+        ParameterList callParameters = call.getParameters();
+        ParameterTypeInstance[] languageCallParameters = null;
+        boolean parametersValid = true;
+        if (callParameters != null) {
+            List<Parameter> callParameterList = callParameters.getParameterList();
+            if (!callParameterList.isEmpty()) {                
+                languageCallParameters = new ParameterTypeInstance[callParameterList.size()];
+                ParameterTypeInstance callParameterTypeInstance;
+                int languageCallParametersCounter = 0;
+                for (Parameter callParameter : callParameterList) {
+                    callParameterTypeInstance = getParameterTypeInstance(callParameter);
+                    if (callParameterTypeInstance == null) {
+                        error("Unknown parameter", call, LeaPackage.Literals.CALL__PARAMETERS);
+                        languageCallParameters = null;
+                        parametersValid = false;
+                    } else {
+                        languageCallParameters[languageCallParametersCounter] = callParameterTypeInstance;
+                    }
+                    languageCallParametersCounter++;
+                }
+            }
+        }
+        if (parametersValid) {
+            if (!LANGUAGE_REGISTRY.hasCall(call.getName(), languageCallParameters, false)) {                
+                error("Unknown call \"" + call.getName() + "\"", call, LeaPackage.Literals.CALL__NAME);
+            } else if (!LANGUAGE_REGISTRY.hasCall(call.getName(), languageCallParameters, true)) {
+                error("Ambiguous call \"" + call.getName() + "\"", call, LeaPackage.Literals.CALL__NAME);
             }
         }
     }
@@ -285,37 +389,57 @@ public class LeaValidator extends AbstractLeaValidator {
             EList<Parameter> parameterList = parameterContainer.getParameterList();
             if (parameterList != null && !parameterList.isEmpty()) {
                 parameterTypeInstances = new ParameterTypeInstance[parameterList.size()];
-                int i = 0;
-                for (Parameter parameter : parameterList) {
-                    try {                        
-                        if (parameter.getText() != null) {
-                            parameterTypeInstances[i] = new ParameterTypeInstance(
-                                    LANGUAGE_REGISTRY.getParameterType("String"), false);
-                        } else if (parameter.getElement() != null) {
-                            ElementDeclaration parameterElementDeclaration = getElementDeclaration(
-                                    parameter.getElement(), parameter.eResource());
-                            if (parameterElementDeclaration != null) {
-                                boolean isSet = (parameterElementDeclaration.getSet() != null);
-                                parameterTypeInstances[i] = new ParameterTypeInstance(
-                                        getParameterType(parameterElementDeclaration), isSet);
-                            }
-                        } else if (parameter.getOperation() != null) {
-                            net.ssehub.integration.Call parameterCall = getCall(parameter.getOperation());
-                            if (parameterCall != null) {
-                                parameterTypeInstances[i] = parameterCall.getReturnType();
-                            }
-                        }
-                    } catch (LanguageElementException e) {
-                        parameterTypeInstances[i] = null;
-                        // TODO Where to put such error message?
-                        System.err.println("Cannot create parameter type instance for parameter \"" + parameter + "\"");
-                        e.printStackTrace();
+                ParameterTypeInstance parameterTypeInstance;
+                int parameterCounter = 0;
+                do {
+                    parameterTypeInstance = getParameterTypeInstance(parameterList.get(parameterCounter));
+                    if (parameterTypeInstance != null) {
+                        parameterTypeInstances[parameterCounter] = parameterTypeInstance;
+                    } else {
+                        parameterTypeInstances = null;
                     }
-                    i++;
-                }
+                    parameterCounter++;
+                } while (parameterTypeInstance != null && parameterCounter < parameterList.size());
             }
         }
         return parameterTypeInstances;
+    }
+    
+    /**
+     * Returns the {@link ParameterTypeInstance} the given {@link Parameter} represents.
+     * 
+     * @param parameter the {@link Parameter} for which the {@link ParameterTypeInstance} should be returned
+     * @return the {@link ParameterTypeInstance} the given {@link Parameter} represents or <code>null</code>, if the
+     *         {@link Parameter} is <code>null</code> or creating a corresponding {@link ParameterTypeInstance} failed
+     */
+    private ParameterTypeInstance getParameterTypeInstance(Parameter parameter) {
+        ParameterTypeInstance parameterTypeInstance = null;
+        if (parameter != null) {
+            try {                
+                if (parameter.getText() != null) {
+                    parameterTypeInstance = new ParameterTypeInstance(LANGUAGE_REGISTRY.getParameterType("String"),
+                            false);
+                } else if (parameter.getElement() != null) {
+                    ElementDeclaration parameterElementDeclaration = getElementDeclaration(parameter.getElement(),
+                            parameter.eResource());
+                    if (parameterElementDeclaration != null) {
+                        boolean isSet = (parameterElementDeclaration.getSet() != null);
+                        parameterTypeInstance = new ParameterTypeInstance(getParameterType(parameterElementDeclaration),
+                                isSet);
+                    }
+                } else if (parameter.getOperation() != null) {
+                    net.ssehub.integration.Call parameterCall = getCall(parameter.getOperation());
+                    if (parameterCall != null) {
+                        parameterTypeInstance = parameterCall.getReturnType();
+                    }
+                }
+            } catch (LanguageElementException e) {
+                // TODO Where to put such error message?
+                System.err.println("Cannot create parameter type instance for parameter \"" + parameter + "\"");
+                e.printStackTrace();
+            }
+        }
+        return parameterTypeInstance;
     }
     
     /**
@@ -397,8 +521,7 @@ public class LeaValidator extends AbstractLeaValidator {
     /**
      * Searches in the given {@link Resource} for an {@link ElementDeclaration} with the given name and returns it.
      * 
-     * @param name the name of the {@link ElementDeclaration} to be found in the given {@link Resource}; should never be
-     *        <code>null</code> nor <i>blank</i>
+     * @param name the name of the {@link ElementDeclaration} to be found in the given {@link Resource}
      * @param resource the {@link Resource} in which an {@link ElementDeclaration} with the given name should be found;
      *        should never be <code>null</code>
      * @return an {@link ElementDeclaration} with the given name or <code>null</code>, if no such declaration exists

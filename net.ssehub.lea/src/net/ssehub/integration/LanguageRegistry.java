@@ -464,7 +464,7 @@ public class LanguageRegistry extends AbstractLanguageRegistry {
      *        <code>null</code>
      * @param name the name of the (unique) {@link Call} to search for; should never be <code>null</code>
      * @param isUnique must be <code>true</code> to further check whether a {@link Call} matching the given
-     *        {@link ElementType} name is unique; <code>false</code> otherwise 
+     *        {@link ElementType} and name is unique; <code>false</code> otherwise 
      * @return <code>true</code>, if a(n unique) {@link Call} of the type given {@link ElementType} with the given
      *         name is available; <code>false</code> otherwise
      */
@@ -535,13 +535,47 @@ public class LanguageRegistry extends AbstractLanguageRegistry {
      *        search for; <code>null</code> or an <i>empty</i> array indicates that the {@link Call}s should not have
      *        any parameters
      * @param isUnique must be <code>true</code> to further check whether a {@link Call} matching the given
-     *        {@link ElementType} name is unique; <code>false</code> otherwise 
+     *        {@link ElementType}, name, and parameters is unique; <code>false</code> otherwise 
      * @return <code>true</code>, if a(n unique) {@link Call} of the type given {@link ElementType} with the given
      *         name and parameters is available; <code>false</code> otherwise
      */
     public boolean hasCall(ElementType elementType, String name, ParameterTypeInstance[] parameters, boolean isUnique) {
         boolean hasCall = false;
         List<Call> availableCall = getCalls(elementType, name, parameters);
+        if (availableCall != null && (!isUnique || availableCall.size() == 1)) {
+            hasCall = true;
+        }
+        return hasCall;
+    }
+    
+    /**
+     * Checks whether a(n unique) {@link Call} with the given name and {@link ParameterTypeInstance}s denoting the
+     * parameters is available.<br>
+     * <br>
+     * This method initially treats the given name as simple name. If no {@link Call}s match that simple name, this
+     * method retries detecting available {@link Call}s treating the given name as fully-qualified name. If in any of
+     * these case one or more {@link Call}s are detected, their name, and parameters are compared against the given
+     * ones. This results in the following return value:
+     * <ul>
+     * <li><code>true</code>, if <code>isUnique</code> is <code>true</code> and exactly one {@link Call} matches
+     *     the given name and parameters</li>
+     * <li><code>true</code>, if <code>isUnique</code> is <code>false</code> and at least one {@link Call} matches
+     *     the given name and parameters</li>
+     * <li><code>false</code>, in all other cases</li>
+     * </ul>
+     * 
+     * @param name the name of the (unique) {@link Call} to search for; should never be <code>null</code>
+     * @param parameters the array of {@link ParameterTypeInstance}s denoting the parameters of the {@link Call}s to
+     *        search for; <code>null</code> or an <i>empty</i> array indicates that the {@link Call}s should not have
+     *        any parameters
+     * @param isUnique must be <code>true</code> to further check whether a {@link Call} matching the given
+     *        name and parameters is unique; <code>false</code> otherwise 
+     * @return <code>true</code>, if a(n unique) {@link Call} with the given name and parameters is available;
+     *         <code>false</code> otherwise
+     */
+    public boolean hasCall(String name, ParameterTypeInstance[] parameters, boolean isUnique) {
+        boolean hasCall = false;
+        List<Call> availableCall = getCalls(name, parameters);
         if (availableCall != null && (!isUnique || availableCall.size() == 1)) {
             hasCall = true;
         }
