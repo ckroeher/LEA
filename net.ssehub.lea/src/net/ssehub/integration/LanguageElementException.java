@@ -34,7 +34,7 @@ public class LanguageElementException extends Exception {
      * 
      * @param message the description of the error causing this exception
      */
-    protected LanguageElementException(String message) {
+    public LanguageElementException(String message) {
         super(message);
     }
     
@@ -44,7 +44,7 @@ public class LanguageElementException extends Exception {
      * @param message the specific description of the error causing this exception
      * @param cause the {@link Throwable} representing the actual cause of this exception
      */
-    protected LanguageElementException(String message, Throwable cause) {
+    public LanguageElementException(String message, Throwable cause) {
         super(message, cause);
     }
 }

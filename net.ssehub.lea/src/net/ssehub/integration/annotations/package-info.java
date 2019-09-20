@@ -14,8 +14,8 @@
  */
 /**
  * This package contains the custom annotations for marking external classes, attributes, or methods as representing a
- * language element. The @{@link net.ssehub.integration.LanguageElementCreator} scans external classes loaded by the 
- * {@link net.ssehub.integration.LanguageElementProvider} for these annotations and creates the respective
+ * language element. The @{@link net.ssehub.integration.ExternalLanguageElementCreator} scans external classes loaded by
+ * the {@link net.ssehub.integration.LanguageElementProvider} for these annotations and creates the respective
  * {@link net.ssehub.integration.LanguageElement}s for the {@link net.ssehub.integration.LanguageRegistry}.
  * 
  * @author Christian Kroeher

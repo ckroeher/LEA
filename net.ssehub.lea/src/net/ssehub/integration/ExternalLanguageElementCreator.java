@@ -31,26 +31,13 @@ import net.ssehub.integration.annotations.ResultParameterType;
 
 /**
  * This class creates the specific {@link LanguageElement}s based on a given {@link Class}, which was extracted and 
- * loaded by the {@link LanguageElementProvider}. Each completely constructed {@link LanguageElement} is added to the
- * {@link LanguageRegistry}.
+ * loaded from external plug-ins by the {@link LanguageElementProvider}. Each completely constructed
+ * {@link LanguageElement} is added to the {@link LanguageRegistry}.
  * 
  * @author Christian Kroeher
  *
  */
-public class LanguageElementCreator {
-    
-    /**
-     * The constant array of Java container type prefixes.
-     */
-    private static final String[] JAVA_CONTAINER_TYPE_PREFIXES = {"ArrayList<", "HashSet<", "LinkedList<", "List<",
-        "Set<", "Vector<"};
-  
-    /**
-     * The {@link LanguageRegistry} to which created {@link LanguageElement}s will be added and which provides already
-     * created {@link ParameterType}s for references from {@link net.ssehub.integration.ChangeIdentifier}s and
-     * {@link Call}s to these types.
-     */
-    private LanguageRegistry languageRegistry;
+public class ExternalLanguageElementCreator extends AbstractLanguageElementCreator {
     
     /**
      * The {@link List} of cached {@link net.ssehub.integration.ChangeIdentifier}s. Their construction will be completed
@@ -64,13 +51,12 @@ public class LanguageElementCreator {
     private List<Call> cachedCalls;
 
     /**
-     * Constructs a new {@link LanguageElementCreator}.
+     * Constructs a new {@link ExternalLanguageElementCreator}.
      * 
      * @see #createLanguageElements(Class, File)
      * @see #finalizeCreations()
      */
-    public LanguageElementCreator() {
-        languageRegistry = LanguageRegistry.INSTANCE;
+    public ExternalLanguageElementCreator() {
         cachedChangeIdentifiers = new ArrayList<net.ssehub.integration.ChangeIdentifier>();
         cachedCalls = new ArrayList<Call>();
     }
@@ -78,17 +64,21 @@ public class LanguageElementCreator {
     /**
      * Creates {@link LanguageElement}s by scanning the given {@link Class} for the custom annotations classifying 
      * external classes, attributes, or methods to represent a language element. Each completely constructed
-     * {@link LanguageElement} is added to the {@link LanguageRegistry}.
+     * {@link LanguageElement} is added to the {@link LanguageRegistry}. However, the construction of
+     * {@link net.ssehub.integration.ChangeIdentifier}s and {@link Call}s can only be completed, if all
+     * {@link ParameterType}s are available. Hence, the caller of this method must ensure, that all relevant
+     * {@link Class}es were passed once to this method, before {@link #finalizeCreations()} is called. That call is
+     * the mandatory last step in creating (external) {@link LanguageElement}s.
      * 
      * @param pluginClass the {@link Class} in which language elements should be found; should never be
      *        <code>null</code>
      * @param sourcePlugin the {@link File} denoting a Java archive file in which the given class is located; should
      *        never be <code>null</code>
-     * @throws ExternalElementException if creating a language element failed; it is <b>not</b> thrown, if the given
+     * @throws LanguageElementException if creating a language element failed; it is <b>not</b> thrown, if the given
      *         class does not introduce any language elements
      */
     public void createLanguageElements(Class<?> pluginClass, File sourcePlugin) 
-            throws ExternalElementException {
+            throws LanguageElementException {
         createParameterType(pluginClass, sourcePlugin);
         
         initializeChangeIdentifier(pluginClass, sourcePlugin);
@@ -122,23 +112,18 @@ public class LanguageElementCreator {
      *        <code>null</code>
      * @param sourcePlugin the {@link File} denoting a Java archive file in which the given class is located; should
      *        never be <code>null</code>
-     * @throws ExternalElementException if creating the {@link ParameterType} failed; it is <b>not</b> thrown, if the
+     * @throws LanguageElementException if creating the {@link ParameterType} failed; it is <b>not</b> thrown, if the
      *         given class does not introduce any language elements
      */
     private void createParameterType(Class<?> pluginClass, File sourcePlugin) 
-            throws ExternalElementException {
+            throws LanguageElementException {
         ElementType parameterTypeElementType = getElementType(pluginClass);
         if (parameterTypeElementType != null) {            
             String parameterTypeName = getParameterTypeName(pluginClass);
             try {
-                ParameterType parameterType = new ParameterType(parameterTypeElementType, parameterTypeName,
-                        pluginClass, sourcePlugin);
-                if (!languageRegistry.addParameterType(parameterType)) {
-                    throw new ExternalElementException("Adding " + parameterTypeElementType + " \"" + parameterTypeName 
-                            + "\" to language registry failed"); 
-                }
+                createParameterType(parameterTypeElementType, parameterTypeName, pluginClass, sourcePlugin);
             } catch (LanguageElementException e) {
-                throw new ExternalElementException("Creating " + parameterTypeElementType + " based on class \"" 
+                throw new LanguageElementException("Creating " + parameterTypeElementType + " based on class \"" 
                         + pluginClass.getSimpleName() + "\" in plug-in \"" + sourcePlugin.getAbsolutePath() 
                         + "\" failed", e);
             }
@@ -158,11 +143,11 @@ public class LanguageElementCreator {
      *        should never be <code>null</code>
      * @param sourcePlugin the {@link File} denoting a Java archive file in which the given class is located; should
      *        never be <code>null</code>
-     * @throws ExternalElementException if initializing the {@link net.ssehub.integration.ChangeIdentifier} failed; it
+     * @throws LanguageElementException if initializing the {@link net.ssehub.integration.ChangeIdentifier} failed; it
      *         is <b>not</b> thrown, if the given class does not introduce any language elements
      * @see #finalizeCreations()
      */
-    private void initializeChangeIdentifier(Class<?> pluginClass, File sourcePlugin) throws ExternalElementException {
+    private void initializeChangeIdentifier(Class<?> pluginClass, File sourcePlugin) throws LanguageElementException {
         if (pluginClass.isAnnotationPresent(ChangeIdentifier.class)) {
             ChangeIdentifier customAnnotation = pluginClass.getAnnotation(ChangeIdentifier.class);
             String changeIdentifierName = createLanguageElementName(pluginClass, customAnnotation.name(), "");
@@ -171,7 +156,7 @@ public class LanguageElementCreator {
                         new net.ssehub.integration.ChangeIdentifier(changeIdentifierName, pluginClass, sourcePlugin);
                 cachedChangeIdentifiers.add(changeIndentifier);
             } catch (LanguageElementException e) {
-                throw new ExternalElementException("Creating change identifier based on class \"" 
+                throw new LanguageElementException("Creating change identifier based on class \"" 
                         + pluginClass.getSimpleName() + "\" in plug-in \"" + sourcePlugin.getAbsolutePath() 
                         + "\" failed", e);
             }
@@ -200,12 +185,12 @@ public class LanguageElementCreator {
      * @param pluginClass the {@link Class} in which the given method is defined; should never be <code>null</code>
      * @param sourcePlugin the {@link File} denoting a Java archive file in which the given class is located; should
      *        never be <code>null</code>
-     * @throws ExternalElementException if initializing the {@link Call} failed; it is <b>not</b> thrown, if the given
+     * @throws LanguageElementException if initializing the {@link Call} failed; it is <b>not</b> thrown, if the given
      *         method does not introduce any language elements
      * @see #finalizeCreations()
      */
     private void initializeCall(Method pluginClassMethod, Class<?> pluginClass, File sourcePlugin) 
-            throws ExternalElementException {
+            throws LanguageElementException {
         ElementType callElementType = getElementType(pluginClassMethod);
         if (callElementType != null) {            
             String callName = getCallName(pluginClassMethod);
@@ -213,7 +198,7 @@ public class LanguageElementCreator {
                 Call call = new Call(callElementType, callName, pluginClassMethod, pluginClass, sourcePlugin);
                 cachedCalls.add(call);
             } catch (LanguageElementException e) {
-                throw new ExternalElementException("Creating " + callElementType + " based on method \"" 
+                throw new LanguageElementException("Creating " + callElementType + " based on method \"" 
                         + pluginClassMethod.getName() + "\" in class \"" + pluginClass.getSimpleName() 
                         + "\" of plug-in \"" + sourcePlugin.getAbsolutePath() + "\" failed", e);
             }
@@ -224,11 +209,11 @@ public class LanguageElementCreator {
      * Completes the construction of all {@link #cachedChangeIdentifiers} and {@link #cachedCalls} and adds them to the 
      * {@link LanguageRegistry}.
      * 
-     * @throws ExternalElementException if completing the construction of one of the above elements failed
+     * @throws LanguageElementException if completing the construction of one of the above elements failed
      * @see #finalizeChangeIdentifier(net.ssehub.integration.ChangeIdentifier)
      * @see #finalizeCall(Call, String, String[], String)
      */
-    public void finalizeCreations() throws ExternalElementException {
+    public void finalizeCreations() throws LanguageElementException {
         for (net.ssehub.integration.ChangeIdentifier changeIdentifier : cachedChangeIdentifiers) {
             finalizeChangeIdentifier(changeIdentifier);
         }
@@ -250,12 +235,12 @@ public class LanguageElementCreator {
      * 
      * @param changeIdentifier the {@link net.ssehub.integration.ChangeIdentifier} for which the construction shall be
      *                         be completed; should never be <code>null</code>
-     * @throws ExternalElementException if completing the construction of the given
+     * @throws LanguageElementException if completing the construction of the given
      *         {@link net.ssehub.integration.ChangeIdentifier} or its addition to the {@link LanguageRegistry} failed
      * @see LanguageRegistry#addChangeIdentifier(net.ssehub.integration.ChangeIdentifier)
      */
     private void finalizeChangeIdentifier(net.ssehub.integration.ChangeIdentifier changeIdentifier) 
-            throws ExternalElementException {
+            throws LanguageElementException {
         ChangeIdentifier changeIdentifierAnnotation = changeIdentifier.getSourceClass()
                 .getAnnotation(ChangeIdentifier.class);
         String[] assignableElements = changeIdentifierAnnotation.assignableTo();
@@ -266,84 +251,13 @@ public class LanguageElementCreator {
         try {
             changeIdentifier.finalize(assignebleParameterTypes);
             if (!languageRegistry.addChangeIdentifier(changeIdentifier)) {
-                throw new ExternalElementException("Adding change identifier \"" + changeIdentifier.getName() 
+                throw new LanguageElementException("Adding change identifier \"" + changeIdentifier.getName() 
                         + "\" to language registry failed");
             }
         } catch (LanguageElementException e) {
-            throw new ExternalElementException("Completing the construction of change identifier \"" 
+            throw new LanguageElementException("Completing the construction of change identifier \"" 
                     + changeIdentifier.getFullyQualifiedName() + "\" failed", e);
         }
-    }
-    
-    /**
-     * Completes the construction of the given {@link Call} by setting the {@link ParameterTypeInstance}s, which
-     * represent the return type and (optionally) parameters and the parent parameter type of the given {@link Call}, if
-     * the respective {@link ParameterType}s are available in the {@link LanguageRegistry}. The completely constructed
-     * {@link Call} is then added to the {@link LanguageRegistry}.
-     * 
-     * @param call the {@link Call} for which the construction shall be be completed; should never be <code>null</code>
-     * @param returnType the {@link String} representing the fully-qualified name of the return type of the given
-     *        {@link Call}; should never be <code>null</code>
-     * @param parameters the array of {@link String}s representing the fully-qualified names of the parameters of the
-     *        given {@link Call}; may be <code>null</code> or <i>empty</i>, if the given {@link Call} does not require
-     *        any parameters
-     * @param parentParameterType the {@link String} representing the optional parent parameter type of the given
-     *        {@link Call}; may be <code>null</code> to indicate that the given {@link Call} does not have a parent
-     *        parameter type
-     * @throws ExternalElementException if completing the construction of the given {@link Call} or its addition to the
-     *         {@link LanguageRegistry} failed
-     * @see LanguageRegistry#addCall(Call)
-     */
-    private void finalizeCall(Call call, String returnType, String[] parameters, String parentParameterType) 
-            throws ExternalElementException {
-        try {
-            // Get the return type
-            ParameterTypeInstance callReturnType = createParameterTypeInstance(returnType);
-            // Get the parameters (optional)
-            ParameterTypeInstance[] callParameters = null;
-            if (parameters != null) {            
-                callParameters = new ParameterTypeInstance[parameters.length];
-                for (int i = 0; i < parameters.length; i++) {
-                    callParameters[i] = createParameterTypeInstance(parameters[i]);
-                }
-            }
-            // Get the parent parameter type (optional)
-            ParameterTypeInstance callParentParameterType = null;
-            if (parentParameterType != null) {
-                callParentParameterType = createParameterTypeInstance(parentParameterType);
-            }
-            // Finalize call and add it to the registry
-            call.finalize(callReturnType, callParameters, callParentParameterType);
-            if (!languageRegistry.addCall(call)) {
-                throw new ExternalElementException("Adding " + call.getElementType() + " \"" 
-                        + call.getFullyQualifiedName() + "\" to language registry failed");
-            }
-        } catch (LanguageElementException e) {
-            throw new ExternalElementException("Completing the construction of call \"" + call.getFullyQualifiedName() 
-                    + "\" failed", e);
-        }
-    }
-    
-    /**
-     * Creates the {@link ParameterTypeInstance} for {@link Call} elements based in the given {@link String} denoting a
-     * method return type or parameter type.
-     * 
-     * @param type the {@link String} denoting a method return type or parameter type for which the
-     *        {@link ParameterTypeInstance} should be created
-     * @return the {@link ParameterTypeInstance} or <code>null</code>, if the given {@link String} is <code>null</code>
-     *         or <i>blank</i>
-     * @throws LanguageElementException if the {@link LanguageRegistry} does not contain a {@link ParameterType} to
-     *         create an instance from
-     */
-    private ParameterTypeInstance createParameterTypeInstance(String type) throws LanguageElementException {
-        ParameterTypeInstance parameterTypeInstance = null;
-        if (type != null && !type.isBlank()) {            
-            String coreType = getCoreType(type);
-            boolean isSet = !type.equals(coreType);
-            ParameterType parameterType = languageRegistry.getParameterType(coreType);
-            parameterTypeInstance = new ParameterTypeInstance(parameterType, isSet);
-        }
-        return parameterTypeInstance;
     }
     
     /**
@@ -380,10 +294,10 @@ public class LanguageElementCreator {
      *        should never be <code>null</code>
      * @return the array of {@link String}s representing the parameters of the {@link Call} of the given source
      *         {@link Method}; never <code>null</code> nor <i>blank</i>
-     * @throws ExternalElementException if the number of given symbolic parameters does not match the number of
+     * @throws LanguageElementException if the number of given symbolic parameters does not match the number of
      *         declared parameters of the given method
      */
-    private String[] getParameters(Method sourceMethod) throws ExternalElementException {
+    private String[] getParameters(Method sourceMethod) throws LanguageElementException {
         String[] parameters = null;
         String[] symbolicParameters = null;
         if (sourceMethod.isAnnotationPresent(Operation.class)) {
@@ -423,32 +337,6 @@ public class LanguageElementCreator {
     }
     
     /**
-     * Returns the core (non-array and non-container) type of the given type. 
-     * 
-     * @param type the type for which the core type should be returned; should never be <code>null</code> nor
-     *        <i>blank</i>
-     * @return the core (non-set and non-container) type of the given type or the given type, if it does not denote an
-     *         array or a container type
-     */
-    private String getCoreType(String type) {
-        String coreType = type;
-        if (type.charAt(type.length() - 1) == ']') {
-            coreType = type.substring(0, type.length() - 2);
-        } else {
-            boolean containerTypeFound = false;
-            int containerTypeCounter = 0;
-            while (!containerTypeFound && containerTypeCounter < JAVA_CONTAINER_TYPE_PREFIXES.length) {
-                if (type.startsWith(JAVA_CONTAINER_TYPE_PREFIXES[containerTypeCounter])) {
-                    containerTypeFound = true;
-                    coreType = type.substring(type.indexOf('<') + 1, type.lastIndexOf('>'));
-                }
-                containerTypeCounter++;
-            }
-        }
-        return coreType;
-    }
-    
-    /**
      * Creates the (symbolic) parameters for a {@link Call} as a {@link String} array based on the {@link Parameter}s
      * of the given {@link Method} or based on the given symbolic parameter names (typically defined by the annotation
      * values).
@@ -459,16 +347,16 @@ public class LanguageElementCreator {
      *        annotation; the name(s) that will be returned, if the array is not empty; should never be
      *        <code>null</code> 
      * @return the (symbolic) parameters for a {@link Call} as a {@link String}
-     * @throws ExternalElementException if the number of given symbolic parameters does not match the number of
+     * @throws LanguageElementException if the number of given symbolic parameters does not match the number of
      *         declared parameters of the given method 
      */
     private String[] createCallParameters(Method pluginClassMethod, String[] symbolicParameters) 
-            throws ExternalElementException {
+            throws LanguageElementException {
         String[] callParameters = null;
         Parameter[] methodParameters = pluginClassMethod.getParameters();
         if (symbolicParameters.length != 0) {
             if (symbolicParameters.length != methodParameters.length) {                
-                throw new ExternalElementException("Mismatch of actual (" + methodParameters.length 
+                throw new LanguageElementException("Mismatch of actual (" + methodParameters.length 
                         + ") and symbolic ("
                         + symbolicParameters.length + ") parameters while creating call based on method \"" 
                         + pluginClassMethod.toGenericString() + "\"");
@@ -637,40 +525,6 @@ public class LanguageElementCreator {
             elementNameBuilder.append(">");
         }
         return elementNameBuilder.toString();
-    }
-    
-    /**
-     * Creates the (symbolic) name for a language element with the given declared type name. The name is either
-     * constructed by the given declared type name, which is the fully-qualified type name including the possible
-     * generic declaration and the generic parameter types, or the given symbolic type name (typically defined by the
-     * annotation values).
-     * 
-     * @param declaredTypeName the fully-qualified, declared type name from which a name should be created; should never
-     *        be <code>null</code> nor <i>blank</i>
-     * @param symbolicTypeName the name that will be returned, if it is not <i>blank</i>; should never be
-     *        <code>null</code>
-     * @return the (symbolic) name for a language element; never <code>null</code> nor <i>blank</i>
-     */
-    private String createLanguageElementName(String declaredTypeName, String symbolicTypeName) {
-        String elementName = symbolicTypeName;
-        if (elementName.isBlank()) {            
-            StringBuilder elementNameBuilder = new StringBuilder();
-            int typeNameIndex = declaredTypeName.length() - 1;
-            boolean ignore = false;
-            do {
-                if (!ignore && declaredTypeName.charAt(typeNameIndex) == '.') {
-                    ignore = true;
-                } else if (ignore && declaredTypeName.charAt(typeNameIndex) == '<') {
-                    ignore = false;
-                }
-                if (!ignore) {
-                    elementNameBuilder.append(declaredTypeName.charAt(typeNameIndex));
-                }
-                typeNameIndex--;
-            } while (typeNameIndex > -1);
-            elementName = elementNameBuilder.reverse().toString();
-        }
-        return elementName;
     }
 
 }

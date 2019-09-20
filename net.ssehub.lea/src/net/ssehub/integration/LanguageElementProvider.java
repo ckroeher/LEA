@@ -29,9 +29,11 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 /**
- * This class is responsible for detecting external plug-ins (<code>*.jar</code>-files), extracting their classes, and
- * passing them individually to the {@link LanguageElementCreator} for {@link LanguageElement} creation. The created
- * {@link LanguageElement}s are added to the {@link LanguageRegistry} by the {@link LanguageElementCreator}.
+ * This class is responsible for providing the {@link LanguageElement}s to the {@link LanguageRegistry} by calling the
+ * {@link CoreLanguageElementCreator} first and the {@link ExternalLanguageElementCreator} after creating the core
+ * elements was successful. For the second call, it detects external plug-ins (<code>*.jar</code>-files), extracts their
+ * classes, and passes them individually to the {@link ExternalLanguageElementCreator}. Both creators directly add
+ * successfully and completely created {@link LanguageElement}s to the {@link LanguageRegistry}.
  * 
  * @author Christian Kroeher
  *
@@ -49,36 +51,44 @@ public class LanguageElementProvider {
     private static final String JAVA_CLASS_FILE_EXTENSION = ".class";
     
     /**
-     * The {@link LanguageElementCreator} for creating {@link LanguageElement}s based on the detected plug-ins and their
-     * classes.
+     * The {@link CoreLanguageElementCreator} for creating the core {@link LanguageElement}s.
      */
-    private LanguageElementCreator languageElementCreator;
+    private CoreLanguageElementCreator coreLanguageElementCreator;
+    
+    /**
+     * The {@link ExternalLanguageElementCreator} for creating external {@link LanguageElement}s based on the detected
+     * plug-ins and their classes.
+     */
+    private ExternalLanguageElementCreator externalLanguageElementCreator;
     
     /**
      * Constructs a new {@link LanguageElementProvider}.
      */
     public LanguageElementProvider() {
+        coreLanguageElementCreator = new CoreLanguageElementCreator();
         // Use only one single instance for the creation of all elements due to the caching mechanism in the creator
-        languageElementCreator = new LanguageElementCreator();
+        externalLanguageElementCreator = new ExternalLanguageElementCreator();
     }
     
     /**
-     * Detects all plug-ins (<code>*.jar</code>-files) on each given search path (including sub-directories), extracts
-     * their classes, and passes them individually to the {@link LanguageElementCreator} for {@link LanguageElement}
-     * creation.<br>
+     * Provides the core {@link LanguageElement}s to the {@link LanguageRegistry} by calling the
+     * {@link CoreLanguageElementCreator}. If creating the core elements was successful, it detects all plug-ins
+     * (<code>*.jar</code>-files) on each given search path (including sub-directories), extracts their classes, and
+     * passes them individually to the {@link ExternalLanguageElementCreator}.<br>
      * <br>
      * <b>Note</b> that calling this method clears the current {@link LanguageRegistry}.
      *  
      * @param searchPaths the @{@link List} of {@link String}s of which each denotes a path to a directory to search in
      *        for plug-ins (<code>*.jar</code>-files)
-     * @throws ExternalElementException if the given @{@link List} of {@link String}s denoting the search paths is
-     *         <code>null</code> or <i>empty</i>, one of those {@link String}s does not denote a directory, or
-     *         retrieving the {@link URL} of a plug-in failed; it is <b>not</b> thrown, if no plug-ins or language
-     *         elements could be found
+     * @throws LanguageElementException if creating the core {@link LanguageElement}s failed, the given @{@link List} of
+     *         {@link String}s denoting the search paths is <code>null</code> or <i>empty</i>, one of those
+     *         {@link String}s does not denote a directory, or retrieving the {@link URL} of a plug-in failed; it is
+     *         <b>not</b> thrown, if no plug-ins or {@link LanguageElement}s could be found
      * @see LanguageRegistry#clear()
      */
-    public void detectLanguageElements(List<String> searchPaths) throws ExternalElementException {
+    public void provideLanguageElements(List<String> searchPaths) throws LanguageElementException {
         LanguageRegistry.INSTANCE.clear();
+        coreLanguageElementCreator.createLanguageElements();
         if (searchPaths != null && !searchPaths.isEmpty()) {
             File pluginDirectory;
             for (String searchPath : searchPaths) {
@@ -94,22 +104,23 @@ public class LanguageElementProvider {
                     System.out.println("Search path denotes not a valid directory: " + searchPath);
                 }
             }
-            languageElementCreator.finalizeCreations();
+            externalLanguageElementCreator.finalizeCreations();
         } else {
-            throw new ExternalElementException("No paths to search for plug-ins specified");
+            throw new LanguageElementException("No paths to search for plug-ins specified");
         }
     }
     
     /**
      * Extracts the classes of the given {@link File}, which is assumed to be a Java archive file
-     * (<code>*.jar</code>-file), and passes them individually to the {@link LanguageElementCreator} for
+     * (<code>*.jar</code>-file), and passes them individually to the {@link ExternalLanguageElementCreator} for
      * {@link LanguageElement} creation. Note that, if the given plug-in could not be read or classes could not be
      * loaded to detect language elements, the user will be informed by TODO. There is no further error propagation at
      * this point, as this method is called for each plug-in individually and, hence, an error for one plug-in should
      * not prevent reading other plug-ins.
      * 
      * @param plugin the {@link File} denoting a Java archive file from which each class will be extracted and passed to
-     *        the {@link LanguageElementCreator} for {@link LanguageElement} creation; should never be <code>null</code>
+     *        the {@link ExternalLanguageElementCreator} for {@link LanguageElement} creation; should never be
+     *        <code>null</code>
      * @param pluginUrls the array of {@link URL}s of all available Java archive files for class loading; although
      *        this method only processes a single plug-in (Java archive file), that plug-in may depend on other
      *        plug-ins, which have to be available for this method to detect language elements in the given plug-in;
@@ -126,15 +137,15 @@ public class LanguageElementProvider {
             for (String pluginClassName : pluginClassNames) {
                 try {
                     pluginClass = Class.forName(pluginClassName, false, new URLClassLoader(pluginUrls));
-                    languageElementCreator.createLanguageElements(pluginClass, plugin);
+                    externalLanguageElementCreator.createLanguageElements(pluginClass, plugin);
                 } catch (LinkageError | ClassNotFoundException | SecurityException e) {
-                    throw new ExternalElementException("Could not load class \"" + pluginClassName + "\"", e);
+                    throw new LanguageElementException("Could not load class \"" + pluginClassName + "\"", e);
                 } catch (NullPointerException e) {
-                    throw new ExternalElementException("Could not load class \"" + pluginClassName 
+                    throw new LanguageElementException("Could not load class \"" + pluginClassName 
                             + "\" due to plug-in URLs being null", e);
                 }
             }
-        } catch (ExternalElementException e) {
+        } catch (LanguageElementException e) {
             /*
              * Problems reading a particular plug-in should not be propagated to the caller, as this is a 
              * plug-in-specific problem, which should not influence or abort reading other plug-ins. Hence, we only
@@ -157,10 +168,10 @@ public class LanguageElementProvider {
      *        returned; should never be <code>null</code> 
      * @return a list of {@link String}s representing fully-qualified class names; never <code>null</code>, but may be
      *         <i>empty</i>
-     * @throws ExternalElementException if the given file could not be found, its content could not be read, or 
+     * @throws LanguageElementException if the given file could not be found, its content could not be read, or 
      *         the archive entries could not be read
      */
-    private List<String> getPluginClassNames(File plugin) throws ExternalElementException {
+    private List<String> getPluginClassNames(File plugin) throws LanguageElementException {
         List<String> pluginClassNames = new ArrayList<String>();
         FileInputStream fileInputStream = null;
         ZipInputStream zipInputStream = null;
@@ -179,17 +190,17 @@ public class LanguageElementProvider {
                 }
             }
         } catch (FileNotFoundException | SecurityException e) {
-            throw new ExternalElementException("Could not create file input stream for file \"" 
+            throw new LanguageElementException("Could not create file input stream for file \"" 
                     + plugin.getAbsolutePath() + "\"", e);
         } catch (IOException e) {
-            throw new ExternalElementException("Could not read entry from zip file \"" + plugin.getAbsolutePath() 
+            throw new LanguageElementException("Could not read entry from zip file \"" + plugin.getAbsolutePath() 
                     + "\"", e);
         } finally {
             if (zipInputStream != null) {
                 try {
                     zipInputStream.close();
                 } catch (IOException e) {
-                    throw new ExternalElementException("Could not close zip input stream for file \"" 
+                    throw new LanguageElementException("Could not close zip input stream for file \"" 
                             + plugin.getAbsolutePath() + "\"", e);
                 }
             }
@@ -197,7 +208,7 @@ public class LanguageElementProvider {
                 try {
                     fileInputStream.close();
                 } catch (IOException e) {
-                    throw new ExternalElementException("Could not close file input stream for file \"" 
+                    throw new LanguageElementException("Could not close file input stream for file \"" 
                             + plugin.getAbsolutePath() + "\"", e);
                 }
             }
@@ -211,18 +222,18 @@ public class LanguageElementProvider {
      * @param plugins the list of {@link Files} for which the {@link URL}s should be returned; should never be
      *        <code>null</code>, but may be <i>empty</i>
      * @return the array of {@link URL}s of the given {@link File}s; never <code>null</code>, but may be <i>empty</i>
-     * @throws ExternalElementException if the {@link URI} or the {@link URL} of a file could not be determined
+     * @throws LanguageElementException if the {@link URI} or the {@link URL} of a file could not be determined
      */
-    private URL[] getPluginUrls(List<File> plugins) throws ExternalElementException {
+    private URL[] getPluginUrls(List<File> plugins) throws LanguageElementException {
         URL[] pluginUrls = new URL[plugins.size()];
         for (int i = 0; i < pluginUrls.length; i++) {
             try {
                 pluginUrls[i] = plugins.get(i).toURI().toURL();
             } catch (SecurityException e) {
-                throw new ExternalElementException("Could not determine the URI of plugin \"" 
+                throw new LanguageElementException("Could not determine the URI of plugin \"" 
                         + plugins.get(i).getAbsolutePath() + "\"", e);
             } catch (IllegalArgumentException | MalformedURLException e) {
-                throw new ExternalElementException("Could not determine the URL of plugin \"" 
+                throw new LanguageElementException("Could not determine the URL of plugin \"" 
                         + plugins.get(i).getAbsolutePath() + "\"", e);
             }
         }

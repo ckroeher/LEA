@@ -23,7 +23,7 @@ import java.lang.annotation.Target;
 
 import net.ssehub.integration.Call;
 import net.ssehub.integration.ElementType;
-import net.ssehub.integration.ExternalElementException;
+import net.ssehub.integration.LanguageElementException;
 
 /**
  * Indicates that the annotated method represents a {@link Call} of the type {@link ElementType#EXTRACTOR_CALL}.
@@ -56,7 +56,7 @@ public @interface ExtractorCall {
      * <br>
      * <b>Important:</b> If the annotated method has no return type (<code>void</code>), this parameter must be defined
      * as an extractor call is solely used for extracting fragments and, hence, requires a return type; otherwise the
-     * {@link Call} constructor will throw an {@link ExternalElementException} and the extractor call will not be
+     * {@link Call} constructor will throw an {@link LanguageElementException} and the extractor call will not be
      * available as part of the language. 
      * 
      * @return the (symbolic) name of the return type of this {@link ElementType#EXTRACTOR_CALL}; the default value is
