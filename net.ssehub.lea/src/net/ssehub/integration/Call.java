@@ -37,26 +37,11 @@ public class Call extends LanguageElement {
      */
     private ParameterTypeInstance returnType;
     
-//    /**
-//     * The definition of whether this call returns a set of its {@link #returnType} (<code>true</code>) or a single
-//     * element of that type (<code>false</code>, which is the default).
-//     */
-//    private boolean returnTypeSetDefinition;
-    
     /**
      * The array of {@link ParameterTypeInstance}s this call accepts as parameters. May be <code>null</code>, if this
      * call does not require any parameters.
      */
     private ParameterTypeInstance[] parameters;
-    
-//    /**
-//     * The definitions of whether a parameter of this call is a set of the respective {@link ParameterType}
-//     * (<code>true</code>) or a single element of that type (<code>false</code>, which is the default). For each
-//     * {@link ParameterType} in the array of {@link #parameters} of this call the <code>boolean</code> value at the
-//     * same index in this array provides that definition. May be <code>null</code>, if this call does not require any
-//     * parameters.
-//     */
-//    private boolean[] parametersSetDefinitions;
     
     /**
      * The {@link ParameterTypeInstance} for which this call represents a member operation. May be <code>null</code>,
@@ -107,20 +92,27 @@ public class Call extends LanguageElement {
         }
         this.sourceMethod = sourceMethod;
         returnType = null;
-//        returnTypeSetDefinition = false;
         parameters = null;
-//        parametersSetDefinitions = null;
         parentParameterType = null;
         finalized = false;
         // Construct the fully-qualified name of this element
-        String sourceMethodGenericString = sourceMethod.toGenericString().replaceAll("(\\$|\\#)", ".");
-        int substringStartIndex = sourceMethodGenericString.lastIndexOf(' ') + 1;
-        if (sourceMethodGenericString.contains("(")) {
-            sourceMethodGenericString = sourceMethodGenericString.substring(0, sourceMethodGenericString.indexOf('('));
+        try {            
+            String sourceMethodGenericString = sourceMethod.toGenericString().replaceAll("(\\$|\\#)", ".");
+            int substringStartIndex = sourceMethodGenericString.lastIndexOf(' ') + 1;
+            if (sourceMethodGenericString.contains("(")) {
+                sourceMethodGenericString = sourceMethodGenericString.substring(0,
+                        sourceMethodGenericString.indexOf('('));
+            }
+            int substringEndIndex = sourceMethodGenericString.lastIndexOf('.') + 1;        
+            fullyQualifiedName = sourceMethodGenericString.substring(substringStartIndex, substringEndIndex) 
+                    + getName();
+        } catch (StringIndexOutOfBoundsException e) {
+            /*
+             * For some methods with unexpected return types or parameters the way of constructing the fully-qualified
+             * may fail. In that case, we cannot use the call anyway and, hence, throw an exception.
+             */
+            throw new LanguageElementException("Constructing the fully-qualified name failed");
         }
-        int substringEndIndex = sourceMethodGenericString.lastIndexOf('.') + 1;        
-        fullyQualifiedName = sourceMethodGenericString.substring(substringStartIndex, substringEndIndex) 
-                + getName();
     }
     
     /**

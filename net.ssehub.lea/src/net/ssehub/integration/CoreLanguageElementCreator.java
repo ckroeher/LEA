@@ -18,6 +18,10 @@ import java.io.File;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * This class creates the core {@link LanguageElement}s that should always be available in the {@link LanguageRegistry}.
@@ -27,6 +31,89 @@ import java.lang.reflect.Parameter;
  *
  */
 public class CoreLanguageElementCreator extends AbstractLanguageElementCreator {
+    
+    /**
+     * This class provides a set of methods for using them as {@link Call}s of the type {@link ElementType#OPERATION}.
+     *  
+     * @author Christian Kroeher
+     *
+     */
+    private class CoreOperations {
+        
+        /*
+         * TODO how and from where do we get the rootDir of an SPL where the analysis is applied?
+         * something like the actual execution engine?
+         */
+        private File rootDir;
+        
+        /**
+         * Returns the {@link File} denoted by the given {@link String} that represents path relative to the
+         * {@link #rootDir}.
+         * 
+         * @param relativePath the {@link String} representing the relative path of the {@link File} to return
+         * @return the {@link File} denoted by the given path relative to the {@link #rootDir} or <code>null</code>, if
+         *         the given relative path is <code>null</code> or <code>blank</code>
+         */
+        @SuppressWarnings("unused")
+        public File file(String relativePath) {
+            File file = null;
+            if (relativePath != null && !relativePath.isBlank()) {
+                file = new File(rootDir, relativePath);
+            }
+            return file;
+        }
+        
+        /**
+         * Returns the {@link List} of all {@link File}s, which have an absolute file path that matches the given 
+         * {@link String} regular expression. It searches recursively in all directories starting from the
+         * {@link #rootDir}.
+         * 
+         * @param regex the {@link String} regular expression for identifying the desired {@link File}s
+         * @return the {@link List} of all {@link File}s, which have an absolute file path that matches the given
+         *         regular expression or <code>null</code>, if the given regular expression is <code>null</code> or
+         *         <code>blank</code>
+         */
+        @SuppressWarnings("unused")
+        public List<File> files(String regex) {
+            List<File> foundFiles = null;
+            if (regex != null && !regex.isBlank()) {
+                foundFiles = files(regex, rootDir);
+            }
+            return foundFiles;
+        }
+        
+        /**
+         * Searches recursively in all directories starting from the given search directory for all {@link File}s where
+         * the absolute path matches the given {@link String} regular expression and returns them.
+         * 
+         * @param regex the {@link String} regular expression for identifying the desired {@link File}s; should
+         *        never be <code>null</code> nor <i>blank</i>
+         * @param searchDir the {@link File} denoting the directory to search in for the desired {@link File}s; should
+         *        never be <code>null</code> and should always denote a directory 
+         * @return the {@link List} of {@link File}s where the absolute path matches the given regular expression; never
+         *         <code>null</code>, but may be <i>empty</i>
+         */
+        private List<File> files(String regex, File searchDir) {
+            List<File> foundFiles = new ArrayList<File>();
+            File[] containedFiles = searchDir.listFiles();
+            File containedFile;
+            Pattern fileAbsolutePathPattern = Pattern.compile(regex);
+            Matcher fileAbsolutePathMatcher;
+            for (int i = 0; i < containedFiles.length; i++) {
+                containedFile = containedFiles[i];
+                if (containedFile.isDirectory()) {
+                    foundFiles.addAll(files(regex, containedFile));
+                } else {
+                    fileAbsolutePathMatcher = fileAbsolutePathPattern.matcher(containedFile.getAbsolutePath());
+                    if (fileAbsolutePathMatcher.matches()) {
+                        foundFiles.add(containedFile);
+                    }
+                }            
+            }
+            return foundFiles;
+        }
+        
+    }
     
     /**
      * The {@link File} denoting the source plug-in of all core {@link LanguageElement}s created by instances of this
@@ -77,8 +164,9 @@ public class CoreLanguageElementCreator extends AbstractLanguageElementCreator {
         createParameterTypes(ElementType.ARTIFACT_PARAMETER_TYPE, JAVA_CLASSES_FOR_ARTIFACT_PARAMETER_TYPES);
         createParameterTypes(ElementType.FRAGMENT_PARAMETER_TYPE, JAVA_CLASSES_FOR_FRAGMENT_PARAMETER_TYPES);
         
-        createCalls(JAVA_CLASSES_FOR_ARTIFACT_PARAMETER_TYPES);
-        createCalls(JAVA_CLASSES_FOR_FRAGMENT_PARAMETER_TYPES);
+        createCalls(JAVA_CLASSES_FOR_ARTIFACT_PARAMETER_TYPES, true);
+        createCalls(JAVA_CLASSES_FOR_FRAGMENT_PARAMETER_TYPES, true);
+        createCalls(CoreOperations.class, false);
     }
     
     /**
@@ -103,10 +191,13 @@ public class CoreLanguageElementCreator extends AbstractLanguageElementCreator {
      * the given array and adds it to the {@link LanguageRegistry}.
      * 
      * @param sourceClasses the array of source {@link Class}es from which the {@link Call}s are extracted
+     * @param sourceClassAsParentParameterType <code>true</code>, if the given source classes represent the parent
+     *        parameter type of the calls created based on their methods such that these calls become member operations;
+     *        <code>false</code> otherwise
      */
-    private void createCalls(Class<?>[] sourceClasses) {
+    private void createCalls(Class<?>[] sourceClasses, boolean sourceClassAsParentParameterType) {
         for (int i = 0; i < sourceClasses.length; i++) {
-            createCalls(sourceClasses[i]);
+            createCalls(sourceClasses[i], sourceClassAsParentParameterType);
         }
     }
     
@@ -116,41 +207,60 @@ public class CoreLanguageElementCreator extends AbstractLanguageElementCreator {
      * and adds it to the {@link LanguageRegistry}.
      * 
      * @param sourceClass the source {@link Class} from which the {@link Call}s are extracted
+     * @param sourceClassAsParentParameterType <code>true</code>, if the given source class represents the parent
+     *        parameter type of the created call such that the call becomes a member operation; <code>false</code>
+     *        otherwise
      */
-    private void createCalls(Class<?> sourceClass) {
+    private void createCalls(Class<?> sourceClass, boolean sourceClassAsParentParameterType) {
         Method[] sourceMethods = sourceClass.getDeclaredMethods();
         Method sourceMethod;
-        Parameter[] methodParameters;
-        String[] callParameters = null;
         for (int i = 0; i < sourceMethods.length; i++) {
             sourceMethod = sourceMethods[i];
             if (sourceMethod.getExceptionTypes().length == 0 
                     && Modifier.isPublic(sourceMethod.getModifiers()) 
                     && !Modifier.isStatic(sourceMethod.getModifiers())) {
-                try {
-                    Call call = new Call(ElementType.OPERATION, sourceMethod.getName(), sourceMethod, sourceClass,
-                            SOURCE_PLUGIN);
-                    methodParameters = sourceMethod.getParameters();
-                    callParameters = new String[methodParameters.length];                
-                    for (int j = 0; j < methodParameters.length; j++) {
-                        callParameters[j] = createLanguageElementName(
-                                methodParameters[j].getParameterizedType().getTypeName(), "");
-                    }
-                    finalizeCall(call, sourceMethod.getGenericReturnType().getTypeName(), callParameters,
-                            sourceClass.getSimpleName());                    
-                } catch (LanguageElementException e) {
-                    /*
-                     * There may be methods that return or use types, which are not available as parameter types in this
-                     * language. In such a case, the call creation fails, which is not a hard error, but accepted.
-                     * Hence, only inform about such methods, but do not abort the entire process
-                     */
-                    // TODO how to report?
-                    System.err.println("Creating " + ElementType.OPERATION + " based on method \"" 
-                            + sourceMethod.getName() + "\" in class \"" + sourceClass.getSimpleName() 
-                            + "\" of plug-in \"" + SOURCE_PLUGIN.getAbsolutePath() + "\" failed: " 
-                            + e.getLocalizedMessage());
-                }
+                createCall(sourceMethod, sourceClass, sourceClassAsParentParameterType);
             }
+        }
+    }
+    
+    /**
+     * Creates a new {@link Call} of the type {@link ElementType#OPERATION} for the given {@link Method} declared by the
+     * given {@link Class} and adds it to the {@link LanguageRegistry}.
+     * 
+     * @param sourceMethod the {@link Method} for which a corresponding {@link Call} should be created
+     * @param sourceClass the source {@link Class} of the given source method
+     * @param sourceClassAsParentParameterType <code>true</code>, if the given source class represents the parent
+     *        parameter type of the created call such that the call becomes a member operation; <code>false</code>
+     *        otherwise
+     */
+    private void createCall(Method sourceMethod, Class<?> sourceClass, boolean sourceClassAsParentParameterType) {
+        try {
+            Call call = new Call(ElementType.OPERATION, sourceMethod.getName(), sourceMethod, sourceClass,
+                    SOURCE_PLUGIN);
+            String returnType = createLanguageElementName(sourceMethod.getGenericReturnType().getTypeName(), "");
+            Parameter[] methodParameters = sourceMethod.getParameters();
+            String[] callParameters = new String[methodParameters.length];                
+            for (int j = 0; j < methodParameters.length; j++) {
+                callParameters[j] = createLanguageElementName(
+                        methodParameters[j].getParameterizedType().getTypeName(), "");
+            }
+            if (sourceClassAsParentParameterType) {                
+                finalizeCall(call, returnType, callParameters, sourceClass.getSimpleName());                    
+            } else {
+                finalizeCall(call, returnType, callParameters, null);
+            }
+        } catch (LanguageElementException e) {
+            /*
+             * There may be methods that return or use types, which are not available as parameter types in this
+             * language. In such a case, the call creation fails, which is not a hard error, but accepted.
+             * Hence, only inform about such methods, but do not abort the entire process
+             */
+            // TODO how to report?
+            System.err.println("Creating " + ElementType.OPERATION + " based on method \"" 
+                    + sourceMethod.getName() + "\" in class \"" + sourceClass.getSimpleName() 
+                    + "\" of plug-in \"" + SOURCE_PLUGIN.getAbsolutePath() + "\" failed: " 
+                    + e.getLocalizedMessage());
         }
     }
     
