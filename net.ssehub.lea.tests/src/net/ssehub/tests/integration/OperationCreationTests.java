@@ -23,9 +23,9 @@ import org.junit.runners.Parameterized.Parameters;
 
 import net.ssehub.integration.Call;
 import net.ssehub.integration.ElementType;
-import net.ssehub.integration.ExternalElementException;
+import net.ssehub.integration.ExternalLanguageElementCreator;
 import net.ssehub.integration.LanguageElement;
-import net.ssehub.integration.LanguageElementCreator;
+import net.ssehub.integration.LanguageElementException;
 import net.ssehub.integration.LanguageRegistry;
 import net.ssehub.integration.ParameterType;
 import net.ssehub.integration.ParameterTypeInstance;
@@ -33,7 +33,7 @@ import net.ssehub.integration.annotations.Operation;
 
 /**
  * This class contains unit tests for the correct creation of {@link Call}s of the type {@link ElementType#OPERATION} by
- * the {@link LanguageElementCreator}.
+ * the {@link ExternalLanguageElementCreator}.
  * 
  * @author Christian Kroeher
  *
@@ -43,8 +43,8 @@ public class OperationCreationTests extends AbstractCallCreationTest {
     /**
      * This class defines a single method for testing the creation of a corresponding {@link Call} of the type 
      * {@link ElementType#OPERATION}. This method is annotated with the {@link Operation} annotation without any further
-     * parameters. Hence the {@link LanguageElementCreator} should create a {@link Call} with the name, return type, and
-     * parameters as defined by the method. However, the return type of this method is <code>void</code>.
+     * parameters. Hence the {@link ExternalLanguageElementCreator} should create a {@link Call} with the name, return
+     * type, and parameters as defined by the method. However, the return type of this method is <code>void</code>.
      * 
      * @author Christian Kroeher
      *
@@ -61,8 +61,8 @@ public class OperationCreationTests extends AbstractCallCreationTest {
     /**
      * This class defines a single method for testing the creation of a corresponding {@link Call} of the type 
      * {@link ElementType#OPERATION}. This method is annotated with the {@link Operation} annotation without any further
-     * parameters. Hence, the {@link LanguageElementCreator} should create a {@link Call} with the name, return type,
-     * and parameters as defined by the method.
+     * parameters. Hence, the {@link ExternalLanguageElementCreator} should create a {@link Call} with the name, return
+     * type, and parameters as defined by the method.
      * 
      * @author Christian Kroeher
      *
@@ -83,8 +83,8 @@ public class OperationCreationTests extends AbstractCallCreationTest {
     /**
      * This class defines a single method for testing the creation of a corresponding {@link Call} of the type 
      * {@link ElementType#OPERATION}. This method is annotated with the {@link Operation} annotation without any further
-     * parameters. Hence, the {@link LanguageElementCreator} should create a {@link Call} with the name, return type,
-     * and parameters as defined by the method.
+     * parameters. Hence, the {@link ExternalLanguageElementCreator} should create a {@link Call} with the name, return
+     * type, and parameters as defined by the method.
      * 
      * @author Christian Kroeher
      *
@@ -106,8 +106,8 @@ public class OperationCreationTests extends AbstractCallCreationTest {
     /**
      * This class defines a single method for testing the creation of a corresponding {@link Call} of the type 
      * {@link ElementType#OPERATION}. This method is annotated with the {@link Operation} annotation without any further
-     * parameters. Hence, the {@link LanguageElementCreator} should create a {@link Call} with the name, return type,
-     * and parameters as defined by the method.
+     * parameters. Hence, the {@link ExternalLanguageElementCreator} should create a {@link Call} with the name, return
+     * type, and parameters as defined by the method.
      * 
      * @author Christian Kroeher
      *
@@ -130,8 +130,8 @@ public class OperationCreationTests extends AbstractCallCreationTest {
     /**
      * This class defines a single method for testing the creation of a corresponding {@link Call} of the type 
      * {@link ElementType#OPERATION}. This method is annotated with the {@link Operation} annotation without any further
-     * parameters. Hence, the {@link LanguageElementCreator} should create a {@link Call} with the name, return type,
-     * and parameters as defined by the method.
+     * parameters. Hence, the {@link ExternalLanguageElementCreator} should create a {@link Call} with the name, return
+     * type, and parameters as defined by the method.
      * 
      * @author Christian Kroeher
      *
@@ -153,8 +153,8 @@ public class OperationCreationTests extends AbstractCallCreationTest {
     /**
      * This class defines a single method for testing the creation of a corresponding {@link Call} of the type 
      * {@link ElementType#OPERATION}. This method is annotated with the {@link Operation} annotation without any further
-     * parameters. Hence, the {@link LanguageElementCreator} should create a {@link Call} with the name, return type,
-     * and parameters as defined by the method.
+     * parameters. Hence, the {@link ExternalLanguageElementCreator} should create a {@link Call} with the name, return
+     * type, and parameters as defined by the method.
      * 
      * @author Christian Kroeher
      *
@@ -176,8 +176,8 @@ public class OperationCreationTests extends AbstractCallCreationTest {
     /**
      * This class defines a single method for testing the creation of a corresponding {@link Call} of the type 
      * {@link ElementType#OPERATION}. This method is annotated with the {@link Operation} annotation without any further
-     * parameters. Hence, the {@link LanguageElementCreator} should create a {@link Call} with the name, return type,
-     * and parameters as defined by the method.
+     * parameters. Hence, the {@link ExternalLanguageElementCreator} should create a {@link Call} with the name, return
+     * type, and parameters as defined by the method.
      * 
      * @author Christian Kroeher
      *
@@ -202,8 +202,8 @@ public class OperationCreationTests extends AbstractCallCreationTest {
     /**
      * This class defines a single method for testing the creation of a corresponding {@link Call} of the type 
      * {@link ElementType#OPERATION}. This method is annotated with the {@link Operation} annotation without any further
-     * parameters. Hence, the {@link LanguageElementCreator} should create a {@link Call} with the name, return type,
-     * and parameters as defined by the method.
+     * parameters. Hence, the {@link ExternalLanguageElementCreator} should create a {@link Call} with the name, return
+     * type, and parameters as defined by the method.
      * 
      * @author Christian Kroeher
      *
@@ -224,8 +224,8 @@ public class OperationCreationTests extends AbstractCallCreationTest {
     /**
      * This class defines a single method for testing the creation of a corresponding {@link Call} of the type 
      * {@link ElementType#OPERATION}. This method is annotated with the {@link Operation} annotation without any further
-     * parameters. Hence, the {@link LanguageElementCreator} should create a {@link Call} with the name, return type,
-     * and parameters as defined by the method.
+     * parameters. Hence, the {@link ExternalLanguageElementCreator} should create a {@link Call} with the name, return
+     * type, and parameters as defined by the method.
      * 
      * @author Christian Kroeher
      *
@@ -246,8 +246,8 @@ public class OperationCreationTests extends AbstractCallCreationTest {
     /**
      * This class defines a single method for testing the creation of a corresponding {@link Call} of the type 
      * {@link ElementType#OPERATION}. This method is annotated with the {@link Operation} annotation with a custom name.
-     * Hence, the {@link LanguageElementCreator} should create a {@link Call} with the custom name, but uses the return
-     * type and parameters as defined by the method.
+     * Hence, the {@link ExternalLanguageElementCreator} should create a {@link Call} with the custom name, but uses the
+     * return type and parameters as defined by the method.
      * 
      * @author Christian Kroeher
      *
@@ -268,8 +268,8 @@ public class OperationCreationTests extends AbstractCallCreationTest {
     /**
      * This class defines a single method for testing the creation of a corresponding {@link Call} of the type 
      * {@link ElementType#OPERATION}. This method is annotated with the {@link Operation} annotation with a custom
-     * return type. Hence, the {@link LanguageElementCreator} should create a {@link Call} with the custom return type,
-     * but uses the name and parameters as defined by the method.
+     * return type. Hence, the {@link ExternalLanguageElementCreator} should create a {@link Call} with the custom
+     * return type, but uses the name and parameters as defined by the method.
      * 
      * @author Christian Kroeher
      *
@@ -290,8 +290,8 @@ public class OperationCreationTests extends AbstractCallCreationTest {
     /**
      * This class defines a single method for testing the creation of a corresponding {@link Call} of the type 
      * {@link ElementType#OPERATION}. This method is annotated with the {@link Operation} annotation with a custom name
-     * and return type. Hence, the {@link LanguageElementCreator} should create a {@link Call} with the custom name and
-     * return type, but uses the parameters as defined by the method.
+     * and return type. Hence, the {@link ExternalLanguageElementCreator} should create a {@link Call} with the custom
+     * name and return type, but uses the parameters as defined by the method.
      * 
      * @author Christian Kroeher
      *
@@ -312,8 +312,8 @@ public class OperationCreationTests extends AbstractCallCreationTest {
     /**
      * This class defines a single method for testing the creation of a corresponding {@link Call} of the type 
      * {@link ElementType#OPERATION}. This method is annotated with the {@link Operation} annotation with custom
-     * parameters. Hence, the {@link LanguageElementCreator} should not create any language element, but throws an 
-     * {@link ExternalElementException} as the method does not define any parameters.
+     * parameters. Hence, the {@link ExternalLanguageElementCreator} should not create any language element, but throws
+     * a {@link LanguageElementException} as the method does not define any parameters.
      * 
      * @author Christian Kroeher
      *
@@ -334,8 +334,8 @@ public class OperationCreationTests extends AbstractCallCreationTest {
     /**
      * This class defines a single method for testing the creation of a corresponding {@link Call} of the type 
      * {@link ElementType#OPERATION}. This method is annotated with the {@link Operation} annotation with custom
-     * parameters. Hence, the {@link LanguageElementCreator} should create a {@link Call} with the custom parameters,
-     * but uses the name and return type as defined by the method.
+     * parameters. Hence, the {@link ExternalLanguageElementCreator} should create a {@link Call} with the custom
+     * parameters, but uses the name and return type as defined by the method.
      * 
      * @author Christian Kroeher
      *
@@ -357,8 +357,8 @@ public class OperationCreationTests extends AbstractCallCreationTest {
     /**
      * This class defines a single method for testing the creation of a corresponding {@link Call} of the type 
      * {@link ElementType#OPERATION}. This method is annotated with the {@link Operation} annotation with custom
-     * parameters. Hence, the {@link LanguageElementCreator} should not create any language element, but throws an 
-     * {@link ExternalElementException} as the method does not define as much parameters as the custom ones.
+     * parameters. Hence, the {@link ExternalLanguageElementCreator} should not create any language element, but throws
+     * a {@link LanguageElementException} as the method does not define as much parameters as the custom ones.
      * 
      * @author Christian Kroeher
      *
@@ -380,8 +380,8 @@ public class OperationCreationTests extends AbstractCallCreationTest {
     /**
      * This class defines a single method for testing the creation of a corresponding {@link Call} of the type 
      * {@link ElementType#OPERATION}. This method is annotated with the {@link Operation} annotation with custom
-     * parameters. Hence, the {@link LanguageElementCreator} should create a {@link Call} with the custom parameters,
-     * but uses the name and return type as defined by the method.
+     * parameters. Hence, the {@link ExternalLanguageElementCreator} should create a {@link Call} with the custom
+     * parameters, but uses the name and return type as defined by the method.
      * 
      * @author Christian Kroeher
      *
@@ -404,8 +404,8 @@ public class OperationCreationTests extends AbstractCallCreationTest {
     /**
      * This class defines a single method for testing the creation of a corresponding {@link Call} of the type 
      * {@link ElementType#OPERATION}. This method is annotated with the {@link Operation} annotation with custom
-     * parameters. Hence, the {@link LanguageElementCreator} should not create any language element, but throws an 
-     * {@link ExternalElementException} as the method defines more parameters as the custom ones.
+     * parameters. Hence, the {@link ExternalLanguageElementCreator} should not create any language element, but throws
+     * a {@link LanguageElementException} as the method defines more parameters as the custom ones.
      * 
      * @author Christian Kroeher
      *
@@ -489,10 +489,10 @@ public class OperationCreationTests extends AbstractCallCreationTest {
      * The expected results for each input {@link Class} defined as inner class of this class. Each entry has the
      * following elements:
      * <ul>
-     * <li>The {@link Class} used as an input to the {@link LanguageElementCreator} for creating a 
+     * <li>The {@link Class} used as an input to the {@link ExternalLanguageElementCreator} for creating a 
      *     {@link LanguageElement} based on the information of that class
      * </li>
-     * <li>The {@link ExternalElementException} expected to be thrown during the creation of a {@link LanguageElement};
+     * <li>The {@link LanguageElementException} expected to be thrown during the creation of a {@link LanguageElement};
      *     a value of <code>null</code> indicates that throwing an exception was not expected
      * </li>
      * <li>The declaration of whether it is expected that the created {@link LanguageElement} is not <code>null</code>
@@ -597,7 +597,7 @@ public class OperationCreationTests extends AbstractCallCreationTest {
             ClassIntroducingFileReturnWithCustomNameAndReturnTypeOperation.class, SOURCE_PLUGIN, fileObjectInstance,
             null, ClassIntroducingFileReturnWithCustomNameAndReturnTypeOperation.class.getMethods()[0]},
         
-        {ClassIntroducingFileReturnWithIncorrectCustomParametersOperation.class, new ExternalElementException(""),
+        {ClassIntroducingFileReturnWithIncorrectCustomParametersOperation.class, new LanguageElementException(""),
             false, null, null, null, null, null, null, null, null, null},
         
         {ClassIntroducingFileReturnWithSingleCustomParameterOperation.class, null, true, Call.class,
@@ -608,7 +608,7 @@ public class OperationCreationTests extends AbstractCallCreationTest {
             new ParameterTypeInstance[] {fileObjectInstance},
             ClassIntroducingFileReturnWithSingleCustomParameterOperation.class.getMethods()[0]},
         
-        {ClassIntroducingFileReturnWithTooManyCustomParametersOperation.class, new ExternalElementException(""),
+        {ClassIntroducingFileReturnWithTooManyCustomParametersOperation.class, new LanguageElementException(""),
             false, null, null, null, null, null, null, null, null, null},
         
         {ClassIntroducingFileReturnWithMultipleCustomParametersOperation.class, null, true, Call.class,
@@ -619,16 +619,16 @@ public class OperationCreationTests extends AbstractCallCreationTest {
             new ParameterTypeInstance[] {fileObjectInstance, prefixInstance},
             ClassIntroducingFileReturnWithMultipleCustomParametersOperation.class.getMethods()[0]},
         
-        {ClassIntroducingFileReturnWithTooFewCustomParametersOperation.class, new ExternalElementException(""),
+        {ClassIntroducingFileReturnWithTooFewCustomParametersOperation.class, new LanguageElementException(""),
             false, null, null, null, null, null, null, null, null, null}
     };
 
     /**
      * Constructs a new {@link OperationCreationTests} instance.
      * 
-     * @param testInputClass the {@link Class} used as an input to the {@link LanguageElementCreator} for creating a
-     *        {@link LanguageElement} based on the information of that class
-     * @param expectedException the {@link ExternalElementException} expected to be thrown during the creation of a 
+     * @param testInputClass the {@link Class} used as an input to the {@link ExternalLanguageElementCreator} for
+     *        creating a {@link LanguageElement} based on the information of that class
+     * @param expectedException the {@link LanguageElementException} expected to be thrown during the creation of a 
      *        {@link LanguageElement}; a value of <code>null</code> indicates that throwing an exception was not 
      *        expected
      * @param expectedElementsExistence the declaration of whether it is expected that the created
@@ -647,7 +647,7 @@ public class OperationCreationTests extends AbstractCallCreationTest {
      * @param expectedSourceMethod the expected {@link Method} from where this call was created
      */
 //CHECKSTYLE:OFF
-    public OperationCreationTests(Class<?> testInputClass, ExternalElementException expectedException,
+    public OperationCreationTests(Class<?> testInputClass, LanguageElementException expectedException,
             boolean expectedElementsExistence, Class<?> expectedElementClass, ElementType expectedElementType,
             String expectedElementName, String expectedElementFullyQualifiedName, Class<?> expectedElementSourceClass,
             File expectedElementSourcePlugin, ParameterTypeInstance expectedReturnType,

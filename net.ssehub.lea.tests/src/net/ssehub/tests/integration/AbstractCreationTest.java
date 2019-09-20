@@ -17,11 +17,11 @@ package net.ssehub.tests.integration;
 import java.io.File;
 
 import net.ssehub.integration.LanguageElement;
-import net.ssehub.integration.LanguageElementCreator;
+import net.ssehub.integration.ExternalLanguageElementCreator;
 
 /**
  * This abstract class provides common attributes and methods for testing the creation of {@link LanguageElement}s by
- * the {@link LanguageElementCreator}.
+ * the {@link ExternalLanguageElementCreator}.
  * 
  * @author Christian Kroeher
  *
@@ -36,15 +36,15 @@ public abstract class AbstractCreationTest {
     protected static final File SOURCE_PLUGIN = new File("./");
     
     /**
-     * The {@link LanguageElementCreator} for testing the correct creation of {@link LanguageElement}s.
+     * The {@link ExternalLanguageElementCreator} for testing the correct creation of {@link LanguageElement}s.
      */
-    protected LanguageElementCreator elementCreator;
+    protected ExternalLanguageElementCreator elementCreator;
     
     /**
      * Construct a new {@link AbstractCreationTest} instance.
      */
     protected AbstractCreationTest() {
-        elementCreator = new LanguageElementCreator();
+        elementCreator = new ExternalLanguageElementCreator();
     }
 
 }

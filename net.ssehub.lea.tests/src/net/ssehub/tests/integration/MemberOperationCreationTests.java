@@ -27,9 +27,9 @@ import org.junit.runners.Parameterized.Parameters;
 
 import net.ssehub.integration.Call;
 import net.ssehub.integration.ElementType;
-import net.ssehub.integration.ExternalElementException;
+import net.ssehub.integration.ExternalLanguageElementCreator;
 import net.ssehub.integration.LanguageElement;
-import net.ssehub.integration.LanguageElementCreator;
+import net.ssehub.integration.LanguageElementException;
 import net.ssehub.integration.LanguageRegistry;
 import net.ssehub.integration.ParameterType;
 import net.ssehub.integration.ParameterTypeInstance;
@@ -37,9 +37,9 @@ import net.ssehub.integration.annotations.Operation;
 
 /**
  * This class contains unit tests for the correct creation of {@link Call}s of the type {@link ElementType#OPERATION} as
- * member operations by the {@link LanguageElementCreator}. As {@link OperationCreationTests} already cover the generic
- * operation properties, tests in this class as well as corresponding test data focuses on member operation properties
- * only.
+ * member operations by the {@link ExternalLanguageElementCreator}. As {@link OperationCreationTests} already cover the
+ * generic operation properties, tests in this class as well as corresponding test data focuses on member operation
+ * properties only.
  * 
  * @author Christian Kroeher
  *
@@ -49,8 +49,8 @@ public class MemberOperationCreationTests extends AbstractCallCreationTest {
     /**
      * This class defines a single method for testing the creation of a corresponding {@link Call} of the type 
      * {@link ElementType#OPERATION} as a member operation. This method is annotated with the {@link Operation} 
-     * annotation with a <code>isMemberOf</code> declaration. Hence, the {@link LanguageElementCreator} should create a 
-     * {@link Call} that is a member operation for the {@link ParameterType} defined by that declaration.
+     * annotation with a <code>isMemberOf</code> declaration. Hence, the {@link ExternalLanguageElementCreator} should
+     * create a {@link Call} that is a member operation for the {@link ParameterType} defined by that declaration.
      * 
      * @author Christian Kroeher
      *
@@ -71,8 +71,8 @@ public class MemberOperationCreationTests extends AbstractCallCreationTest {
     /**
      * This class defines a single method for testing the creation of a corresponding {@link Call} of the type 
      * {@link ElementType#OPERATION}, but not as a member operation. This method is annotated with the {@link Operation}
-     * annotation without a <code>isMemberOf</code> declaration. Hence, the {@link LanguageElementCreator} should create
-     * a general {@link Call} that is not a member operation.
+     * annotation without a <code>isMemberOf</code> declaration. Hence, the {@link ExternalLanguageElementCreator}
+     * should create a general {@link Call} that is not a member operation.
      * 
      * @author Christian Kroeher
      *
@@ -114,10 +114,10 @@ public class MemberOperationCreationTests extends AbstractCallCreationTest {
      * The expected results for each input {@link Class} defined as inner class of this class. Each entry has the
      * following elements:
      * <ul>
-     * <li>The {@link Class} used as an input to the {@link LanguageElementCreator} for creating a 
+     * <li>The {@link Class} used as an input to the {@link ExternalLanguageElementCreator} for creating a 
      *     {@link LanguageElement} based on the information of that class
      * </li>
-     * <li>The {@link ExternalElementException} expected to be thrown during the creation of a {@link LanguageElement};
+     * <li>The {@link LanguageElementException} expected to be thrown during the creation of a {@link LanguageElement};
      *     a value of <code>null</code> indicates that throwing an exception was not expected
      * </li>
      * <li>The declaration of whether it is expected that the created {@link LanguageElement} is not <code>null</code>
@@ -192,9 +192,9 @@ public class MemberOperationCreationTests extends AbstractCallCreationTest {
     /**
      * Constructs a new {@link MemberOperationCreationTests} instance.
      * 
-     * @param testInputClass the {@link Class} used as an input to the {@link LanguageElementCreator} for creating a
-     *        {@link LanguageElement} based on the information of that class
-     * @param expectedException the {@link ExternalElementException} expected to be thrown during the creation of a 
+     * @param testInputClass the {@link Class} used as an input to the {@link ExternalLanguageElementCreator} for
+     *        creating a {@link LanguageElement} based on the information of that class
+     * @param expectedException the {@link LanguageElementException} expected to be thrown during the creation of a 
      *        {@link LanguageElement}; a value of <code>null</code> indicates that throwing an exception was not 
      *        expected
      * @param expectedElementsExistence the declaration of whether it is expected that the created
@@ -219,7 +219,7 @@ public class MemberOperationCreationTests extends AbstractCallCreationTest {
      *        is a member operation
      */
 //CHECKSTYLE:OFF
-    public MemberOperationCreationTests(Class<?> testInputClass, ExternalElementException expectedException,
+    public MemberOperationCreationTests(Class<?> testInputClass, LanguageElementException expectedException,
             boolean expectedElementsExistence, Class<?> expectedElementClass, ElementType expectedElementType,
             String expectedElementName, String expectedElementFullyQualifiedName, Class<?> expectedElementSourceClass,
             File expectedElementSourcePlugin, ParameterTypeInstance expectedReturnType,

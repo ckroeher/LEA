@@ -25,14 +25,14 @@ import org.junit.Test;
 
 import net.ssehub.integration.Call;
 import net.ssehub.integration.ElementType;
-import net.ssehub.integration.ExternalElementException;
+import net.ssehub.integration.ExternalLanguageElementCreator;
 import net.ssehub.integration.LanguageElement;
-import net.ssehub.integration.LanguageElementCreator;
+import net.ssehub.integration.LanguageElementException;
 import net.ssehub.integration.ParameterTypeInstance;
 
 /**
  * This abstract class contains common attributes and unit tests for the creation of {@link Call}s by the 
- * {@link LanguageElementCreator}. The unit tests check the common properties of any {@link Call}, while
+ * {@link ExternalLanguageElementCreator}. The unit tests check the common properties of any {@link Call}, while
  * other classes have to extend this class to actually apply the tests as well as extending them by unit tests, that
  * check properties of specific call types, like operation, extractor, or analysis calls. 
  * 
@@ -76,9 +76,9 @@ public abstract class AbstractCallCreationTest extends AbstractLanguageElementCr
     /**
      * Constructs a new {@link AbstractCallCreationTest} instance.
      * 
-     * @param testInputClass the {@link Class} used as an input to the {@link LanguageElementCreator} for creating a
-     *        {@link LanguageElement} based on the information of that class
-     * @param expectedException the {@link ExternalElementException} expected to be thrown during the creation of a 
+     * @param testInputClass the {@link Class} used as an input to the {@link ExternalLanguageElementCreator} for
+     *        creating a {@link LanguageElement} based on the information of that class
+     * @param expectedException the {@link LanguageElementException} expected to be thrown during the creation of a 
      *        {@link LanguageElement}; a value of <code>null</code> indicates that throwing an exception was not 
      *        expected
      * @param expectedElementsExistence the declaration of whether it is expected that the created
@@ -97,7 +97,7 @@ public abstract class AbstractCallCreationTest extends AbstractLanguageElementCr
      * @param expectedSourceMethod the expected {@link Method} from where this call was created
      */
 //CHECKSTYLE:OFF
-    public AbstractCallCreationTest(Class<?> testInputClass, ExternalElementException expectedException,
+    public AbstractCallCreationTest(Class<?> testInputClass, LanguageElementException expectedException,
             boolean expectedElementsExistence, Class<?> expectedElementClass, ElementType expectedElementType,
             String expectedElementName, String expectedElementFullyQualifiedName, Class<?> expectedElementSourceClass,
             File expectedElementSourcePlugin, ParameterTypeInstance expectedReturnType,

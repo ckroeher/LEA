@@ -23,9 +23,9 @@ import org.junit.runners.Parameterized.Parameters;
 
 import net.ssehub.integration.Call;
 import net.ssehub.integration.ElementType;
-import net.ssehub.integration.ExternalElementException;
+import net.ssehub.integration.ExternalLanguageElementCreator;
 import net.ssehub.integration.LanguageElement;
-import net.ssehub.integration.LanguageElementCreator;
+import net.ssehub.integration.LanguageElementException;
 import net.ssehub.integration.LanguageRegistry;
 import net.ssehub.integration.ParameterType;
 import net.ssehub.integration.ParameterTypeInstance;
@@ -33,7 +33,7 @@ import net.ssehub.integration.annotations.ExtractorCall;
 
 /**
  * This class contains unit tests for the correct creation of {@link Call}s of the type 
- * {@link ElementType#EXTRACTOR_CALL} by the {@link LanguageElementCreator}. As most of the 
+ * {@link ElementType#EXTRACTOR_CALL} by the {@link ExternalLanguageElementCreator}. As most of the 
  * {@link OperationCreationTests} already cover common call creation properties, this class only provides a few tests
  * specific to the extractor calls.
  * 
@@ -45,9 +45,10 @@ public class ExtractorCallCreationTests extends AbstractCallCreationTest {
     /**
      * This class defines a single method for testing the creation of a corresponding {@link Call} of the type 
      * {@link ElementType#EXTRACTOR_CALL}. This method is annotated with the {@link ExtractorCall} annotation without
-     * any further parameters. Hence, the {@link LanguageElementCreator} should not create any language element, but
-     * throws an {@link ExternalElementException} as the method defines <code>void</code> as return type without having
-     * defined a custom return type by the annotation. Extractor calls are expected to always return (a) fragment(s).
+     * any further parameters. Hence, the {@link ExternalLanguageElementCreator} should not create any language element,
+     * but throws an {@link LanguageElementException} as the method defines <code>void</code> as return type without
+     * having defined a custom return type by the annotation. Extractor calls are expected to always return (a)
+     * fragment(s).
      * 
      * @author Christian Kroeher
      *
@@ -64,8 +65,8 @@ public class ExtractorCallCreationTests extends AbstractCallCreationTest {
     /**
      * This class defines a single method for testing the creation of a corresponding {@link Call} of the type 
      * {@link ElementType#EXTRACTOR_CALL}. This method is annotated with the {@link ExtractorCall} annotation with a 
-     * custom return type. Hence the {@link LanguageElementCreator} should create a {@link Call} with the custom return
-     * type  and the name and parameters as defined by the method.
+     * custom return type. Hence the {@link ExternalLanguageElementCreator} should create a {@link Call} with the custom
+     * return type  and the name and parameters as defined by the method.
      * 
      * @author Christian Kroeher
      *
@@ -94,10 +95,10 @@ public class ExtractorCallCreationTests extends AbstractCallCreationTest {
      * The expected results for each input {@link Class} defined as inner class of this class. Each entry has the
      * following elements:
      * <ul>
-     * <li>The {@link Class} used as an input to the {@link LanguageElementCreator} for creating a 
+     * <li>The {@link Class} used as an input to the {@link ExternalLanguageElementCreator} for creating a 
      *     {@link LanguageElement} based on the information of that class
      * </li>
-     * <li>The {@link ExternalElementException} expected to be thrown during the creation of a {@link LanguageElement};
+     * <li>The {@link LanguageElementException} expected to be thrown during the creation of a {@link LanguageElement};
      *     a value of <code>null</code> indicates that throwing an exception was not expected
      * </li>
      * <li>The declaration of whether it is expected that the created {@link LanguageElement} is not <code>null</code>
@@ -117,7 +118,7 @@ public class ExtractorCallCreationTests extends AbstractCallCreationTest {
      * </ul>
      */
     private static final Object[][] EXPECTED_RESULTS = new Object[][] {
-        {ClassIntroducingVoidReturnExtractorCall.class, new ExternalElementException(""), false, null, null, null, null,
+        {ClassIntroducingVoidReturnExtractorCall.class, new LanguageElementException(""), false, null, null, null, null,
             null, null, null, null, null},
         
         {ClassIntroducingVoidReturnWithCustomReturnTypeExtractorCall.class, null, true, Call.class,
@@ -131,9 +132,9 @@ public class ExtractorCallCreationTests extends AbstractCallCreationTest {
     /**
      * Constructs a new {@link ExtractorCallCreationTests} instance.
      * 
-     * @param testInputClass the {@link Class} used as an input to the {@link LanguageElementCreator} for creating a
-     *        {@link LanguageElement} based on the information of that class
-     * @param expectedException the {@link ExternalElementException} expected to be thrown during the creation of a 
+     * @param testInputClass the {@link Class} used as an input to the {@link ExternalLanguageElementCreator} for
+     *        creating a {@link LanguageElement} based on the information of that class
+     * @param expectedException the {@link LanguageElementException} expected to be thrown during the creation of a 
      *        {@link LanguageElement}; a value of <code>null</code> indicates that throwing an exception was not 
      *        expected
      * @param expectedElementsExistence the declaration of whether it is expected that the created
@@ -152,7 +153,7 @@ public class ExtractorCallCreationTests extends AbstractCallCreationTest {
      * @param expectedSourceMethod the expected {@link Method} from where this call was created
      */
 //CHECKSTYLE:OFF
-    public ExtractorCallCreationTests(Class<?> testInputClass, ExternalElementException expectedException,
+    public ExtractorCallCreationTests(Class<?> testInputClass, LanguageElementException expectedException,
             boolean expectedElementsExistence, Class<?> expectedElementClass, ElementType expectedElementType,
             String expectedElementName, String expectedElementFullyQualifiedName, Class<?> expectedElementSourceClass,
             File expectedElementSourcePlugin, ParameterTypeInstance expectedReturnType,

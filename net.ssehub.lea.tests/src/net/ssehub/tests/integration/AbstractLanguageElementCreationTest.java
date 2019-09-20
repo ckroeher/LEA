@@ -28,9 +28,8 @@ import org.junit.runners.Parameterized;
 import net.ssehub.integration.Call;
 import net.ssehub.integration.ChangeIdentifier;
 import net.ssehub.integration.ElementType;
-import net.ssehub.integration.ExternalElementException;
+import net.ssehub.integration.ExternalLanguageElementCreator;
 import net.ssehub.integration.LanguageElement;
-import net.ssehub.integration.LanguageElementCreator;
 import net.ssehub.integration.LanguageElementException;
 import net.ssehub.integration.LanguageRegistry;
 import net.ssehub.integration.ParameterType;
@@ -38,9 +37,9 @@ import net.ssehub.integration.ParameterTypeInstance;
 
 /**
  * This abstract class contains common attributes and unit tests for the creation of language elements by the 
- * {@link LanguageElementCreator}. The unit tests check the common properties of any {@link LanguageElement}, while
- * other classes have to extend this class to actually apply the tests as well as extending them by unit tests, that
- * check properties of specific language elements. 
+ * {@link ExternalLanguageElementCreator}. The unit tests check the common properties of any {@link LanguageElement},
+ * while other classes have to extend this class to actually apply the tests as well as extending them by unit tests,
+ * that check properties of specific language elements. 
  * 
  * @author Christian Kroeher
  *
@@ -49,15 +48,15 @@ import net.ssehub.integration.ParameterTypeInstance;
 public abstract class AbstractLanguageElementCreationTest extends AbstractCreationTest {
     
     /**
-     * The expected number of created {@link LanguageElement}s by the {@link LanguageElementCreator}. This number is
-     * constantly <code>1</code> as the unit tests in this class as well as in any extending class are parameterized and
-     * test only one language element at a time.
+     * The expected number of created {@link LanguageElement}s by the {@link ExternalLanguageElementCreator}. This
+     * number is constantly <code>1</code> as the unit tests in this class as well as in any extending class are
+     * parameterized and test only one language element at a time.
      */
     private static final int EXPECTED_ELEMENTS_NUMBER = 1;
     
     /**
-     * The {@link LanguageElement} created by the {@link LanguageElementCreator} based on the current test input class.
-     * This attribute is only used in extending classes to define tests of specific element properties.
+     * The {@link LanguageElement} created by the {@link ExternalLanguageElementCreator} based on the current test input
+     * class. This attribute is only used in extending classes to define tests of specific element properties.
      */
     protected LanguageElement createdElement;
     
@@ -67,9 +66,9 @@ public abstract class AbstractLanguageElementCreationTest extends AbstractCreati
     private int actualNumberOfCreatedElements;
     
     /**
-     * The {@link ExternalElementException} actually thrown during the creation of a {@link LanguageElement}.
+     * The {@link LanguageElementException} actually thrown during the creation of a {@link LanguageElement}.
      */
-    private ExternalElementException actualException;
+    private LanguageElementException actualException;
     
     /**
      * The actual declaration of whether the created {@link LanguageElement} is not <code>null</code> 
@@ -109,10 +108,10 @@ public abstract class AbstractLanguageElementCreationTest extends AbstractCreati
     private File actualElementSourcePlugin;
     
     /**
-     * The {@link ExternalElementException} expected to be thrown during the creation of a {@link LanguageElement}. A
+     * The {@link LanguageElementException} expected to be thrown during the creation of a {@link LanguageElement}. A
      * value of <code>null</code> indicates that throwing an exception was not expected.
      */
-    private ExternalElementException expectedException;
+    private LanguageElementException expectedException;
     
     /**
      * The declaration of whether it is expected that the created {@link LanguageElement} is not <code>null</code> 
@@ -192,9 +191,9 @@ public abstract class AbstractLanguageElementCreationTest extends AbstractCreati
     /**
      * Constructs a new {@link AbstractLanguageElementCreationTest} instance.
      * 
-     * @param testInputClass the {@link Class} used as an input to the {@link LanguageElementCreator} for creating a
-     *        {@link LanguageElement} based on the information of that class
-     * @param expectedException the {@link ExternalElementException} expected to be thrown during the creation of a 
+     * @param testInputClass the {@link Class} used as an input to the {@link ExternalLanguageElementCreator} for
+     *        creating a {@link LanguageElement} based on the information of that class
+     * @param expectedException the {@link LanguageElementException} expected to be thrown during the creation of a 
      *        {@link LanguageElement}; a value of <code>null</code> indicates that throwing an exception was not 
      *        expected
      * @param expectedElementsExistence the declaration of whether it is expected that the created
@@ -209,7 +208,7 @@ public abstract class AbstractLanguageElementCreationTest extends AbstractCreati
      *        from which a {@link LanguageElement} was created
      */
 //CHECKSTYLE:OFF
-    public AbstractLanguageElementCreationTest(Class<?> testInputClass, ExternalElementException expectedException, 
+    public AbstractLanguageElementCreationTest(Class<?> testInputClass, LanguageElementException expectedException, 
             boolean expectedElementsExistence, Class<?> expectedElementClass, ElementType expectedElementType,
             String expectedElementName, String expectedElementFullyQualifiedName, Class<?> expectedElementSourceClass,
             File expectedElementSourcePlugin) {
@@ -258,7 +257,7 @@ public abstract class AbstractLanguageElementCreationTest extends AbstractCreati
             actualElementSourceClass = createdElement.getSourceClass();
             actualElementSourcePlugin = createdElement.getSourcePlugin();
             actualException = null;
-        } catch (ExternalElementException e) {
+        } catch (LanguageElementException e) {
             createdElement = null;
             actualElementsExistence = false;
             actualElementClass = null;
@@ -279,11 +278,11 @@ public abstract class AbstractLanguageElementCreationTest extends AbstractCreati
      * @param expectedElementType the expected {@link ElementType} of the created {@link LanguageElement} 
      * @param expectedElementFullyQualifiedName the expected fully-qualified name of the created {@link LanguageElement}
      * @return the {@link List} of created {@link LanguageElement}s or <code>null</code>, if no elements can be found
-     * @throws ExternalElementException if creating a language element failed; it is not thrown, if the given class does
+     * @throws LanguageElementException if creating a language element failed; it is not thrown, if the given class does
      *         not introduce any language elements
      */
     private List<LanguageElement> createLanguageElement(Class<?> testInputClass, ElementType expectedElementType,
-            String expectedElementFullyQualifiedName) throws ExternalElementException {
+            String expectedElementFullyQualifiedName) throws LanguageElementException {
         List<LanguageElement> createdElements = null;
         elementCreator.createLanguageElements(testInputClass, SOURCE_PLUGIN);
         elementCreator.finalizeCreations();

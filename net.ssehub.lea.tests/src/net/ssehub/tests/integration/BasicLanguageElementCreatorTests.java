@@ -20,14 +20,14 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.junit.Test;
 
-import net.ssehub.integration.ExternalElementException;
+import net.ssehub.integration.ExternalLanguageElementCreator;
 import net.ssehub.integration.LanguageElement;
-import net.ssehub.integration.LanguageElementCreator;
+import net.ssehub.integration.LanguageElementException;
 import net.ssehub.integration.annotations.ArtifactParameterType;
 
 /**
- * This class contains some basic unit tests for the {@link LanguageElementCreator}. In particular, the tests aim at the
- * correct throw of exceptions, if some of the parameters are <code>null</code>.
+ * This class contains some basic unit tests for the {@link ExternalLanguageElementCreator}. In particular, the tests
+ * aim at the correct throw of exceptions, if some of the parameters are <code>null</code>.
  * 
  * @author Christian Kroeher
  *
@@ -60,7 +60,7 @@ public class BasicLanguageElementCreatorTests extends AbstractCreationTest {
         try {
             elementCreator.createLanguageElements(null, SOURCE_PLUGIN);
             fail("Passing null as plug-in class should throw a null pointer exception");
-        } catch (ExternalElementException | NullPointerException e) {
+        } catch (LanguageElementException | NullPointerException e) {
             assertEquals(e.getClass(), NullPointerException.class, "Wrong exception thrown");
         }
     }
@@ -75,7 +75,7 @@ public class BasicLanguageElementCreatorTests extends AbstractCreationTest {
         try {
             elementCreator.createLanguageElements(SimpleArtifactParameterType.class, null);
             fail("Passing null as source plug-in should throw a null pointer exception");
-        } catch (ExternalElementException | NullPointerException e) {
+        } catch (LanguageElementException | NullPointerException e) {
             assertEquals(e.getClass(), NullPointerException.class, "Wrong exception thrown");
         }
     }
@@ -89,7 +89,7 @@ public class BasicLanguageElementCreatorTests extends AbstractCreationTest {
     public void testNullAsSourcePluginDuringNoElementIntroduction() {
         try {
             elementCreator.createLanguageElements(BasicLanguageElementCreatorTests.class, null);
-        } catch (ExternalElementException | NullPointerException e) {
+        } catch (LanguageElementException | NullPointerException e) {
             assertNull(e, "Exception thrown");
         }
     }
