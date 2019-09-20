@@ -16,7 +16,7 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.IWorkbenchPropertyPage;
 import org.eclipse.ui.dialogs.PropertyPage;
 
-import net.ssehub.integration.ExternalElementException;
+import net.ssehub.integration.LanguageElementException;
 import net.ssehub.integration.LanguageElementProvider;
 
 public class PropertiesPage extends PropertyPage implements IWorkbenchPropertyPage {
@@ -43,8 +43,8 @@ public class PropertiesPage extends PropertyPage implements IWorkbenchPropertyPa
 //        Config.INSTANCE.resetPluginSearchPaths(pluginPathsStringList); TODO
         LanguageElementProvider lep = new LanguageElementProvider();
         try {
-            lep.detectLanguageElements(pluginPathsStringList);
-        } catch (ExternalElementException e) {
+            lep.provideLanguageElements(pluginPathsStringList);
+        } catch (LanguageElementException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
