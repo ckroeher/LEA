@@ -101,9 +101,9 @@
 	<extension
 			point="org.eclipse.ui.propertyPages">
 		<page
-			class="net.ssehub.ui.LeaExecutableExtensionFactory:org.eclipse.xtext.ui.editor.preferences.LanguageRootPreferencePage"
+			class="net.ssehub.ui.properties.PropertiesPage"
 			id="net.ssehub.Lea"
-			name="Lea">
+			name="LEA">
 			<keywordReference id="net.ssehub.ui.keyword_Lea"/>
 			<enabledWhen>
 				<adapt type="org.eclipse.core.resources.IProject"/>
