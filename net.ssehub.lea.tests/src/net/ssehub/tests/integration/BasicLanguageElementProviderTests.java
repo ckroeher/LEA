@@ -50,7 +50,7 @@ public class BasicLanguageElementProviderTests {
     /**
      * The number of core {@link LanguageElement}s, which are always available in the {@link LanguageRegistry}.
      */
-    private static final int NUMBER_OF_CORE_LANGUAGE_ELEMENTS = 91;
+    private static final int NUMBER_OF_CORE_LANGUAGE_ELEMENTS = 93;
 
     /**
      * The {@link LanguageElementProvider} for testing the correct provision of {@link LanguageElement}s.
