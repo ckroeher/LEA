@@ -28,6 +28,10 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import net.ssehub.utilities.AbstractLogger;
+import net.ssehub.utilities.LoggerFactory;
+import net.ssehub.utilities.AbstractLogger.MessageType;
+
 /**
  * This class is responsible for providing the {@link LanguageElement}s to the {@link LanguageRegistry} by calling the
  * {@link CoreLanguageElementCreator} first and the {@link ExternalLanguageElementCreator} after creating the core
@@ -41,6 +45,11 @@ import java.util.zip.ZipInputStream;
 public class LanguageElementProvider {
     
     /**
+     * The identifier of this class, e.g. for printing messages.
+     */
+    private static final String ID = "LanguageElementProvider";
+    
+    /**
      * The file extension including "." of a Java archive file.
      */
     private static final String JAVA_ARCHIVE_FILE_EXTENSION = ".jar";
@@ -49,6 +58,11 @@ public class LanguageElementProvider {
      * The file extension including "." of a Java class file.
      */
     private static final String JAVA_CLASS_FILE_EXTENSION = ".class";
+    
+    /**
+     * The current logger to use for printing information.
+     */
+    private AbstractLogger logger = LoggerFactory.INSTANCE.getLogger();
     
     /**
      * The {@link CoreLanguageElementCreator} for creating the core {@link LanguageElement}s.
@@ -100,8 +114,8 @@ public class LanguageElementProvider {
                         detectLanguageElements(plugin, pluginUrls);
                     }
                 } else {
-                    // TODO Inform about invalid search path / plug-in directory
-                    System.out.println("Search path denotes not a valid directory: " + searchPath);
+                    logger.log(ID, "Skipping plug-in search path \"" + searchPath + "\"",
+                            "Search path does not denote a valid directory", MessageType.WARNING);
                 }
             }
             externalLanguageElementCreator.finalizeCreations();
@@ -114,9 +128,9 @@ public class LanguageElementProvider {
      * Extracts the classes of the given {@link File}, which is assumed to be a Java archive file
      * (<code>*.jar</code>-file), and passes them individually to the {@link ExternalLanguageElementCreator} for
      * {@link LanguageElement} creation. Note that, if the given plug-in could not be read or classes could not be
-     * loaded to detect language elements, the user will be informed by TODO. There is no further error propagation at
-     * this point, as this method is called for each plug-in individually and, hence, an error for one plug-in should
-     * not prevent reading other plug-ins.
+     * loaded to detect language elements, the user will be informed by the current {@link #logger}. There is no further
+     * error propagation at this point, as this method is called for each plug-in individually and, hence, an error for
+     * one plug-in should not prevent reading other plug-ins.
      * 
      * @param plugin the {@link File} denoting a Java archive file from which each class will be extracted and passed to
      *        the {@link ExternalLanguageElementCreator} for {@link LanguageElement} creation; should never be
@@ -151,11 +165,8 @@ public class LanguageElementProvider {
              * plug-in-specific problem, which should not influence or abort reading other plug-ins. Hence, we only
              * inform the user about not using the plug-in for which the exception is thrown. 
              */
-            /*
-             * TODO how to inform the user: print to console in DEBUG or in Error Log of the Eclipse instance?
-             * For now, simply print the stack trace.
-             */
-            e.printStackTrace();
+            logger.logException(ID, "Detecting language elements in plug-in \"" + plugin.getAbsolutePath() 
+                    + "\" failed", e);
         } 
     }
     

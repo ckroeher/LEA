@@ -23,6 +23,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.ssehub.utilities.AbstractLogger;
+import net.ssehub.utilities.LoggerFactory;
+
 /**
  * This class creates the core {@link LanguageElement}s that should always be available in the {@link LanguageRegistry}.
  * Each completely constructed {@link LanguageElement} is added to the {@link LanguageRegistry}.
@@ -116,6 +119,11 @@ public class CoreLanguageElementCreator extends AbstractLanguageElementCreator {
     }
     
     /**
+     * The identifier of this class, e.g. for printing messages.
+     */
+    private static final String ID = "CoreLanguageElementCreator";
+    
+    /**
      * The {@link File} denoting the source plug-in of all core {@link LanguageElement}s created by instances of this
      * class. This source plug-in is always this project/plug-in.
      */
@@ -144,6 +152,11 @@ public class CoreLanguageElementCreator extends AbstractLanguageElementCreator {
         double.class,
         String.class,
     };
+    
+    /**
+     * The current logger to use for printing information.
+     */
+    private AbstractLogger logger = LoggerFactory.INSTANCE.getLogger();
 
     /**
      * Constructs a new {@link CoreLanguageElementCreator} instance.
@@ -256,11 +269,9 @@ public class CoreLanguageElementCreator extends AbstractLanguageElementCreator {
              * language. In such a case, the call creation fails, which is not a hard error, but accepted.
              * Hence, only inform about such methods, but do not abort the entire process
              */
-            // TODO how to report?
-            System.err.println("Creating " + ElementType.OPERATION + " based on method \"" 
-                    + sourceMethod.getName() + "\" in class \"" + sourceClass.getSimpleName() 
-                    + "\" of plug-in \"" + SOURCE_PLUGIN.getAbsolutePath() + "\" failed: " 
-                    + e.getLocalizedMessage());
+            logger.logException(ID, "Creating " + ElementType.OPERATION + " based on method \"" + sourceMethod.getName()
+                    + "\" in class \"" + sourceClass.getSimpleName() + "\" of plug-in \""
+                    + SOURCE_PLUGIN.getAbsolutePath() + "\" failed", e);
         }
     }
     

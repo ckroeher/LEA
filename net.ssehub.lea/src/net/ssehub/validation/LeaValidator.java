@@ -39,6 +39,8 @@ import net.ssehub.lea.LeaPackage;
 import net.ssehub.lea.Operation;
 import net.ssehub.lea.Parameter;
 import net.ssehub.lea.ParameterList;
+import net.ssehub.utilities.AbstractLogger;
+import net.ssehub.utilities.LoggerFactory;
 
 /**
  * This class contains custom validation rules.
@@ -51,9 +53,19 @@ import net.ssehub.lea.ParameterList;
 public class LeaValidator extends AbstractLeaValidator {
     
     /**
+     * The identifier of this class, e.g. for printing messages.
+     */
+    private static final String ID = "LeaValidator";
+    
+    /**
      * The reference to the {@link LanguageRegistry}.
      */
     private static final LanguageRegistry LANGUAGE_REGISTRY = LanguageRegistry.INSTANCE;
+    
+    /**
+     * The current logger to use for printing information.
+     */
+    private AbstractLogger logger = LoggerFactory.INSTANCE.getLogger();
     
     /**
      * Checks the entire {@link AnalysisDefinition} for {@link ElementDeclaration}s, which have equal names. In such a
@@ -434,9 +446,7 @@ public class LeaValidator extends AbstractLeaValidator {
                     }
                 }
             } catch (LanguageElementException e) {
-                // TODO Where to put such error message?
-                System.err.println("Cannot create parameter type instance for parameter \"" + parameter + "\"");
-                e.printStackTrace();
+                logger.logException(ID, "Cannot create parameter type instance for parameter \"" + parameter + "\"", e);
             }
         }
         return parameterTypeInstance;
@@ -458,9 +468,7 @@ public class LeaValidator extends AbstractLeaValidator {
             try {
                 parameterTypeInstance = new ParameterTypeInstance(getParameterType(elementDeclaration), isSet);
             } catch (LanguageElementException e) {
-                // TODO Where to put such error message?
-                System.err.println("Cannot create parameter type instance for call in validator");
-                e.printStackTrace();
+                logger.logException(ID, "Cannot create parameter type instance for call", e);
             }
         }
         return parameterTypeInstance;
