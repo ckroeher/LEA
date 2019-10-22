@@ -467,8 +467,6 @@ public class LanguageRegistryGetCallTests extends AbstractLanguageRegistryTest {
                                 + " fully-qualified name");
     }
     
-    // TODO ####################################################
-    
     /**
      * Tests whether {@link LanguageRegistry#getCall(ElementType, String, ParameterType[])} returns the same value as 
      * {@link #expectedHasOperationBySimpleNameAndParameters} using {@link ElementType#OPERATION}, the simple name, and
