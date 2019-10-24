@@ -161,7 +161,7 @@ public class CoreLanguageElementCreator extends AbstractLanguageElementCreator {
     /**
      * Constructs a new {@link CoreLanguageElementCreator} instance.
      */
-    public CoreLanguageElementCreator() { }
+    protected CoreLanguageElementCreator() { }
     
     /**
      * Creates the core {@link LanguageElement}s based on the {@link #JAVA_CLASSES_FOR_ARTIFACT_PARAMETER_TYPES} and the

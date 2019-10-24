@@ -27,5 +27,6 @@ Export-Package: net.ssehub,
  net.ssehub.scoping,
  net.ssehub.serializer,
  net.ssehub.services,
+ net.ssehub.utilities,
  net.ssehub.validation
 Import-Package: org.apache.log4j

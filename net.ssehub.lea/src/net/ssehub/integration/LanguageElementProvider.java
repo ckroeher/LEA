@@ -65,11 +65,6 @@ public class LanguageElementProvider {
     private AbstractLogger logger = LoggerFactory.INSTANCE.getLogger();
     
     /**
-     * The {@link CoreLanguageElementCreator} for creating the core {@link LanguageElement}s.
-     */
-    private CoreLanguageElementCreator coreLanguageElementCreator;
-    
-    /**
      * The {@link ExternalLanguageElementCreator} for creating external {@link LanguageElement}s based on the detected
      * plug-ins and their classes.
      */
@@ -79,14 +74,13 @@ public class LanguageElementProvider {
      * Constructs a new {@link LanguageElementProvider}.
      */
     public LanguageElementProvider() {
-        coreLanguageElementCreator = new CoreLanguageElementCreator();
         // Use only one single instance for the creation of all elements due to the caching mechanism in the creator
         externalLanguageElementCreator = new ExternalLanguageElementCreator();
     }
     
     /**
-     * Provides the core {@link LanguageElement}s to the {@link LanguageRegistry} by calling the
-     * {@link CoreLanguageElementCreator}. If creating the core elements was successful, it detects all plug-ins
+     * Provides the core {@link LanguageElement}s to the {@link LanguageRegistry} by calling
+     * {@link #provideLanguageElements()}. If creating the core elements was successful, it detects all plug-ins
      * (<code>*.jar</code>-files) on each given search path (including sub-directories), extracts their classes, and
      * passes them individually to the {@link ExternalLanguageElementCreator}.<br>
      * <br>
@@ -102,7 +96,7 @@ public class LanguageElementProvider {
      */
     public void provideLanguageElements(List<String> searchPaths) throws LanguageElementException {
         LanguageRegistry.INSTANCE.clear();
-        coreLanguageElementCreator.createLanguageElements();
+        provideLanguageElements();
         if (searchPaths != null && !searchPaths.isEmpty()) {
             File pluginDirectory;
             for (String searchPath : searchPaths) {
@@ -122,6 +116,18 @@ public class LanguageElementProvider {
         } else {
             throw new LanguageElementException("No paths to search for plug-ins specified");
         }
+    }
+    
+    /**
+     * Provides the core {@link LanguageElement}s to the {@link LanguageRegistry} by calling the
+     * {@link CoreLanguageElementCreator}.
+     * 
+     * @throws LanguageElementException if creating a core {@link LanguageElement} or adding it to the 
+     *         {@link LanguageRegistry} failed
+     */
+    public void provideLanguageElements() throws LanguageElementException {
+        CoreLanguageElementCreator coreLanguageElementCreator = new CoreLanguageElementCreator();
+        coreLanguageElementCreator.createLanguageElements();
     }
     
     /**
