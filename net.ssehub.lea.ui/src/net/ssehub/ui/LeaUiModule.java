@@ -5,12 +5,41 @@ package net.ssehub.ui;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
+import net.ssehub.integration.LanguageElementException;
+import net.ssehub.integration.LanguageElementProvider;
+import net.ssehub.utilities.AbstractLogger;
+import net.ssehub.utilities.AbstractLogger.MessageType;
+import net.ssehub.utilities.LoggerFactory;
+
 /**
  * Use this class to register components to be used within the Eclipse IDE.
  */
 public class LeaUiModule extends AbstractLeaUiModule {
+    
+    /**
+     * The identifier of this class, e.g. for printing messages.
+     */
+    private static final String ID = "LeaUiModule";
+    
+    /**
+     * The current logger to use for printing information.
+     */
+    private AbstractLogger logger = LoggerFactory.INSTANCE.getLogger();
 
 	public LeaUiModule(AbstractUIPlugin plugin) {
 		super(plugin);
+		
+		try {
+		    logger.log(ID, "Calling language element provider to create core language elements", null,
+		            MessageType.DEBUG);
+		    provideLanguageElements();
+		} catch (LanguageElementException e) {
+		    logger.logException(ID, "Exception during creation of core language elements", e);
+		}
+	}
+	
+	private void provideLanguageElements() throws LanguageElementException {
+	    LanguageElementProvider languageElementProvider = new LanguageElementProvider();
+	    languageElementProvider.provideLanguageElements();
 	}
 }
