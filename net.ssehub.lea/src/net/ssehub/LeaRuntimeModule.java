@@ -3,9 +3,38 @@
  */
 package net.ssehub;
 
+import com.google.inject.Binder;
+
+import net.ssehub.integration.CoreLanguageElementCreator;
+import net.ssehub.integration.LanguageElementException;
+import net.ssehub.utilities.AbstractLogger;
+import net.ssehub.utilities.LoggerFactory;
+import net.ssehub.utilities.AbstractLogger.MessageType;
 
 /**
  * Use this class to register components to be used at runtime / without the Equinox extension registry.
  */
 public class LeaRuntimeModule extends AbstractLeaRuntimeModule {
+    
+    /**
+     * The identifier of this class, e.g. for printing messages.
+     */
+    private static final String ID = "LeaRuntimeModule";
+    
+    /**
+     * The current logger to use for printing information.
+     */
+    private AbstractLogger logger = LoggerFactory.INSTANCE.getLogger();
+    
+    @Override
+    public void configure(Binder binder) {
+        CoreLanguageElementCreator coreLanguageElementCreator = new CoreLanguageElementCreator();
+        try {
+            logger.log(ID, "Creating core language elements", null, MessageType.DEBUG);
+            coreLanguageElementCreator.createLanguageElements();
+        } catch (LanguageElementException e) {
+            logger.logException(ID, "Exception during core language element creation", e);
+        }
+        super.configure(binder);
+    }
 }
