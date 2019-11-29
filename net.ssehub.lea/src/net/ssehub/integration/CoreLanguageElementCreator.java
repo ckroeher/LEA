@@ -18,6 +18,7 @@ import java.io.File;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -124,12 +125,6 @@ public class CoreLanguageElementCreator extends AbstractLanguageElementCreator {
     private static final String ID = "CoreLanguageElementCreator";
     
     /**
-     * The {@link File} denoting the source plug-in of all core {@link LanguageElement}s created by instances of this
-     * class. This source plug-in is always this project/plug-in.
-     */
-    private static final File SOURCE_PLUGIN = new File(".");
-    
-    /**
      * The array of Java {@link Class}es used to create corresponding {@link LanguageElement}s of the type
      * {@link ElementType#ARTIFACT_PARAMETER_TYPE} by instances of this class.
      */
@@ -154,6 +149,12 @@ public class CoreLanguageElementCreator extends AbstractLanguageElementCreator {
     };
     
     /**
+     * The {@link File} denoting the common source plug-in of all core {@link LanguageElement}s created by instances of
+     * this class. This source plug-in is always this project/plug-in.
+     */
+    private File sourcePlugin;
+    
+    /**
      * The current logger to use for printing information.
      */
     private AbstractLogger logger = LoggerFactory.INSTANCE.getLogger();
@@ -161,7 +162,15 @@ public class CoreLanguageElementCreator extends AbstractLanguageElementCreator {
     /**
      * Constructs a new {@link CoreLanguageElementCreator} instance.
      */
-    protected CoreLanguageElementCreator() { }
+    protected CoreLanguageElementCreator() {
+        try {
+            sourcePlugin = new File(CoreLanguageElementCreator.class.getProtectionDomain().getCodeSource()
+                    .getLocation().toURI().getPath());
+        } catch (URISyntaxException e) {
+            sourcePlugin = null;
+            logger.logException(ID, "Creating the common source plug-in for core language elements failed", e);
+        }
+    }
     
     /**
      * Creates the core {@link LanguageElement}s based on the {@link #JAVA_CLASSES_FOR_ARTIFACT_PARAMETER_TYPES} and the
@@ -194,7 +203,7 @@ public class CoreLanguageElementCreator extends AbstractLanguageElementCreator {
     private void createParameterTypes(ElementType elementType, Class<?>[] sourceClasses) 
             throws LanguageElementException {
         for (int i = 0; i < sourceClasses.length; i++) {
-            createParameterType(elementType, sourceClasses[i].getSimpleName(), sourceClasses[i], SOURCE_PLUGIN);
+            createParameterType(elementType, sourceClasses[i].getSimpleName(), sourceClasses[i], sourcePlugin);
         }
     }
     
@@ -250,7 +259,7 @@ public class CoreLanguageElementCreator extends AbstractLanguageElementCreator {
     private void createCall(Method sourceMethod, Class<?> sourceClass, boolean sourceClassAsParentParameterType) {
         try {
             Call call = new Call(ElementType.OPERATION, sourceMethod.getName(), sourceMethod, sourceClass,
-                    SOURCE_PLUGIN);
+                    sourcePlugin);
             String returnType = createLanguageElementName(sourceMethod.getGenericReturnType().getTypeName(), "");
             Parameter[] methodParameters = sourceMethod.getParameters();
             String[] callParameters = new String[methodParameters.length];                
@@ -271,7 +280,7 @@ public class CoreLanguageElementCreator extends AbstractLanguageElementCreator {
              */
             logger.logException(ID, "Creating " + ElementType.OPERATION + " based on method \"" + sourceMethod.getName()
                     + "\" in class \"" + sourceClass.getSimpleName() + "\" of plug-in \""
-                    + SOURCE_PLUGIN.getAbsolutePath() + "\" failed", e);
+                    + sourcePlugin.getAbsolutePath() + "\" failed", e);
         }
     }
     
