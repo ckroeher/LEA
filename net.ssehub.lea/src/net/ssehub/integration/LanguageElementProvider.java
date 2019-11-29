@@ -95,7 +95,6 @@ public class LanguageElementProvider {
      * @see LanguageRegistry#clear()
      */
     public void provideLanguageElements(List<String> searchPaths) throws LanguageElementException {
-        LanguageRegistry.INSTANCE.clear();
         provideLanguageElements();
         if (searchPaths != null && !searchPaths.isEmpty()) {
             File pluginDirectory;
@@ -120,12 +119,15 @@ public class LanguageElementProvider {
     
     /**
      * Provides the core {@link LanguageElement}s to the {@link LanguageRegistry} by calling the
-     * {@link CoreLanguageElementCreator}.
+     * {@link CoreLanguageElementCreator}.<br>
+     * <br>
+     * <b>Note</b> that calling this method clears the current {@link LanguageRegistry}.
      * 
      * @throws LanguageElementException if creating a core {@link LanguageElement} or adding it to the 
      *         {@link LanguageRegistry} failed
      */
     public void provideLanguageElements() throws LanguageElementException {
+        LanguageRegistry.INSTANCE.clear();
         CoreLanguageElementCreator coreLanguageElementCreator = new CoreLanguageElementCreator();
         coreLanguageElementCreator.createLanguageElements();
     }
