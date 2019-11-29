@@ -263,28 +263,6 @@
 			class="net.ssehub.ui.LeaExecutableExtensionFactory:org.eclipse.xtext.builder.IXtextBuilderParticipant"
 			fileExtensions="lea"/>
 	</extension>
-	<extension point="org.eclipse.ui.preferencePages">
-		<page
-			category="net.ssehub.Lea"
-			class="net.ssehub.ui.LeaExecutableExtensionFactory:org.eclipse.xtext.builder.preferences.BuilderPreferencePage"
-			id="net.ssehub.Lea.compiler.preferencePage"
-			name="Compiler">
-			<keywordReference id="net.ssehub.ui.keyword_Lea"/>
-		</page>
-	</extension>
-	<extension point="org.eclipse.ui.propertyPages">
-		<page
-			category="net.ssehub.Lea"
-			class="net.ssehub.ui.LeaExecutableExtensionFactory:org.eclipse.xtext.builder.preferences.BuilderPreferencePage"
-			id="net.ssehub.Lea.compiler.propertyPage"
-			name="Compiler">
-			<keywordReference id="net.ssehub.ui.keyword_Lea"/>
-			<enabledWhen>
-				<adapt type="org.eclipse.core.resources.IProject"/>
-			</enabledWhen>
-			<filter name="projectNature" value="org.eclipse.xtext.ui.shared.xtextNature"/>
-		</page>
-	</extension>
 	<extension point="org.eclipse.ui.menus">
 		<menuContribution locationURI="popup:#TextEditorContext?after=xtext.ui.openDeclaration">
 			<command
