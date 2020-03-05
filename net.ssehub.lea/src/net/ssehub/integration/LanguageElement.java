@@ -158,4 +158,20 @@ public abstract class LanguageElement {
         }
         return isEqual;
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public String toString() {
+        StringBuilder elementStringBuilder = new StringBuilder();
+        elementStringBuilder.append(elementType);
+        elementStringBuilder.append(" ");
+        elementStringBuilder.append(name);
+        elementStringBuilder.append(" [");
+        elementStringBuilder.append(sourceClass.getCanonicalName());
+        elementStringBuilder.append(", ");
+        elementStringBuilder.append(sourcePlugin.getAbsolutePath());
+        elementStringBuilder.append("]");
+        return elementStringBuilder.toString();
+    }
 }

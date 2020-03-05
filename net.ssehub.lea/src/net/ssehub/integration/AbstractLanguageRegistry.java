@@ -17,6 +17,7 @@ package net.ssehub.integration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 /**
  * This abstract class provides the attributes and methods for creating the specific, singleton
@@ -225,4 +226,43 @@ public abstract class AbstractLanguageRegistry {
         return isDuplicate;
     }
     
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        StringBuilder registryStringBuilder = new StringBuilder();
+        registryStringBuilder.append("### Parameter Types ###");
+        registryStringBuilder.append("\n");
+        registryStringBuilder.append(asString(parameterTypes));
+        registryStringBuilder.append("### Change Identifiers ###");
+        registryStringBuilder.append("\n");
+        registryStringBuilder.append(asString(changeIdentifiers));
+        registryStringBuilder.append("### Calls ###");
+        registryStringBuilder.append("\n");
+        registryStringBuilder.append(asString(calls));
+        return registryStringBuilder.toString();
+    }
+
+    /**
+     * .
+     * @param <T> .
+     * @param elementMap .
+     * @return .
+     */
+    private <T> String asString(HashMap<String, List<T>> elementMap) {
+        Set<String> elementMapKeySet = elementMap.keySet();
+        StringBuilder elementMapStringBuilder = new StringBuilder();
+        for (String elementMapKey : elementMapKeySet) {
+            List<?> keyElementList = elementMap.get(elementMapKey);
+            LanguageElement languageElement;
+            for (int i = 0; i < keyElementList.size(); i++) {
+                languageElement = (LanguageElement) keyElementList.get(i);
+                elementMapStringBuilder.append(languageElement);
+                elementMapStringBuilder.append("\n");
+            }
+        }
+        return elementMapStringBuilder.toString();
+    }
+
 }
