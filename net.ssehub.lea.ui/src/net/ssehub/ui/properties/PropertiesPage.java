@@ -28,6 +28,8 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.IWorkbenchPropertyPage;
 import org.eclipse.ui.dialogs.PropertyPage;
 
+import net.ssehub.integration.LanguageElementException;
+
 /**
  * This class realizes the LEA properties page accessible via the project's properties.
  * 
@@ -69,6 +71,16 @@ public class PropertiesPage extends PropertyPage implements IWorkbenchPropertyPa
          * the list
          */
         LeaPreferences.setPluginPaths(pluginPathsUiList.getItems());
+        /*
+         * Further, only if "Apply and Close"-button is selected, the language registry is cleared and new language
+         * elements based on the current paths are added
+         */
+        try {
+            LeaCoreConnector.INSTANCE.provideLanguageElements();
+        } catch (LanguageElementException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         return true;
     }
     
